@@ -1,0 +1,1033 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { io } from 'socket.io-client';
+import toast, { Toaster } from 'react-hot-toast';
+import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, pipeline as pipelineApi } from './api';
+
+// ─── Socket ───────────────────────────────────────────────────────────────────
+const socket = io(window.location.origin);
+
+// ─── Design tokens ───────────────────────────────────────────────────────────
+const C = {
+  bg:      '#0a0d14',
+  surface: '#131720',
+  card:    '#1a1f2e',
+  border:  '#232840',
+  text:    '#e8edf5',
+  muted:   '#8b95b0',
+  dim:     '#505878',
+  primary: '#6366f1',
+  purple:  '#8b5cf6',
+  success: '#10b981',
+  warning: '#f59e0b',
+  danger:  '#ef4444',
+  teal:    '#14b8a6',
+  pink:    '#ec4899',
+};
+
+const STAGE_COLORS = {
+  stage_lead:        C.dim,
+  stage_contact:     '#3b82f6',
+  stage_proposal:    C.warning,
+  stage_negotiation: C.purple,
+  stage_won:         C.success,
+  stage_lost:        C.danger,
+};
+const STAGE_LABELS = {
+  stage_lead:        'Lead',
+  stage_contact:     'Contato Feito',
+  stage_proposal:    'Proposta',
+  stage_negotiation: 'Negociação',
+  stage_won:         'Ganho',
+  stage_lost:        'Perdido',
+};
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+const fmt      = (n) => new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' }).format(n || 0);
+const fmtDate  = (d) => d ? new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '–';
+const fmtTime  = (d) => d ? new Date(d).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) : '';
+const initials = (n = '') => n.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase() || '?';
+const avatarBg = (n = '') => {
+  const p = [C.primary, C.purple, C.pink, C.warning, C.success, C.teal, '#3b82f6', C.danger];
+  return p[(n.charCodeAt(0) || 0) % p.length];
+};
+
+// ─── Base components ─────────────────────────────────────────────────────────
+
+function Avatar({ name = '', size = 36 }) {
+  const bg = avatarBg(name);
+  return (
+    <div style={{
+      width:size, height:size, borderRadius:'50%', flexShrink:0,
+      background:`linear-gradient(135deg, ${bg}dd, ${bg}88)`,
+      display:'flex', alignItems:'center', justifyContent:'center',
+      color:'#fff', fontWeight:700, fontSize:size*0.36, letterSpacing:'0.02em',
+      boxShadow:`0 2px 8px ${bg}50`,
+    }}>
+      {initials(name)}
+    </div>
+  );
+}
+
+function Badge({ children, color = C.primary }) {
+  return (
+    <span style={{
+      background:`${color}18`, color, padding:'3px 10px', borderRadius:20,
+      fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em',
+      border:`1px solid ${color}35`, whiteSpace:'nowrap', display:'inline-block',
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function Btn({ children, variant='primary', size='md', onClick, disabled, type='button', style:xs={} }) {
+  const sz = { sm:{padding:'7px 14px',fontSize:12}, md:{padding:'10px 20px',fontSize:14}, lg:{padding:'13px 28px',fontSize:15} };
+  const vars = {
+    primary:  { background:`linear-gradient(135deg,${C.primary},${C.purple})`, color:'#fff', boxShadow:`0 4px 15px ${C.primary}45` },
+    secondary:{ background:C.card, color:C.text, border:`1px solid ${C.border}` },
+    outline:  { background:'transparent', color:C.muted, border:`1px solid ${C.border}` },
+    ghost:    { background:'transparent', color:C.muted, border:'none' },
+    danger:   { background:`linear-gradient(135deg,${C.danger},#dc2626)`, color:'#fff', boxShadow:`0 4px 12px ${C.danger}35` },
+    success:  { background:`linear-gradient(135deg,${C.success},#059669)`, color:'#fff', boxShadow:`0 4px 12px ${C.success}35` },
+  };
+  return (
+    <button type={type} onClick={onClick} disabled={disabled} style={{
+      display:'inline-flex', alignItems:'center', justifyContent:'center', gap:8,
+      borderRadius:10, fontWeight:600, cursor:disabled?'not-allowed':'pointer',
+      transition:'all 0.2s', border:'none', outline:'none',
+      opacity:disabled?0.5:1, ...sz[size], ...vars[variant], ...xs,
+    }}
+      onMouseOver={e=>{ if(!disabled){e.currentTarget.style.filter='brightness(1.12)';e.currentTarget.style.transform='translateY(-1px)';} }}
+      onMouseOut={e=>{ e.currentTarget.style.filter='';e.currentTarget.style.transform=''; }}
+    >{children}</button>
+  );
+}
+
+function FocusInput({ label, placeholder, value, onChange, type='text', required, textarea, rows=3, hint, autoFocus }) {
+  const [focused, setFocused] = useState(false);
+  const s = {
+    width:'100%', background:C.bg, border:`1px solid ${focused?C.primary:C.border}`,
+    borderRadius:10, padding:'11px 14px', color:C.text, fontSize:14, outline:'none',
+    transition:'border-color 0.2s,box-shadow 0.2s', fontFamily:'inherit',
+    boxShadow:focused?`0 0 0 3px ${C.primary}22`:'none',
+    resize:textarea?'vertical':'none',
+  };
+  return (
+    <div>
+      {label && <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:6,textTransform:'uppercase',letterSpacing:'0.08em'}}>{label}{required&&<span style={{color:C.danger}}> *</span>}</label>}
+      {textarea
+        ? <textarea placeholder={placeholder} value={value} onChange={onChange} rows={rows} autoFocus={autoFocus} onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)} style={s} />
+        : <input type={type} placeholder={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)} style={s} />}
+      {hint && <p style={{fontSize:11,color:C.dim,marginTop:4}}>{hint}</p>}
+    </div>
+  );
+}
+
+function Card({ children, title, subtitle, action, style:xs={}, noPad=false }) {
+  return (
+    <div style={{background:C.card,borderRadius:18,border:`1px solid ${C.border}`,overflow:'hidden',...xs}}>
+      {(title||action)&&<div style={{padding:'18px 24px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div>{title&&<h3 style={{fontSize:15,fontWeight:700,color:C.text}}>{title}</h3>}{subtitle&&<p style={{fontSize:12,color:C.dim,marginTop:2}}>{subtitle}</p>}</div>
+        {action}
+      </div>}
+      <div style={noPad?{}:{padding:24}}>{children}</div>
+    </div>
+  );
+}
+
+function Modal({ open, onClose, title, children, maxWidth=580 }) {
+  useEffect(() => {
+    const h = (e) => e.key==='Escape'&&onClose();
+    if(open) window.addEventListener('keydown',h);
+    return ()=>window.removeEventListener('keydown',h);
+  }, [open,onClose]);
+  if(!open) return null;
+  return (
+    <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.75)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:20,backdropFilter:'blur(6px)'}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:22,padding:32,width:'100%',maxWidth,maxHeight:'90vh',overflow:'auto',boxShadow:'0 24px 64px rgba(0,0,0,0.6)'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+          <h3 style={{fontSize:18,fontWeight:800,color:C.text}}>{title}</h3>
+          <button onClick={onClose} style={{background:C.border,border:'none',color:C.muted,cursor:'pointer',fontSize:13,borderRadius:8,padding:'5px 10px'}}>✕</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ icon, title, desc, action }) {
+  return (
+    <div style={{textAlign:'center',padding:'60px 24px',color:C.dim}}>
+      <div style={{fontSize:52,marginBottom:16,opacity:0.4}}>{icon}</div>
+      <div style={{fontSize:16,fontWeight:700,color:C.muted,marginBottom:8}}>{title}</div>
+      <div style={{fontSize:13,color:C.dim,lineHeight:1.7,maxWidth:320,margin:'0 auto'}}>{desc}</div>
+      {action&&<div style={{marginTop:24}}>{action}</div>}
+    </div>
+  );
+}
+
+function StatCard({ label, value, icon, color, sub }) {
+  return (
+    <div style={{background:C.card,padding:24,borderRadius:20,border:`1px solid ${C.border}`,position:'relative',overflow:'hidden',borderTop:`3px solid ${color}`}}>
+      <div style={{position:'absolute',top:-4,right:10,fontSize:54,opacity:0.05}}>{icon}</div>
+      <div style={{color:C.dim,fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:12}}>{label}</div>
+      <div style={{fontSize:38,fontWeight:800,color:C.text,lineHeight:1}}>{value}</div>
+      {sub&&<div style={{fontSize:11,color:C.dim,marginTop:8}}>{sub}</div>}
+      <div style={{width:40,height:3,background:`linear-gradient(90deg,${color},${color}60)`,borderRadius:2,marginTop:18}} />
+    </div>
+  );
+}
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+
+function Dashboard() {
+  const [data, setData] = useState(null);
+  const [pipe, setPipe] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([statsApi(), contactsApi.pipelineStats().catch(()=>[])])
+      .then(([s,p])=>{ setData(s); setPipe(Array.isArray(p)?p:[]); setLoading(false); })
+      .catch(()=>setLoading(false));
+  }, []);
+
+  if(loading) return (
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
+      {[1,2,3,4].map(i=><div key={i} style={{height:140,background:C.card,borderRadius:20,border:`1px solid ${C.border}`,animation:'pulse 1.5s ease infinite'}} />)}
+    </div>
+  );
+
+  const total = pipe.reduce((a,s)=>a+s.count,0);
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:32}}>
+      <div>
+        <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Dashboard</h2>
+        <p style={{color:C.dim,fontSize:14}}>Visão geral do seu CRM em tempo real.</p>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
+        <StatCard label="Total de Contatos" value={data?.totalContacts??0} icon="👥" color={C.primary} sub="na base de dados" />
+        <StatCard label="Conversas Abertas" value={data?.openConvs??0} icon="💬" color={C.success} sub="aguardando resposta" />
+        <StatCard label="Mensagens Hoje" value={data?.todayMessages??0} icon="📩" color={C.warning} sub="enviadas e recebidas" />
+        <StatCard label="Total de Mensagens" value={data?.totalMessages??0} icon="📊" color={C.purple} sub="histórico completo" />
+      </div>
+      {pipe.length>0&&(
+        <Card title="Pipeline de Vendas" subtitle="Distribuição de contatos por etapa">
+          <div style={{display:'flex',flexDirection:'column',gap:16}}>
+            {pipe.map(s=>{
+              const pct=total>0?Math.round((s.count/total)*100):0;
+              const color=s.color||STAGE_COLORS[s.id]||C.primary;
+              return (
+                <div key={s.id}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8,fontSize:13}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <div style={{width:8,height:8,borderRadius:'50%',background:color}} />
+                      <span style={{color:C.muted,fontWeight:600}}>{s.name}</span>
+                    </div>
+                    <div style={{display:'flex',gap:20}}>
+                      <span style={{color:C.dim}}>{s.count} contato{s.count!==1?'s':''}</span>
+                      {s.value>0&&<span style={{color:C.success,fontWeight:700}}>{fmt(s.value)}</span>}
+                    </div>
+                  </div>
+                  <div style={{height:6,background:C.bg,borderRadius:3,overflow:'hidden'}}>
+                    <div style={{width:`${pct}%`,height:'100%',background:color,borderRadius:3,transition:'width 0.6s ease'}} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// ─── Contacts ────────────────────────────────────────────────────────────────
+
+function Contacts() {
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState('');
+
+  const load = useCallback(async () => {
+    try { const d=await contactsApi.list(); setContacts(Array.isArray(d.contacts)?d.contacts:[]); }
+    catch { toast.error('Erro ao carregar contatos'); }
+    setLoading(false);
+  }, []);
+
+  useEffect(()=>{ load(); },[load]);
+
+  const openCreate = ()=>{
+    setEditing(null);
+    setForm({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
+    setTags([]); setTagInput(''); setShowModal(true);
+  };
+  const openEdit = (c)=>{
+    setEditing(c);
+    setForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',notes:c.notes||''});
+    setTags(Array.isArray(c.tags)?c.tags:[]); setTagInput(''); setShowModal(true);
+  };
+
+  const handleSave = async ()=>{
+    if(!form.name||!form.phone) return toast.error('Nome e telefone são obrigatórios');
+    try {
+      const data={...form,tags,pipeline_value:Number(form.pipeline_value)||0};
+      if(editing){ await contactsApi.update(editing.id,data); toast.success('Contato atualizado!'); }
+      else { await contactsApi.create(data); toast.success('Contato criado!'); }
+      setShowModal(false); load();
+    } catch(err){ toast.error(err.response?.data?.error||'Erro ao salvar'); }
+  };
+
+  const handleDelete = async (id)=>{
+    if(!confirm('Remover este contato?')) return;
+    try { await contactsApi.delete(id); toast.success('Removido!'); load(); }
+    catch { toast.error('Erro ao remover'); }
+  };
+
+  const addTag = ()=>{
+    const t=tagInput.trim();
+    if(t&&!tags.includes(t)) setTags([...tags,t]);
+    setTagInput('');
+  };
+
+  const filtered = contacts.filter(c=>
+    c.name?.toLowerCase().includes(search.toLowerCase())||
+    c.phone?.includes(search)||
+    c.company?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+        <div>
+          <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Contatos</h2>
+          <p style={{color:C.dim,fontSize:14}}>{contacts.length} contato{contacts.length!==1?'s':''} cadastrado{contacts.length!==1?'s':''}</p>
+        </div>
+        <Btn onClick={openCreate}>+ Novo Contato</Btn>
+      </div>
+
+      <Card noPad>
+        <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`}}>
+          <input placeholder="🔍 Buscar por nome, telefone ou empresa..." value={search} onChange={e=>setSearch(e.target.value)}
+            style={{width:'100%',background:C.bg,border:`1px solid ${C.border}`,borderRadius:10,padding:'10px 16px',color:C.text,fontSize:14,outline:'none'}} />
+        </div>
+        {loading?(
+          <div style={{padding:48,textAlign:'center',color:C.dim}}>Carregando...</div>
+        ):filtered.length===0?(
+          <EmptyState icon="👥" title="Nenhum contato encontrado" desc="Adicione seu primeiro lead ou cliente." action={<Btn size="sm" onClick={openCreate}>+ Criar Contato</Btn>} />
+        ):(
+          <div style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <thead>
+                <tr style={{borderBottom:`1px solid ${C.border}`}}>
+                  {['Contato','Empresa','Etapa','Valor','Tags','Última Interação',''].map(h=>(
+                    <th key={h} style={{padding:'12px 16px',color:C.dim,fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.07em',textAlign:'left',whiteSpace:'nowrap'}}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(c=>(
+                  <tr key={c.id} style={{borderBottom:`1px solid ${C.border}`,transition:'background 0.12s'}}
+                    onMouseOver={e=>e.currentTarget.style.background='#ffffff06'}
+                    onMouseOut={e=>e.currentTarget.style.background=''}>
+                    <td style={{padding:'14px 16px'}}>
+                      <div style={{display:'flex',alignItems:'center',gap:12}}>
+                        <Avatar name={c.name} size={38} />
+                        <div>
+                          <div style={{color:C.text,fontWeight:600,fontSize:14}}>{c.name}</div>
+                          <div style={{color:C.dim,fontSize:12}}>{c.phone}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{padding:'14px 16px',color:C.muted,fontSize:13}}>{c.company||'–'}</td>
+                    <td style={{padding:'14px 16px'}}><Badge color={STAGE_COLORS[c.pipeline_stage]||C.primary}>{STAGE_LABELS[c.pipeline_stage]||c.pipeline_stage}</Badge></td>
+                    <td style={{padding:'14px 16px',color:c.pipeline_value>0?C.success:C.dim,fontWeight:600,fontSize:13}}>{c.pipeline_value>0?fmt(c.pipeline_value):'–'}</td>
+                    <td style={{padding:'14px 16px'}}>
+                      <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                        {(c.tags||[]).slice(0,2).map(t=><Badge key={t} color={C.primary}>{t}</Badge>)}
+                        {(c.tags||[]).length>2&&<Badge color={C.dim}>+{c.tags.length-2}</Badge>}
+                      </div>
+                    </td>
+                    <td style={{padding:'14px 16px',color:C.dim,fontSize:12,whiteSpace:'nowrap'}}>{fmtDate(c.last_interaction)}</td>
+                    <td style={{padding:'14px 16px',textAlign:'right',whiteSpace:'nowrap'}}>
+                      <button title="Abrir conversa" onClick={()=>window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}}))}
+                        style={{background:'none',border:'none',cursor:'pointer',color:C.success,fontSize:17,padding:'4px 6px',borderRadius:8}}>💬</button>
+                      <button title="Editar" onClick={()=>openEdit(c)}
+                        style={{background:'none',border:'none',cursor:'pointer',color:C.primary,fontSize:17,padding:'4px 6px',borderRadius:8}}>✏️</button>
+                      <button title="Remover" onClick={()=>handleDelete(c.id)}
+                        style={{background:'none',border:'none',cursor:'pointer',color:C.danger,fontSize:17,padding:'4px 6px',borderRadius:8}}>🗑️</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+
+      <Modal open={showModal} onClose={()=>setShowModal(false)} title={editing?'Editar Contato':'Novo Contato'} maxWidth={620}>
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+            <FocusInput label="Nome" placeholder="João da Silva" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required autoFocus />
+            <FocusInput label="Telefone" placeholder="5511999999999" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} required />
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+            <FocusInput label="E-mail" placeholder="joao@empresa.com" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} />
+            <FocusInput label="Empresa" placeholder="ACME Ltda" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} />
+          </div>
+          <FocusInput label="Valor no Pipeline (R$)" placeholder="0" value={form.pipeline_value} onChange={e=>setForm({...form,pipeline_value:e.target.value})} />
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>Tags</label>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:8}}>
+              {tags.map(t=>(
+                <span key={t} style={{background:`${C.primary}20`,color:C.primary,padding:'3px 10px',borderRadius:20,fontSize:12,display:'flex',alignItems:'center',gap:6,border:`1px solid ${C.primary}30`}}>
+                  {t}<button onClick={()=>setTags(tags.filter(x=>x!==t))} style={{background:'none',border:'none',color:C.primary,cursor:'pointer',fontSize:14,lineHeight:1,padding:0}}>×</button>
+                </span>
+              ))}
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <input placeholder="Nova tag... (Enter para adicionar)" value={tagInput} onChange={e=>setTagInput(e.target.value)}
+                onKeyDown={e=>e.key==='Enter'&&(e.preventDefault(),addTag())}
+                style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'9px 12px',color:C.text,fontSize:13,outline:'none'}} />
+              <Btn size="sm" variant="secondary" onClick={addTag}>+ Add</Btn>
+            </div>
+          </div>
+          <FocusInput label="Notas" placeholder="Observações sobre o contato..." value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} textarea rows={3} />
+          <div style={{display:'flex',gap:12,justifyContent:'flex-end',borderTop:`1px solid ${C.border}`,paddingTop:20,marginTop:4}}>
+            <Btn variant="outline" onClick={()=>setShowModal(false)}>Cancelar</Btn>
+            <Btn onClick={handleSave}>{editing?'💾 Salvar Alterações':'✨ Criar Contato'}</Btn>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+// ─── Conversations ────────────────────────────────────────────────────────────
+
+function Conversations({ initialContact }) {
+  const [convs, setConvs] = useState([]);
+  const [active, setActive] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const msgEndRef = useRef(null);
+
+  const scrollToBottom = useCallback(()=>{ msgEndRef.current?.scrollIntoView({behavior:'smooth'}); },[]);
+
+  const loadConvs = useCallback(async ()=>{
+    try { const d=await convsApi.list(); setConvs(Array.isArray(d)?d:[]); return Array.isArray(d)?d:[]; }
+    catch { toast.error('Erro ao carregar conversas'); return []; }
+  },[]);
+
+  useEffect(()=>{
+    async function init(){
+      setLoading(true);
+      const d=await loadConvs();
+      if(initialContact){
+        try {
+          const conv=await convsApi.orCreate(initialContact.id);
+          const full={...conv,contact_name:initialContact.name,contact_phone:initialContact.phone};
+          setActive(full);
+          setConvs(prev=>prev.some(c=>c.id===full.id)?prev:[full,...prev]);
+        } catch{}
+      } else if(d.length>0){ setActive(d[0]); }
+      setLoading(false);
+    }
+    init();
+  },[initialContact,loadConvs]);
+
+  useEffect(()=>{
+    if(active?.id) convsApi.messages(active.id).then(setMessages).catch(()=>{});
+  },[active?.id]);
+
+  useEffect(()=>{
+    const handle=(data)=>{
+      if(active&&data.conversation?.id===active.id){
+        setMessages(prev=>prev.some(m=>m.id===data.message.id)?prev:[...prev,data.message]);
+        setTimeout(scrollToBottom,100);
+      }
+      if(data.conversation){
+        setConvs(prev=>{
+          const idx=prev.findIndex(c=>c.id===data.conversation.id);
+          if(idx===-1) return [data.conversation,...prev];
+          const updated=[...prev]; updated[idx]={...updated[idx],...data.conversation};
+          return updated.sort((a,b)=>new Date(b.last_message_at)-new Date(a.last_message_at));
+        });
+      }
+    };
+    socket.on('new_message',handle);
+    return ()=>socket.off('new_message',handle);
+  },[active,scrollToBottom]);
+
+  useEffect(()=>{ scrollToBottom(); },[messages,scrollToBottom]);
+
+  const send=async()=>{
+    if(!input.trim()||!active||sending) return;
+    const text=input; setSending(true); setInput('');
+    try {
+      const sent=await convsApi.sendMessage(active.id,{content:text});
+      setMessages(prev=>prev.some(m=>m.id===sent.id)?prev:[...prev,sent]);
+    } catch { toast.error('Erro ao enviar mensagem'); setInput(text); }
+    finally { setSending(false); }
+  };
+
+  return (
+    <div style={{display:'grid',gridTemplateColumns:'320px 1fr',flex:1,overflow:'hidden',minHeight:0}}>
+      {/* Lista */}
+      <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',height:'100%'}}>
+        <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720'}}>
+          <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
+          <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto'}}>
+          {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
+          {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
+          {convs.map(c=>(
+            <div key={c.id} onClick={()=>setActive(c)} style={{
+              padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
+              background:active?.id===c.id?`${C.primary}18`:'transparent',
+              borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',
+              transition:'background 0.15s',
+            }}>
+              <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                <Avatar name={c.contact_name||'?'} size={44} />
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}>
+                    <span style={{fontWeight:600,fontSize:14,color:C.text}}>{c.contact_name||'Desconhecido'}</span>
+                    <span style={{fontSize:10,color:C.dim}}>{fmtTime(c.last_message_at)}</span>
+                  </div>
+                  <div style={{fontSize:12,color:C.muted,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.last_message||'Sem mensagens'}</div>
+                </div>
+                {c.unread_count>0&&<div style={{minWidth:20,height:20,borderRadius:10,background:'#00a884',color:'#fff',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 5px'}}>{c.unread_count>99?'99+':c.unread_count}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chat */}
+      {active?(
+        <div style={{display:'flex',flexDirection:'column',background:'#0b141a',height:'100%'}}>
+          <div style={{padding:'12px 24px',background:'#1f2c34',borderBottom:`1px solid #2a2d3e`,display:'flex',alignItems:'center',gap:12}}>
+            <Avatar name={active.contact_name||'?'} size={44} />
+            <div>
+              <div style={{fontWeight:600,color:'#e9edef',fontSize:15}}>{active.contact_name||'Desconhecido'}</div>
+              <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
+            </div>
+          </div>
+          <div style={{flex:1,overflowY:'auto',padding:'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
+            <div style={{marginTop:'auto'}} />
+            {messages.length===0&&<div style={{marginBottom:'auto',textAlign:'center',padding:'40px 0',color:'#8696a0',fontSize:13}}>Nenhuma mensagem ainda</div>}
+            {messages.map(m=>(
+              <div key={m.id} style={{alignSelf:m.direction==='outbound'?'flex-end':'flex-start',maxWidth:'75%',marginBottom:2}}>
+                <div style={{
+                  background:m.direction==='outbound'?'#005c4b':'#1f2c34',
+                  color:'#e9edef',padding:'8px 12px',borderRadius:8,
+                  borderBottomRightRadius:m.direction==='outbound'?2:8,
+                  borderBottomLeftRadius:m.direction==='outbound'?8:2,
+                  fontSize:14,lineHeight:1.5,boxShadow:'0 1px 2px rgba(0,0,0,0.3)',
+                }}>{m.content}</div>
+                <div style={{fontSize:11,color:'#8696a0',marginTop:2,textAlign:m.direction==='outbound'?'right':'left',display:'flex',alignItems:'center',justifyContent:m.direction==='outbound'?'flex-end':'flex-start',gap:4}}>
+                  {new Date(m.timestamp).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+                  {m.direction==='outbound'&&<span style={{color:'#53bdeb',fontSize:13}}>✓✓</span>}
+                </div>
+              </div>
+            ))}
+            <div ref={msgEndRef} />
+          </div>
+          <div style={{padding:'10px 20px',background:'#1f2c34',display:'flex',alignItems:'center',gap:12}}>
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&send()}
+              placeholder="Digite sua mensagem..."
+              style={{flex:1,background:'#2a3942',border:'none',borderRadius:10,padding:'12px 16px',color:'#d1d7db',outline:'none',fontSize:14,fontFamily:'inherit'}} />
+            <button onClick={send} disabled={sending||!input.trim()} style={{background:'#00a884',border:'none',borderRadius:10,padding:'10px 18px',cursor:'pointer',color:'#fff',fontSize:18,opacity:sending||!input.trim()?0.6:1,transition:'opacity 0.15s'}}>➤</button>
+          </div>
+        </div>
+      ):(
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,color:C.dim,height:'100%',background:'#0b141a'}}>
+          <div style={{fontSize:64}}>💬</div>
+          <p style={{fontSize:15}}>Selecione uma conversa para começar</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Pipeline Kanban ─────────────────────────────────────────────────────────
+
+function Pipeline() {
+  const [stages, setStages] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dragging, setDragging] = useState(null);
+  const [dragOver, setDragOver] = useState(null);
+
+  const load = useCallback(async ()=>{
+    try {
+      const [s,c]=await Promise.all([pipelineApi.stages(),contactsApi.list()]);
+      setStages(s); setContacts(Array.isArray(c.contacts)?c.contacts:[]);
+    } catch { toast.error('Erro ao carregar pipeline'); }
+    setLoading(false);
+  },[]);
+
+  useEffect(()=>{ load(); },[load]);
+
+  const handleDrop=async(e,targetStageId)=>{
+    e.preventDefault();
+    if(!dragging||dragging.stage===targetStageId){ setDragging(null); setDragOver(null); return; }
+    setContacts(prev=>prev.map(c=>c.id===dragging.id?{...c,pipeline_stage:targetStageId}:c));
+    try { await contactsApi.setStage(dragging.id,targetStageId); toast.success('Contato movido!'); }
+    catch { setContacts(prev=>prev.map(c=>c.id===dragging.id?{...c,pipeline_stage:dragging.stage}:c)); toast.error('Erro ao mover'); }
+    setDragging(null); setDragOver(null);
+  };
+
+  if(loading) return <div style={{color:C.dim,padding:20}}>Carregando pipeline...</div>;
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      <div>
+        <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Pipeline Kanban</h2>
+        <p style={{color:C.dim,fontSize:14}}>Arraste os cartões entre colunas para mover leads no funil.</p>
+      </div>
+      <div style={{overflowX:'auto',paddingBottom:20}}>
+        <div style={{display:'flex',gap:20,minWidth:stages.length*288}}>
+          {stages.map(s=>{
+            const sc=contacts.filter(c=>c.pipeline_stage===s.id);
+            const sv=sc.reduce((a,c)=>a+(Number(c.pipeline_value)||0),0);
+            const color=s.color||STAGE_COLORS[s.id]||C.primary;
+            const isDrag=dragOver===s.id;
+            return (
+              <div key={s.id} style={{width:280,flexShrink:0}}
+                onDragOver={e=>{ e.preventDefault(); setDragOver(s.id); }}
+                onDragLeave={e=>{ if(!e.currentTarget.contains(e.relatedTarget)) setDragOver(null); }}
+                onDrop={e=>handleDrop(e,s.id)}>
+                <div style={{background:C.card,borderRadius:18,padding:16,border:`1px solid ${isDrag?color:C.border}`,transition:'border-color 0.2s,box-shadow 0.2s',boxShadow:isDrag?`0 0 24px ${color}30`:'none'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <div style={{width:10,height:10,borderRadius:'50%',background:color,boxShadow:`0 0 6px ${color}`}} />
+                      <span style={{fontSize:13,fontWeight:700,color:C.text}}>{s.name}</span>
+                    </div>
+                    <div style={{textAlign:'right'}}>
+                      <div style={{background:`${color}20`,color,fontSize:11,fontWeight:700,padding:'2px 9px',borderRadius:10}}>{sc.length}</div>
+                      {sv>0&&<div style={{fontSize:10,color:C.success,fontWeight:700,marginTop:2}}>{fmt(sv)}</div>}
+                    </div>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',gap:10,minHeight:80}}>
+                    {sc.map(c=>(
+                      <div key={c.id} draggable
+                        onDragStart={e=>{ setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
+                        onDragEnd={()=>{ setDragging(null); setDragOver(null); }}
+                        style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'grab',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
+                        onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
+                        onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
+                        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
+                          <Avatar name={c.name} size={30} />
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{fontWeight:600,fontSize:13,color:C.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.name}</div>
+                            <div style={{color:C.dim,fontSize:11}}>{c.phone}</div>
+                          </div>
+                        </div>
+                        {c.pipeline_value>0&&<div style={{fontSize:12,color:C.success,fontWeight:700}}>{fmt(c.pipeline_value)}</div>}
+                        {c.company&&<div style={{fontSize:11,color:C.dim,marginTop:4}}>🏢 {c.company}</div>}
+                      </div>
+                    ))}
+                    {sc.length===0&&(
+                      <div style={{border:`2px dashed ${isDrag?color:C.border}`,borderRadius:12,padding:'24px 16px',textAlign:'center',color:isDrag?color:C.dim,fontSize:12,transition:'all 0.2s'}}>
+                        {isDrag?'↓ Soltar aqui':'Vazio'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Broadcasts ───────────────────────────────────────────────────────────────
+
+function Broadcasts() {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [form, setForm] = useState({name:'',message:'',target_tags:[]});
+  const [tagInput, setTagInput] = useState('');
+  const [sending, setSending] = useState({});
+
+  const load=async()=>{
+    try { const d=await broadcastsApi.list(); setList(Array.isArray(d)?d:[]); }
+    catch { toast.error('Erro ao carregar campanhas'); }
+    setLoading(false);
+  };
+  useEffect(()=>{ load(); },[]);
+
+  const handleCreate=async()=>{
+    if(!form.name.trim()||!form.message.trim()) return toast.error('Nome e mensagem são obrigatórios');
+    try {
+      await broadcastsApi.create(form);
+      toast.success('Campanha criada!');
+      setShowCreate(false); setForm({name:'',message:'',target_tags:[]}); load();
+    } catch { toast.error('Erro ao criar campanha'); }
+  };
+
+  const handleSend=async(id,name)=>{
+    if(!confirm(`Disparar a campanha "${name}"?\n\nIsso enviará mensagens para os contatos selecionados.`)) return;
+    setSending(p=>({...p,[id]:true}));
+    try { const r=await broadcastsApi.send(id); toast.success(`🚀 Disparando para ${r.total} contatos!`); setTimeout(load,2000); }
+    catch(err){ toast.error(err.response?.data?.error||'Erro ao disparar'); }
+    finally { setSending(p=>({...p,[id]:false})); }
+  };
+
+  const addTag=()=>{ const t=tagInput.trim(); if(t&&!form.target_tags.includes(t)) setForm({...form,target_tags:[...form.target_tags,t]}); setTagInput(''); };
+
+  const ST={ draft:{color:C.dim,label:'Rascunho'}, running:{color:C.warning,label:'Enviando…'}, finished:{color:C.success,label:'Concluído'}, failed:{color:C.danger,label:'Falhou'} };
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+        <div>
+          <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Disparos em Massa</h2>
+          <p style={{color:C.dim,fontSize:14}}>Envie campanhas para múltiplos contatos via WhatsApp.</p>
+        </div>
+        <Btn onClick={()=>setShowCreate(true)}>+ Nova Campanha</Btn>
+      </div>
+
+      {loading?(<div style={{color:C.dim}}>Carregando...</div>):list.length===0?(
+        <EmptyState icon="📢" title="Nenhuma campanha ainda" desc="Crie sua primeira campanha para disparar mensagens em massa com delay anti-ban automático." action={<Btn size="sm" onClick={()=>setShowCreate(true)}>+ Criar Campanha</Btn>} />
+      ):(
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))',gap:20}}>
+          {list.map(b=>{
+            const pct=b.total_count>0?Math.round(((b.sent_count+b.failed_count)/b.total_count)*100):0;
+            const st=ST[b.status]||ST.draft;
+            return (
+              <div key={b.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:18,overflow:'hidden'}}>
+                <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                  <div>
+                    <div style={{fontWeight:700,color:C.text,fontSize:15,marginBottom:2}}>{b.name}</div>
+                    <div style={{fontSize:11,color:C.dim}}>{fmtDate(b.created_at)}</div>
+                  </div>
+                  <Badge color={st.color}>{st.label}</Badge>
+                </div>
+                <div style={{padding:'16px 20px'}}>
+                  <p style={{fontSize:13,color:C.muted,lineHeight:1.7,marginBottom:16,maxHeight:56,overflow:'hidden'}}>{b.message}</p>
+                  {b.total_count>0&&(
+                    <div style={{marginBottom:16}}>
+                      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:C.dim,marginBottom:6}}><span>Progresso</span><span>{pct}%</span></div>
+                      <div style={{height:6,background:C.bg,borderRadius:3}}><div style={{height:'100%',borderRadius:3,background:`linear-gradient(90deg,${C.success},${C.teal})`,width:`${pct}%`,transition:'width 0.5s'}} /></div>
+                    </div>
+                  )}
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,paddingTop:12,borderTop:`1px solid ${C.border}`,marginBottom:16}}>
+                    {[['Total',b.total_count,C.text],['Sucesso',b.sent_count,C.success],['Falha',b.failed_count,C.danger]].map(([l,v,c])=>(
+                      <div key={l} style={{textAlign:'center'}}>
+                        <div style={{fontSize:20,fontWeight:800,color:c}}>{v}</div>
+                        <div style={{fontSize:10,color:C.dim,textTransform:'uppercase',letterSpacing:'0.05em'}}>{l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {b.status==='draft'&&(
+                    <Btn variant="success" style={{width:'100%',justifyContent:'center'}} onClick={()=>handleSend(b.id,b.name)} disabled={!!sending[b.id]}>
+                      {sending[b.id]?'⏳ Iniciando...':'🚀 Disparar Campanha'}
+                    </Btn>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <Modal open={showCreate} onClose={()=>setShowCreate(false)} title="Nova Campanha de Disparo">
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          <FocusInput label="Nome da campanha" placeholder="Promoção de Verão 2025" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required autoFocus />
+          <FocusInput label="Mensagem" placeholder="Olá! Temos uma oferta especial para você..." value={form.message} onChange={e=>setForm({...form,message:e.target.value})} textarea rows={5} required hint={`${form.message.length} caracteres`} />
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:6,textTransform:'uppercase',letterSpacing:'0.08em'}}>Filtrar por Tags (opcional)</label>
+            <p style={{fontSize:12,color:C.dim,marginBottom:10}}>Deixe vazio para disparar para <b style={{color:C.muted}}>todos os contatos ativos</b>.</p>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:10}}>
+              {form.target_tags.map(t=>(
+                <span key={t} style={{background:`${C.primary}20`,color:C.primary,padding:'3px 10px',borderRadius:20,fontSize:12,display:'flex',alignItems:'center',gap:6,border:`1px solid ${C.primary}30`}}>
+                  {t}<button onClick={()=>setForm({...form,target_tags:form.target_tags.filter(x=>x!==t)})} style={{background:'none',border:'none',color:C.primary,cursor:'pointer',padding:0,fontSize:14,lineHeight:1}}>×</button>
+                </span>
+              ))}
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <input placeholder="Tag... (Enter)" value={tagInput} onChange={e=>setTagInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&(e.preventDefault(),addTag())}
+                style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'9px 12px',color:C.text,fontSize:13,outline:'none'}} />
+              <Btn size="sm" variant="secondary" onClick={addTag}>+ Add</Btn>
+            </div>
+          </div>
+          <div style={{background:`${C.warning}12`,border:`1px solid ${C.warning}30`,borderRadius:12,padding:14,fontSize:12,color:C.warning,display:'flex',gap:10,alignItems:'flex-start'}}>
+            <span style={{fontSize:16,flexShrink:0}}>⚠️</span>
+            <span>Mensagens enviadas com <b>delay de 2–5 segundos</b> entre cada envio para evitar bloqueio do WhatsApp.</span>
+          </div>
+          <div style={{display:'flex',gap:12,justifyContent:'flex-end',borderTop:`1px solid ${C.border}`,paddingTop:20,marginTop:4}}>
+            <Btn variant="outline" onClick={()=>setShowCreate(false)}>Cancelar</Btn>
+            <Btn onClick={handleCreate}>✨ Criar Campanha</Btn>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+
+function Settings() {
+  const [config, setConfig] = useState(null);
+  const [debugData, setDebugData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{ fetch('/api/whatsapp/config').then(r=>r.json()).then(d=>{ setConfig(d); setLoading(false); }).catch(()=>setLoading(false)); },[]);
+
+  const copy=(text,label)=>navigator.clipboard.writeText(text).then(()=>toast.success(`${label} copiado!`));
+  const testWebhook=async()=>{ try{ await fetch('/api/whatsapp/test-webhook',{method:'POST'}); toast.success('Mensagem de teste enviada!'); }catch{ toast.error('Erro ao testar'); } };
+  const simulateInbound=async()=>{
+    try {
+      await fetch('/webhook/evolution',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({event:"messages.upsert",instance:config?.instance||'default',data:{messages:[{key:{remoteJid:"5511988887777@s.whatsapp.net",fromMe:false,id:"SIM_"+Date.now()},pushName:"Lead Teste",message:{conversation:"Olá! Mensagem de teste."},messageTimestamp:Math.floor(Date.now()/1000)}]}})});
+      toast.success('Simulação enviada! Verifique em Conversas.');
+    } catch { toast.error('Erro na simulação'); }
+  };
+  const setupWebhook=async()=>{
+    try {
+      const r=await fetch('/api/whatsapp/setup-webhook',{method:'POST'});
+      const d=await r.json();
+      if(d.success) toast.success('Webhook configurado na Evolution API!');
+      else throw new Error(d.error);
+    } catch(err){ toast.error('Erro: '+err.message); }
+  };
+  const saveConfig=async()=>{
+    try {
+      const r=await fetch('/api/whatsapp/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+      const d=await r.json();
+      if(d.success) toast.success('Configurações salvas!');
+    } catch { toast.error('Erro ao salvar'); }
+  };
+  const loadDebug=async()=>{
+    try { const r=await fetch('/api/debug/db'); const d=await r.json(); setDebugData(d); toast.success('Debug carregado!'); }
+    catch { toast.error('Erro (disponível apenas em modo dev)'); }
+  };
+
+  if(loading) return <div style={{padding:20,color:C.dim}}>Carregando...</div>;
+
+  const Section=({title,icon,children})=>(
+    <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:18,overflow:'hidden',marginBottom:20}}>
+      <div style={{padding:'18px 24px',borderBottom:`1px solid ${C.border}`,display:'flex',alignItems:'center',gap:10}}>
+        <span style={{fontSize:20}}>{icon}</span>
+        <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>{title}</h3>
+      </div>
+      <div style={{padding:24}}>{children}</div>
+    </div>
+  );
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',maxWidth:740}}>
+      <div style={{marginBottom:28}}>
+        <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Configurações</h2>
+        <p style={{color:C.dim,fontSize:14}}>Gerencie a integração com WhatsApp e Evolution API.</p>
+      </div>
+
+      <Section title="Integração Evolution API" icon="🔗">
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>URL do Webhook (configure na Evolution API)</label>
+            <div style={{display:'flex',gap:8}}>
+              <input readOnly value={config?.webhook_url||''} style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'11px 14px',color:C.primary,fontSize:13,fontWeight:600,outline:'none',fontFamily:'monospace'}} />
+              <Btn size="sm" variant="secondary" onClick={()=>copy(config?.webhook_url,'URL')}>Copiar</Btn>
+            </div>
+            <p style={{fontSize:11,color:C.dim,marginTop:6}}>Cole esta URL em <b style={{color:C.muted}}>Configurations → Webhook</b> no painel da Evolution API.</p>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+            <FocusInput label="Instância" value={config?.instance||''} onChange={e=>setConfig({...config,instance:e.target.value})} placeholder="NomeDaInstancia" />
+            <FocusInput label="API URL" value={config?.api_url||''} onChange={e=>setConfig({...config,api_url:e.target.value})} placeholder="https://..." />
+          </div>
+          <FocusInput label="API Key" type="password" value={config?.api_key||''} onChange={e=>setConfig({...config,api_key:e.target.value})} placeholder="Sua chave de API" />
+          <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
+            <Btn variant="outline" size="sm" onClick={setupWebhook}>🔧 Configurar Webhook Auto</Btn>
+            <Btn size="sm" onClick={saveConfig}>💾 Salvar</Btn>
+          </div>
+          {config?.forward_url&&(
+            <div style={{background:`${C.warning}10`,border:`1px solid ${C.warning}25`,borderRadius:10,padding:14}}>
+              <div style={{fontSize:12,color:C.warning,fontWeight:700,marginBottom:4}}>Forward Webhook Ativo</div>
+              <div style={{fontSize:12,color:C.muted,fontFamily:'monospace'}}>{config.forward_url}</div>
+            </div>
+          )}
+        </div>
+      </Section>
+
+      <Section title="Integração n8n" icon="🤖">
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <p style={{fontSize:13,color:C.muted,lineHeight:1.6}}>Configure o n8n para enviar mensagens a este CRM usando o endpoint abaixo.</p>
+          <div>
+            <label style={{display:'block',color:C.dim,fontSize:12,marginBottom:6}}>Endpoint HTTP POST:</label>
+            <div style={{display:'flex',gap:8}}>
+              <code style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'10px 14px',color:C.success,fontSize:12,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontFamily:'monospace'}}>{config?.n8n_url}</code>
+              <Btn size="sm" variant="secondary" onClick={()=>copy(config?.n8n_url,'URL n8n')}>Copiar</Btn>
+            </div>
+          </div>
+          <div style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'12px 16px'}}>
+            <div style={{fontSize:11,color:C.dim,fontWeight:700,marginBottom:6,textTransform:'uppercase'}}>Headers obrigatórios:</div>
+            <code style={{fontSize:12,color:C.muted,fontFamily:'monospace',lineHeight:2}}>Accept: application/json<br/>X-N8N-AUTH: viga-sales-crm</code>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Ferramentas de Teste" icon="🧪">
+        <div style={{display:'flex',gap:12,flexWrap:'wrap',marginBottom:debugData?20:0}}>
+          <Btn variant="outline" onClick={testWebhook}>🧪 Testar Webhook</Btn>
+          <Btn variant="outline" onClick={simulateInbound}>📥 Simular Mensagem</Btn>
+          <Btn variant="secondary" onClick={loadDebug}>🔍 Debug (dev)</Btn>
+        </div>
+        {debugData&&(
+          <div style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:16,maxHeight:360,overflow:'auto'}}>
+            <div style={{fontSize:12,color:C.primary,fontWeight:700,marginBottom:10}}>Últimos Webhooks:</div>
+            {(debugData.webhookLogs||[]).length>0
+              ? debugData.webhookLogs.map((l,i)=><div key={i} style={{marginBottom:8,paddingBottom:8,borderBottom:`1px solid ${C.border}`,fontSize:11}}><div style={{color:C.warning}}>[{l.timestamp}] {l.event}</div><div style={{color:C.muted,marginTop:2}}>{l.summary}</div></div>)
+              : <p style={{color:C.dim,fontSize:12}}>Nenhum webhook recebido ainda.</p>}
+            <div style={{fontSize:12,color:C.primary,fontWeight:700,margin:'16px 0 10px'}}>Últimas Mensagens:</div>
+            {(debugData.messages||[]).map(m=><div key={m.id} style={{marginBottom:8,paddingBottom:8,borderBottom:`1px solid ${C.border}`,fontSize:11}}><div style={{color:m.direction==='inbound'?C.success:C.primary}}>[{m.direction}] {m.timestamp}</div><div style={{color:C.text}}>{m.content}</div></div>)}
+            {(debugData.messages||[]).length===0&&<p style={{color:C.dim,fontSize:12}}>Nenhuma mensagem no banco.</p>}
+          </div>
+        )}
+      </Section>
+
+      <div style={{background:`${C.warning}10`,border:`1px solid ${C.warning}25`,borderRadius:14,padding:16,display:'flex',gap:12}}>
+        <span style={{fontSize:20}}>💡</span>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:C.warning,marginBottom:4}}>Dica de Configuração</div>
+          <p style={{fontSize:13,color:C.muted,lineHeight:1.6}}>Ative os eventos <b style={{color:C.muted}}>MESSAGES_UPSERT</b> e <b style={{color:C.muted}}>MESSAGES_UPDATE</b> na aba Webhook da sua Evolution API para receber mensagens em tempo real.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App Shell ────────────────────────────────────────────────────────────────
+
+const NAV = [
+  { id:'dashboard',     label:'Dashboard',     icon:'📊' },
+  { id:'contacts',      label:'Contatos',       icon:'👥' },
+  { id:'conversations', label:'Conversas',      icon:'💬' },
+  { id:'pipeline',      label:'Pipeline',       icon:'📈' },
+  { id:'broadcasts',    label:'Disparos',       icon:'📢' },
+  { id:'settings',      label:'Configurações',  icon:'⚙️' },
+];
+
+export default function App() {
+  const [page, setPage] = useState('dashboard');
+  const [wpState, setWpState] = useState('checking');
+  const [initialConv, setInitialConv] = useState(null);
+  const [unread, setUnread] = useState(0);
+
+  useEffect(()=>{
+    const h=(e)=>{ setPage(e.detail.tab); if(e.detail.activeConv) setInitialConv(e.detail.activeConv); };
+    window.addEventListener('switchTab',h);
+    return ()=>window.removeEventListener('switchTab',h);
+  },[]);
+
+  useEffect(()=>{
+    fetch('/api/whatsapp/status').then(r=>r.json()).then(d=>setWpState(d?.instance?.state||'disconnected')).catch(()=>setWpState('error'));
+  },[]);
+
+  useEffect(()=>{
+    const h=({state})=>setWpState(state);
+    socket.on('connection_update',h);
+    return ()=>socket.off('connection_update',h);
+  },[]);
+
+  useEffect(()=>{
+    const h=(data)=>{ if(page!=='conversations'&&data.message?.direction==='inbound') setUnread(n=>n+1); };
+    socket.on('new_message',h);
+    return ()=>socket.off('new_message',h);
+  },[page]);
+
+  const wpColor=wpState==='open'?C.success:wpState==='checking'?C.warning:C.danger;
+  const wpLabel=wpState==='open'?'Conectado':wpState==='checking'?'Verificando...':'Desconectado';
+
+  return (
+    <>
+      <style>{`
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:${C.bg};font-family:'Inter',system-ui,-apple-system,sans-serif;color:${C.text};}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        ::-webkit-scrollbar{width:5px;height:5px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
+        ::-webkit-scrollbar-thumb:hover{background:#384060;}
+        @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+      `}</style>
+
+      <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+
+        {/* ── Sidebar ── */}
+        <div style={{width:252,background:C.surface,borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',flexShrink:0}}>
+          <div style={{padding:'22px 18px',borderBottom:`1px solid ${C.border}`}}>
+            <div style={{display:'flex',alignItems:'center',gap:12}}>
+              <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,boxShadow:`0 4px 16px ${C.primary}50`}}>🚀</div>
+              <div>
+                <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
+                <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
+              </div>
+            </div>
+          </div>
+
+          <nav style={{flex:1,padding:'14px 10px',display:'flex',flexDirection:'column',gap:2,overflowY:'auto'}}>
+            {NAV.map(p=>{
+              const active=page===p.id;
+              return (
+                <div key={p.id} onClick={()=>{ setPage(p.id); setInitialConv(null); if(p.id==='conversations') setUnread(0); }} style={{
+                  display:'flex',alignItems:'center',gap:10,padding:'10px 14px',borderRadius:12,
+                  cursor:'pointer',fontSize:14,fontWeight:active?700:500,
+                  color:active?'#fff':C.muted,
+                  background:active?`linear-gradient(135deg,${C.primary}ee,${C.purple}cc)`:'transparent',
+                  boxShadow:active?`0 4px 12px ${C.primary}40`:'none',
+                  transition:'all 0.18s',position:'relative',
+                }}
+                  onMouseOver={e=>{ if(!active){e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.text;} }}
+                  onMouseOut={e=>{ if(!active){e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.muted;} }}>
+                  <span style={{fontSize:16}}>{p.icon}</span>
+                  {p.label}
+                  {p.id==='conversations'&&unread>0&&(
+                    <span style={{marginLeft:'auto',background:C.success,color:'#fff',borderRadius:10,fontSize:10,fontWeight:700,padding:'2px 7px',minWidth:18,textAlign:'center'}}>
+                      {unread>99?'99+':unread}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </nav>
+
+          <div style={{padding:'14px 10px',borderTop:`1px solid ${C.border}`}}>
+            <div style={{background:C.bg,borderRadius:12,padding:'12px 14px',border:`1px solid ${C.border}`}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
+                <div style={{width:8,height:8,borderRadius:'50%',background:wpColor,boxShadow:`0 0 8px ${wpColor}`}} />
+                <span style={{fontSize:12,fontWeight:700,color:C.text}}>WhatsApp</span>
+              </div>
+              <div style={{fontSize:11,color:wpColor,fontWeight:600}}>{wpLabel}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Main ── */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minHeight:0}}>
+          {page==='dashboard'     &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Dashboard /></div>}
+          {page==='contacts'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Contacts /></div>}
+          {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
+          {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Pipeline /></div>}
+          {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Broadcasts /></div>}
+          {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Settings /></div>}
+        </div>
+      </div>
+
+      <Toaster position="top-right" toastOptions={{style:{background:C.card,color:C.text,border:`1px solid ${C.border}`,fontSize:14,borderRadius:12}}} />
+    </>
+  );
+}

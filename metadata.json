@@ -1,0 +1,5 @@
+{
+  "name": "Viga Sales",
+  "description": "CRM completo com integração ao WhatsApp via Evolution API, pipeline de vendas e disparos em massa.",
+  "requestFramePermissions": []
+}

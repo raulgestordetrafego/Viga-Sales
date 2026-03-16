@@ -1,0 +1,32 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente (NUNCA subir para o GitHub)
+.env
+.env.local
+.env.production
+
+# Banco de dados local
+db/
+*.sqlite
+*.sqlite3
+*.db
+
+# Build do frontend
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# PM2
+.pm2/
