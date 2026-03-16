@@ -6,8 +6,8 @@ node_modules/
 .env.local
 .env.production
 
-# Banco de dados local
-db/
+# Banco de dados local (apenas o diretório raiz /db, não server/db)
+/db/
 *.sqlite
 *.sqlite3
 *.db
