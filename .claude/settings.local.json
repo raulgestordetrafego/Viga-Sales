@@ -4,7 +4,8 @@
       "Bash(npm install)",
       "Bash(npm install --force)",
       "Bash(npm cache clean --force)",
-      "Bash(npm install --cache /tmp/npm-cache)"
+      "Bash(npm install --cache /tmp/npm-cache)",
+      "Bash(ssh root@187.77.235.195 \"docker logs evolution-evolution-1 2>&1 | grep -E ''version|connect|error|QR|pairing|disconnect|close|baileys'' -i | tail -30\")"
     ]
   }
 }
