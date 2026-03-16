@@ -2,8 +2,13 @@ services:
   viga-sales:
     build: .
     restart: always
-    ports:
-      - "3000:3000"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`)
+      - traefik.http.routers.vigasales.tls=true
+      - traefik.http.routers.vigasales.entrypoints=web,websecure
+      - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
+      - traefik.http.services.vigasales.loadbalancer.server.port=3000
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -15,6 +20,14 @@ services:
       - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
     volumes:
       - viga-sales-db:/app/db
+    networks:
+      - default
+      - n8n_traefik
+
+networks:
+  n8n_traefik:
+    external: true
+    name: n8n_default
 
 volumes:
   viga-sales-db:
