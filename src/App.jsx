@@ -1140,7 +1140,7 @@ function Conversations({ initialContact }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [winW, setWinW] = useState(window.innerWidth);
-  const isMobile = winW < 768;
+  const isMobile = winW < 600;
   const msgEndRef = useRef(null);
 
   useEffect(()=>{
