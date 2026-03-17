@@ -687,7 +687,7 @@ function FollowUps() {
     try {
       const r = await fetch('/api/reminders', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contactId: contact.id, phone: contact.phone, message: card.msg, scheduledAt: new Date().toISOString() }),
+        body: JSON.stringify({ contactId: contact.id, phone: contact.phone, message: card.msg, sendNow: true }),
       });
       if (!r.ok) throw new Error(await r.text());
       toast.success(`✅ Enviado para ${contact.name}!`);

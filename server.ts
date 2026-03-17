@@ -224,12 +224,29 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
 
   app.post("/api/reminders", async (req: any, res) => {
     try {
-      const { contactId, phone, message, scheduledAt } = req.body;
-      if (!phone || !message || !scheduledAt) return res.status(400).json({ error: 'phone, message e scheduledAt são obrigatórios' });
+      const { contactId, phone, message, scheduledAt, sendNow } = req.body;
+      if (!phone || !message) return res.status(400).json({ error: 'phone e message são obrigatórios' });
       const id = uuidv4();
+      const schedAt = scheduledAt || new Date().toISOString();
+
+      if (sendNow || new Date(schedAt) <= new Date()) {
+        // Envia imediatamente
+        try {
+          await evolutionApi.sendTextMessage(phone, message);
+          await run(`INSERT INTO reminders (id, contact_id, phone, message, scheduled_at, status, sent_at) VALUES (?, ?, ?, ?, ?, 'sent', datetime('now'))`,
+            [id, contactId || null, phone, message, schedAt]);
+          return res.json({ ok: true, id, sent: true });
+        } catch (e: any) {
+          console.error('[Reminder] Falha ao enviar imediatamente:', e.message);
+          await run(`INSERT INTO reminders (id, contact_id, phone, message, scheduled_at, status) VALUES (?, ?, ?, ?, ?, 'failed')`,
+            [id, contactId || null, phone, message, schedAt]);
+          return res.status(500).json({ error: 'Falha ao enviar pelo WhatsApp: ' + e.message });
+        }
+      }
+
       await run(`INSERT INTO reminders (id, contact_id, phone, message, scheduled_at, status) VALUES (?, ?, ?, ?, ?, 'pending')`,
-        [id, contactId || null, phone, message, scheduledAt]);
-      res.json({ ok: true, id });
+        [id, contactId || null, phone, message, schedAt]);
+      res.json({ ok: true, id, sent: false });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
