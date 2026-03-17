@@ -1141,6 +1141,10 @@ function Conversations({ initialContact }) {
   const [sending, setSending] = useState(false);
   const [winW, setWinW] = useState(window.innerWidth);
   const [contactDrawerId, setContactDrawerId] = useState(null);
+  const [editContact, setEditContact] = useState(null);
+  const [editForm, setEditForm] = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
+  const [editTags, setEditTags] = useState([]);
+  const [editTagInput, setEditTagInput] = useState('');
   const isMobile = winW < 600;
   const msgEndRef = useRef(null);
   const listScrollRef = useRef(null);
@@ -1351,10 +1355,41 @@ function Conversations({ initialContact }) {
       <ContactDrawer
         contactId={contactDrawerId}
         onClose={()=>setContactDrawerId(null)}
-        onEdit={()=>setContactDrawerId(null)}
+        onEdit={(c)=>{ setEditContact(c); setEditForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',notes:c.notes||''}); setEditTags(parseTags(c.tags)); setEditTagInput(''); }}
         onDelete={()=>setContactDrawerId(null)}
         onRefreshList={()=>{}}
       />
+    )}
+    {editContact && (
+      <Modal open={!!editContact} onClose={()=>setEditContact(null)} title="Editar Contato" maxWidth={620}>
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+            <FocusInput label="Nome" value={editForm.name} onChange={e=>setEditForm({...editForm,name:e.target.value})} required autoFocus />
+            <FocusInput label="Telefone" value={editForm.phone} onChange={e=>setEditForm({...editForm,phone:e.target.value})} required />
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+            <FocusInput label="E-mail" type="email" value={editForm.email} onChange={e=>setEditForm({...editForm,email:e.target.value})} />
+            <FocusInput label="Empresa" value={editForm.company} onChange={e=>setEditForm({...editForm,company:e.target.value})} />
+          </div>
+          <FocusInput label="Valor no Pipeline (R$)" value={editForm.pipeline_value} onChange={e=>setEditForm({...editForm,pipeline_value:e.target.value})} />
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>Tags</label>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:8}}>
+              {editTags.map(t=><span key={t} style={{background:`${C.primary}20`,color:C.primary,padding:'3px 10px',borderRadius:20,fontSize:12,display:'flex',alignItems:'center',gap:6,border:`1px solid ${C.primary}30`}}>{t}<button onClick={()=>setEditTags(editTags.filter(x=>x!==t))} style={{background:'none',border:'none',color:C.primary,cursor:'pointer',fontSize:14,lineHeight:1,padding:0}}>×</button></span>)}
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <input placeholder="Nova tag..." value={editTagInput} onChange={e=>setEditTagInput(e.target.value)} onKeyDown={e=>{ if(e.key==='Enter'){ e.preventDefault(); const t=editTagInput.trim(); if(t&&!editTags.includes(t)) setEditTags([...editTags,t]); setEditTagInput(''); }}}
+                style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'9px 12px',color:C.text,fontSize:13,outline:'none'}} />
+              <Btn size="sm" variant="secondary" onClick={()=>{ const t=editTagInput.trim(); if(t&&!editTags.includes(t)) setEditTags([...editTags,t]); setEditTagInput(''); }}>+ Add</Btn>
+            </div>
+          </div>
+          <FocusInput label="Notas" value={editForm.notes} onChange={e=>setEditForm({...editForm,notes:e.target.value})} textarea rows={3} />
+          <div style={{display:'flex',gap:12,justifyContent:'flex-end',borderTop:`1px solid ${C.border}`,paddingTop:20,marginTop:4}}>
+            <Btn variant="outline" onClick={()=>setEditContact(null)}>Cancelar</Btn>
+            <Btn onClick={async()=>{ try{ await contactsApi.update(editContact.id,{...editForm,tags:editTags,pipeline_value:Number(editForm.pipeline_value)||0}); toast.success('Contato atualizado!'); setEditContact(null); setContactDrawerId(editContact.id); }catch(e){ toast.error('Erro ao salvar'); }}}>💾 Salvar Alterações</Btn>
+          </div>
+        </div>
+      </Modal>
     )}
     </>
   );
