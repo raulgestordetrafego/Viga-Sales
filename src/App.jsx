@@ -402,6 +402,8 @@ function Dashboard() {
 
 // ─── Contacts ────────────────────────────────────────────────────────────────
 
+const parseTags = (t) => { try { if (Array.isArray(t)) return t; if (!t) return []; return JSON.parse(t); } catch { return []; } };
+
 function Contacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -428,7 +430,7 @@ function Contacts() {
   const openEdit = (c)=>{
     setEditing(c);
     setForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',notes:c.notes||''});
-    setTags(Array.isArray(c.tags)?c.tags:[]); setTagInput(''); setShowModal(true);
+    setTags(parseTags(c.tags)); setTagInput(''); setShowModal(true);
   };
 
   const handleSave = async ()=>{
@@ -507,8 +509,8 @@ function Contacts() {
                     <td style={{padding:'14px 16px',color:c.pipeline_value>0?C.success:C.dim,fontWeight:600,fontSize:13}}>{c.pipeline_value>0?fmt(c.pipeline_value):'–'}</td>
                     <td style={{padding:'14px 16px'}}>
                       <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-                        {(c.tags||[]).slice(0,2).map(t=><Badge key={t} color={C.primary}>{t}</Badge>)}
-                        {(c.tags||[]).length>2&&<Badge color={C.dim}>+{c.tags.length-2}</Badge>}
+                        {parseTags(c.tags).slice(0,2).map(t=><Badge key={t} color={C.primary}>{t}</Badge>)}
+                        {parseTags(c.tags).length>2&&<Badge color={C.dim}>+{parseTags(c.tags).length-2}</Badge>}
                       </div>
                     </td>
                     <td style={{padding:'14px 16px',color:C.dim,fontSize:12,whiteSpace:'nowrap'}}>{fmtDate(c.last_interaction)}</td>
