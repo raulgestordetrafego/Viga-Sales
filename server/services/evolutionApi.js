@@ -190,6 +190,14 @@ export async function getContactInfo(phone) {
   return res.data;
 }
 
+export async function getBase64FromMediaMessage(rawMsg) {
+  const instance = getInstance();
+  const res = await getApi().post(`/chat/getBase64FromMediaMessage/${instance}`, {
+    message: { key: rawMsg.key, message: rawMsg.message },
+  });
+  return res.data; // { base64: "...", mimetype: "audio/ogg; codecs=opus", ... }
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 export function formatPhone(phone) {
@@ -260,6 +268,18 @@ export function parseIncomingWebhook(payload) {
       state: connData.state || connData.status,
       statusReason: connData.statusReason,
     };
+  }
+
+  if (event.includes('contacts.upsert') || event.includes('contacts_upsert')) {
+    const list = Array.isArray(data) ? data : [data];
+    const contacts = list.map(c => ({
+      phone: (c.id || c.remoteJid || '').split('@')[0],
+      name: c.pushName || c.name || c.notify || null,
+    })).filter(c => c.phone && c.name);
+    if (contacts.length > 0) {
+      console.log(`[contacts.upsert] ${contacts.length} contato(s) recebidos`);
+      return { event: 'contacts_upsert', contacts };
+    }
   }
 
   console.log("Ignored webhook event type:", event);
@@ -338,6 +358,7 @@ export default {
   fetchChats,
   fetchContacts,
   getContactInfo,
+  getBase64FromMediaMessage,
   parseIncomingWebhook,
   formatPhone,
 };

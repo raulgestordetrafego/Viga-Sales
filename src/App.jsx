@@ -404,15 +404,224 @@ function Dashboard() {
 
 const parseTags = (t) => { try { if (Array.isArray(t)) return t; if (!t) return []; return JSON.parse(t); } catch { return []; } };
 
+const ACTIVITY_ICONS = { call:'📞', email:'✉️', meeting:'🤝', note:'📝', task:'✅', whatsapp:'💬' };
+
+function InfoField({ label, value, icon }) {
+  if (!value) return null;
+  return (
+    <div style={{ background:'#ffffff06', borderRadius:10, padding:'10px 13px', border:`1px solid ${C.border}` }}>
+      <div style={{ fontSize:10, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:4 }}>{icon} {label}</div>
+      <div style={{ fontSize:13, color:C.text, fontWeight:500, wordBreak:'break-word' }}>{value}</div>
+    </div>
+  );
+}
+
+function DrawerSection({ title, icon, action, children }) {
+  return (
+    <div>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+        <div style={{ fontSize:12, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'.08em' }}>{icon} {title}</div>
+        {action}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversation, onRefreshList }) {
+  const [contact, setContact]           = useState(null);
+  const [loading, setLoading]           = useState(true);
+  const [notes, setNotes]               = useState('');
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [addingAct, setAddingAct]       = useState(false);
+  const [actForm, setActForm]           = useState({ type:'note', title:'', description:'' });
+  const [savingNotes, setSavingNotes]   = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const d = await contactsApi.get(contactId); setContact(d); setNotes(d.notes || ''); }
+    catch { toast.error('Erro ao carregar contato'); }
+    setLoading(false);
+  }, [contactId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    const h = (e) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const handleStageChange = async (stage) => {
+    try { await contactsApi.setStage(contactId, stage); setContact(p => ({ ...p, pipeline_stage: stage })); }
+    catch { toast.error('Erro ao atualizar etapa'); }
+  };
+
+  const handleSaveNotes = async () => {
+    setSavingNotes(true);
+    try {
+      await contactsApi.update(contactId, { name: contact.name, phone: contact.phone, email: contact.email, company: contact.company, tags: parseTags(contact.tags), pipeline_value: contact.pipeline_value, notes });
+      setContact(p => ({ ...p, notes })); setEditingNotes(false); toast.success('Notas salvas!');
+    } catch { toast.error('Erro ao salvar notas'); }
+    setSavingNotes(false);
+  };
+
+  const handleAddActivity = async () => {
+    if (!actForm.title.trim()) return toast.error('Título é obrigatório');
+    try {
+      await contactsApi.addActivity(contactId, actForm);
+      setActForm({ type:'note', title:'', description:'' }); setAddingAct(false);
+      load(); toast.success('Atividade adicionada!');
+    } catch { toast.error('Erro ao adicionar atividade'); }
+  };
+
+  const handleDelete = () => { onClose(); onDelete(contactId); };
+
+  const inputStyle = { width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'8px 12px', color:C.text, fontSize:13, outline:'none', fontFamily:'inherit', boxSizing:'border-box' };
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.55)', zIndex:800, backdropFilter:'blur(2px)' }} />
+      <div style={{ position:'fixed', top:0, right:0, bottom:0, width:580, background:C.card, borderLeft:`1px solid ${C.border}`, zIndex:801, display:'flex', flexDirection:'column', boxShadow:'-12px 0 40px rgba(0,0,0,0.5)', animation:'slideInRight .2s ease-out' }}>
+        {loading ? (
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', flex:1, color:C.dim, fontSize:14 }}>Carregando ficha...</div>
+        ) : !contact ? null : (
+          <>
+            {/* ── Header ── */}
+            <div style={{ padding:'22px 24px 18px', borderBottom:`1px solid ${C.border}`, background:C.surface, flexShrink:0 }}>
+              <div style={{ display:'flex', alignItems:'flex-start', gap:16 }}>
+                <Avatar name={contact.name} size={58} />
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:20, fontWeight:800, color:C.text, marginBottom:3 }}>{contact.name}</div>
+                  <div style={{ fontSize:13, color:C.muted, marginBottom:8 }}>{contact.company || '–'} {contact.email ? `· ${contact.email}` : ''}</div>
+                  <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
+                    <Badge color={STAGE_COLORS[contact.pipeline_stage]||C.primary}>{STAGE_LABELS[contact.pipeline_stage]||contact.pipeline_stage}</Badge>
+                    {contact.pipeline_value > 0 && <Badge color={C.success}>{fmt(contact.pipeline_value)}</Badge>}
+                    {parseTags(contact.tags).slice(0,3).map(t => <Badge key={t} color={C.purple}>{t}</Badge>)}
+                  </div>
+                </div>
+                <div style={{ display:'flex', gap:6, flexShrink:0 }}>
+                  <button onClick={() => onOpenConversation(contact)} title="Conversa WhatsApp" style={{ background:`${C.success}18`, border:`1px solid ${C.success}35`, color:C.success, borderRadius:8, padding:'7px 10px', cursor:'pointer', fontSize:17 }}>💬</button>
+                  <button onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }} title="Editar contato" style={{ background:`${C.primary}18`, border:`1px solid ${C.primary}35`, color:C.primary, borderRadius:8, padding:'7px 10px', cursor:'pointer', fontSize:17 }}>✏️</button>
+                  <button onClick={onClose} style={{ background:C.border, border:'none', color:C.muted, borderRadius:8, padding:'7px 12px', cursor:'pointer', fontSize:14, fontWeight:700 }}>✕</button>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Scrollable body ── */}
+            <div style={{ flex:1, overflowY:'auto', padding:'20px 24px', display:'flex', flexDirection:'column', gap:22 }}>
+
+              {/* Informações */}
+              <DrawerSection title="Informações" icon="📋">
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                  <InfoField label="Telefone"  icon="📱" value={contact.phone} />
+                  <InfoField label="E-mail"    icon="✉️" value={contact.email} />
+                  <InfoField label="Empresa"   icon="🏢" value={contact.company} />
+                  <InfoField label="Status"    icon="🔘" value={contact.status || 'Ativo'} />
+                  <InfoField label="Última interação" icon="🕐" value={fmtDate(contact.last_interaction)} />
+                  <InfoField label="Cadastrado em"    icon="📅" value={fmtDate(contact.created_at)} />
+                </div>
+              </DrawerSection>
+
+              {/* Pipeline */}
+              <DrawerSection title="Pipeline" icon="📈">
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, alignItems:'center' }}>
+                  <div>
+                    <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:7 }}>Etapa</div>
+                    <select value={contact.pipeline_stage||'stage_lead'} onChange={e => handleStageChange(e.target.value)}
+                      style={{ width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'9px 12px', color:C.text, fontSize:13, outline:'none', fontFamily:'inherit' }}>
+                      {Object.entries(STAGE_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:7 }}>Valor no pipeline</div>
+                    <div style={{ fontSize:26, fontWeight:800, color: contact.pipeline_value > 0 ? C.success : C.dim }}>{contact.pipeline_value > 0 ? fmt(contact.pipeline_value) : '–'}</div>
+                  </div>
+                </div>
+              </DrawerSection>
+
+              {/* Notas */}
+              <DrawerSection title="Notas" icon="📝" action={
+                editingNotes
+                  ? <button onClick={handleSaveNotes} disabled={savingNotes} style={{ background:`${C.success}18`, border:`1px solid ${C.success}35`, color:C.success, borderRadius:7, padding:'4px 12px', cursor:'pointer', fontSize:12, fontWeight:700 }}>{savingNotes ? '...' : '💾 Salvar'}</button>
+                  : <button onClick={() => setEditingNotes(true)} style={{ background:`${C.primary}18`, border:`1px solid ${C.primary}35`, color:C.primary, borderRadius:7, padding:'4px 12px', cursor:'pointer', fontSize:12, fontWeight:700 }}>✏️ Editar</button>
+              }>
+                {editingNotes
+                  ? <textarea value={notes} onChange={e => setNotes(e.target.value)} autoFocus rows={4}
+                      style={{ ...inputStyle, border:`1px solid ${C.primary}`, resize:'vertical', minHeight:90, boxShadow:`0 0 0 2px ${C.primary}22` }} />
+                  : <div style={{ fontSize:13, color: notes ? C.muted : C.dim, lineHeight:1.7, whiteSpace:'pre-wrap', padding:'4px 0', minHeight:36 }}>{notes || 'Sem notas. Clique em Editar para adicionar.'}</div>}
+              </DrawerSection>
+
+              {/* Atividades */}
+              <DrawerSection title={`Atividades (${(contact.activities||[]).length})`} icon="⚡" action={
+                <button onClick={() => setAddingAct(!addingAct)} style={{ background:`${C.primary}18`, border:`1px solid ${C.primary}35`, color:C.primary, borderRadius:7, padding:'4px 12px', cursor:'pointer', fontSize:12, fontWeight:700 }}>＋ Registrar</button>
+              }>
+                {addingAct && (
+                  <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:16, marginBottom:14 }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'130px 1fr', gap:8, marginBottom:8 }}>
+                      <select value={actForm.type} onChange={e => setActForm({...actForm, type:e.target.value})}
+                        style={{ ...inputStyle, padding:'8px 10px', fontSize:12 }}>
+                        <option value="note">📝 Nota</option>
+                        <option value="call">📞 Ligação</option>
+                        <option value="meeting">🤝 Reunião</option>
+                        <option value="email">✉️ E-mail</option>
+                        <option value="task">✅ Tarefa</option>
+                        <option value="whatsapp">💬 WhatsApp</option>
+                      </select>
+                      <input value={actForm.title} onChange={e => setActForm({...actForm, title:e.target.value})}
+                        onKeyDown={e => e.key==='Enter' && handleAddActivity()}
+                        placeholder="Título..." autoFocus style={inputStyle} />
+                    </div>
+                    <textarea value={actForm.description} onChange={e => setActForm({...actForm, description:e.target.value})}
+                      placeholder="Descrição opcional..." rows={2}
+                      style={{ ...inputStyle, resize:'none', marginBottom:10, fontSize:12 }} />
+                    <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+                      <button onClick={() => setAddingAct(false)} style={{ background:'transparent', border:`1px solid ${C.border}`, color:C.muted, borderRadius:7, padding:'6px 14px', cursor:'pointer', fontSize:12 }}>Cancelar</button>
+                      <button onClick={handleAddActivity} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:7, padding:'6px 16px', cursor:'pointer', fontSize:12, fontWeight:700, boxShadow:`0 3px 10px ${C.primary}40` }}>Salvar</button>
+                    </div>
+                  </div>
+                )}
+                {(contact.activities||[]).length === 0 && !addingAct
+                  ? <div style={{ textAlign:'center', padding:'20px 0', color:C.dim, fontSize:13 }}>Nenhuma atividade registrada ainda.</div>
+                  : (contact.activities||[]).map((a, i) => (
+                    <div key={a.id} style={{ display:'flex', gap:12, padding:'11px 0', borderBottom: i < (contact.activities.length-1) ? `1px solid ${C.border}30` : 'none' }}>
+                      <div style={{ width:34, height:34, borderRadius:'50%', background:`${C.primary}15`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, flexShrink:0, border:`1px solid ${C.border}` }}>
+                        {ACTIVITY_ICONS[a.type] || '📝'}
+                      </div>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontSize:13, fontWeight:600, color:C.text, marginBottom:2 }}>{a.title}</div>
+                        {a.description && <div style={{ fontSize:12, color:C.muted, lineHeight:1.5, marginBottom:3 }}>{a.description}</div>}
+                        <div style={{ fontSize:11, color:C.dim }}>{fmtDate(a.created_at)}</div>
+                      </div>
+                    </div>
+                  ))
+                }
+              </DrawerSection>
+            </div>
+
+            {/* ── Footer ── */}
+            <div style={{ padding:'14px 24px', borderTop:`1px solid ${C.border}`, display:'flex', gap:10, background:C.surface, flexShrink:0 }}>
+              <Btn variant="danger" size="sm" onClick={handleDelete} style={{ marginRight:'auto' }}>🗑 Excluir</Btn>
+              <Btn variant="secondary" size="sm" onClick={onClose}>Fechar</Btn>
+              <Btn size="sm" onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }}>✏️ Editar contato</Btn>
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 function Contacts() {
-  const [contacts, setContacts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
-  const [tags, setTags] = useState([]);
-  const [tagInput, setTagInput] = useState('');
+  const [contacts, setContacts]     = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [search, setSearch]         = useState('');
+  const [showModal, setShowModal]   = useState(false);
+  const [editing, setEditing]       = useState(null);
+  const [drawerId, setDrawerId]     = useState(null);
+  const [form, setForm]             = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
+  const [tags, setTags]             = useState([]);
+  const [tagInput, setTagInput]     = useState('');
 
   const load = useCallback(async () => {
     try { const d=await contactsApi.list(); setContacts(Array.isArray(d.contacts)?d.contacts:[]); }
@@ -492,9 +701,10 @@ function Contacts() {
               </thead>
               <tbody>
                 {filtered.map(c=>(
-                  <tr key={c.id} style={{borderBottom:`1px solid ${C.border}`,transition:'background 0.12s'}}
+                  <tr key={c.id} style={{borderBottom:`1px solid ${C.border}`,transition:'background 0.12s', cursor:'pointer'}}
                     onMouseOver={e=>e.currentTarget.style.background='#ffffff06'}
-                    onMouseOut={e=>e.currentTarget.style.background=''}>
+                    onMouseOut={e=>e.currentTarget.style.background=''}
+                    onClick={()=>setDrawerId(c.id)}>
                     <td style={{padding:'14px 16px'}}>
                       <div style={{display:'flex',alignItems:'center',gap:12}}>
                         <Avatar name={c.name} size={38} />
@@ -514,7 +724,7 @@ function Contacts() {
                       </div>
                     </td>
                     <td style={{padding:'14px 16px',color:C.dim,fontSize:12,whiteSpace:'nowrap'}}>{fmtDate(c.last_interaction)}</td>
-                    <td style={{padding:'14px 16px',textAlign:'right',whiteSpace:'nowrap'}}>
+                    <td style={{padding:'14px 16px',textAlign:'right',whiteSpace:'nowrap'}} onClick={e=>e.stopPropagation()}>
                       <button title="Abrir conversa" onClick={()=>window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}}))}
                         style={{background:'none',border:'none',cursor:'pointer',color:C.success,fontSize:17,padding:'4px 6px',borderRadius:8}}>💬</button>
                       <button title="Editar" onClick={()=>openEdit(c)}
@@ -529,6 +739,17 @@ function Contacts() {
           </div>
         )}
       </Card>
+
+      {drawerId && (
+        <ContactDrawer
+          contactId={drawerId}
+          onClose={() => setDrawerId(null)}
+          onEdit={(c) => { setDrawerId(null); openEdit(c); }}
+          onDelete={(id) => handleDelete(id)}
+          onOpenConversation={(c) => { setDrawerId(null); window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}})); }}
+          onRefreshList={load}
+        />
+      )}
 
       <Modal open={showModal} onClose={()=>setShowModal(false)} title={editing?'Editar Contato':'Novo Contato'} maxWidth={620}>
         <div style={{display:'flex',flexDirection:'column',gap:16}}>

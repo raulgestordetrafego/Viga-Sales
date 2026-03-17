@@ -15,7 +15,8 @@ import conversationRoutes from "./server/routes/conversations.js";
 import broadcastRoutes from "./server/routes/broadcasts.js";
 import { handleWebhook } from "./server/webhook/handler.js";
 import evolutionApi from "./server/services/evolutionApi.js";
-import { initDb, queryOne, run, query } from "./server/db/database.js";
+import { initDb, queryOne, run, query, hashPwd } from "./server/db/database.js";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -65,7 +66,94 @@ async function startServer() {
     next();
   });
 
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  // sessions: token → { userId, name, email, role }
+  const sessions = new Map<string, { userId: string; name: string; email: string; role: string }>();
+
+  const getToken = (req: any) => (req.headers.authorization || '').replace('Bearer ', '');
+  const getSession = (req: any) => sessions.get(getToken(req));
+
   app.get("/api/ping", (req, res) => res.send("pong"));
+
+  // Login
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) return res.status(400).json({ error: 'Email e senha obrigatórios' });
+      const hash = crypto.createHash('sha256').update(password + 'viga-salt-2024').digest('hex');
+      const user = await queryOne('SELECT * FROM users WHERE email = ? AND password_hash = ?', [email, hash]);
+      if (!user) return res.status(401).json({ error: 'Email ou senha incorretos' });
+      if (user.status === 'pending') return res.status(403).json({ error: 'pending', message: 'Sua conta aguarda aprovação do administrador' });
+      if (user.status === 'suspended') return res.status(403).json({ error: 'suspended', message: 'Sua conta foi suspensa. Contate o administrador.' });
+      const token = uuidv4();
+      sessions.set(token, { userId: user.id, name: user.name, email: user.email, role: user.role });
+      res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Register (self-signup → pending)
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      if (!name || !email || !password) return res.status(400).json({ error: 'Nome, email e senha obrigatórios' });
+      if (password.length < 6) return res.status(400).json({ error: 'Senha deve ter pelo menos 6 caracteres' });
+      const existing = await queryOne('SELECT id FROM users WHERE email = ?', [email]);
+      if (existing) return res.status(409).json({ error: 'Este email já está cadastrado' });
+      const hash = crypto.createHash('sha256').update(password + 'viga-salt-2024').digest('hex');
+      const id = uuidv4();
+      await run(`INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'user', 'pending')`, [id, name, email, hash]);
+      res.json({ ok: true, message: 'Cadastro enviado! Aguarde a aprovação do administrador.' });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Logout
+  app.post("/api/auth/logout", (req, res) => {
+    sessions.delete(getToken(req));
+    res.json({ ok: true });
+  });
+
+  // Verify
+  app.get("/api/auth/verify", (req, res) => {
+    const session = getSession(req);
+    if (session) return res.json({ valid: true, user: session });
+    return res.status(401).json({ valid: false });
+  });
+
+  // Auth middleware (TEMPORARIAMENTE DESATIVADO)
+  app.use('/api', (req: any, res, next) => {
+    next();
+  });
+
+  // ── User management (admin/master) ────────────────────────────────────────
+  app.get("/api/users", async (req: any, res) => {
+    if (!['master','admin'].includes(req.session?.role)) return res.status(403).json({ error: 'Sem permissão' });
+    const users = await query('SELECT id, name, email, role, status, created_at FROM users ORDER BY created_at DESC');
+    res.json(users);
+  });
+
+  app.patch("/api/users/:id/status", async (req: any, res) => {
+    if (!['master','admin'].includes(req.session?.role)) return res.status(403).json({ error: 'Sem permissão' });
+    const { status } = req.body; // active | suspended | pending
+    await run('UPDATE users SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, req.params.id]);
+    res.json({ ok: true });
+  });
+
+  app.patch("/api/users/:id/role", async (req: any, res) => {
+    if (req.session?.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode alterar funções' });
+    const { role } = req.body; // master | admin | user
+    await run('UPDATE users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [role, req.params.id]);
+    res.json({ ok: true });
+  });
+
+  app.delete("/api/users/:id", async (req: any, res) => {
+    if (req.session?.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode remover usuários' });
+    await run('DELETE FROM users WHERE id = ?', [req.params.id]);
+    res.json({ ok: true });
+  });
 
   // DEBUG: View DB Content (somente em desenvolvimento)
   app.get("/api/debug/db", async (req, res) => {
@@ -393,10 +481,22 @@ async function startServer() {
     });
   }
 
-  server.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, "0.0.0.0", async () => {
     const appUrl = process.env.APP_URL || `http://localhost:${PORT}`;
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Expected Webhook URL for Evolution API: ${appUrl}/webhook/evolution`);
+
+    // Auto-register webhook with Evolution API on every startup
+    if (process.env.APP_URL) {
+      try {
+        const webhookUrl = `${process.env.APP_URL}/webhook/evolution`;
+        console.log(`[Startup] Auto-registering webhook: ${webhookUrl}`);
+        const result = await evolutionApi.configureWebhook(webhookUrl);
+        console.log(`[Startup] Webhook registered successfully:`, JSON.stringify(result));
+      } catch (err: any) {
+        console.warn(`[Startup] Webhook auto-register failed (non-fatal):`, err.message);
+      }
+    }
   });
 }
 

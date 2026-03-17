@@ -4,6 +4,23 @@ const api = axios.create({
   baseURL: '/api',
 });
 
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('crm_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  r => r,
+  err => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('crm_token');
+      window.location.reload();
+    }
+    return Promise.reject(err);
+  }
+);
+
 // ─── Contacts ─────────────────────────────────────────────────────────────────
 export const contacts = {
   list:    (params) => api.get('/contacts', { params }).then(r => r.data),

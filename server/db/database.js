@@ -209,6 +209,13 @@ export async function run(sql, params = []) {
   return getDb().run(sql, params);
 }
 
+async function hashPwd(pwd) {
+  const { createHash } = await import('crypto');
+  return createHash('sha256').update(pwd + 'viga-salt-2024').digest('hex');
+}
+
+export { hashPwd };
+
 async function initializeSchema() {
   const db = dbInstance;
   
@@ -303,6 +310,16 @@ async function initializeSchema() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       payload TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT DEFAULT 'user',
+      status TEXT DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 
@@ -334,5 +351,23 @@ async function initializeSchema() {
     } catch (err) {
       // Ignore errors during seeding
     }
+  }
+
+  // Seed master admin
+  try {
+    const masterEmail = process.env.CRM_MASTER_EMAIL || 'raulgestor@gmail';
+    const masterPass  = process.env.CRM_MASTER_PASSWORD || '12345678';
+    const masterHash  = await hashPwd(masterPass);
+    const existing    = await db.get('SELECT id FROM users WHERE email = ?', [masterEmail]);
+    if (!existing) {
+      const { v4: uuidv4 } = await import('uuid');
+      await db.run(
+        `INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'master', 'active')`,
+        [uuidv4(), 'Raul Santos', masterEmail, masterHash]
+      );
+      console.log('[Auth] Master admin criado:', masterEmail);
+    }
+  } catch (err) {
+    console.error('[Auth] Erro ao criar master admin:', err.message);
   }
 }
