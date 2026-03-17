@@ -1221,12 +1221,12 @@ function Conversations({ initialContact }) {
 
       {/* Lista */}
       {showList && (
-        <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',height:'100%'}}>
-          <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720'}}>
+        <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',minHeight:0,overflow:'hidden'}}>
+          <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720',flexShrink:0}}>
             <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
             <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
           </div>
-          <div style={{flex:1,overflowY:'auto'}}>
+          <div style={{flex:1,overflowY:'scroll'}}>
             {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
             {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
             {convs.map(c=>(
