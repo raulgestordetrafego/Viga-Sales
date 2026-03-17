@@ -9,6 +9,7 @@ services:
       - traefik.http.routers.vigasales.entrypoints=web,websecure
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
       - traefik.http.services.vigasales.loadbalancer.server.port=3000
+      - traefik.docker.network=n8n_default
     environment:
       - NODE_ENV=production
       - PORT=3000
