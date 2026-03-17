@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Fundo navy -->
+  <rect width="64" height="64" rx="14" fill="#1A365D"/>
+  <!-- Barra topo -->
+  <rect x="16" y="10" width="32" height="8" rx="2" fill="#2E6DA4"/>
+  <!-- Haste do I -->
+  <rect x="26" y="18" width="12" height="28" rx="1" fill="#2E6DA4"/>
+  <!-- Detalhe laranja (topo da haste = detalhe madeira) -->
+  <rect x="26" y="18" width="12" height="4" rx="1" fill="#8B5E2A"/>
+  <rect x="26" y="22" width="12" height="3" rx="0" fill="#E67E22" opacity="0.9"/>
+  <!-- Barra base -->
+  <rect x="16" y="46" width="32" height="8" rx="2" fill="#2E6DA4"/>
+</svg>

@@ -7,17 +7,18 @@ import TasksModule from './TasksModule';
 // ─── Socket ───────────────────────────────────────────────────────────────────
 const socket = io(window.location.origin);
 
-// ─── Design tokens ───────────────────────────────────────────────────────────
+// ─── Design tokens — Viga Identity ───────────────────────────────────────────
 const C = {
-  bg:      '#0a0d14',
-  surface: '#131720',
-  card:    '#1a1f2e',
-  border:  '#232840',
-  text:    '#e8edf5',
-  muted:   '#8b95b0',
-  dim:     '#505878',
-  primary: '#6366f1',
-  purple:  '#8b5cf6',
+  bg:      '#07101e',          // Fundo principal navy-black
+  surface: '#0c1829',          // Superfícies / painéis
+  card:    '#101f34',          // Cards
+  border:  '#1a3050',          // Bordas navy
+  text:    '#e8edf5',          // Texto principal
+  muted:   '#7a90b0',          // Texto secundário
+  dim:     '#3a5270',          // Texto apagado
+  primary: '#E67E22',          // Laranja Industrial — CTAs / destaques
+  navy:    '#1A365D',          // Azul Marinho — identidade de marca
+  purple:  '#2E6DA4',          // Azul médio (substitui purple)
   success: '#10b981',
   warning: '#f59e0b',
   danger:  '#ef4444',
@@ -27,9 +28,9 @@ const C = {
 
 const STAGE_COLORS = {
   stage_lead:        C.dim,
-  stage_contact:     '#3b82f6',
-  stage_proposal:    C.warning,
-  stage_negotiation: C.purple,
+  stage_contact:     C.purple,
+  stage_proposal:    C.primary,
+  stage_negotiation: C.navy,
   stage_won:         C.success,
   stage_lost:        C.danger,
 };
@@ -84,7 +85,7 @@ function Badge({ children, color = C.primary }) {
 function Btn({ children, variant='primary', size='md', onClick, disabled, type='button', style:xs={} }) {
   const sz = { sm:{padding:'7px 14px',fontSize:12}, md:{padding:'10px 20px',fontSize:14}, lg:{padding:'13px 28px',fontSize:15} };
   const vars = {
-    primary:  { background:`linear-gradient(135deg,${C.primary},${C.purple})`, color:'#fff', boxShadow:`0 4px 15px ${C.primary}45` },
+    primary:  { background:`linear-gradient(135deg,${C.primary},#c0621a)`, color:'#fff', boxShadow:`0 4px 15px ${C.primary}50` },
     secondary:{ background:C.card, color:C.text, border:`1px solid ${C.border}` },
     outline:  { background:'transparent', color:C.muted, border:`1px solid ${C.border}` },
     ghost:    { background:'transparent', color:C.muted, border:'none' },
@@ -1942,7 +1943,23 @@ export default function App() {
       {/* Header */}
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
-          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,boxShadow:`0 4px 16px ${C.primary}50`}}>🚀</div>
+          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.navy},#0f2540)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px ${C.navy}80`,border:`2px solid ${C.primary}60`,overflow:'hidden'}}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="11" y="3" width="6" height="22" fill="#1A365D"/>
+              <rect x="11" y="13" width="6" height="3" fill="#8B5E2A"/>
+              <rect x="11" y="16" width="6" height="2" fill="#E67E22" opacity="0.9"/>
+              <rect x="9" y="10" width="10" height="1.5" fill="#1A365D" opacity="0.7"/>
+              <rect x="8" y="21" width="12" height="3" fill="#1A365D"/>
+              <rect x="8" y="4" width="12" height="3" fill="#1A365D"/>
+              <rect x="11" y="3" width="6" height="22" fill="url(#ig)"/>
+              <defs>
+                <linearGradient id="ig" x1="11" y1="3" x2="17" y2="25" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#2E6DA4"/>
+                  <stop offset="100%" stopColor="#1A365D"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
           {!compact && <div>
             <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
             <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
@@ -1972,7 +1989,7 @@ export default function App() {
               padding: compact ? '12px' : '10px 14px',
               borderRadius:12,cursor:'pointer',fontSize:14,fontWeight:active?700:500,
               color:active?'#fff':C.muted,justifyContent:compact?'center':'flex-start',
-              background:active?`linear-gradient(135deg,${C.primary}ee,${C.purple}cc)`:'transparent',
+              background:active?`linear-gradient(135deg,${C.primary}dd,#c0621add)`:'transparent',
               boxShadow:active?`0 4px 12px ${C.primary}40`:'none',
               transition:'all 0.18s',position:'relative',
             }}
@@ -2093,8 +2110,13 @@ export default function App() {
                 ☰
               </button>
               <div style={{display:'flex',alignItems:'center',gap:8}}>
-                <span style={{fontSize:18}}>🚀</span>
-                <span style={{fontSize:16,fontWeight:800,color:C.text}}>Viga Sales</span>
+                <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+                  <rect x="8" y="4" width="12" height="3" fill="#1A365D"/>
+                  <rect x="11" y="7" width="6" height="14" fill="#2E6DA4"/>
+                  <rect x="11" y="13" width="6" height="2.5" fill="#E67E22"/>
+                  <rect x="8" y="21" width="12" height="3" fill="#1A365D"/>
+                </svg>
+                <span style={{fontSize:16,fontWeight:800,color:C.text,fontFamily:"'Archivo',sans-serif"}}>Viga Sales</span>
               </div>
               <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
                 <div style={{width:7,height:7,borderRadius:'50%',background:wpColor,boxShadow:`0 0 6px ${wpColor}`}} />
