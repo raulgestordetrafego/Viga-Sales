@@ -40,6 +40,7 @@ export const conversations = {
   sendMessage: (id, d) => api.post(`/conversations/${id}/messages`, d).then(r => r.data),
   orCreate:    (cId)   => api.get(`/conversations/or-create/${cId}`).then(r => r.data),
   setStatus:   (id, s) => api.patch(`/conversations/${id}/status`, { status: s }).then(r => r.data),
+  markRead:    (id)    => api.put(`/conversations/${id}/read`).then(r => r.data),
 };
 
 // ─── Broadcasts ───────────────────────────────────────────────────────────────

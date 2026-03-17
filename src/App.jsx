@@ -1238,7 +1238,7 @@ function Conversations({ initialContact }) {
             {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
             {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
             {convs.map(c=>(
-              <div key={c.id} onClick={()=>setActive(c)} style={{
+              <div key={c.id} onClick={()=>{ setActive(c); if(c.unread_count>0){ convsApi.markRead(c.id).catch(()=>{}); setConvs(prev=>prev.map(x=>x.id===c.id?{...x,unread_count:0}:x)); } }} style={{
                 padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
                 background:active?.id===c.id?`${C.primary}18`:'transparent',
                 borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',

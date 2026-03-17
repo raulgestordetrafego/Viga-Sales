@@ -143,4 +143,15 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+// PUT /conversations/:id/read — zera unread_count
+router.put('/:id/read', async (req, res) => {
+  try {
+    await run(`UPDATE conversations SET unread_count = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('PUT /conversations/:id/read error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
