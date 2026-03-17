@@ -1,18 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Background navy escuro -->
-  <rect width="64" height="64" rx="14" fill="#07101e"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 72">
+  <!-- Fundo arredondado navy escuro -->
+  <rect width="64" height="72" rx="14" fill="#07101e"/>
 
-  <!-- Cubo laranja no topo -->
-  <!-- Face superior (mais clara) -->
-  <polygon points="32,7 50,16 32,25 14,16" fill="#F5A830"/>
+  <!-- ═══ CUBO LARANJA (dot do "i") ═══ -->
+  <!-- Face superior (topo — mais clara) -->
+  <polygon points="32,6 48,14 32,22 16,14" fill="#F5A830"/>
   <!-- Face frontal esquerda -->
-  <polygon points="14,16 32,25 32,38 14,29" fill="#C07518"/>
-  <!-- Face frontal direita (um tom entre) -->
-  <polygon points="50,16 32,25 32,38 50,29" fill="#D98920"/>
+  <polygon points="16,14 32,22 32,32 16,24" fill="#C07518"/>
+  <!-- Face frontal direita (sombra leve) -->
+  <polygon points="48,14 32,22 32,32 48,24" fill="#D98920"/>
 
-  <!-- Coluna navy abaixo do cubo -->
-  <!-- Face esquerda (frente) -->
-  <polygon points="14,29 32,38 32,58 14,49" fill="#1E4A82"/>
-  <!-- Face direita (lado) -->
-  <polygon points="50,29 32,38 32,58 50,49" fill="#0c2244"/>
+  <!-- ═══ GAP entre cubo e coluna ═══ -->
+
+  <!-- ═══ COLUNA NAVY (corpo do "i") ═══ -->
+  <!-- Face topo da coluna (tampa navy) -->
+  <polygon points="32,38 48,46 32,54 16,46" fill="#2563a0"/>
+  <!-- Face frontal esquerda (navy principal) -->
+  <polygon points="16,46 32,54 32,68 16,60" fill="#1A365D"/>
+  <!-- Face frontal direita (navy escuro, sombra) -->
+  <polygon points="48,46 32,54 32,68 48,60" fill="#0c2244"/>
 </svg>

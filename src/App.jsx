@@ -1944,17 +1944,18 @@ export default function App() {
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
           <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
-            <svg width="30" height="38" viewBox="0 0 36 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Cubo — face superior */}
-              <polygon points="18,2 32,9 18,16 4,9" fill="#F5A830"/>
-              {/* Cubo — face esquerda */}
-              <polygon points="4,9 18,16 18,27 4,20" fill="#C07518"/>
-              {/* Cubo — face direita */}
-              <polygon points="32,9 18,16 18,27 32,20" fill="#D98920"/>
-              {/* Coluna — face esquerda (frente) */}
-              <polygon points="4,20 18,27 18,50 4,43" fill="#1E4A82"/>
-              {/* Coluna — face direita (lado) */}
-              <polygon points="32,20 18,27 18,50 32,43" fill="#0c2244"/>
+            <svg width="26" height="36" viewBox="0 0 48 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Cubo laranja — topo */}
+              <polygon points="24,2 40,10 24,18 8,10" fill="#F5A830"/>
+              <polygon points="8,10 24,18 24,28 8,20" fill="#C07518"/>
+              <polygon points="40,10 24,18 24,28 40,20" fill="#D98920"/>
+              {/* GAP */}
+              {/* Coluna navy — face topo */}
+              <polygon points="24,36 40,44 24,52 8,44" fill="#2563a0"/>
+              {/* Coluna navy — face frente */}
+              <polygon points="8,44 24,52 24,70 8,62" fill="#1A365D"/>
+              {/* Coluna navy — face lado */}
+              <polygon points="40,44 24,52 24,70 40,62" fill="#0c2244"/>
             </svg>
           </div>
           {!compact && <div>
@@ -2107,12 +2108,13 @@ export default function App() {
                 ☰
               </button>
               <div style={{display:'flex',alignItems:'center',gap:8}}>
-                <svg width="18" height="24" viewBox="0 0 36 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
-                  <polygon points="18,2 32,9 18,16 4,9" fill="#F5A830"/>
-                  <polygon points="4,9 18,16 18,27 4,20" fill="#C07518"/>
-                  <polygon points="32,9 18,16 18,27 32,20" fill="#D98920"/>
-                  <polygon points="4,20 18,27 18,50 4,43" fill="#1E4A82"/>
-                  <polygon points="32,20 18,27 18,50 32,43" fill="#0c2244"/>
+                <svg width="16" height="22" viewBox="0 0 48 72" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+                  <polygon points="24,2 40,10 24,18 8,10" fill="#F5A830"/>
+                  <polygon points="8,10 24,18 24,28 8,20" fill="#C07518"/>
+                  <polygon points="40,10 24,18 24,28 40,20" fill="#D98920"/>
+                  <polygon points="24,36 40,44 24,52 8,44" fill="#2563a0"/>
+                  <polygon points="8,44 24,52 24,70 8,62" fill="#1A365D"/>
+                  <polygon points="40,44 24,52 24,70 40,62" fill="#0c2244"/>
                 </svg>
                 <span style={{fontSize:16,fontWeight:800,color:C.text,fontFamily:"'Archivo',sans-serif"}}>Viga Sales</span>
               </div>
