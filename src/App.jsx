@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
 import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, pipeline as pipelineApi } from './api';
+import TasksModule from './TasksModule';
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
 const socket = io(window.location.origin);
@@ -174,6 +175,164 @@ function StatCard({ label, value, icon, color, sub }) {
       <div style={{fontSize:38,fontWeight:800,color:C.text,lineHeight:1}}>{value}</div>
       {sub&&<div style={{fontSize:11,color:C.dim,marginTop:8}}>{sub}</div>}
       <div style={{width:40,height:3,background:`linear-gradient(90deg,${color},${color}60)`,borderRadius:2,marginTop:18}} />
+    </div>
+  );
+}
+
+// ─── Auth Pages ───────────────────────────────────────────────────────────────
+
+function AuthInput({ label, hint, type='text', placeholder, value, onChange, icon, rightEl, autoFocus, required }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+        <label style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:'0.08em'}}>{label}{required&&<span style={{color:C.danger}}> *</span>}</label>
+        {rightEl}
+      </div>
+      <div style={{position:'relative',display:'flex',alignItems:'center'}}>
+        {icon && <span style={{position:'absolute',left:14,fontSize:16,color:focused?C.primary:C.dim,transition:'color 0.2s'}}>{icon}</span>}
+        <input
+          type={type} placeholder={placeholder} value={value} onChange={onChange}
+          autoFocus={autoFocus} required={required}
+          onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}
+          style={{
+            width:'100%',background:C.surface,border:`1.5px solid ${focused?C.primary:C.border}`,
+            borderRadius:12,padding:`12px 14px 12px ${icon?'42px':'14px'}`,color:C.text,fontSize:14,
+            outline:'none',transition:'border-color 0.2s,box-shadow 0.2s',fontFamily:'inherit',
+            boxShadow:focused?`0 0 0 3px ${C.primary}20`:'none',
+          }}
+        />
+      </div>
+      {hint && <p style={{fontSize:11,color:C.dim,marginTop:4}}>{hint}</p>}
+    </div>
+  );
+}
+
+function LoginPage({ onLogin }) {
+  const [view, setView] = useState('login'); // 'login' | 'register' | 'pending'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault(); setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === 'pending') { setView('pending'); setMsg(data.message); return; }
+        throw new Error(data.message || data.error || 'Erro ao fazer login');
+      }
+      localStorage.setItem('crm_token', data.token);
+      localStorage.setItem('crm_user', JSON.stringify(data.user));
+      onLogin(data.user);
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault(); setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao cadastrar');
+      setView('pending'); setMsg(data.message);
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
+  };
+
+  const bg = C.bg;
+
+  if (view === 'pending') return (
+    <div style={{minHeight:'100vh',background:bg,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+      <div style={{width:'100%',maxWidth:420,textAlign:'center'}}>
+        <div style={{width:80,height:80,borderRadius:24,background:`linear-gradient(135deg,${C.warning},#d97706)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:40,margin:'0 auto 24px',boxShadow:`0 8px 32px ${C.warning}40`}}>⏳</div>
+        <div style={{fontSize:24,fontWeight:800,color:C.text,marginBottom:8}}>Aguardando aprovação</div>
+        <div style={{fontSize:14,color:C.muted,lineHeight:1.7,marginBottom:32}}>{msg || 'Seu cadastro foi enviado. O administrador precisa aprovar seu acesso antes de você poder entrar.'}</div>
+        <Btn variant="outline" onClick={()=>{setView('login');setError('');}}>Voltar ao login</Btn>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{minHeight:'100vh',background:bg,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+      <div style={{width:'100%',maxWidth:420}}>
+
+        {/* Card */}
+        <div style={{background:C.card,borderRadius:28,border:`1px solid ${C.border}`,padding:'44px 40px 36px',boxShadow:'0 32px 80px rgba(0,0,0,0.5)'}}>
+
+          {/* Header */}
+          <div style={{textAlign:'center',marginBottom:36}}>
+            <div style={{width:72,height:72,borderRadius:22,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 18px',boxShadow:`0 8px 32px ${C.primary}50`}}>
+              {view==='login' ? '🔒' : '✍️'}
+            </div>
+            <div style={{fontSize:26,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
+            <div style={{fontSize:11,fontWeight:700,color:C.dim,letterSpacing:'0.12em',textTransform:'uppercase',marginTop:4}}>
+              {view==='login' ? 'Área Restrita' : 'Solicitar Cadastro'}
+            </div>
+          </div>
+
+          {/* Form */}
+          {view === 'login' ? (
+            <form onSubmit={handleLogin} style={{display:'flex',flexDirection:'column',gap:16}}>
+              <AuthInput label="E-mail corporativo" type="email" placeholder="seu@email.com" value={email} onChange={e=>setEmail(e.target.value)} icon="👤" required autoFocus />
+              <AuthInput
+                label="Senha de acesso"
+                type="password" placeholder="••••••••"
+                value={password} onChange={e=>setPassword(e.target.value)}
+                icon="🔑" required
+              />
+              {error && <div style={{background:`${C.danger}15`,border:`1px solid ${C.danger}35`,borderRadius:10,padding:'10px 14px',color:C.danger,fontSize:13}}>{error}</div>}
+              <button type="submit" disabled={loading} style={{
+                marginTop:8,width:'100%',padding:'14px',borderRadius:14,border:'none',cursor:loading?'not-allowed':'pointer',
+                background:`linear-gradient(135deg,${C.primary},${C.purple})`,color:'#fff',fontSize:14,fontWeight:800,
+                letterSpacing:'0.06em',textTransform:'uppercase',boxShadow:`0 6px 20px ${C.primary}50`,
+                opacity:loading?0.7:1,transition:'all 0.2s',
+              }}
+                onMouseOver={e=>{if(!loading)e.currentTarget.style.filter='brightness(1.1)';}}
+                onMouseOut={e=>e.currentTarget.style.filter=''}
+              >
+                {loading ? 'Entrando...' : 'Entrar no Sistema'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleRegister} style={{display:'flex',flexDirection:'column',gap:16}}>
+              <AuthInput label="Nome completo" placeholder="Seu nome" value={name} onChange={e=>setName(e.target.value)} icon="👤" required autoFocus />
+              <AuthInput label="E-mail" type="email" placeholder="seu@email.com" value={email} onChange={e=>setEmail(e.target.value)} icon="📧" required />
+              <AuthInput label="Senha" type="password" placeholder="Mínimo 6 caracteres" value={password} onChange={e=>setPassword(e.target.value)} icon="🔑" required hint="Mínimo 6 caracteres" />
+              {error && <div style={{background:`${C.danger}15`,border:`1px solid ${C.danger}35`,borderRadius:10,padding:'10px 14px',color:C.danger,fontSize:13}}>{error}</div>}
+              <button type="submit" disabled={loading} style={{
+                marginTop:8,width:'100%',padding:'14px',borderRadius:14,border:'none',cursor:loading?'not-allowed':'pointer',
+                background:`linear-gradient(135deg,${C.primary},${C.purple})`,color:'#fff',fontSize:14,fontWeight:800,
+                letterSpacing:'0.06em',textTransform:'uppercase',boxShadow:`0 6px 20px ${C.primary}50`,
+                opacity:loading?0.7:1,transition:'all 0.2s',
+              }}>
+                {loading ? 'Enviando...' : 'Solicitar Cadastro'}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Footer link */}
+        <div style={{textAlign:'center',marginTop:28}}>
+          {view === 'login' ? (
+            <>
+              <div style={{fontSize:12,color:C.dim,marginBottom:6}}>NOVO NO VIGA SALES?</div>
+              <button onClick={()=>{setView('register');setError('');}} style={{background:'transparent',border:'none',color:C.primary,fontSize:13,fontWeight:700,cursor:'pointer',letterSpacing:'0.04em',textTransform:'uppercase'}}>
+                Solicitar Cadastro
+              </button>
+            </>
+          ) : (
+            <button onClick={()=>{setView('login');setError('');}} style={{background:'transparent',border:'none',color:C.muted,fontSize:13,cursor:'pointer'}}>
+              ← Voltar ao login
+            </button>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }
@@ -416,7 +575,15 @@ function Conversations({ initialContact }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [winW, setWinW] = useState(window.innerWidth);
+  const isMobile = winW < 768;
   const msgEndRef = useRef(null);
+
+  useEffect(()=>{
+    const onResize=()=>setWinW(window.innerWidth);
+    window.addEventListener('resize',onResize);
+    return ()=>window.removeEventListener('resize',onResize);
+  },[]);
 
   const scrollToBottom = useCallback(()=>{ msgEndRef.current?.scrollIntoView({behavior:'smooth'}); },[]);
 
@@ -477,81 +644,116 @@ function Conversations({ initialContact }) {
     finally { setSending(false); }
   };
 
-  return (
-    <div style={{display:'grid',gridTemplateColumns:'320px 1fr',flex:1,overflow:'hidden',minHeight:0}}>
-      {/* Lista */}
-      <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',height:'100%'}}>
-        <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720'}}>
-          <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
-          <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
-        </div>
-        <div style={{flex:1,overflowY:'auto'}}>
-          {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
-          {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
-          {convs.map(c=>(
-            <div key={c.id} onClick={()=>setActive(c)} style={{
-              padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
-              background:active?.id===c.id?`${C.primary}18`:'transparent',
-              borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',
-              transition:'background 0.15s',
-            }}>
-              <div style={{display:'flex',gap:12,alignItems:'center'}}>
-                <Avatar name={c.contact_name||'?'} size={44} />
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}>
-                    <span style={{fontWeight:600,fontSize:14,color:C.text}}>{c.contact_name||'Desconhecido'}</span>
-                    <span style={{fontSize:10,color:C.dim}}>{fmtTime(c.last_message_at)}</span>
-                  </div>
-                  <div style={{fontSize:12,color:C.muted,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.last_message||'Sem mensagens'}</div>
-                </div>
-                {c.unread_count>0&&<div style={{minWidth:20,height:20,borderRadius:10,background:'#00a884',color:'#fff',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 5px'}}>{c.unread_count>99?'99+':c.unread_count}</div>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+  const showList = !isMobile || !active;
+  const showChat = !isMobile || !!active;
 
-      {/* Chat */}
-      {active?(
-        <div style={{display:'flex',flexDirection:'column',background:'#0b141a',height:'100%'}}>
-          <div style={{padding:'12px 24px',background:'#1f2c34',borderBottom:`1px solid #2a2d3e`,display:'flex',alignItems:'center',gap:12}}>
-            <Avatar name={active.contact_name||'?'} size={44} />
-            <div>
-              <div style={{fontWeight:600,color:'#e9edef',fontSize:15}}>{active.contact_name||'Desconhecido'}</div>
-              <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
-            </div>
+  return (
+    <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'320px 1fr',flex:1,overflow:'hidden',minHeight:0}}>
+
+      {/* Lista */}
+      {showList && (
+        <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',height:'100%'}}>
+          <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720'}}>
+            <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
+            <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
           </div>
-          <div style={{flex:1,overflowY:'auto',padding:'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
-            <div style={{marginTop:'auto'}} />
-            {messages.length===0&&<div style={{marginBottom:'auto',textAlign:'center',padding:'40px 0',color:'#8696a0',fontSize:13}}>Nenhuma mensagem ainda</div>}
-            {messages.map(m=>(
-              <div key={m.id} style={{alignSelf:m.direction==='outbound'?'flex-end':'flex-start',maxWidth:'75%',marginBottom:2}}>
-                <div style={{
-                  background:m.direction==='outbound'?'#005c4b':'#1f2c34',
-                  color:'#e9edef',padding:'8px 12px',borderRadius:8,
-                  borderBottomRightRadius:m.direction==='outbound'?2:8,
-                  borderBottomLeftRadius:m.direction==='outbound'?8:2,
-                  fontSize:14,lineHeight:1.5,boxShadow:'0 1px 2px rgba(0,0,0,0.3)',
-                }}>{m.content}</div>
-                <div style={{fontSize:11,color:'#8696a0',marginTop:2,textAlign:m.direction==='outbound'?'right':'left',display:'flex',alignItems:'center',justifyContent:m.direction==='outbound'?'flex-end':'flex-start',gap:4}}>
-                  {new Date(m.timestamp).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
-                  {m.direction==='outbound'&&<span style={{color:'#53bdeb',fontSize:13}}>✓✓</span>}
+          <div style={{flex:1,overflowY:'auto'}}>
+            {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
+            {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
+            {convs.map(c=>(
+              <div key={c.id} onClick={()=>setActive(c)} style={{
+                padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
+                background:active?.id===c.id?`${C.primary}18`:'transparent',
+                borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',
+                transition:'background 0.15s',
+              }}>
+                <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                  <Avatar name={c.contact_name||'?'} size={44} />
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}>
+                      <span style={{fontWeight:600,fontSize:14,color:C.text}}>{c.contact_name||'Desconhecido'}</span>
+                      <span style={{fontSize:10,color:C.dim}}>{fmtTime(c.last_message_at)}</span>
+                    </div>
+                    <div style={{fontSize:12,color:C.muted,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.last_message||'Sem mensagens'}</div>
+                  </div>
+                  {c.unread_count>0&&<div style={{minWidth:20,height:20,borderRadius:10,background:'#00a884',color:'#fff',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 5px'}}>{c.unread_count>99?'99+':c.unread_count}</div>}
                 </div>
               </div>
             ))}
-            <div ref={msgEndRef} />
-          </div>
-          <div style={{padding:'10px 20px',background:'#1f2c34',display:'flex',alignItems:'center',gap:12}}>
-            <input value={input} onChange={e=>setInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&send()}
-              placeholder="Digite sua mensagem..."
-              style={{flex:1,background:'#2a3942',border:'none',borderRadius:10,padding:'12px 16px',color:'#d1d7db',outline:'none',fontSize:14,fontFamily:'inherit'}} />
-            <button onClick={send} disabled={sending||!input.trim()} style={{background:'#00a884',border:'none',borderRadius:10,padding:'10px 18px',cursor:'pointer',color:'#fff',fontSize:18,opacity:sending||!input.trim()?0.6:1,transition:'opacity 0.15s'}}>➤</button>
           </div>
         </div>
-      ):(
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,color:C.dim,height:'100%',background:'#0b141a'}}>
-          <div style={{fontSize:64}}>💬</div>
-          <p style={{fontSize:15}}>Selecione uma conversa para começar</p>
+      )}
+
+      {/* Chat */}
+      {showChat && (
+        <div style={{display:'flex',flexDirection:'column',background:'#0b141a',height:'100%'}}>
+          {active ? (
+            <>
+              <div style={{padding:'12px 16px',background:'#1f2c34',borderBottom:`1px solid #2a2d3e`,display:'flex',alignItems:'center',gap:12}}>
+                {isMobile && (
+                  <button onClick={()=>setActive(null)} style={{background:'none',border:'none',color:'#8696a0',cursor:'pointer',fontSize:22,padding:'0 8px 0 0',lineHeight:1}}>←</button>
+                )}
+                <Avatar name={active.contact_name||'?'} size={40} />
+                <div>
+                  <div style={{fontWeight:600,color:'#e9edef',fontSize:15}}>{active.contact_name||'Desconhecido'}</div>
+                  <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
+                </div>
+              </div>
+              <div style={{flex:1,overflowY:'auto',padding:isMobile?'12px 12px':'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
+                <div style={{marginTop:'auto'}} />
+                {messages.length===0&&<div style={{marginBottom:'auto',textAlign:'center',padding:'40px 0',color:'#8696a0',fontSize:13}}>Nenhuma mensagem ainda</div>}
+                {messages.map(m=>(
+                  <div key={m.id} style={{alignSelf:m.direction==='outbound'?'flex-end':'flex-start',maxWidth:'80%',marginBottom:2}}>
+                    <div style={{
+                      background:m.direction==='outbound'?'#005c4b':'#1f2c34',
+                      color:'#e9edef',padding:'8px 12px',borderRadius:8,
+                      borderBottomRightRadius:m.direction==='outbound'?2:8,
+                      borderBottomLeftRadius:m.direction==='outbound'?8:2,
+                      fontSize:14,lineHeight:1.5,boxShadow:'0 1px 2px rgba(0,0,0,0.3)',
+                    }}>
+                      {m.type === 'image' && m.media_url ? (
+                        <img src={m.media_url} alt="imagem" style={{maxWidth:'100%',borderRadius:6,display:'block',cursor:'pointer'}} onClick={()=>window.open(m.media_url,'_blank')} />
+                      ) : m.type === 'audio' && m.media_url ? (
+                        <audio controls src={m.media_url} style={{maxWidth:'240px',height:36,display:'block'}} />
+                      ) : m.type === 'video' && m.media_url ? (
+                        <video controls src={m.media_url} style={{maxWidth:'100%',borderRadius:6,display:'block'}} />
+                      ) : m.type === 'document' && m.media_url ? (
+                        <a href={m.media_url} download style={{color:'#53bdeb',textDecoration:'none',display:'flex',alignItems:'center',gap:6}}>
+                          <span style={{fontSize:20}}>📄</span>
+                          <span style={{fontSize:13}}>{m.content||'Documento'}</span>
+                        </a>
+                      ) : m.type==='sticker' ? (
+                        <span style={{fontSize:13,color:'#8696a0',fontStyle:'italic'}}>🖼️ figurinha</span>
+                      ) : m.type==='location' ? (
+                        <span style={{fontSize:13}}>📍 {m.content}</span>
+                      ) : (
+                        <span style={{whiteSpace:'pre-wrap',wordBreak:'break-word'}}>{m.content}</span>
+                      )}
+                      {['image','video'].includes(m.type) && m.media_url && m.content && !['[imagem]','[vídeo]','[mídia]'].includes(m.content) && (
+                        <span style={{display:'block',fontSize:13,marginTop:4,whiteSpace:'pre-wrap'}}>{m.content}</span>
+                      )}
+                    </div>
+                    <div style={{fontSize:11,color:'#8696a0',marginTop:2,textAlign:m.direction==='outbound'?'right':'left',display:'flex',alignItems:'center',justifyContent:m.direction==='outbound'?'flex-end':'flex-start',gap:4}}>
+                      {new Date(m.timestamp).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+                      {m.direction==='outbound'&&<span style={{color:'#53bdeb',fontSize:13}}>✓✓</span>}
+                    </div>
+                  </div>
+                ))}
+                <div ref={msgEndRef} />
+              </div>
+              <div style={{padding:'10px 16px',background:'#1f2c34',display:'flex',alignItems:'center',gap:12}}>
+                <input value={input} onChange={e=>setInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&send()}
+                  placeholder="Digite sua mensagem..."
+                  style={{flex:1,background:'#2a3942',border:'none',borderRadius:10,padding:'12px 16px',color:'#d1d7db',outline:'none',fontSize:14,fontFamily:'inherit'}} />
+                <button onClick={send} disabled={sending||!input.trim()} style={{background:'#00a884',border:'none',borderRadius:10,padding:'10px 18px',cursor:'pointer',color:'#fff',fontSize:18,opacity:sending||!input.trim()?0.6:1,transition:'opacity 0.15s'}}>➤</button>
+              </div>
+            </>
+          ) : (
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,color:C.dim,height:'100%'}}>
+              <div style={{fontSize:64}}>💬</div>
+              <p style={{fontSize:15}}>Selecione uma conversa para começar</p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -781,14 +983,18 @@ function Broadcasts() {
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
 function Settings() {
+  const [tab, setTab] = useState('whatsapp');
   const [config, setConfig] = useState(null);
   const [debugData, setDebugData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const currentUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
+  const isAdmin = ['master','admin'].includes(currentUser?.role);
 
-  useEffect(()=>{ fetch('/api/whatsapp/config').then(r=>r.json()).then(d=>{ setConfig(d); setLoading(false); }).catch(()=>setLoading(false)); },[]);
+  useEffect(()=>{ fetch('/api/whatsapp/config', { headers:{ Authorization:`Bearer ${localStorage.getItem('crm_token')}` } }).then(r=>r.json()).then(d=>{ setConfig(d); setLoading(false); }).catch(()=>setLoading(false)); },[]);
 
   const copy=(text,label)=>navigator.clipboard.writeText(text).then(()=>toast.success(`${label} copiado!`));
-  const testWebhook=async()=>{ try{ await fetch('/api/whatsapp/test-webhook',{method:'POST'}); toast.success('Mensagem de teste enviada!'); }catch{ toast.error('Erro ao testar'); } };
+  const authHdr=()=>({ Authorization:`Bearer ${localStorage.getItem('crm_token')}` });
+  const testWebhook=async()=>{ try{ await fetch('/api/whatsapp/test-webhook',{method:'POST',headers:authHdr()}); toast.success('Mensagem de teste enviada!'); }catch{ toast.error('Erro ao testar'); } };
   const simulateInbound=async()=>{
     try {
       await fetch('/webhook/evolution',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -798,7 +1004,7 @@ function Settings() {
   };
   const setupWebhook=async()=>{
     try {
-      const r=await fetch('/api/whatsapp/setup-webhook',{method:'POST'});
+      const r=await fetch('/api/whatsapp/setup-webhook',{method:'POST',headers:authHdr()});
       const d=await r.json();
       if(d.success) toast.success('Webhook configurado na Evolution API!');
       else throw new Error(d.error);
@@ -806,7 +1012,7 @@ function Settings() {
   };
   const saveConfig=async()=>{
     try {
-      const r=await fetch('/api/whatsapp/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+      const r=await fetch('/api/whatsapp/config',{method:'POST',headers:{'Content-Type':'application/json',...authHdr()},body:JSON.stringify(config)});
       const d=await r.json();
       if(d.success) toast.success('Configurações salvas!');
     } catch { toast.error('Erro ao salvar'); }
@@ -830,12 +1036,25 @@ function Settings() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',maxWidth:740}}>
-      <div style={{marginBottom:28}}>
+      <div style={{marginBottom:24}}>
         <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Configurações</h2>
-        <p style={{color:C.dim,fontSize:14}}>Gerencie a integração com WhatsApp e Evolution API.</p>
+        <p style={{color:C.dim,fontSize:14}}>Gerencie integrações e usuários do sistema.</p>
       </div>
 
-      <Section title="Integração Evolution API" icon="🔗">
+      {/* Abas */}
+      <div style={{display:'flex',gap:4,marginBottom:24,background:C.surface,borderRadius:14,padding:4,border:`1px solid ${C.border}`,width:'fit-content'}}>
+        {[{id:'whatsapp',label:'⚙️ WhatsApp'}, ...(isAdmin?[{id:'users',label:'👥 Usuários'}]:[])].map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{
+            padding:'8px 18px',borderRadius:10,border:'none',cursor:'pointer',fontSize:13,fontWeight:700,
+            background:tab===t.id?`linear-gradient(135deg,${C.primary},${C.purple})`:'transparent',
+            color:tab===t.id?'#fff':C.muted,transition:'all 0.18s',
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {tab === 'users' && isAdmin && <UserManagement />}
+
+      {tab === 'whatsapp' && <><Section title="Integração Evolution API" icon="🔗">
         <div style={{display:'flex',flexDirection:'column',gap:20}}>
           <div>
             <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>URL do Webhook (configure na Evolution API)</label>
@@ -906,6 +1125,100 @@ function Settings() {
           <p style={{fontSize:13,color:C.muted,lineHeight:1.6}}>Ative os eventos <b style={{color:C.muted}}>MESSAGES_UPSERT</b> e <b style={{color:C.muted}}>MESSAGES_UPDATE</b> na aba Webhook da sua Evolution API para receber mensagens em tempo real.</p>
         </div>
       </div>
+    </>}
+    </div>
+  );
+}
+
+// ─── User Management ──────────────────────────────────────────────────────────
+
+function UserManagement() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const currentUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
+  const isMaster = currentUser?.role === 'master';
+
+  const load = () => {
+    const token = localStorage.getItem('crm_token');
+    fetch('/api/users', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json()).then(d => { setUsers(Array.isArray(d) ? d : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+  useEffect(load, []);
+
+  const updateStatus = async (id, status) => {
+    const token = localStorage.getItem('crm_token');
+    await fetch(`/api/users/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({ status }) });
+    toast.success('Status atualizado!'); load();
+  };
+  const updateRole = async (id, role) => {
+    const token = localStorage.getItem('crm_token');
+    await fetch(`/api/users/${id}/role`, { method:'PATCH', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({ role }) });
+    toast.success('Função atualizada!'); load();
+  };
+  const deleteUser = async (id) => {
+    if (!confirm('Remover este usuário?')) return;
+    const token = localStorage.getItem('crm_token');
+    await fetch(`/api/users/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    toast.success('Usuário removido!'); load();
+  };
+
+  const roleLabel = (r) => r === 'master' ? '👑 Master' : r === 'admin' ? '🛡️ Admin' : '👤 Usuário';
+  const statusColor = (s) => s === 'active' ? C.success : s === 'pending' ? C.warning : C.danger;
+  const statusLabel = (s) => s === 'active' ? 'Ativo' : s === 'pending' ? 'Pendente' : 'Suspenso';
+  const pending = users.filter(u => u.status === 'pending');
+
+  if (loading) return <div style={{color:C.dim,padding:20}}>Carregando usuários...</div>;
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      {pending.length > 0 && (
+        <Card title={`⏳ Aprovações Pendentes (${pending.length})`} style={{borderTop:`3px solid ${C.warning}`}}>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {pending.map(u => (
+              <div key={u.id} style={{display:'flex',alignItems:'center',gap:12,padding:'12px',background:C.bg,borderRadius:12,border:`1px solid ${C.warning}30`}}>
+                <Avatar name={u.name} size={36} />
+                <div style={{flex:1}}>
+                  <div style={{fontSize:14,fontWeight:700,color:C.text}}>{u.name}</div>
+                  <div style={{fontSize:12,color:C.dim}}>{u.email}</div>
+                </div>
+                <div style={{display:'flex',gap:8}}>
+                  <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>✅ Aprovar</Btn>
+                  <Btn size="sm" variant="danger" onClick={() => updateStatus(u.id, 'suspended')}>❌ Rejeitar</Btn>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      <Card title="👥 Todos os Usuários">
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          {users.map(u => (
+            <div key={u.id} style={{display:'flex',alignItems:'center',gap:12,padding:'14px',background:C.bg,borderRadius:12,border:`1px solid ${C.border}`,flexWrap:'wrap'}}>
+              <Avatar name={u.name} size={38} />
+              <div style={{flex:1,minWidth:120}}>
+                <div style={{fontSize:14,fontWeight:700,color:C.text}}>{u.name}</div>
+                <div style={{fontSize:12,color:C.dim}}>{u.email}</div>
+              </div>
+              <Badge color={statusColor(u.status)}>{statusLabel(u.status)}</Badge>
+              <span style={{fontSize:12,color:C.muted}}>{roleLabel(u.role)}</span>
+              {isMaster && u.role !== 'master' && (
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                  {u.status !== 'active' && <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>Ativar</Btn>}
+                  {u.status === 'active' && <Btn size="sm" variant="outline" onClick={() => updateStatus(u.id, 'suspended')}>Suspender</Btn>}
+                  <select value={u.role} onChange={e => updateRole(u.id, e.target.value)} style={{padding:'5px 10px',borderRadius:8,background:C.surface,border:`1px solid ${C.border}`,color:C.text,fontSize:12,cursor:'pointer'}}>
+                    <option value="user">Usuário</option>
+                    <option value="admin">Admin</option>
+                    <option value="master">Master</option>
+                  </select>
+                  <Btn size="sm" variant="danger" onClick={() => deleteUser(u.id)}>🗑️</Btn>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }
@@ -918,14 +1231,41 @@ const NAV = [
   { id:'conversations', label:'Conversas',      icon:'💬' },
   { id:'pipeline',      label:'Pipeline',       icon:'📈' },
   { id:'broadcasts',    label:'Disparos',       icon:'📢' },
+  { id:'tasks',         label:'Tarefas',        icon:'✅' },
   { id:'settings',      label:'Configurações',  icon:'⚙️' },
 ];
 
 export default function App() {
+  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
+  const [authed, setAuthed] = useState(true); // AUTH TEMPORARIAMENTE DESATIVADO
+  const [currentUser, setCurrentUser] = useState(storedUser);
   const [page, setPage] = useState('dashboard');
   const [wpState, setWpState] = useState('checking');
   const [initialConv, setInitialConv] = useState(null);
   const [unread, setUnread] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [winW, setWinW] = useState(window.innerWidth);
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('crm_token');
+    await fetch('/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    localStorage.removeItem('crm_token');
+    localStorage.removeItem('crm_user');
+    setAuthed(false);
+    setCurrentUser(null);
+  };
+
+  useEffect(()=>{
+    const onResize=()=>setWinW(window.innerWidth);
+    window.addEventListener('resize',onResize);
+    return ()=>window.removeEventListener('resize',onResize);
+  },[]);
+
+  const isMobile  = winW < 768;
+  const isTablet  = winW >= 768 && winW < 1024;
+  const collapsed = isMobile ? false : (isTablet ? true : sidebarCollapsed);
+  const sidebarW  = collapsed ? 64 : 252;
 
   useEffect(()=>{
     const h=(e)=>{ setPage(e.detail.tab); if(e.detail.activeConv) setInitialConv(e.detail.activeConv); };
@@ -934,8 +1274,10 @@ export default function App() {
   },[]);
 
   useEffect(()=>{
-    fetch('/api/whatsapp/status').then(r=>r.json()).then(d=>setWpState(d?.instance?.state||'disconnected')).catch(()=>setWpState('error'));
-  },[]);
+    if (!authed) return;
+    const tok = localStorage.getItem('crm_token');
+    fetch('/api/whatsapp/status', { headers: tok ? { Authorization: `Bearer ${tok}` } : {} }).then(r=>r.json()).then(d=>setWpState(d?.instance?.state||'disconnected')).catch(()=>setWpState('error'));
+  },[authed]);
 
   useEffect(()=>{
     const h=({state})=>setWpState(state);
@@ -949,8 +1291,115 @@ export default function App() {
     return ()=>socket.off('new_message',h);
   },[page]);
 
+  const navigate=(id)=>{ setPage(id); setInitialConv(null); if(id==='conversations') setUnread(0); setSidebarOpen(false); };
+
+  if (!authed) return <LoginPage onLogin={(user) => { setCurrentUser(user); setAuthed(true); }} />;
+
   const wpColor=wpState==='open'?C.success:wpState==='checking'?C.warning:C.danger;
   const wpLabel=wpState==='open'?'Conectado':wpState==='checking'?'Verificando...':'Desconectado';
+
+  const pagePad = isMobile ? '16px' : '40px 52px';
+
+  // ── Sidebar content (shared between mobile overlay and desktop) ──
+  const SidebarContent = ({ compact }) => (
+    <>
+      {/* Header */}
+      <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
+        <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
+          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,boxShadow:`0 4px 16px ${C.primary}50`}}>🚀</div>
+          {!compact && <div>
+            <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
+            <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
+          </div>}
+        </div>
+        {!isMobile && !compact && (
+          <button onClick={()=>setSidebarCollapsed(true)} title="Recolher menu" style={{background:'transparent',border:'none',color:C.dim,cursor:'pointer',fontSize:18,padding:'4px',borderRadius:8,display:'flex',alignItems:'center'}}
+            onMouseOver={e=>e.currentTarget.style.color=C.text} onMouseOut={e=>e.currentTarget.style.color=C.dim}>
+            ◀
+          </button>
+        )}
+        {!isMobile && compact && (
+          <div style={{position:'absolute',top:18,right:-14,background:C.primary,borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',boxShadow:`0 2px 8px ${C.primary}60`,zIndex:10}}
+            onClick={()=>setSidebarCollapsed(false)}>
+            <span style={{color:'#fff',fontSize:14}}>▶</span>
+          </div>
+        )}
+      </div>
+
+      {/* Nav */}
+      <nav style={{flex:1,padding:'14px 6px',display:'flex',flexDirection:'column',gap:2,overflowY:'auto'}}>
+        {NAV.map(p=>{
+          const active=page===p.id;
+          return (
+            <div key={p.id} onClick={()=>navigate(p.id)} title={compact?p.label:''} style={{
+              display:'flex',alignItems:'center',gap:compact?0:10,
+              padding: compact ? '12px' : '10px 14px',
+              borderRadius:12,cursor:'pointer',fontSize:14,fontWeight:active?700:500,
+              color:active?'#fff':C.muted,justifyContent:compact?'center':'flex-start',
+              background:active?`linear-gradient(135deg,${C.primary}ee,${C.purple}cc)`:'transparent',
+              boxShadow:active?`0 4px 12px ${C.primary}40`:'none',
+              transition:'all 0.18s',position:'relative',
+            }}
+              onMouseOver={e=>{ if(!active){e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.text;} }}
+              onMouseOut={e=>{ if(!active){e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.muted;} }}>
+              <span style={{fontSize:compact?20:16}}>{p.icon}</span>
+              {!compact && p.label}
+              {p.id==='conversations'&&unread>0&&(
+                <span style={{
+                  marginLeft: compact ? 0 : 'auto',
+                  position: compact ? 'absolute' : 'relative',
+                  top: compact ? 6 : 'auto', right: compact ? 6 : 'auto',
+                  background:C.success,color:'#fff',borderRadius:10,fontSize:10,fontWeight:700,padding:'2px 5px',minWidth:16,textAlign:'center'
+                }}>
+                  {unread>99?'99+':unread}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* WhatsApp status */}
+      <div style={{padding:'10px 6px 0',borderTop:`1px solid ${C.border}`}}>
+        {compact ? (
+          <div title={`WhatsApp: ${wpLabel}`} style={{display:'flex',justifyContent:'center',padding:'8px 0'}}>
+            <div style={{width:10,height:10,borderRadius:'50%',background:wpColor,boxShadow:`0 0 8px ${wpColor}`}} />
+          </div>
+        ) : (
+          <div style={{background:C.bg,borderRadius:12,padding:'10px 14px',border:`1px solid ${C.border}`}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:2}}>
+              <div style={{width:8,height:8,borderRadius:'50%',background:wpColor,boxShadow:`0 0 8px ${wpColor}`}} />
+              <span style={{fontSize:12,fontWeight:700,color:C.text}}>WhatsApp</span>
+            </div>
+            <div style={{fontSize:11,color:wpColor,fontWeight:600}}>{wpLabel}</div>
+          </div>
+        )}
+      </div>
+
+      {/* User info + logout */}
+      <div style={{padding:'10px 6px 14px'}}>
+        {compact ? (
+          <div title="Sair" onClick={handleLogout} style={{display:'flex',justifyContent:'center',padding:'10px',cursor:'pointer',borderRadius:10,color:C.dim}}
+            onMouseOver={e=>{e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.danger;}}
+            onMouseOut={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.dim;}}>
+            🚪
+          </div>
+        ) : (
+          <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:12,background:C.bg,border:`1px solid ${C.border}`}}>
+            <Avatar name={currentUser?.name || 'U'} size={32} />
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:12,fontWeight:700,color:C.text,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{currentUser?.name || 'Usuário'}</div>
+              <div style={{fontSize:10,color:C.dim,textTransform:'capitalize'}}>{currentUser?.role === 'master' ? '👑 Master' : currentUser?.role === 'admin' ? '🛡️ Admin' : '👤 Usuário'}</div>
+            </div>
+            <button onClick={handleLogout} title="Sair" style={{background:'transparent',border:'none',cursor:'pointer',color:C.dim,fontSize:16,padding:4,borderRadius:8,flexShrink:0}}
+              onMouseOver={e=>e.currentTarget.style.color=C.danger} onMouseOut={e=>e.currentTarget.style.color=C.dim}>
+              🚪
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -963,67 +1412,101 @@ export default function App() {
         ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
         ::-webkit-scrollbar-thumb:hover{background:#384060;}
         @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+        @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
       `}</style>
+
+      {/* Mobile overlay backdrop */}
+      {isMobile && sidebarOpen && (
+        <div onClick={()=>setSidebarOpen(false)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:299,backdropFilter:'blur(2px)'}} />
+      )}
+
+      {/* Mobile slide-in sidebar */}
+      {isMobile && (
+        <div style={{
+          position:'fixed',top:0,left:0,height:'100%',width:260,
+          background:C.surface,borderRight:`1px solid ${C.border}`,
+          display:'flex',flexDirection:'column',zIndex:300,
+          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition:'transform 0.28s cubic-bezier(0.4,0,0.2,1)',
+        }}>
+          <SidebarContent compact={false} />
+        </div>
+      )}
 
       <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
 
-        {/* ── Sidebar ── */}
-        <div style={{width:252,background:C.surface,borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',flexShrink:0}}>
-          <div style={{padding:'22px 18px',borderBottom:`1px solid ${C.border}`}}>
-            <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,boxShadow:`0 4px 16px ${C.primary}50`}}>🚀</div>
-              <div>
-                <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
-                <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
-              </div>
-            </div>
+        {/* ── Desktop/Tablet Sidebar ── */}
+        {!isMobile && (
+          <div style={{
+            width:sidebarW,background:C.surface,borderRight:`1px solid ${C.border}`,
+            display:'flex',flexDirection:'column',flexShrink:0,
+            transition:'width 0.25s cubic-bezier(0.4,0,0.2,1)',overflow:'hidden',
+            position:'relative',
+          }}>
+            <SidebarContent compact={collapsed} />
           </div>
-
-          <nav style={{flex:1,padding:'14px 10px',display:'flex',flexDirection:'column',gap:2,overflowY:'auto'}}>
-            {NAV.map(p=>{
-              const active=page===p.id;
-              return (
-                <div key={p.id} onClick={()=>{ setPage(p.id); setInitialConv(null); if(p.id==='conversations') setUnread(0); }} style={{
-                  display:'flex',alignItems:'center',gap:10,padding:'10px 14px',borderRadius:12,
-                  cursor:'pointer',fontSize:14,fontWeight:active?700:500,
-                  color:active?'#fff':C.muted,
-                  background:active?`linear-gradient(135deg,${C.primary}ee,${C.purple}cc)`:'transparent',
-                  boxShadow:active?`0 4px 12px ${C.primary}40`:'none',
-                  transition:'all 0.18s',position:'relative',
-                }}
-                  onMouseOver={e=>{ if(!active){e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.text;} }}
-                  onMouseOut={e=>{ if(!active){e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.muted;} }}>
-                  <span style={{fontSize:16}}>{p.icon}</span>
-                  {p.label}
-                  {p.id==='conversations'&&unread>0&&(
-                    <span style={{marginLeft:'auto',background:C.success,color:'#fff',borderRadius:10,fontSize:10,fontWeight:700,padding:'2px 7px',minWidth:18,textAlign:'center'}}>
-                      {unread>99?'99+':unread}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
-
-          <div style={{padding:'14px 10px',borderTop:`1px solid ${C.border}`}}>
-            <div style={{background:C.bg,borderRadius:12,padding:'12px 14px',border:`1px solid ${C.border}`}}>
-              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
-                <div style={{width:8,height:8,borderRadius:'50%',background:wpColor,boxShadow:`0 0 8px ${wpColor}`}} />
-                <span style={{fontSize:12,fontWeight:700,color:C.text}}>WhatsApp</span>
-              </div>
-              <div style={{fontSize:11,color:wpColor,fontWeight:600}}>{wpLabel}</div>
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* ── Main ── */}
         <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minHeight:0}}>
-          {page==='dashboard'     &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Dashboard /></div>}
-          {page==='contacts'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Contacts /></div>}
-          {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
-          {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Pipeline /></div>}
-          {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Broadcasts /></div>}
-          {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:'40px 52px'}}><Settings /></div>}
+
+          {/* Mobile top bar */}
+          {isMobile && (
+            <div style={{height:56,background:C.surface,borderBottom:`1px solid ${C.border}`,display:'flex',alignItems:'center',padding:'0 16px',gap:12,flexShrink:0,zIndex:10}}>
+              <button onClick={()=>setSidebarOpen(true)} style={{background:'transparent',border:'none',color:C.text,cursor:'pointer',fontSize:22,display:'flex',alignItems:'center',padding:4}}>
+                ☰
+              </button>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <span style={{fontSize:18}}>🚀</span>
+                <span style={{fontSize:16,fontWeight:800,color:C.text}}>Viga Sales</span>
+              </div>
+              <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
+                <div style={{width:7,height:7,borderRadius:'50%',background:wpColor,boxShadow:`0 0 6px ${wpColor}`}} />
+                <span style={{fontSize:11,color:wpColor,fontWeight:600}}>{wpLabel}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Page content */}
+          <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minHeight:0}}>
+            {page==='dashboard'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Dashboard /></div>}
+            {page==='contacts'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Contacts /></div>}
+            {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
+            {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Pipeline /></div>}
+            {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Broadcasts /></div>}
+            {page==='tasks'         &&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}><TasksModule currentUser={currentUser} /></div>}
+            {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Settings /></div>}
+          </div>
+
+          {/* Mobile bottom navigation */}
+          {isMobile && (
+            <div style={{
+              height:64,background:C.surface,borderTop:`1px solid ${C.border}`,
+              display:'flex',alignItems:'center',justifyContent:'space-around',
+              flexShrink:0,paddingBottom:'env(safe-area-inset-bottom,0px)',
+            }}>
+              {NAV.map(p=>{
+                const active=page===p.id;
+                return (
+                  <div key={p.id} onClick={()=>navigate(p.id)} style={{
+                    display:'flex',flexDirection:'column',alignItems:'center',gap:3,
+                    padding:'6px 12px',borderRadius:12,cursor:'pointer',flex:1,
+                    color:active?C.primary:C.dim,
+                    background:active?`${C.primary}15`:'transparent',
+                    transition:'all 0.18s',position:'relative',
+                  }}>
+                    <span style={{fontSize:20}}>{p.icon}</span>
+                    <span style={{fontSize:9,fontWeight:active?700:500,letterSpacing:'0.02em'}}>{p.label}</span>
+                    {p.id==='conversations'&&unread>0&&(
+                      <span style={{position:'absolute',top:2,right:8,background:C.success,color:'#fff',borderRadius:8,fontSize:9,fontWeight:700,padding:'1px 5px',minWidth:14,textAlign:'center'}}>
+                        {unread>99?'99+':unread}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
