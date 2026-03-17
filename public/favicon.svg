@@ -1,12 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80">
-  <rect width="64" height="80" rx="14" fill="#07101e"/>
-  <!-- Cubo laranja -->
-  <polygon points="32,5 50,14 32,23 14,14" fill="#F5A830"/>
-  <polygon points="14,14 32,23 32,33 14,24" fill="#C07518"/>
-  <polygon points="50,14 32,23 32,33 50,24" fill="#D98920"/>
-  <!-- GAP -->
-  <!-- Coluna navy (mais alta) -->
-  <polygon points="32,38 50,47 32,56 14,47" fill="#2563a0"/>
-  <polygon points="14,47 32,56 32,76 14,67" fill="#1A365D"/>
-  <polygon points="50,47 32,56 32,76 50,67" fill="#0c2244"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 76">
+  <rect width="48" height="76" rx="12" fill="#07101e"/>
+  <polygon points="24,2 38,9 24,16 10,9" fill="#F5A830"/>
+  <polygon points="10,9 24,16 24,22 10,15" fill="#C07518"/>
+  <polygon points="38,9 24,16 24,22 38,15" fill="#D98920"/>
+  <polygon points="24,26 38,33 24,40 10,33" fill="#2563a0"/>
+  <polygon points="10,33 24,40 24,74 10,67" fill="#1A365D"/>
+  <polygon points="38,33 24,40 24,74 38,67" fill="#0c2244"/>
 </svg>
