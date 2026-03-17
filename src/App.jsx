@@ -1140,6 +1140,7 @@ function Conversations({ initialContact }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [winW, setWinW] = useState(window.innerWidth);
+  const [contactDrawerId, setContactDrawerId] = useState(null);
   const isMobile = winW < 600;
   const msgEndRef = useRef(null);
   const listScrollRef = useRef(null);
@@ -1218,6 +1219,7 @@ function Conversations({ initialContact }) {
   const showChat = !isMobile || !!active;
 
   return (
+    <>
     <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'320px 1fr',flex:1,overflow:'hidden',minHeight:0}}>
 
       {/* Lista */}
@@ -1263,10 +1265,12 @@ function Conversations({ initialContact }) {
                 {isMobile && (
                   <button onClick={()=>setActive(null)} style={{background:'none',border:'none',color:'#8696a0',cursor:'pointer',fontSize:22,padding:'0 8px 0 0',lineHeight:1}}>←</button>
                 )}
-                <Avatar name={active.contact_name||'?'} size={40} />
-                <div>
-                  <div style={{fontWeight:600,color:'#e9edef',fontSize:15}}>{active.contact_name||'Desconhecido'}</div>
-                  <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
+                <div onClick={()=>active.contact_id && setContactDrawerId(active.contact_id)} style={{display:'flex',alignItems:'center',gap:12,cursor:'pointer',flex:1}} title="Ver ficha do contato">
+                  <Avatar name={active.contact_name||'?'} size={40} />
+                  <div>
+                    <div style={{fontWeight:600,color:'#e9edef',fontSize:15}}>{active.contact_name||'Desconhecido'}</div>
+                    <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
+                  </div>
                 </div>
               </div>
               <div style={{flex:1,overflowY:'scroll',minHeight:0,padding:isMobile?'12px 12px':'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
@@ -1343,6 +1347,16 @@ function Conversations({ initialContact }) {
         </div>
       )}
     </div>
+    {contactDrawerId && (
+      <ContactDrawer
+        contactId={contactDrawerId}
+        onClose={()=>setContactDrawerId(null)}
+        onEdit={()=>setContactDrawerId(null)}
+        onDelete={()=>setContactDrawerId(null)}
+        onRefreshList={()=>{}}
+      />
+    )}
+    </>
   );
 }
 
