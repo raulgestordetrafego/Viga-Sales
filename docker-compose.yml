@@ -19,6 +19,7 @@ services:
       - FORWARD_WEBHOOK_URL=${FORWARD_WEBHOOK_URL}
       - APP_URL=${APP_URL}
       - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - viga-sales-db:/app/db
     networks:
