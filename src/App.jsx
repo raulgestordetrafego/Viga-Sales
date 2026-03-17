@@ -1944,18 +1944,18 @@ export default function App() {
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
           <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
-            <svg width="26" height="36" viewBox="0 0 48 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="26" height="40" viewBox="0 0 48 80" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* Cubo laranja — topo */}
               <polygon points="24,2 40,10 24,18 8,10" fill="#F5A830"/>
-              <polygon points="8,10 24,18 24,28 8,20" fill="#C07518"/>
-              <polygon points="40,10 24,18 24,28 40,20" fill="#D98920"/>
-              {/* GAP */}
+              <polygon points="8,10 24,18 24,26 8,18" fill="#C07518"/>
+              <polygon points="40,10 24,18 24,26 40,18" fill="#D98920"/>
+              {/* GAP pequeno */}
               {/* Coluna navy — face topo */}
-              <polygon points="24,36 40,44 24,52 8,44" fill="#2563a0"/>
-              {/* Coluna navy — face frente */}
-              <polygon points="8,44 24,52 24,70 8,62" fill="#1A365D"/>
+              <polygon points="24,30 40,38 24,46 8,38" fill="#2563a0"/>
+              {/* Coluna navy — face frente (mais alta) */}
+              <polygon points="8,38 24,46 24,78 8,70" fill="#1A365D"/>
               {/* Coluna navy — face lado */}
-              <polygon points="40,44 24,52 24,70 40,62" fill="#0c2244"/>
+              <polygon points="40,38 24,46 24,78 40,70" fill="#0c2244"/>
             </svg>
           </div>
           {!compact && <div>
