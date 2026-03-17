@@ -1268,7 +1268,7 @@ function Conversations({ initialContact }) {
                   <div style={{fontSize:12,color:'#8696a0'}}>{active.contact_phone||''}</div>
                 </div>
               </div>
-              <div style={{flex:1,overflowY:'auto',padding:isMobile?'12px 12px':'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
+              <div style={{flex:1,overflowY:'scroll',minHeight:0,padding:isMobile?'12px 12px':'20px 48px',display:'flex',flexDirection:'column',gap:4,background:'#0b141a'}}>
                 <div style={{marginTop:'auto'}} />
                 {messages.length===0&&<div style={{marginBottom:'auto',textAlign:'center',padding:'40px 0',color:'#8696a0',fontSize:13}}>Nenhuma mensagem ainda</div>}
                 {messages.map(m=>(
