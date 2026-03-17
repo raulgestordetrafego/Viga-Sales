@@ -671,8 +671,11 @@ function FollowUps() {
         body: JSON.stringify({ contactName: contact.name, phone: contact.phone, company: contact.company, stage: contact.pipeline_stage, notes: contact.notes }),
       });
       const d = await r.json();
-      setCards(prev => ({ ...prev, [contact.id]: { msg: d.suggestion || '', status: d.suggestion ? 'ready' : 'error' } }));
-    } catch {
+      if (!r.ok) throw new Error(d.error || 'Erro desconhecido');
+      if (!d.suggestion) throw new Error('IA não retornou sugestão');
+      setCards(prev => ({ ...prev, [contact.id]: { msg: d.suggestion, status: 'ready' } }));
+    } catch(e) {
+      toast.error('IA: ' + e.message, { duration: 5000 });
       setCards(prev => ({ ...prev, [contact.id]: { msg: '', status: 'error' } }));
     }
   };
@@ -881,9 +884,10 @@ function FollowUpModal({ contact, onClose }) {
         body: JSON.stringify({ contactName: contact.name, phone: contact.phone, company: contact.company, stage: contact.pipeline_stage, notes: contact.notes }),
       });
       const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Erro no servidor');
       if (d.suggestion) setMessage(d.suggestion);
-      else toast.error('IA não retornou sugestão');
-    } catch { toast.error('Erro ao consultar IA'); }
+      else throw new Error('IA não retornou sugestão');
+    } catch(e) { toast.error('IA: ' + e.message, { duration: 5000 }); }
     setSugg(false);
   };
 

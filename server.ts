@@ -174,7 +174,10 @@ async function startServer() {
   // ── AI Suggestions ───────────────────────────────────────────────────────
   app.post("/api/ai/suggest", async (req: any, res) => {
     const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) return res.status(503).json({ error: 'OpenAI não configurado. Adicione OPENAI_API_KEY no .env' });
+    if (!apiKey) {
+      console.error('[AI] OPENAI_API_KEY não configurada');
+      return res.status(503).json({ error: 'OPENAI_API_KEY não configurada no servidor' });
+    }
     try {
       const { contactName, phone, company, stage, notes } = req.body;
       const stageLabels: Record<string,string> = {
@@ -190,14 +193,16 @@ Notas: ${notes || 'sem notas'}
 
 Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
 
-      const r = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role:'user', content: prompt }], max_tokens: 200, temperature: 0.7 }),
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({ apiKey });
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 200,
+        temperature: 0.7,
       });
-      const data: any = await r.json();
-      if (!r.ok) throw new Error(data.error?.message || 'OpenAI error');
-      const suggestion = data.choices?.[0]?.message?.content?.trim();
+      const suggestion = completion.choices?.[0]?.message?.content?.trim();
+      console.log(`[AI] Suggestion generated for ${contactName}`);
       res.json({ suggestion });
     } catch (err: any) {
       console.error('[AI] Error:', err.message);
