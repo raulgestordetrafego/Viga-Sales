@@ -1,9 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 76">
-  <rect width="48" height="76" rx="12" fill="#07101e"/>
-  <polygon points="24,2 38,9 24,16 10,9" fill="#F5A830"/>
-  <polygon points="10,9 24,16 24,22 10,15" fill="#C07518"/>
-  <polygon points="38,9 24,16 24,22 38,15" fill="#D98920"/>
-  <polygon points="24,26 38,33 24,40 10,33" fill="#2563a0"/>
-  <polygon points="10,33 24,40 24,74 10,67" fill="#1A365D"/>
-  <polygon points="38,33 24,40 24,74 38,67" fill="#0c2244"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 110">
+  <rect width="48" height="110" rx="12" fill="#07101e"/>
+  <!-- Cubo flutuando -->
+  <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+  <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+  <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+  <!-- Coluna: cap laranja -->
+  <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+  <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+  <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+  <!-- Coluna: corpo navy -->
+  <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+  <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
 </svg>

@@ -1944,16 +1944,18 @@ export default function App() {
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
           <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
-            <svg width="24" height="38" viewBox="0 0 48 76" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Cubo laranja */}
-              <polygon points="24,2 38,9 24,16 10,9" fill="#F5A830"/>
-              <polygon points="10,9 24,16 24,22 10,15" fill="#C07518"/>
-              <polygon points="38,9 24,16 24,22 38,15" fill="#D98920"/>
-              {/* GAP */}
-              {/* Coluna navy */}
-              <polygon points="24,26 38,33 24,40 10,33" fill="#2563a0"/>
-              <polygon points="10,33 24,40 24,74 10,67" fill="#1A365D"/>
-              <polygon points="38,33 24,40 24,74 38,67" fill="#0c2244"/>
+            <svg width="22" height="44" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* ── Cubo flutuando (dot do i) ── */}
+              <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+              <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+              <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+              {/* ── GAP ── */}
+              {/* ── Coluna: cap laranja + corpo navy ── */}
+              <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+              <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+              <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+              <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+              <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
             </svg>
           </div>
           {!compact && <div>
@@ -2106,13 +2108,15 @@ export default function App() {
                 ☰
               </button>
               <div style={{display:'flex',alignItems:'center',gap:8}}>
-                <svg width="20" height="32" viewBox="0 0 48 76" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
-                  <polygon points="24,2 38,9 24,16 10,9" fill="#F5A830"/>
-                  <polygon points="10,9 24,16 24,22 10,15" fill="#C07518"/>
-                  <polygon points="38,9 24,16 24,22 38,15" fill="#D98920"/>
-                  <polygon points="24,26 38,33 24,40 10,33" fill="#2563a0"/>
-                  <polygon points="10,33 24,40 24,74 10,67" fill="#1A365D"/>
-                  <polygon points="38,33 24,40 24,74 38,67" fill="#0c2244"/>
+                <svg width="18" height="36" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+                  <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+                  <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+                  <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+                  <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+                  <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+                  <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+                  <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+                  <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
                 </svg>
                 <span style={{fontSize:16,fontWeight:800,color:C.text,fontFamily:"'Archivo',sans-serif"}}>Viga Sales</span>
               </div>
