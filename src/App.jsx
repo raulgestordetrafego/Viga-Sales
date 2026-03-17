@@ -620,9 +620,11 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
 const INACTIVITY_DAYS = 3; // contatos sem interação há mais de N dias
 
 function FollowUps() {
+  const [tab, setTab]             = useState('scheduled'); // 'scheduled' | 'suggestions'
   const [contacts, setContacts]   = useState([]);
+  const [reminders, setReminders] = useState([]);
   const [loading, setLoading]     = useState(true);
-  const [cards, setCards]         = useState({}); // { [contactId]: { msg, status } }
+  const [cards, setCards]         = useState({});
   const [dismissed, setDismissed] = useState(() => {
     try { return JSON.parse(localStorage.getItem('fu_dismissed') || '[]'); } catch { return []; }
   });
@@ -632,22 +634,29 @@ function FollowUps() {
     localStorage.setItem('fu_dismissed', JSON.stringify(list));
   };
 
+  const loadReminders = async () => {
+    try {
+      const r = await fetch('/api/reminders');
+      const d = await r.json();
+      setReminders(Array.isArray(d) ? d : []);
+    } catch { /* ignora */ }
+  };
+
   useEffect(() => {
     (async () => {
+      await loadReminders();
       try {
         const d = await contactsApi.list();
         const all = Array.isArray(d.contacts) ? d.contacts : [];
         const cutoff = new Date(Date.now() - INACTIVITY_DAYS * 86400000);
         const inactive = all.filter(c => {
           if (dismissed.includes(c.id)) return false;
-          if (!c.last_interaction) return true; // nunca interagiu
+          if (!c.last_interaction) return true;
           return new Date(c.last_interaction) < cutoff;
         });
-        // Ordena: mais urgente primeiro (quem está em etapa avançada + mais tempo sem contato)
         const stageWeight = { stage_negotiation:5, stage_proposal:4, stage_contact:3, stage_won:2, stage_lead:1, stage_lost:0 };
         inactive.sort((a,b) => (stageWeight[b.pipeline_stage]||0) - (stageWeight[a.pipeline_stage]||0));
         setContacts(inactive.slice(0, 15));
-        // Auto-gera sugestões para os 5 primeiros
         inactive.slice(0, 5).forEach(c => generateSuggestion(c));
       } catch { toast.error('Erro ao carregar contatos'); }
       setLoading(false);
@@ -658,18 +667,11 @@ function FollowUps() {
     setCards(prev => ({ ...prev, [contact.id]: { msg: '', status: 'loading' } }));
     try {
       const r = await fetch('/api/ai/suggest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contactName: contact.name,
-          phone: contact.phone,
-          company: contact.company,
-          stage: contact.pipeline_stage,
-          notes: contact.notes,
-        }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contactName: contact.name, phone: contact.phone, company: contact.company, stage: contact.pipeline_stage, notes: contact.notes }),
       });
       const d = await r.json();
-      setCards(prev => ({ ...prev, [contact.id]: { msg: d.suggestion || '', status: 'ready' } }));
+      setCards(prev => ({ ...prev, [contact.id]: { msg: d.suggestion || '', status: d.suggestion ? 'ready' : 'error' } }));
     } catch {
       setCards(prev => ({ ...prev, [contact.id]: { msg: '', status: 'error' } }));
     }
@@ -681,22 +683,24 @@ function FollowUps() {
     setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], status: 'sending' } }));
     try {
       const r = await fetch('/api/reminders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contactId: contact.id,
-          phone: contact.phone,
-          message: card.msg,
-          scheduledAt: new Date().toISOString(),
-        }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contactId: contact.id, phone: contact.phone, message: card.msg, scheduledAt: new Date().toISOString() }),
       });
       if (!r.ok) throw new Error(await r.text());
-      toast.success(`✅ Mensagem enviada para ${contact.name}!`);
+      toast.success(`✅ Enviado para ${contact.name}!`);
       dismiss(contact.id);
     } catch(e) {
       toast.error('Erro: ' + e.message);
       setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], status: 'ready' } }));
     }
+  };
+
+  const cancelReminder = async (id) => {
+    try {
+      await fetch(`/api/reminders/${id}`, { method: 'DELETE' });
+      setReminders(prev => prev.filter(r => r.id !== id));
+      toast.success('Lembrete cancelado');
+    } catch { toast.error('Erro ao cancelar'); }
   };
 
   const dismiss = (id) => {
@@ -706,111 +710,148 @@ function FollowUps() {
 
   const daysSince = (d) => {
     if (!d) return '∞';
-    const diff = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
-    return diff;
+    return Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
   };
 
-  if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:200, color:C.muted, fontSize:14 }}>
-      Analisando contatos...
-    </div>
+  const STATUS_LABEL = { pending:'⏳ Agendado', sent:'✅ Enviado', failed:'❌ Falhou', cancelled:'🚫 Cancelado' };
+  const STATUS_COLOR = { pending:C.warning, sent:C.success, failed:C.danger, cancelled:C.dim };
+
+  const pending   = reminders.filter(r => r.status === 'pending');
+  const history   = reminders.filter(r => r.status !== 'pending');
+
+  const TabBtn = ({ id, label, count }) => (
+    <button onClick={() => setTab(id)} style={{
+      padding:'8px 18px', borderRadius:10, fontWeight:700, fontSize:13, cursor:'pointer', border:'none',
+      background: tab === id ? `linear-gradient(135deg,${C.primary},${C.purple})` : C.card,
+      color: tab === id ? '#fff' : C.muted,
+      boxShadow: tab === id ? `0 4px 12px ${C.primary}40` : 'none',
+      display:'flex', alignItems:'center', gap:6,
+    }}>
+      {label}
+      {count > 0 && <span style={{ background: tab===id ? 'rgba(255,255,255,0.25)' : `${C.primary}30`, color: tab===id ? '#fff' : C.primary, borderRadius:8, fontSize:11, padding:'1px 7px', fontWeight:800 }}>{count}</span>}
+    </button>
   );
 
+  if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:200, color:C.muted, fontSize:14 }}>Carregando...</div>;
+
   return (
-    <div style={{ maxWidth: 680 }}>
-      <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize:22, fontWeight:800, color:C.text, margin:0 }}>🤖 Follow-ups Inteligentes</h2>
-        <p style={{ color:C.muted, fontSize:13, marginTop:6 }}>
-          Contatos sem interação há mais de {INACTIVITY_DAYS} dias. A IA sugeriu mensagens — aprove ou ignore.
-        </p>
+    <div style={{ maxWidth: 700 }}>
+      <div style={{ marginBottom: 22 }}>
+        <h2 style={{ fontSize:22, fontWeight:800, color:C.text, margin:0 }}>🤖 Follow-ups</h2>
+        <p style={{ color:C.muted, fontSize:13, marginTop:4 }}>Lembretes agendados e sugestões automáticas de follow-up por IA.</p>
       </div>
 
-      {contacts.length === 0 && (
-        <div style={{ textAlign:'center', padding:'60px 0', color:C.dim }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>🎉</div>
-          <div style={{ fontSize:16, fontWeight:700, color:C.muted }}>Nenhum follow-up pendente!</div>
-          <div style={{ fontSize:13, marginTop:6 }}>Todos os contatos foram contatados recentemente.</div>
-        </div>
-      )}
+      {/* Tabs */}
+      <div style={{ display:'flex', gap:10, marginBottom:24 }}>
+        <TabBtn id="scheduled" label="📅 Agendados" count={pending.length} />
+        <TabBtn id="suggestions" label="✨ Sugestões IA" count={contacts.length} />
+        {history.length > 0 && <TabBtn id="history" label="📋 Histórico" count={history.length} />}
+      </div>
 
-      <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-        {contacts.map(contact => {
-          const card = cards[contact.id] || {};
-          const days = daysSince(contact.last_interaction);
-          const urgency = days === '∞' || days > 7 ? C.danger : days > 4 ? C.warning : C.primary;
-
-          return (
-            <div key={contact.id} style={{
-              background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20,
-              boxShadow: '0 2px 12px rgba(0,0,0,0.2)', borderLeft: `3px solid ${urgency}`,
-            }}>
-              {/* Header do card */}
-              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
-                <Avatar name={contact.name} size={42} />
+      {/* ── Agendados ── */}
+      {tab === 'scheduled' && (
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {pending.length === 0 && (
+            <div style={{ textAlign:'center', padding:'50px 0', color:C.dim }}>
+              <div style={{ fontSize:40, marginBottom:10 }}>📭</div>
+              <div style={{ fontSize:15, fontWeight:700, color:C.muted }}>Nenhum lembrete agendado</div>
+              <div style={{ fontSize:12, marginTop:6 }}>Abra um contato e clique em "📅 Lembrete" para agendar.</div>
+            </div>
+          )}
+          {pending.map(r => (
+            <div key={r.id} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:18, borderLeft:`3px solid ${C.warning}` }}>
+              <div style={{ display:'flex', alignItems:'flex-start', gap:12 }}>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:15, fontWeight:700, color:C.text }}>{contact.name}</div>
-                  <div style={{ fontSize:12, color:C.muted }}>{contact.company || ''} {contact.phone}</div>
-                </div>
-                <div style={{ textAlign:'right', flexShrink:0 }}>
-                  <Badge color={STAGE_COLORS[contact.pipeline_stage]||C.primary}>{STAGE_LABELS[contact.pipeline_stage]}</Badge>
-                  <div style={{ fontSize:11, color: urgency, fontWeight:700, marginTop:4 }}>
-                    {days === '∞' ? 'Nunca contatado' : `${days}d sem contato`}
+                  <div style={{ fontSize:14, fontWeight:700, color:C.text, marginBottom:3 }}>{r.contact_name || r.phone}</div>
+                  <div style={{ fontSize:12, color:C.muted, marginBottom:10 }}>📱 {r.contact_phone || r.phone}</div>
+                  <div style={{ background:C.surface, borderRadius:8, padding:'10px 12px', fontSize:13, color:C.text, lineHeight:1.6, border:`1px solid ${C.border}`, marginBottom:10 }}>
+                    {r.message}
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                    <div style={{ fontSize:11, color:C.warning, fontWeight:700 }}>
+                      ⏳ {new Date(r.scheduled_at).toLocaleString('pt-BR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })}
+                    </div>
+                    <button onClick={() => cancelReminder(r.id)} style={{ background:`${C.danger}15`, border:`1px solid ${C.danger}30`, color:C.danger, borderRadius:8, padding:'5px 12px', cursor:'pointer', fontSize:11, fontWeight:700 }}>
+                      🚫 Cancelar
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-              {/* Mensagem sugerida */}
-              <div style={{ background: C.surface, borderRadius:10, padding:'12px 14px', marginBottom:14, border:`1px solid ${C.border}`, minHeight:60, position:'relative' }}>
-                {card.status === 'loading' ? (
-                  <div style={{ color:C.dim, fontSize:13, fontStyle:'italic' }}>✨ IA gerando sugestão...</div>
-                ) : card.status === 'error' ? (
-                  <div style={{ color:C.danger, fontSize:13 }}>Erro ao gerar sugestão.</div>
-                ) : card.msg ? (
-                  <textarea
-                    value={card.msg}
-                    onChange={e => setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], msg: e.target.value } }))}
-                    rows={3}
-                    style={{ width:'100%', background:'transparent', border:'none', color:C.text, fontSize:13, lineHeight:1.6, resize:'vertical', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }}
-                  />
-                ) : (
-                  <div style={{ color:C.dim, fontSize:13 }}>Mensagem não gerada ainda.</div>
-                )}
+      {/* ── Sugestões IA ── */}
+      {tab === 'suggestions' && (
+        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          {contacts.length === 0 && (
+            <div style={{ textAlign:'center', padding:'50px 0', color:C.dim }}>
+              <div style={{ fontSize:40, marginBottom:10 }}>🎉</div>
+              <div style={{ fontSize:15, fontWeight:700, color:C.muted }}>Nenhum follow-up pendente!</div>
+              <div style={{ fontSize:12, marginTop:6 }}>Todos os contatos foram contatados recentemente.</div>
+            </div>
+          )}
+          {contacts.map(contact => {
+            const card = cards[contact.id] || {};
+            const days = daysSince(contact.last_interaction);
+            const urgency = days === '∞' || days > 7 ? C.danger : days > 4 ? C.warning : C.primary;
+            return (
+              <div key={contact.id} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, padding:20, borderLeft:`3px solid ${urgency}` }}>
+                <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
+                  <Avatar name={contact.name} size={42} />
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:15, fontWeight:700, color:C.text }}>{contact.name}</div>
+                    <div style={{ fontSize:12, color:C.muted }}>{contact.company || ''} · {contact.phone}</div>
+                  </div>
+                  <div style={{ textAlign:'right', flexShrink:0 }}>
+                    <Badge color={STAGE_COLORS[contact.pipeline_stage]||C.primary}>{STAGE_LABELS[contact.pipeline_stage]}</Badge>
+                    <div style={{ fontSize:11, color:urgency, fontWeight:700, marginTop:4 }}>
+                      {days === '∞' ? 'Nunca contatado' : `${days}d sem contato`}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ background:C.surface, borderRadius:10, padding:'12px 14px', marginBottom:14, border:`1px solid ${C.border}`, minHeight:60 }}>
+                  {card.status === 'loading' ? <div style={{ color:C.dim, fontSize:13, fontStyle:'italic' }}>✨ IA gerando sugestão...</div>
+                  : card.status === 'error'   ? <div style={{ color:C.danger, fontSize:13 }}>Erro ao gerar. Tente novamente.</div>
+                  : card.msg ? (
+                    <textarea value={card.msg} onChange={e => setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], msg: e.target.value } }))}
+                      rows={3} style={{ width:'100%', background:'transparent', border:'none', color:C.text, fontSize:13, lineHeight:1.6, resize:'vertical', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }} />
+                  ) : <div style={{ color:C.dim, fontSize:13 }}>Mensagem não gerada ainda.</div>}
+                </div>
+                <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+                  <button onClick={() => dismiss(contact.id)} style={{ background:'transparent', border:`1px solid ${C.border}`, color:C.dim, borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:600 }}>❌ Ignorar</button>
+                  <button onClick={() => generateSuggestion(contact)} style={{ background:`${C.purple}15`, border:`1px solid ${C.purple}35`, color:C.purple, borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700 }}>
+                    {card.msg ? '🔄 Regerar' : '✨ Gerar com IA'}
+                  </button>
+                  <button onClick={() => sendNow(contact)} disabled={!card.msg || card.status==='loading' || card.status==='sending'}
+                    style={{ background:`linear-gradient(135deg,${C.success},#059669)`, border:'none', color:'#fff', borderRadius:9, padding:'7px 18px', cursor:(!card.msg||card.status==='loading'||card.status==='sending')?'not-allowed':'pointer', fontSize:12, fontWeight:700, opacity:(!card.msg||card.status==='loading'||card.status==='sending')?0.6:1 }}>
+                    {card.status === 'sending' ? 'Enviando...' : '✅ Enviar agora'}
+                  </button>
+                </div>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              {/* Ações */}
-              <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
-                <button onClick={() => dismiss(contact.id)} style={{
-                  background:'transparent', border:`1px solid ${C.border}`, color:C.dim,
-                  borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:600,
-                }}>❌ Ignorar</button>
-                {!card.msg && card.status !== 'loading' && (
-                  <button onClick={() => generateSuggestion(contact)} style={{
-                    background:`${C.purple}15`, border:`1px solid ${C.purple}35`, color:C.purple,
-                    borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700,
-                  }}>✨ Gerar com IA</button>
-                )}
-                {card.msg && card.status !== 'loading' && (
-                  <button onClick={() => generateSuggestion(contact)} style={{
-                    background:`${C.purple}15`, border:`1px solid ${C.purple}35`, color:C.purple,
-                    borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700,
-                  }}>🔄 Regerar</button>
-                )}
-                <button
-                  onClick={() => sendNow(contact)}
-                  disabled={!card.msg || card.status === 'loading' || card.status === 'sending'}
-                  style={{
-                    background:`linear-gradient(135deg,${C.success},#059669)`, border:'none', color:'#fff',
-                    borderRadius:9, padding:'7px 18px', cursor:(!card.msg||card.status==='loading'||card.status==='sending')?'not-allowed':'pointer',
-                    fontSize:12, fontWeight:700, boxShadow:`0 3px 10px ${C.success}40`,
-                    opacity:(!card.msg||card.status==='loading'||card.status==='sending')?0.6:1,
-                  }}>
-                  {card.status === 'sending' ? 'Enviando...' : '✅ Enviar agora'}
-                </button>
+      {/* ── Histórico ── */}
+      {tab === 'history' && (
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+          {history.map(r => (
+            <div key={r.id} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:16, display:'flex', gap:12, alignItems:'flex-start' }}>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                  <span style={{ fontSize:12, fontWeight:700, color:STATUS_COLOR[r.status] }}>{STATUS_LABEL[r.status]}</span>
+                  <span style={{ fontSize:11, color:C.dim }}>{r.contact_name || r.phone}</span>
+                </div>
+                <div style={{ fontSize:13, color:C.muted, lineHeight:1.5 }}>{r.message}</div>
+                <div style={{ fontSize:11, color:C.dim, marginTop:6 }}>{new Date(r.scheduled_at).toLocaleString('pt-BR')}</div>
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
