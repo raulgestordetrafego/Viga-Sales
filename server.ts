@@ -155,6 +155,90 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  // ── AI Suggestions ───────────────────────────────────────────────────────
+  app.post("/api/ai/suggest", async (req: any, res) => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) return res.status(503).json({ error: 'OpenAI não configurado. Adicione OPENAI_API_KEY no .env' });
+    try {
+      const { contactName, phone, company, stage, notes } = req.body;
+      const stageLabels: Record<string,string> = {
+        stage_lead:'Lead', stage_contact:'Contato Feito', stage_proposal:'Proposta',
+        stage_negotiation:'Negociação', stage_won:'Ganho', stage_lost:'Perdido',
+      };
+      const prompt = `Você é um assistente de vendas consultivo. Escreva uma mensagem de WhatsApp natural, amigável e personalizada para fazer follow-up com o contato abaixo. A mensagem deve ser curta (3-5 linhas), informal mas profissional, em português.
+
+Contato: ${contactName}
+Empresa: ${company || 'não informada'}
+Etapa no pipeline: ${stageLabels[stage] || stage}
+Notas: ${notes || 'sem notas'}
+
+Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
+
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role:'user', content: prompt }], max_tokens: 200, temperature: 0.7 }),
+      });
+      const data: any = await r.json();
+      if (!r.ok) throw new Error(data.error?.message || 'OpenAI error');
+      const suggestion = data.choices?.[0]?.message?.content?.trim();
+      res.json({ suggestion });
+    } catch (err: any) {
+      console.error('[AI] Error:', err.message);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ── Reminders ────────────────────────────────────────────────────────────
+  app.get("/api/reminders", async (req: any, res) => {
+    try {
+      const reminders = await query(`
+        SELECT r.*, c.name as contact_name, c.phone as contact_phone
+        FROM reminders r LEFT JOIN contacts c ON r.contact_id = c.id
+        ORDER BY r.scheduled_at ASC
+      `);
+      res.json(reminders);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.post("/api/reminders", async (req: any, res) => {
+    try {
+      const { contactId, phone, message, scheduledAt } = req.body;
+      if (!phone || !message || !scheduledAt) return res.status(400).json({ error: 'phone, message e scheduledAt são obrigatórios' });
+      const id = uuidv4();
+      await run(`INSERT INTO reminders (id, contact_id, phone, message, scheduled_at, status) VALUES (?, ?, ?, ?, ?, 'pending')`,
+        [id, contactId || null, phone, message, scheduledAt]);
+      res.json({ ok: true, id });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.delete("/api/reminders/:id", async (req: any, res) => {
+    try {
+      await run(`UPDATE reminders SET status = 'cancelled' WHERE id = ?`, [req.params.id]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Scheduler: check pending reminders every 60s
+  setInterval(async () => {
+    try {
+      const now = new Date().toISOString();
+      const due = await query(`SELECT * FROM reminders WHERE status = 'pending' AND scheduled_at <= ?`, [now]);
+      for (const r of due as any[]) {
+        try {
+          await evolutionApi.sendTextMessage(r.phone, r.message);
+          await run(`UPDATE reminders SET status = 'sent', sent_at = CURRENT_TIMESTAMP WHERE id = ?`, [r.id]);
+          console.log(`[Reminder] Sent to ${r.phone}`);
+        } catch (e: any) {
+          await run(`UPDATE reminders SET status = 'failed' WHERE id = ?`, [r.id]);
+          console.error(`[Reminder] Failed for ${r.phone}:`, e.message);
+        }
+      }
+    } catch (e: any) {
+      console.error('[Reminder] Scheduler error:', e.message);
+    }
+  }, 60000);
+
   // DEBUG: View DB Content (somente em desenvolvimento)
   app.get("/api/debug/db", async (req, res) => {
     if (process.env.NODE_ENV === "production") {

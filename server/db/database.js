@@ -320,6 +320,16 @@ async function initializeSchema() {
       status TEXT DEFAULT 'pending',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS reminders (
+      id TEXT PRIMARY KEY,
+      contact_id TEXT,
+      phone TEXT NOT NULL,
+      message TEXT NOT NULL,
+      scheduled_at TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      sent_at TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 

@@ -436,6 +436,7 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
   const [addingAct, setAddingAct]       = useState(false);
   const [actForm, setActForm]           = useState({ type:'note', title:'', description:'' });
   const [savingNotes, setSavingNotes]   = useState(false);
+  const [showFollowUp, setShowFollowUp] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -603,10 +604,105 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
             <div style={{ padding:'14px 24px', borderTop:`1px solid ${C.border}`, display:'flex', gap:10, background:C.surface, flexShrink:0 }}>
               <Btn variant="danger" size="sm" onClick={handleDelete} style={{ marginRight:'auto' }}>🗑 Excluir</Btn>
               <Btn variant="secondary" size="sm" onClick={onClose}>Fechar</Btn>
+              <Btn variant="outline" size="sm" onClick={() => setShowFollowUp(true)}>📅 Lembrete</Btn>
               <Btn size="sm" onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }}>✏️ Editar contato</Btn>
             </div>
+            {showFollowUp && <FollowUpModal contact={contact} onClose={() => setShowFollowUp(false)} />}
           </>
         )}
+      </div>
+    </>
+  );
+}
+
+// ─── FollowUpModal ────────────────────────────────────────────────────────────
+
+function FollowUpModal({ contact, onClose }) {
+  const today = new Date();
+  const pad   = n => String(n).padStart(2,'0');
+  const defaultDate = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  const defaultTime = `${pad(today.getHours()+1)}:00`;
+
+  const [date, setDate]       = useState(defaultDate);
+  const [time, setTime]       = useState(defaultTime);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [suggesting, setSugg] = useState(false);
+
+  const inputStyle = { width:'100%', background:'#0a0d14', border:'1px solid #232840', borderRadius:8, padding:'9px 12px', color:'#e8edf5', fontSize:13, outline:'none', fontFamily:'inherit', boxSizing:'border-box' };
+
+  const suggest = async () => {
+    setSugg(true);
+    try {
+      const r = await fetch('/api/ai/suggest', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ contactName: contact.name, phone: contact.phone, company: contact.company, stage: contact.pipeline_stage, notes: contact.notes }),
+      });
+      const d = await r.json();
+      if (d.suggestion) setMessage(d.suggestion);
+      else toast.error('IA não retornou sugestão');
+    } catch { toast.error('Erro ao consultar IA'); }
+    setSugg(false);
+  };
+
+  const save = async () => {
+    if (!message.trim()) return toast.error('Mensagem obrigatória');
+    if (!date || !time)  return toast.error('Data e hora obrigatórias');
+    setLoading(true);
+    try {
+      const scheduledAt = new Date(`${date}T${time}:00`).toISOString();
+      const r = await fetch('/api/reminders', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ contactId: contact.id, phone: contact.phone, message, scheduledAt }),
+      });
+      if (!r.ok) throw new Error(await r.text());
+      toast.success('Lembrete agendado! ✅');
+      onClose();
+    } catch(e) { toast.error('Erro ao agendar: ' + e.message); }
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:900, backdropFilter:'blur(3px)' }} />
+      <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'min(460px,94vw)', background:'#1a1f2e', borderRadius:18, padding:28, zIndex:901, boxShadow:'0 20px 60px rgba(0,0,0,0.7)', border:'1px solid #232840' }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:22 }}>
+          <div>
+            <div style={{ fontSize:17, fontWeight:800, color:'#e8edf5' }}>📅 Agendar Lembrete</div>
+            <div style={{ fontSize:12, color:'#8b95b0', marginTop:2 }}>para {contact.name}</div>
+          </div>
+          <button onClick={onClose} style={{ background:'#232840', border:'none', color:'#8b95b0', borderRadius:8, width:32, height:32, cursor:'pointer', fontSize:16, fontWeight:700 }}>✕</button>
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:14 }}>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Data</div>
+            <input type="date" value={date} onChange={e => setDate(e.target.value)} style={inputStyle} />
+          </div>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Hora</div>
+            <input type="time" value={time} onChange={e => setTime(e.target.value)} style={inputStyle} />
+          </div>
+        </div>
+
+        <div style={{ marginBottom:14 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em' }}>Mensagem</div>
+            <button onClick={suggest} disabled={suggesting} style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', color:'#fff', borderRadius:8, padding:'5px 13px', cursor:suggesting?'wait':'pointer', fontSize:12, fontWeight:700, opacity:suggesting?0.7:1 }}>
+              {suggesting ? '✨ Gerando...' : '✨ Sugerir com IA'}
+            </button>
+          </div>
+          <textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} placeholder="Mensagem a enviar pelo WhatsApp no horário agendado..." style={{ ...inputStyle, resize:'vertical', minHeight:90, lineHeight:1.6 }} />
+        </div>
+
+        <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
+          <button onClick={onClose} style={{ background:'transparent', border:'1px solid #232840', color:'#8b95b0', borderRadius:10, padding:'9px 18px', cursor:'pointer', fontSize:13, fontWeight:600 }}>Cancelar</button>
+          <button onClick={save} disabled={loading} style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', color:'#fff', borderRadius:10, padding:'9px 22px', cursor:loading?'wait':'pointer', fontSize:13, fontWeight:700, boxShadow:'0 4px 15px #6366f145', opacity:loading?0.7:1 }}>
+            {loading ? 'Agendando...' : '📅 Agendar'}
+          </button>
+        </div>
       </div>
     </>
   );
