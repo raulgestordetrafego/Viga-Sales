@@ -1149,7 +1149,7 @@ function Conversations({ initialContact }) {
     return ()=>window.removeEventListener('resize',onResize);
   },[]);
 
-  const scrollToBottom = useCallback(()=>{ msgEndRef.current?.scrollIntoView({behavior:'smooth'}); },[]);
+  const scrollToBottom = useCallback((instant=false)=>{ msgEndRef.current?.scrollIntoView({behavior:instant?'instant':'smooth'}); },[]);
 
   const loadConvs = useCallback(async ()=>{
     try { const d=await convsApi.list(); setConvs(Array.isArray(d)?d:[]); return Array.isArray(d)?d:[]; }
@@ -1174,7 +1174,7 @@ function Conversations({ initialContact }) {
   },[initialContact,loadConvs]);
 
   useEffect(()=>{
-    if(active?.id) convsApi.messages(active.id).then(setMessages).catch(()=>{});
+    if(active?.id) convsApi.messages(active.id).then(msgs=>{ setMessages(msgs); setTimeout(()=>scrollToBottom(true),50); }).catch(()=>{});
   },[active?.id]);
 
   useEffect(()=>{
@@ -1196,7 +1196,12 @@ function Conversations({ initialContact }) {
     return ()=>socket.off('new_message',handle);
   },[active,scrollToBottom]);
 
-  useEffect(()=>{ scrollToBottom(); },[messages,scrollToBottom]);
+  const prevMsgCount = useRef(0);
+  useEffect(()=>{
+    const isNew = messages.length > prevMsgCount.current;
+    prevMsgCount.current = messages.length;
+    if(isNew) scrollToBottom();
+  },[messages,scrollToBottom]);
 
   const send=async()=>{
     if(!input.trim()||!active||sending) return;
@@ -1277,15 +1282,31 @@ function Conversations({ initialContact }) {
                     }}>
                       {m.type === 'image' && m.media_url ? (
                         <img src={m.media_url} alt="imagem" style={{maxWidth:'100%',borderRadius:6,display:'block',cursor:'pointer'}} onClick={()=>window.open(m.media_url,'_blank')} />
+                      ) : m.type === 'image' ? (
+                        <div style={{display:'flex',alignItems:'center',gap:8,color:'#8696a0',fontSize:13,padding:'4px 0'}}>
+                          <span style={{fontSize:22}}>🖼️</span><span>Imagem</span>
+                        </div>
                       ) : m.type === 'audio' && m.media_url ? (
                         <audio controls src={m.media_url} style={{maxWidth:'240px',height:36,display:'block'}} />
+                      ) : m.type === 'audio' ? (
+                        <div style={{display:'flex',alignItems:'center',gap:8,color:'#8696a0',fontSize:13,padding:'4px 0'}}>
+                          <span style={{fontSize:22}}>🎵</span><span>Áudio</span>
+                        </div>
                       ) : m.type === 'video' && m.media_url ? (
                         <video controls src={m.media_url} style={{maxWidth:'100%',borderRadius:6,display:'block'}} />
+                      ) : m.type === 'video' ? (
+                        <div style={{display:'flex',alignItems:'center',gap:8,color:'#8696a0',fontSize:13,padding:'4px 0'}}>
+                          <span style={{fontSize:22}}>🎬</span><span>Vídeo</span>
+                        </div>
                       ) : m.type === 'document' && m.media_url ? (
                         <a href={m.media_url} download style={{color:'#53bdeb',textDecoration:'none',display:'flex',alignItems:'center',gap:6}}>
                           <span style={{fontSize:20}}>📄</span>
                           <span style={{fontSize:13}}>{m.content||'Documento'}</span>
                         </a>
+                      ) : m.type === 'document' ? (
+                        <div style={{display:'flex',alignItems:'center',gap:8,color:'#8696a0',fontSize:13,padding:'4px 0'}}>
+                          <span style={{fontSize:22}}>📄</span><span>{m.content||'Documento'}</span>
+                        </div>
                       ) : m.type==='sticker' ? (
                         <span style={{fontSize:13,color:'#8696a0',fontStyle:'italic'}}>🖼️ figurinha</span>
                       ) : m.type==='location' ? (
