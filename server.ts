@@ -210,6 +210,27 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     }
   });
 
+  // Helper: salva mensagem enviada no banco e emite socket
+  async function saveOutboundMessage(contactId: string, phone: string, content: string) {
+    try {
+      const now = new Date().toISOString();
+      let conv = await queryOne(`SELECT * FROM conversations WHERE contact_id = ? ORDER BY updated_at DESC LIMIT 1`, [contactId]);
+      if (!conv) {
+        const convId = uuidv4();
+        await run(`INSERT INTO conversations (id, contact_id, whatsapp_chat_id, status, last_message, last_message_at, created_at, updated_at) VALUES (?, ?, ?, 'open', ?, ?, ?, ?)`,
+          [convId, contactId, phone + '@s.whatsapp.net', content, now, now, now]);
+        conv = await queryOne(`SELECT * FROM conversations WHERE id = ?`, [convId]);
+      } else {
+        await run(`UPDATE conversations SET last_message = ?, last_message_at = ?, updated_at = ? WHERE id = ?`, [content, now, now, conv.id]);
+      }
+      const msgId = uuidv4();
+      await run(`INSERT INTO messages (id, conversation_id, whatsapp_message_id, direction, type, content, status, timestamp) VALUES (?, ?, ?, 'outbound', 'text', ?, 'sent', ?)`,
+        [msgId, conv.id, 'reminder-' + msgId, content, now]);
+      const updatedConv = await queryOne(`SELECT c.*, ct.name as contact_name, ct.phone as contact_phone FROM conversations c JOIN contacts ct ON c.contact_id = ct.id WHERE c.id = ?`, [conv.id]);
+      io.emit('new_message', { conversation: updatedConv, message: { id: msgId, conversation_id: conv.id, direction: 'outbound', type: 'text', content, timestamp: now } });
+    } catch(e: any) { console.error('[Reminder] Erro ao salvar mensagem:', e.message); }
+  }
+
   // ── Reminders ────────────────────────────────────────────────────────────
   app.get("/api/reminders", async (req: any, res) => {
     try {
@@ -235,6 +256,7 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
           await evolutionApi.sendTextMessage(phone, message);
           await run(`INSERT INTO reminders (id, contact_id, phone, message, scheduled_at, status, sent_at) VALUES (?, ?, ?, ?, ?, 'sent', datetime('now'))`,
             [id, contactId || null, phone, message, schedAt]);
+          if (contactId) await saveOutboundMessage(contactId, phone, message);
           return res.json({ ok: true, id, sent: true });
         } catch (e: any) {
           console.error('[Reminder] Falha ao enviar imediatamente:', e.message);
@@ -266,6 +288,7 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
         try {
           await evolutionApi.sendTextMessage(r.phone, r.message);
           await run(`UPDATE reminders SET status = 'sent', sent_at = CURRENT_TIMESTAMP WHERE id = ?`, [r.id]);
+          if (r.contact_id) await saveOutboundMessage(r.contact_id, r.phone, r.message);
           console.log(`[Reminder] Sent to ${r.phone}`);
         } catch (e: any) {
           await run(`UPDATE reminders SET status = 'failed' WHERE id = ?`, [r.id]);
