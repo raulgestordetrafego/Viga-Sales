@@ -615,6 +615,206 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
   );
 }
 
+// ─── FollowUps (inbox de sugestões IA) ───────────────────────────────────────
+
+const INACTIVITY_DAYS = 3; // contatos sem interação há mais de N dias
+
+function FollowUps() {
+  const [contacts, setContacts]   = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [cards, setCards]         = useState({}); // { [contactId]: { msg, status } }
+  const [dismissed, setDismissed] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('fu_dismissed') || '[]'); } catch { return []; }
+  });
+
+  const saveDismissed = (list) => {
+    setDismissed(list);
+    localStorage.setItem('fu_dismissed', JSON.stringify(list));
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const d = await contactsApi.list();
+        const all = Array.isArray(d.contacts) ? d.contacts : [];
+        const cutoff = new Date(Date.now() - INACTIVITY_DAYS * 86400000);
+        const inactive = all.filter(c => {
+          if (dismissed.includes(c.id)) return false;
+          if (!c.last_interaction) return true; // nunca interagiu
+          return new Date(c.last_interaction) < cutoff;
+        });
+        // Ordena: mais urgente primeiro (quem está em etapa avançada + mais tempo sem contato)
+        const stageWeight = { stage_negotiation:5, stage_proposal:4, stage_contact:3, stage_won:2, stage_lead:1, stage_lost:0 };
+        inactive.sort((a,b) => (stageWeight[b.pipeline_stage]||0) - (stageWeight[a.pipeline_stage]||0));
+        setContacts(inactive.slice(0, 15));
+        // Auto-gera sugestões para os 5 primeiros
+        inactive.slice(0, 5).forEach(c => generateSuggestion(c));
+      } catch { toast.error('Erro ao carregar contatos'); }
+      setLoading(false);
+    })();
+  }, []);
+
+  const generateSuggestion = async (contact) => {
+    setCards(prev => ({ ...prev, [contact.id]: { msg: '', status: 'loading' } }));
+    try {
+      const r = await fetch('/api/ai/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contactName: contact.name,
+          phone: contact.phone,
+          company: contact.company,
+          stage: contact.pipeline_stage,
+          notes: contact.notes,
+        }),
+      });
+      const d = await r.json();
+      setCards(prev => ({ ...prev, [contact.id]: { msg: d.suggestion || '', status: 'ready' } }));
+    } catch {
+      setCards(prev => ({ ...prev, [contact.id]: { msg: '', status: 'error' } }));
+    }
+  };
+
+  const sendNow = async (contact) => {
+    const card = cards[contact.id];
+    if (!card?.msg) return toast.error('Gere a mensagem primeiro');
+    setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], status: 'sending' } }));
+    try {
+      const r = await fetch('/api/reminders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contactId: contact.id,
+          phone: contact.phone,
+          message: card.msg,
+          scheduledAt: new Date().toISOString(),
+        }),
+      });
+      if (!r.ok) throw new Error(await r.text());
+      toast.success(`✅ Mensagem enviada para ${contact.name}!`);
+      dismiss(contact.id);
+    } catch(e) {
+      toast.error('Erro: ' + e.message);
+      setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], status: 'ready' } }));
+    }
+  };
+
+  const dismiss = (id) => {
+    saveDismissed([...dismissed, id]);
+    setContacts(prev => prev.filter(c => c.id !== id));
+  };
+
+  const daysSince = (d) => {
+    if (!d) return '∞';
+    const diff = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+    return diff;
+  };
+
+  if (loading) return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:200, color:C.muted, fontSize:14 }}>
+      Analisando contatos...
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 680 }}>
+      <div style={{ marginBottom: 28 }}>
+        <h2 style={{ fontSize:22, fontWeight:800, color:C.text, margin:0 }}>🤖 Follow-ups Inteligentes</h2>
+        <p style={{ color:C.muted, fontSize:13, marginTop:6 }}>
+          Contatos sem interação há mais de {INACTIVITY_DAYS} dias. A IA sugeriu mensagens — aprove ou ignore.
+        </p>
+      </div>
+
+      {contacts.length === 0 && (
+        <div style={{ textAlign:'center', padding:'60px 0', color:C.dim }}>
+          <div style={{ fontSize:48, marginBottom:12 }}>🎉</div>
+          <div style={{ fontSize:16, fontWeight:700, color:C.muted }}>Nenhum follow-up pendente!</div>
+          <div style={{ fontSize:13, marginTop:6 }}>Todos os contatos foram contatados recentemente.</div>
+        </div>
+      )}
+
+      <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+        {contacts.map(contact => {
+          const card = cards[contact.id] || {};
+          const days = daysSince(contact.last_interaction);
+          const urgency = days === '∞' || days > 7 ? C.danger : days > 4 ? C.warning : C.primary;
+
+          return (
+            <div key={contact.id} style={{
+              background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20,
+              boxShadow: '0 2px 12px rgba(0,0,0,0.2)', borderLeft: `3px solid ${urgency}`,
+            }}>
+              {/* Header do card */}
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
+                <Avatar name={contact.name} size={42} />
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:15, fontWeight:700, color:C.text }}>{contact.name}</div>
+                  <div style={{ fontSize:12, color:C.muted }}>{contact.company || ''} {contact.phone}</div>
+                </div>
+                <div style={{ textAlign:'right', flexShrink:0 }}>
+                  <Badge color={STAGE_COLORS[contact.pipeline_stage]||C.primary}>{STAGE_LABELS[contact.pipeline_stage]}</Badge>
+                  <div style={{ fontSize:11, color: urgency, fontWeight:700, marginTop:4 }}>
+                    {days === '∞' ? 'Nunca contatado' : `${days}d sem contato`}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mensagem sugerida */}
+              <div style={{ background: C.surface, borderRadius:10, padding:'12px 14px', marginBottom:14, border:`1px solid ${C.border}`, minHeight:60, position:'relative' }}>
+                {card.status === 'loading' ? (
+                  <div style={{ color:C.dim, fontSize:13, fontStyle:'italic' }}>✨ IA gerando sugestão...</div>
+                ) : card.status === 'error' ? (
+                  <div style={{ color:C.danger, fontSize:13 }}>Erro ao gerar sugestão.</div>
+                ) : card.msg ? (
+                  <textarea
+                    value={card.msg}
+                    onChange={e => setCards(prev => ({ ...prev, [contact.id]: { ...prev[contact.id], msg: e.target.value } }))}
+                    rows={3}
+                    style={{ width:'100%', background:'transparent', border:'none', color:C.text, fontSize:13, lineHeight:1.6, resize:'vertical', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }}
+                  />
+                ) : (
+                  <div style={{ color:C.dim, fontSize:13 }}>Mensagem não gerada ainda.</div>
+                )}
+              </div>
+
+              {/* Ações */}
+              <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+                <button onClick={() => dismiss(contact.id)} style={{
+                  background:'transparent', border:`1px solid ${C.border}`, color:C.dim,
+                  borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:600,
+                }}>❌ Ignorar</button>
+                {!card.msg && card.status !== 'loading' && (
+                  <button onClick={() => generateSuggestion(contact)} style={{
+                    background:`${C.purple}15`, border:`1px solid ${C.purple}35`, color:C.purple,
+                    borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700,
+                  }}>✨ Gerar com IA</button>
+                )}
+                {card.msg && card.status !== 'loading' && (
+                  <button onClick={() => generateSuggestion(contact)} style={{
+                    background:`${C.purple}15`, border:`1px solid ${C.purple}35`, color:C.purple,
+                    borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700,
+                  }}>🔄 Regerar</button>
+                )}
+                <button
+                  onClick={() => sendNow(contact)}
+                  disabled={!card.msg || card.status === 'loading' || card.status === 'sending'}
+                  style={{
+                    background:`linear-gradient(135deg,${C.success},#059669)`, border:'none', color:'#fff',
+                    borderRadius:9, padding:'7px 18px', cursor:(!card.msg||card.status==='loading'||card.status==='sending')?'not-allowed':'pointer',
+                    fontSize:12, fontWeight:700, boxShadow:`0 3px 10px ${C.success}40`,
+                    opacity:(!card.msg||card.status==='loading'||card.status==='sending')?0.6:1,
+                  }}>
+                  {card.status === 'sending' ? 'Enviando...' : '✅ Enviar agora'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── FollowUpModal ────────────────────────────────────────────────────────────
 
 function FollowUpModal({ contact, onClose }) {
@@ -1549,6 +1749,7 @@ const NAV = [
   { id:'contacts',      label:'Contatos',       icon:'👥' },
   { id:'conversations', label:'Conversas',      icon:'💬' },
   { id:'pipeline',      label:'Pipeline',       icon:'📈' },
+  { id:'followups',     label:'Follow-ups',     icon:'🤖' },
   { id:'broadcasts',    label:'Disparos',       icon:'📢' },
   { id:'tasks',         label:'Tarefas',        icon:'✅' },
   { id:'settings',      label:'Configurações',  icon:'⚙️' },
@@ -1792,6 +1993,7 @@ export default function App() {
             {page==='contacts'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Contacts /></div>}
             {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
             {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Pipeline /></div>}
+            {page==='followups'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><FollowUps /></div>}
             {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Broadcasts /></div>}
             {page==='tasks'         &&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}><TasksModule currentUser={currentUser} /></div>}
             {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Settings /></div>}

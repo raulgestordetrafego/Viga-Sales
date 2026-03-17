@@ -155,6 +155,22 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  // ── Follow-up: contatos inativos ─────────────────────────────────────────
+  app.get("/api/followup/inactive", async (req: any, res) => {
+    try {
+      const days = parseInt(String(req.query.days || '3'));
+      const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+      const contacts = await query(`
+        SELECT * FROM contacts
+        WHERE status != 'inactive'
+          AND (last_interaction IS NULL OR last_interaction < ?)
+        ORDER BY pipeline_stage DESC, last_interaction ASC
+        LIMIT 20
+      `, [cutoff]);
+      res.json({ contacts });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
   // ── AI Suggestions ───────────────────────────────────────────────────────
   app.post("/api/ai/suggest", async (req: any, res) => {
     const apiKey = process.env.OPENAI_API_KEY;
