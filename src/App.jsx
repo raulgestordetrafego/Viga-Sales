@@ -1142,6 +1142,7 @@ function Conversations({ initialContact }) {
   const [winW, setWinW] = useState(window.innerWidth);
   const isMobile = winW < 600;
   const msgEndRef = useRef(null);
+  const listScrollRef = useRef(null);
 
   useEffect(()=>{
     const onResize=()=>setWinW(window.innerWidth);
@@ -1226,7 +1227,7 @@ function Conversations({ initialContact }) {
             <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
             <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
           </div>
-          <div style={{flex:1,overflowY:'scroll'}}>
+          <div ref={listScrollRef} style={{flex:1,overflowY:'scroll'}}>
             {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
             {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
             {convs.map(c=>(
@@ -1255,7 +1256,7 @@ function Conversations({ initialContact }) {
 
       {/* Chat */}
       {showChat && (
-        <div style={{display:'flex',flexDirection:'column',background:'#0b141a',height:'100%'}}>
+        <div style={{display:'flex',flexDirection:'column',background:'#0b141a',minHeight:0,overflow:'hidden'}}>
           {active ? (
             <>
               <div style={{padding:'12px 16px',background:'#1f2c34',borderBottom:`1px solid #2a2d3e`,display:'flex',alignItems:'center',gap:12}}>
