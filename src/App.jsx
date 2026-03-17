@@ -1943,21 +1943,18 @@ export default function App() {
       {/* Header */}
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
-          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:`linear-gradient(135deg,${C.navy},#0f2540)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px ${C.navy}80`,border:`2px solid ${C.primary}60`,overflow:'hidden'}}>
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="11" y="3" width="6" height="22" fill="#1A365D"/>
-              <rect x="11" y="13" width="6" height="3" fill="#8B5E2A"/>
-              <rect x="11" y="16" width="6" height="2" fill="#E67E22" opacity="0.9"/>
-              <rect x="9" y="10" width="10" height="1.5" fill="#1A365D" opacity="0.7"/>
-              <rect x="8" y="21" width="12" height="3" fill="#1A365D"/>
-              <rect x="8" y="4" width="12" height="3" fill="#1A365D"/>
-              <rect x="11" y="3" width="6" height="22" fill="url(#ig)"/>
-              <defs>
-                <linearGradient id="ig" x1="11" y1="3" x2="17" y2="25" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#2E6DA4"/>
-                  <stop offset="100%" stopColor="#1A365D"/>
-                </linearGradient>
-              </defs>
+          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
+            <svg width="30" height="38" viewBox="0 0 36 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Cubo — face superior */}
+              <polygon points="18,2 32,9 18,16 4,9" fill="#F5A830"/>
+              {/* Cubo — face esquerda */}
+              <polygon points="4,9 18,16 18,27 4,20" fill="#C07518"/>
+              {/* Cubo — face direita */}
+              <polygon points="32,9 18,16 18,27 32,20" fill="#D98920"/>
+              {/* Coluna — face esquerda (frente) */}
+              <polygon points="4,20 18,27 18,50 4,43" fill="#1E4A82"/>
+              {/* Coluna — face direita (lado) */}
+              <polygon points="32,20 18,27 18,50 32,43" fill="#0c2244"/>
             </svg>
           </div>
           {!compact && <div>
@@ -2110,11 +2107,12 @@ export default function App() {
                 ☰
               </button>
               <div style={{display:'flex',alignItems:'center',gap:8}}>
-                <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
-                  <rect x="8" y="4" width="12" height="3" fill="#1A365D"/>
-                  <rect x="11" y="7" width="6" height="14" fill="#2E6DA4"/>
-                  <rect x="11" y="13" width="6" height="2.5" fill="#E67E22"/>
-                  <rect x="8" y="21" width="12" height="3" fill="#1A365D"/>
+                <svg width="18" height="24" viewBox="0 0 36 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+                  <polygon points="18,2 32,9 18,16 4,9" fill="#F5A830"/>
+                  <polygon points="4,9 18,16 18,27 4,20" fill="#C07518"/>
+                  <polygon points="32,9 18,16 18,27 32,20" fill="#D98920"/>
+                  <polygon points="4,20 18,27 18,50 4,43" fill="#1E4A82"/>
+                  <polygon points="32,20 18,27 18,50 32,43" fill="#0c2244"/>
                 </svg>
                 <span style={{fontSize:16,fontWeight:800,color:C.text,fontFamily:"'Archivo',sans-serif"}}>Viga Sales</span>
               </div>
