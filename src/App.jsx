@@ -1954,8 +1954,8 @@ export default function App() {
               <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
               <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
               <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
-              <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
-              <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
+              <polygon points="10,49 24,56 24,98 10,91" fill="#1C3F70"/>
+              <polygon points="38,49 24,56 24,98 38,91" fill="#0E2448"/>
             </svg>
           </div>
           {!compact && <div>
