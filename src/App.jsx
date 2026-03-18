@@ -3,6 +3,11 @@ import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
 import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi } from './api';
 import TasksModule from './TasksModule';
+import {
+  LayoutDashboard, Users, MessageSquare, TrendingUp,
+  Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
+  Search, LogOut,
+} from 'lucide-react';
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
 const socket = io(window.location.origin);
@@ -1974,14 +1979,14 @@ function UserManagement() {
 // ─── App Shell ────────────────────────────────────────────────────────────────
 
 const NAV = [
-  { id:'dashboard',     label:'Dashboard',     icon:'📊' },
-  { id:'contacts',      label:'Contatos',       icon:'👥' },
-  { id:'conversations', label:'Conversas',      icon:'💬' },
-  { id:'pipeline',      label:'Pipeline',       icon:'📈' },
-  { id:'followups',     label:'Follow-ups',     icon:'🤖' },
-  { id:'broadcasts',    label:'Disparos',       icon:'📢' },
-  { id:'tasks',         label:'Tarefas',        icon:'✅' },
-  { id:'settings',      label:'Configurações',  icon:'⚙️' },
+  { id:'dashboard',     label:'Dashboard',     Icon: LayoutDashboard },
+  { id:'contacts',      label:'Contatos',       Icon: Users           },
+  { id:'conversations', label:'Conversas',      Icon: MessageSquare   },
+  { id:'pipeline',      label:'Pipeline',       Icon: TrendingUp      },
+  { id:'followups',     label:'Follow-ups',     Icon: Repeat2         },
+  { id:'broadcasts',    label:'Disparos',       Icon: Megaphone       },
+  { id:'tasks',         label:'Tarefas',        Icon: CheckSquare     },
+  { id:'settings',      label:'Configurações',  Icon: SettingsIcon    },
 ];
 
 export default function App() {
@@ -2131,7 +2136,7 @@ export default function App() {
             }}
               onMouseOver={e=>{ if(!active){e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.text;} }}
               onMouseOut={e=>{ if(!active){e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.muted;} }}>
-              <span style={{fontSize:compact?20:16}}>{p.icon}</span>
+              <p.Icon size={compact?20:17} strokeWidth={1.75} style={{flexShrink:0}} />
               {!compact && p.label}
               {p.id==='conversations'&&unread>0&&(
                 <span style={{
@@ -2158,7 +2163,7 @@ export default function App() {
         }}
           onMouseOver={e=>{e.currentTarget.style.borderColor=C.primary;e.currentTarget.style.color=C.text;}}
           onMouseOut={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.color=C.dim;}}>
-          <span style={{fontSize:compact?18:14}}>🔍</span>
+          <Search size={compact?18:14} strokeWidth={1.75} style={{flexShrink:0}} />
           {!compact && <span>Buscar...</span>}
           {!compact && <span style={{marginLeft:'auto',fontSize:11,background:`${C.primary}20`,color:C.primary,borderRadius:4,padding:'1px 5px'}}>⌘K</span>}
         </div>
@@ -2187,18 +2192,18 @@ export default function App() {
           <div title="Sair" onClick={handleLogout} style={{display:'flex',justifyContent:'center',padding:'10px',cursor:'pointer',borderRadius:10,color:C.dim}}
             onMouseOver={e=>{e.currentTarget.style.background='#ffffff08';e.currentTarget.style.color=C.danger;}}
             onMouseOut={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=C.dim;}}>
-            🚪
+            <LogOut size={18} strokeWidth={1.75} />
           </div>
         ) : (
           <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:12,background:C.bg,border:`1px solid ${C.border}`}}>
             <Avatar name={currentUser?.name || 'U'} size={32} />
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontSize:12,fontWeight:700,color:C.text,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{currentUser?.name || 'Usuário'}</div>
-              <div style={{fontSize:10,color:C.dim,textTransform:'capitalize'}}>{currentUser?.role === 'master' ? '👑 Master' : currentUser?.role === 'admin' ? '🛡️ Admin' : '👤 Usuário'}</div>
+              <div style={{fontSize:10,color:C.dim,textTransform:'capitalize'}}>{currentUser?.role === 'master' ? 'Master' : currentUser?.role === 'admin' ? 'Admin' : 'Usuário'}</div>
             </div>
-            <button onClick={handleLogout} title="Sair" style={{background:'transparent',border:'none',cursor:'pointer',color:C.dim,fontSize:16,padding:4,borderRadius:8,flexShrink:0}}
+            <button onClick={handleLogout} title="Sair" style={{background:'transparent',border:'none',cursor:'pointer',color:C.dim,padding:4,borderRadius:8,flexShrink:0,display:'flex',alignItems:'center'}}
               onMouseOver={e=>e.currentTarget.style.color=C.danger} onMouseOut={e=>e.currentTarget.style.color=C.dim}>
-              🚪
+              <LogOut size={16} strokeWidth={1.75} />
             </button>
           </div>
         )}
@@ -2258,8 +2263,8 @@ export default function App() {
           {/* Mobile top bar */}
           {isMobile && (
             <div style={{height:56,background:C.surface,borderBottom:`1px solid ${C.border}`,display:'flex',alignItems:'center',padding:'0 16px',gap:12,flexShrink:0,zIndex:10}}>
-              <button onClick={()=>setSidebarOpen(true)} style={{background:'transparent',border:'none',color:C.text,cursor:'pointer',fontSize:22,display:'flex',alignItems:'center',padding:4}}>
-                ☰
+              <button onClick={()=>setSidebarOpen(true)} style={{background:'transparent',border:'none',color:C.text,cursor:'pointer',display:'flex',alignItems:'center',padding:4}}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="5" width="18" height="1.8" rx="1" fill="currentColor"/><rect x="2" y="10.1" width="18" height="1.8" rx="1" fill="currentColor"/><rect x="2" y="15.2" width="18" height="1.8" rx="1" fill="currentColor"/></svg>
               </button>
               <div style={{display:'flex',alignItems:'center',gap:8}}>
                 <svg width="18" height="36" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
