@@ -68,23 +68,31 @@ router.post('/:id/messages', async (req, res) => {
     `, [req.params.id]);
     if (!conv) return res.status(404).json({ error: 'Conversa não encontrada' });
 
+    // Se veio base64, usa diretamente como media_url (Evolution API v2 aceita data URI)
+    const effectiveMediaUrl = req.body.base64 || media_url;
+
     // Enviar via Evolution API
     let result;
     if (type === 'text') {
       result = await evolutionApi.sendTextMessage(conv.phone, content);
     } else if (type === 'image') {
-      result = await evolutionApi.sendImageMessage(conv.phone, media_url, content);
+      result = await evolutionApi.sendImageMessage(conv.phone, effectiveMediaUrl, content);
+    } else if (type === 'audio') {
+      result = await evolutionApi.sendAudioMessage(conv.phone, effectiveMediaUrl);
     } else if (type === 'document') {
-      result = await evolutionApi.sendDocumentMessage(conv.phone, media_url, content);
+      result = await evolutionApi.sendDocumentMessage(conv.phone, effectiveMediaUrl, content);
     }
 
     // Salvar mensagem no banco
     const msgId = uuidv4();
     const now = new Date().toISOString();
+    // Não salvar base64 no banco — sem media_url real para mídia base64
+    const savedMediaUrl = req.body.base64 ? null : (media_url || null);
+
     await run(`
       INSERT INTO messages (id, conversation_id, whatsapp_message_id, direction, type, content, media_url, status, timestamp)
       VALUES (?, ?, ?, 'outbound', ?, ?, ?, 'sent', ?)
-    `, [msgId, req.params.id, result?.key?.id || null, type, content || null, media_url || null, now]);
+    `, [msgId, req.params.id, result?.key?.id || null, type, content || null, savedMediaUrl, now]);
 
     await run(`
       UPDATE conversations SET last_message = ?, last_message_at = ?, updated_at = ? WHERE id = ?

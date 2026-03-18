@@ -38,6 +38,7 @@ export const conversations = {
   list:        (p)     => api.get('/conversations', { params: p }).then(r => r.data),
   messages:    (id, p) => api.get(`/conversations/${id}/messages`, { params: p }).then(r => r.data),
   sendMessage: (id, d) => api.post(`/conversations/${id}/messages`, d).then(r => r.data),
+  sendMedia:   (id, d) => api.post(`/conversations/${id}/messages`, d).then(r => r.data),
   orCreate:    (cId)   => api.get(`/conversations/or-create/${cId}`).then(r => r.data),
   setStatus:   (id, s) => api.patch(`/conversations/${id}/status`, { status: s }).then(r => r.data),
   markRead:    (id)    => api.put(`/conversations/${id}/read`).then(r => r.data),

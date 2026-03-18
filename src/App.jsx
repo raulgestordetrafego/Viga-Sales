@@ -7,7 +7,7 @@ import ClientBriefing from './ClientBriefing';
 import {
   LayoutDashboard, Users, MessageSquare, TrendingUp,
   Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
-  Search, LogOut,
+  Search, LogOut, Paperclip, Mic, MicOff, X, Send,
 } from 'lucide-react';
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
@@ -1259,6 +1259,11 @@ function Conversations({ initialContact }) {
   const isMobile = winW < 600;
   const msgEndRef = useRef(null);
   const listScrollRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const [mediaPreview, setMediaPreview] = useState(null); // { type:'image'|'audio', url, base64, mimeType }
+  const [recording, setRecording] = useState(false);
 
   useEffect(()=>{
     const onResize=()=>setWinW(window.innerWidth);
@@ -1321,6 +1326,7 @@ function Conversations({ initialContact }) {
   },[messages,scrollToBottom]);
 
   const send=async()=>{
+    if(mediaPreview) { await sendMedia(); return; }
     if(!input.trim()||!active||sending) return;
     const text=input; setSending(true); setInput('');
     try {
@@ -1328,6 +1334,63 @@ function Conversations({ initialContact }) {
       setMessages(prev=>prev.some(m=>m.id===sent.id)?prev:[...prev,sent]);
     } catch { toast.error('Erro ao enviar mensagem'); setInput(text); }
     finally { setSending(false); }
+  };
+
+  const sendMedia=async()=>{
+    if(!mediaPreview||!active||sending) return;
+    setSending(true);
+    const preview=mediaPreview;
+    setMediaPreview(null);
+    const caption=input.trim(); setInput('');
+    try {
+      const sent=await convsApi.sendMedia(active.id,{
+        type: preview.type,
+        base64: preview.base64,
+        content: caption||null,
+      });
+      setMessages(prev=>prev.some(m=>m.id===sent.id)?prev:[...prev,{
+        ...sent,
+        // show locally until server confirms
+        media_url: preview.url,
+      }]);
+    } catch(e) { toast.error('Erro ao enviar mídia'); setMediaPreview(preview); }
+    finally { setSending(false); }
+  };
+
+  const handleFileChange=async(e)=>{
+    const file=e.target.files?.[0];
+    if(!file) return;
+    e.target.value='';
+    const reader=new FileReader();
+    reader.onload=()=>{
+      setMediaPreview({ type:'image', url: reader.result, base64: reader.result, mimeType: file.type });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const toggleRecording=async()=>{
+    if(recording){
+      mediaRecorderRef.current?.stop();
+      return;
+    }
+    try {
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      const mr=new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')?'audio/ogg;codecs=opus':'audio/webm' });
+      audioChunksRef.current=[];
+      mr.ondataavailable=e=>audioChunksRef.current.push(e.data);
+      mr.onstop=()=>{
+        stream.getTracks().forEach(t=>t.stop());
+        const blob=new Blob(audioChunksRef.current,{type: mr.mimeType});
+        const url=URL.createObjectURL(blob);
+        const reader=new FileReader();
+        reader.onload=()=>setMediaPreview({type:'audio', url, base64: reader.result, mimeType: mr.mimeType});
+        reader.readAsDataURL(blob);
+        setRecording(false);
+      };
+      mr.start();
+      mediaRecorderRef.current=mr;
+      setRecording(true);
+    } catch { toast.error('Permissão de microfone negada'); }
   };
 
   const showList = !isMobile || !active;
@@ -1457,11 +1520,50 @@ function Conversations({ initialContact }) {
                 ))}
                 <div ref={msgEndRef} />
               </div>
-              <div style={{padding:'10px 16px',background:'#1f2c34',display:'flex',alignItems:'center',gap:12}}>
-                <input value={input} onChange={e=>setInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&send()}
-                  placeholder="Digite sua mensagem..."
-                  style={{flex:1,background:'#2a3942',border:'none',borderRadius:10,padding:'12px 16px',color:'#d1d7db',outline:'none',fontSize:14,fontFamily:'inherit'}} />
-                <button onClick={send} disabled={sending||!input.trim()} style={{background:'#00a884',border:'none',borderRadius:10,padding:'10px 18px',cursor:'pointer',color:'#fff',fontSize:18,opacity:sending||!input.trim()?0.6:1,transition:'opacity 0.15s'}}>➤</button>
+              {/* Prévia de mídia */}
+              {mediaPreview && (
+                <div style={{padding:'8px 16px',background:'#1a2530',borderTop:'1px solid #2a3942',display:'flex',alignItems:'center',gap:12}}>
+                  {mediaPreview.type==='image' ? (
+                    <img src={mediaPreview.url} alt="preview" style={{height:72,borderRadius:8,objectFit:'cover',border:'1px solid #2a3942'}} />
+                  ) : (
+                    <div style={{display:'flex',alignItems:'center',gap:8,background:'#2a3942',borderRadius:8,padding:'8px 12px'}}>
+                      <Mic size={18} color='#00a884' />
+                      <audio controls src={mediaPreview.url} style={{height:32,maxWidth:200}} />
+                    </div>
+                  )}
+                  <button onClick={()=>setMediaPreview(null)} style={{background:'none',border:'none',color:'#8696a0',cursor:'pointer',padding:4}} title="Remover">
+                    <X size={18} />
+                  </button>
+                </div>
+              )}
+              {/* Barra de digitação */}
+              <div style={{padding:'10px 12px',background:'#1f2c34',display:'flex',alignItems:'center',gap:8}}>
+                <input type="file" ref={fileInputRef} accept="image/*" style={{display:'none'}} onChange={handleFileChange} />
+                <button onClick={()=>fileInputRef.current?.click()} disabled={recording}
+                  title="Enviar imagem"
+                  style={{background:'none',border:'none',color:recording?'#444':'#8696a0',cursor:recording?'default':'pointer',padding:6,borderRadius:8,flexShrink:0,display:'flex',alignItems:'center',transition:'color 0.15s'}}
+                  onMouseOver={e=>{ if(!recording) e.currentTarget.style.color='#00a884'; }}
+                  onMouseOut={e=>{ e.currentTarget.style.color=recording?'#444':'#8696a0'; }}>
+                  <Paperclip size={20} />
+                </button>
+                <button onClick={toggleRecording}
+                  title={recording?'Parar gravação':'Gravar áudio'}
+                  style={{background:recording?'#ef444420':'none',border:recording?'1px solid #ef4444':'none',color:recording?'#ef4444':'#8696a0',cursor:'pointer',padding:6,borderRadius:8,flexShrink:0,display:'flex',alignItems:'center',transition:'all 0.15s'}}
+                  onMouseOver={e=>{ if(!recording) e.currentTarget.style.color='#00a884'; }}
+                  onMouseOut={e=>{ if(!recording) e.currentTarget.style.color='#8696a0'; }}>
+                  {recording ? <MicOff size={20} /> : <Mic size={20} />}
+                </button>
+                <input value={input} onChange={e=>setInput(e.target.value)}
+                  onKeyPress={e=>e.key==='Enter'&&!e.shiftKey&&send()}
+                  placeholder={recording?'Gravando... clique no mic para parar':mediaPreview?'Legenda (opcional)...':'Digite sua mensagem...'}
+                  disabled={recording}
+                  style={{flex:1,background:'#2a3942',border:'none',borderRadius:10,padding:'11px 15px',color:'#d1d7db',outline:'none',fontSize:14,fontFamily:'inherit',opacity:recording?0.5:1}} />
+                <button onClick={send}
+                  disabled={sending||recording||(!input.trim()&&!mediaPreview)}
+                  title="Enviar"
+                  style={{background:'#00a884',border:'none',borderRadius:10,padding:'9px 14px',cursor:'pointer',color:'#fff',display:'flex',alignItems:'center',opacity:(sending||recording||(!input.trim()&&!mediaPreview))?0.5:1,transition:'opacity 0.15s',flexShrink:0}}>
+                  <Send size={18} />
+                </button>
               </div>
             </>
           ) : (
