@@ -1874,7 +1874,7 @@ const NAV = [
 
 export default function App() {
   const storedUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(true); // AUTH TEMPORARIAMENTE DESATIVADO
   const [currentUser, setCurrentUser] = useState(storedUser);
   const [page, setPage] = useState('dashboard');
   const [wpState, setWpState] = useState('checking');
