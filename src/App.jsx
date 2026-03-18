@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
 import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi } from './api';
 import TasksModule from './TasksModule';
+import ClientBriefing from './ClientBriefing';
 import {
   LayoutDashboard, Users, MessageSquare, TrendingUp,
   Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
@@ -525,6 +526,7 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
   const [actForm, setActForm]           = useState({ type:'note', title:'', description:'' });
   const [savingNotes, setSavingNotes]   = useState(false);
   const [showFollowUp, setShowFollowUp] = useState(false);
+  const [showBriefing, setShowBriefing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -689,13 +691,15 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
             </div>
 
             {/* ── Footer ── */}
-            <div style={{ padding:'14px 24px', borderTop:`1px solid ${C.border}`, display:'flex', gap:10, background:C.surface, flexShrink:0 }}>
+            <div style={{ padding:'14px 24px', borderTop:`1px solid ${C.border}`, display:'flex', gap:10, background:C.surface, flexShrink:0, flexWrap:'wrap' }}>
               <Btn variant="danger" size="sm" onClick={handleDelete} style={{ marginRight:'auto' }}>🗑 Excluir</Btn>
               <Btn variant="secondary" size="sm" onClick={onClose}>Fechar</Btn>
               <Btn variant="outline" size="sm" onClick={() => setShowFollowUp(true)}>📅 Lembrete</Btn>
+              <Btn variant="outline" size="sm" onClick={() => setShowBriefing(true)} style={{ borderColor:`${C.primary}60`, color:C.primary }}>📋 Briefing</Btn>
               <Btn size="sm" onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }}>✏️ Editar contato</Btn>
             </div>
             {showFollowUp && <FollowUpModal contact={contact} onClose={() => setShowFollowUp(false)} />}
+            {showBriefing && <ClientBriefing contact={contact} onClose={() => setShowBriefing(false)} />}
           </>
         )}
       </div>
