@@ -454,6 +454,55 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     });
   });
 
+  // ── Stats extras ────────────────────────────────────────────────────────────
+  app.get("/api/stats/daily", async (req: any, res) => {
+    try {
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.','');
+        const row = await queryOne("SELECT COUNT(*) as count FROM messages WHERE timestamp LIKE ?", [`${dateStr}%`]).catch(() => ({ count: 0 }));
+        days.push({ date: dateStr, label, count: parseInt((row as any)?.count || 0) });
+      }
+      res.json(days);
+    } catch (err) { res.status(500).json({ error: 'Erro' }); }
+  });
+
+  app.get("/api/stats/recent-contacts", async (req: any, res) => {
+    try {
+      const rows = await query(`
+        SELECT c.id, c.name, c.phone, c.pipeline_stage, MAX(m.timestamp) as last_msg
+        FROM contacts c
+        LEFT JOIN conversations cv ON cv.contact_id = c.id
+        LEFT JOIN messages m ON m.conversation_id = cv.id
+        GROUP BY c.id
+        ORDER BY CASE WHEN MAX(m.timestamp) IS NULL THEN 1 ELSE 0 END, MAX(m.timestamp) DESC
+        LIMIT 6
+      `);
+      res.json(rows);
+    } catch (err) { res.status(500).json({ error: 'Erro' }); }
+  });
+
+  app.get("/api/search", async (req: any, res) => {
+    try {
+      const q = `%${(req.query.q as string) || ''}%`;
+      const [contacts, convs] = await Promise.all([
+        query("SELECT id, name, phone, company, pipeline_stage FROM contacts WHERE name LIKE ? OR phone LIKE ? OR company LIKE ? LIMIT 6", [q, q, q]).catch(() => []),
+        query(`SELECT cv.id, c.name as contact_name, c.phone, c.id as contact_id FROM conversations cv JOIN contacts c ON c.id = cv.contact_id WHERE c.name LIKE ? OR c.phone LIKE ? LIMIT 4`, [q, q]).catch(() => []),
+      ]);
+      res.json({ contacts, conversations: convs });
+    } catch (err) { res.status(500).json({ error: 'Erro' }); }
+  });
+
+  app.put("/api/conversations/:id/unread", async (req: any, res) => {
+    try {
+      await run("UPDATE conversations SET unread_count = COALESCE(unread_count, 0) + 1 WHERE id = ?", [req.params.id]);
+      res.json({ ok: true });
+    } catch (err) { res.status(500).json({ error: 'Erro' }); }
+  });
+
   // Stats & WhatsApp
   app.get("/api/stats", async (req, res) => {
     try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
-import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, pipeline as pipelineApi } from './api';
+import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi } from './api';
 import TasksModule from './TasksModule';
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
@@ -340,60 +340,142 @@ function LoginPage({ onLogin }) {
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
-function Dashboard() {
-  const [data, setData] = useState(null);
-  const [pipe, setPipe] = useState([]);
+// ─── Mini Bar Chart (SVG) ─────────────────────────────────────────────────────
+function BarChart({ data }) {
+  const max = Math.max(...data.map(d=>d.count), 1);
+  const W = 100, H = 80, barW = 10, gap = 4;
+  const totalW = data.length * (barW + gap) - gap;
+  const startX = (W - totalW) / 2;
+  return (
+    <svg viewBox={`0 0 ${W} ${H+20}`} style={{width:'100%',height:'100%'}}>
+      {data.map((d, i) => {
+        const bh = Math.max(2, (d.count / max) * H);
+        const x = startX + i * (barW + gap);
+        const y = H - bh;
+        const isToday = i === data.length - 1;
+        return (
+          <g key={d.date}>
+            <rect x={x} y={y} width={barW} height={bh} rx={2}
+              fill={isToday ? C.accent : C.primary} opacity={isToday ? 1 : 0.6} />
+            {d.count > 0 && (
+              <text x={x + barW/2} y={y - 3} textAnchor="middle"
+                fontSize="6" fill={C.dim}>{d.count}</text>
+            )}
+            <text x={x + barW/2} y={H + 14} textAnchor="middle"
+              fontSize="6.5" fill={C.muted}>{d.label}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function Dashboard({ onNavigate }) {
+  const [data, setData]     = useState(null);
+  const [pipe, setPipe]     = useState([]);
+  const [daily, setDaily]   = useState([]);
+  const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([statsApi(), contactsApi.pipelineStats().catch(()=>[])])
-      .then(([s,p])=>{ setData(s); setPipe(Array.isArray(p)?p:[]); setLoading(false); })
-      .catch(()=>setLoading(false));
+    Promise.all([
+      statsApi(),
+      contactsApi.pipelineStats().catch(()=>[]),
+      statsDaily().catch(()=>[]),
+      statsRecent().catch(()=>[]),
+    ]).then(([s,p,d,r])=>{
+      setData(s); setPipe(Array.isArray(p)?p:[]);
+      setDaily(Array.isArray(d)?d:[]); setRecent(Array.isArray(r)?r:[]);
+      setLoading(false);
+    }).catch(()=>setLoading(false));
   }, []);
 
   if(loading) return (
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
-      {[1,2,3,4].map(i=><div key={i} style={{height:140,background:C.card,borderRadius:20,border:`1px solid ${C.border}`,animation:'pulse 1.5s ease infinite'}} />)}
+      {[1,2,3,4].map(i=><div key={i} style={{height:140,background:C.card,borderRadius:20,border:`1px solid ${C.border}`}} />)}
     </div>
   );
 
   const total = pipe.reduce((a,s)=>a+s.count,0);
+  const todayMsgs = daily[daily.length-1]?.count ?? 0;
+  const weekMsgs  = daily.reduce((a,d)=>a+d.count,0);
+
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:32}}>
-      <div>
-        <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Dashboard</h2>
-        <p style={{color:C.dim,fontSize:14}}>Visão geral do seu CRM em tempo real.</p>
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',flexWrap:'wrap',gap:12}}>
+        <div>
+          <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Dashboard</h2>
+          <p style={{color:C.dim,fontSize:14}}>Visão geral do seu CRM em tempo real.</p>
+        </div>
+        <div style={{display:'flex',gap:10}}>
+          <Btn size="sm" onClick={()=>onNavigate('contacts')}>+ Novo Contato</Btn>
+          <Btn size="sm" variant="secondary" onClick={()=>onNavigate('conversations')}>💬 Conversas</Btn>
+        </div>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
+
+      {/* KPI Cards */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16}}>
         <StatCard label="Total de Contatos" value={data?.totalContacts??0} icon="👥" color={C.primary} sub="na base de dados" />
         <StatCard label="Conversas Abertas" value={data?.openConvs??0} icon="💬" color={C.success} sub="aguardando resposta" />
-        <StatCard label="Mensagens Hoje" value={data?.todayMessages??0} icon="📩" color={C.warning} sub="enviadas e recebidas" />
+        <StatCard label="Mensagens Hoje" value={todayMsgs} icon="📩" color={C.warning} sub={`${weekMsgs} esta semana`} />
         <StatCard label="Total de Mensagens" value={data?.totalMessages??0} icon="📊" color={C.purple} sub="histórico completo" />
       </div>
-      {pipe.length>0&&(
-        <Card title="Pipeline de Vendas" subtitle="Distribuição de contatos por etapa">
-          <div style={{display:'flex',flexDirection:'column',gap:16}}>
-            {pipe.map(s=>{
-              const pct=total>0?Math.round((s.count/total)*100):0;
-              const color=s.color||STAGE_COLORS[s.id]||C.primary;
+
+      {/* Chart + Recent */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+
+        {/* Gráfico de mensagens */}
+        <Card title="📈 Mensagens — últimos 7 dias" subtitle={`${weekMsgs} mensagens na semana`}>
+          {daily.length > 0
+            ? <div style={{height:120,padding:'8px 0'}}><BarChart data={daily} /></div>
+            : <div style={{textAlign:'center',color:C.dim,padding:32,fontSize:13}}>Sem dados ainda</div>
+          }
+        </Card>
+
+        {/* Pipeline resumo */}
+        <Card title="🎯 Pipeline" subtitle={`${total} contato${total!==1?'s':''} distribuídos`}>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            {pipe.slice(0,4).map(s=>{
+              const pct = total>0 ? Math.round((s.count/total)*100) : 0;
+              const color = STAGE_COLORS[s.id] || C.primary;
               return (
                 <div key={s.id}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8,fontSize:13}}>
-                    <div style={{display:'flex',alignItems:'center',gap:8}}>
-                      <div style={{width:8,height:8,borderRadius:'50%',background:color}} />
-                      <span style={{color:C.muted,fontWeight:600}}>{s.name}</span>
-                    </div>
-                    <div style={{display:'flex',gap:20}}>
-                      <span style={{color:C.dim}}>{s.count} contato{s.count!==1?'s':''}</span>
-                      {s.value>0&&<span style={{color:C.success,fontWeight:700}}>{fmt(s.value)}</span>}
-                    </div>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:12,marginBottom:5}}>
+                    <span style={{color:C.muted,fontWeight:600,display:'flex',alignItems:'center',gap:6}}>
+                      <span style={{width:7,height:7,borderRadius:'50%',background:color,display:'inline-block'}}/>
+                      {s.name}
+                    </span>
+                    <span style={{color:C.dim}}>{s.count} · {pct}%</span>
                   </div>
-                  <div style={{height:6,background:C.bg,borderRadius:3,overflow:'hidden'}}>
+                  <div style={{height:5,background:C.bg,borderRadius:3,overflow:'hidden'}}>
                     <div style={{width:`${pct}%`,height:'100%',background:color,borderRadius:3,transition:'width 0.6s ease'}} />
                   </div>
                 </div>
               );
             })}
+          </div>
+        </Card>
+      </div>
+
+      {/* Contatos recentes */}
+      {recent.length > 0 && (
+        <Card title="🕐 Contatos recentes" subtitle="Últimas interações">
+          <div style={{display:'flex',flexDirection:'column',gap:2}}>
+            {recent.map(c => (
+              <div key={c.id} onClick={()=>onNavigate('contacts', c.id)}
+                style={{display:'flex',alignItems:'center',gap:12,padding:'10px 8px',borderRadius:10,cursor:'pointer',transition:'background .15s'}}
+                onMouseOver={e=>e.currentTarget.style.background='#ffffff08'}
+                onMouseOut={e=>e.currentTarget.style.background=''}>
+                <Avatar name={c.name} size={36} />
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{color:C.text,fontWeight:600,fontSize:14,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.name}</div>
+                  <div style={{color:C.dim,fontSize:12}}>{c.phone}</div>
+                </div>
+                <Badge color={STAGE_COLORS[c.pipeline_stage]||C.primary} style={{fontSize:10,flexShrink:0}}>
+                  {STAGE_LABELS[c.pipeline_stage]||c.pipeline_stage||'Lead'}
+                </Badge>
+              </div>
+            ))}
           </div>
         </Card>
       )}
@@ -958,6 +1040,7 @@ function Contacts() {
   const [contacts, setContacts]     = useState([]);
   const [loading, setLoading]       = useState(true);
   const [search, setSearch]         = useState('');
+  const [stageFilter, setStageFilter] = useState('all');
   const [showModal, setShowModal]   = useState(false);
   const [editing, setEditing]       = useState(null);
   const [drawerId, setDrawerId]     = useState(null);
@@ -1006,11 +1089,11 @@ function Contacts() {
     setTagInput('');
   };
 
-  const filtered = contacts.filter(c=>
-    c.name?.toLowerCase().includes(search.toLowerCase())||
-    c.phone?.includes(search)||
-    c.company?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = contacts.filter(c=>{
+    const matchSearch = c.name?.toLowerCase().includes(search.toLowerCase())||c.phone?.includes(search)||c.company?.toLowerCase().includes(search.toLowerCase());
+    const matchStage = stageFilter==='all' || c.pipeline_stage===stageFilter;
+    return matchSearch && matchStage;
+  });
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:24}}>
@@ -1023,9 +1106,27 @@ function Contacts() {
       </div>
 
       <Card noPad>
-        <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`}}>
+        <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',flexDirection:'column',gap:10}}>
           <input placeholder="🔍 Buscar por nome, telefone ou empresa..." value={search} onChange={e=>setSearch(e.target.value)}
             style={{width:'100%',background:C.bg,border:`1px solid ${C.border}`,borderRadius:10,padding:'10px 16px',color:C.text,fontSize:14,outline:'none'}} />
+          <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+            {[{id:'all',label:'Todos'},
+              {id:'lead',label:'🔵 Lead'},
+              {id:'contact',label:'📞 Contato'},
+              {id:'proposal',label:'📄 Proposta'},
+              {id:'negotiation',label:'🤝 Negociação'},
+              {id:'won',label:'✅ Ganho'},
+              {id:'lost',label:'❌ Perdido'},
+            ].map(f=>(
+              <button key={f.id} onClick={()=>setStageFilter(f.id)} style={{
+                padding:'4px 12px',borderRadius:20,fontSize:12,fontWeight:600,cursor:'pointer',border:'1px solid',
+                background:stageFilter===f.id?C.primary:'transparent',
+                color:stageFilter===f.id?'#fff':C.muted,
+                borderColor:stageFilter===f.id?C.primary:C.border,
+                transition:'all .15s'
+              }}>{f.label}</button>
+            ))}
+          </div>
         </div>
         {loading?(
           <div style={{padding:48,textAlign:'center',color:C.dim}}>Carregando...</div>
@@ -1238,22 +1339,33 @@ function Conversations({ initialContact }) {
             {loading&&<div style={{padding:40,textAlign:'center',color:C.dim,fontSize:13}}>Carregando...</div>}
             {!loading&&convs.length===0&&<EmptyState icon="💬" title="Sem conversas" desc="Mensagens recebidas pelo WhatsApp aparecerão aqui automaticamente." />}
             {convs.map(c=>(
-              <div key={c.id} onClick={()=>{ setActive(c); if(c.unread_count>0){ convsApi.markRead(c.id).catch(()=>{}); setConvs(prev=>prev.map(x=>x.id===c.id?{...x,unread_count:0}:x)); } }} style={{
-                padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
-                background:active?.id===c.id?`${C.primary}18`:'transparent',
-                borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',
-                transition:'background 0.15s',
-              }}>
+              <div key={c.id}
+                onClick={()=>{ setActive(c); if(c.unread_count>0){ convsApi.markRead(c.id).catch(()=>{}); setConvs(prev=>prev.map(x=>x.id===c.id?{...x,unread_count:0}:x)); } }}
+                style={{
+                  padding:'13px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}20`,
+                  background:active?.id===c.id?`${C.primary}18`:'transparent',
+                  borderLeft:active?.id===c.id?`3px solid ${C.primary}`:'3px solid transparent',
+                  transition:'background 0.15s', position:'relative',
+                }}
+                onMouseOver={e=>{ e.currentTarget.style.background=active?.id===c.id?`${C.primary}18`:'#ffffff06'; const btn=e.currentTarget.querySelector('.unread-btn'); if(btn) btn.style.display='flex'; }}
+                onMouseOut={e=>{ e.currentTarget.style.background=active?.id===c.id?`${C.primary}18`:'transparent'; const btn=e.currentTarget.querySelector('.unread-btn'); if(btn) btn.style.display='none'; }}>
                 <div style={{display:'flex',gap:12,alignItems:'center'}}>
                   <Avatar name={c.contact_name||'?'} size={44} />
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}>
-                      <span style={{fontWeight:600,fontSize:14,color:C.text}}>{c.contact_name||'Desconhecido'}</span>
+                      <span style={{fontWeight:c.unread_count>0?700:600,fontSize:14,color:C.text}}>{c.contact_name||'Desconhecido'}</span>
                       <span style={{fontSize:10,color:C.dim}}>{fmtTime(c.last_message_at)}</span>
                     </div>
-                    <div style={{fontSize:12,color:C.muted,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.last_message||'Sem mensagens'}</div>
+                    <div style={{fontSize:12,color:c.unread_count>0?C.muted:C.dim,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',fontWeight:c.unread_count>0?600:400}}>{c.last_message||'Sem mensagens'}</div>
                   </div>
-                  {c.unread_count>0&&<div style={{minWidth:20,height:20,borderRadius:10,background:'#00a884',color:'#fff',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 5px'}}>{c.unread_count>99?'99+':c.unread_count}</div>}
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+                    {c.unread_count>0&&<div style={{minWidth:20,height:20,borderRadius:10,background:'#00a884',color:'#fff',fontSize:10,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 5px'}}>{c.unread_count>99?'99+':c.unread_count}</div>}
+                    <button className="unread-btn" onClick={e=>{ e.stopPropagation(); convsApi.markUnread(c.id).catch(()=>{}); setConvs(prev=>prev.map(x=>x.id===c.id?{...x,unread_count:(x.unread_count||0)+1}:x)); toast.success('Marcado como não lida'); }}
+                      title="Marcar como não lida"
+                      style={{display:'none',background:`${C.primary}25`,border:`1px solid ${C.primary}40`,color:C.primary,borderRadius:6,padding:'2px 6px',cursor:'pointer',fontSize:10,fontWeight:700,alignItems:'center',gap:3}}>
+                      ● não lida
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1883,6 +1995,11 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [winW, setWinW] = useState(window.innerWidth);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQ, setSearchQ] = useState('');
+  const [searchRes, setSearchRes] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const audioRef = useRef(null);
 
   const handleLogout = async () => {
     const token = localStorage.getItem('crm_token');
@@ -1923,10 +2040,36 @@ export default function App() {
   },[]);
 
   useEffect(()=>{
-    const h=(data)=>{ if(page!=='conversations'&&data.message?.direction==='inbound') setUnread(n=>n+1); };
+    const h=(data)=>{
+      if(data.message?.direction==='inbound'){
+        if(page!=='conversations') setUnread(n=>n+1);
+        // Notificação sonora
+        try {
+          const ctx = new (window.AudioContext||window.webkitAudioContext)();
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.frequency.setValueAtTime(880, ctx.currentTime);
+          o.frequency.exponentialRampToValueAtTime(440, ctx.currentTime+0.1);
+          g.gain.setValueAtTime(0.3, ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.3);
+          o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
+        } catch(e){}
+      }
+    };
     socket.on('new_message',h);
     return ()=>socket.off('new_message',h);
   },[page]);
+
+  // Busca global com debounce
+  useEffect(()=>{
+    if(!searchQ.trim()){ setSearchRes(null); return; }
+    setSearchLoading(true);
+    const t = setTimeout(()=>{
+      globalSearch(searchQ).then(r=>{ setSearchRes(r); setSearchLoading(false); }).catch(()=>setSearchLoading(false));
+    }, 350);
+    return ()=>clearTimeout(t);
+  },[searchQ]);
 
   const navigate=(id)=>{ setPage(id); setInitialConv(null); if(id==='conversations') setUnread(0); setSidebarOpen(false); };
 
@@ -1936,6 +2079,13 @@ export default function App() {
   const wpLabel=wpState==='open'?'Conectado':wpState==='checking'?'Verificando...':'Desconectado';
 
   const pagePad = isMobile ? '16px' : '40px 52px';
+
+  // Atalho Ctrl+K para busca
+  useEffect(()=>{
+    const h=(e)=>{ if((e.metaKey||e.ctrlKey)&&e.key==='k'){ e.preventDefault(); setSearchOpen(true); } if(e.key==='Escape') setSearchOpen(false); };
+    window.addEventListener('keydown',h);
+    return ()=>window.removeEventListener('keydown',h);
+  },[]);
 
   // ── Sidebar content (shared between mobile overlay and desktop) ──
   const SidebarContent = ({ compact }) => (
@@ -2009,6 +2159,22 @@ export default function App() {
           );
         })}
       </nav>
+
+      {/* Busca global */}
+      <div style={{padding:'6px 6px 0'}}>
+        <div onClick={()=>setSearchOpen(true)} title="Busca global (Ctrl+K)" style={{
+          display:'flex',alignItems:'center',gap:8,padding:compact?'10px':'10px 14px',
+          borderRadius:10,cursor:'pointer',border:`1px solid ${C.border}`,background:C.bg,
+          color:C.dim,fontSize:13,justifyContent:compact?'center':'flex-start',
+          transition:'all .15s'
+        }}
+          onMouseOver={e=>{e.currentTarget.style.borderColor=C.primary;e.currentTarget.style.color=C.text;}}
+          onMouseOut={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.color=C.dim;}}>
+          <span style={{fontSize:compact?18:14}}>🔍</span>
+          {!compact && <span>Buscar...</span>}
+          {!compact && <span style={{marginLeft:'auto',fontSize:11,background:`${C.primary}20`,color:C.primary,borderRadius:4,padding:'1px 5px'}}>⌘K</span>}
+        </div>
+      </div>
 
       {/* WhatsApp status */}
       <div style={{padding:'10px 6px 0',borderTop:`1px solid ${C.border}`}}>
@@ -2129,7 +2295,7 @@ export default function App() {
 
           {/* Page content */}
           <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minHeight:0}}>
-            {page==='dashboard'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Dashboard /></div>}
+            {page==='dashboard'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Dashboard onNavigate={(p,id)=>{ setPage(p); if(id) setInitialConv(id); }} /></div>}
             {page==='contacts'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Contacts /></div>}
             {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
             {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Pipeline /></div>}
@@ -2172,6 +2338,74 @@ export default function App() {
       </div>
 
       <Toaster position="top-right" toastOptions={{style:{background:C.card,color:C.text,border:`1px solid ${C.border}`,fontSize:14,borderRadius:12}}} />
+
+      {/* ── Modal Busca Global ── */}
+      {searchOpen && (
+        <div onClick={()=>{ setSearchOpen(false); setSearchQ(''); setSearchRes(null); }}
+          style={{position:'fixed',inset:0,background:'#00000090',zIndex:9999,display:'flex',alignItems:'flex-start',justifyContent:'center',paddingTop:80}}>
+          <div onClick={e=>e.stopPropagation()}
+            style={{width:'min(580px,92vw)',background:C.card,borderRadius:18,border:`1px solid ${C.border}`,boxShadow:`0 24px 80px #00000080`,overflow:'hidden'}}>
+            {/* Input */}
+            <div style={{display:'flex',alignItems:'center',gap:12,padding:'16px 20px',borderBottom:`1px solid ${C.border}`}}>
+              <span style={{fontSize:18}}>🔍</span>
+              <input autoFocus value={searchQ} onChange={e=>setSearchQ(e.target.value)}
+                placeholder="Buscar contatos, conversas..."
+                style={{flex:1,background:'transparent',border:'none',outline:'none',color:C.text,fontSize:16}} />
+              {searchLoading && <span style={{color:C.dim,fontSize:12}}>Buscando...</span>}
+              <span onClick={()=>{ setSearchOpen(false); setSearchQ(''); setSearchRes(null); }}
+                style={{color:C.dim,cursor:'pointer',fontSize:13,background:C.bg,borderRadius:6,padding:'3px 8px'}}>Esc</span>
+            </div>
+            {/* Resultados */}
+            {searchRes && (
+              <div style={{maxHeight:400,overflowY:'auto'}}>
+                {searchRes.contacts?.length > 0 && (
+                  <div>
+                    <div style={{padding:'10px 20px 4px',fontSize:11,fontWeight:700,color:C.dim,textTransform:'uppercase',letterSpacing:'.08em'}}>Contatos</div>
+                    {searchRes.contacts.map(c=>(
+                      <div key={c.id} onClick={()=>{ setPage('contacts'); setSearchOpen(false); setSearchQ(''); setSearchRes(null); }}
+                        style={{display:'flex',alignItems:'center',gap:12,padding:'10px 20px',cursor:'pointer',transition:'background .12s'}}
+                        onMouseOver={e=>e.currentTarget.style.background='#ffffff08'}
+                        onMouseOut={e=>e.currentTarget.style.background=''}>
+                        <Avatar name={c.name} size={32} />
+                        <div style={{flex:1}}>
+                          <div style={{color:C.text,fontWeight:600,fontSize:14}}>{c.name}</div>
+                          <div style={{color:C.dim,fontSize:12}}>{c.phone}{c.company?` · ${c.company}`:''}</div>
+                        </div>
+                        <Badge color={STAGE_COLORS[c.pipeline_stage]||C.primary}>{STAGE_LABELS[c.pipeline_stage]||'Lead'}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {searchRes.conversations?.length > 0 && (
+                  <div>
+                    <div style={{padding:'10px 20px 4px',fontSize:11,fontWeight:700,color:C.dim,textTransform:'uppercase',letterSpacing:'.08em'}}>Conversas</div>
+                    {searchRes.conversations.map(c=>(
+                      <div key={c.id} onClick={()=>{ setInitialConv(c); setPage('conversations'); setSearchOpen(false); setSearchQ(''); setSearchRes(null); }}
+                        style={{display:'flex',alignItems:'center',gap:12,padding:'10px 20px',cursor:'pointer',transition:'background .12s'}}
+                        onMouseOver={e=>e.currentTarget.style.background='#ffffff08'}
+                        onMouseOut={e=>e.currentTarget.style.background=''}>
+                        <Avatar name={c.contact_name} size={32} />
+                        <div>
+                          <div style={{color:C.text,fontWeight:600,fontSize:14}}>{c.contact_name}</div>
+                          <div style={{color:C.dim,fontSize:12}}>{c.phone}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {searchRes.contacts?.length===0 && searchRes.conversations?.length===0 && (
+                  <div style={{padding:32,textAlign:'center',color:C.dim,fontSize:14}}>Nenhum resultado para "{searchQ}"</div>
+                )}
+              </div>
+            )}
+            {!searchRes && !searchLoading && (
+              <div style={{padding:'20px 24px',color:C.dim,fontSize:13}}>
+                Digite para buscar contatos e conversas...
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

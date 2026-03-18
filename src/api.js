@@ -41,6 +41,7 @@ export const conversations = {
   orCreate:    (cId)   => api.get(`/conversations/or-create/${cId}`).then(r => r.data),
   setStatus:   (id, s) => api.patch(`/conversations/${id}/status`, { status: s }).then(r => r.data),
   markRead:    (id)    => api.put(`/conversations/${id}/read`).then(r => r.data),
+  markUnread:  (id)    => api.put(`/conversations/${id}/unread`).then(r => r.data),
 };
 
 // ─── Broadcasts ───────────────────────────────────────────────────────────────
@@ -53,7 +54,10 @@ export const broadcasts = {
 };
 
 // ─── Stats / WhatsApp ─────────────────────────────────────────────────────────
-export const stats   = () => api.get('/stats').then(r => r.data);
+export const stats        = () => api.get('/stats').then(r => r.data);
+export const statsDaily   = () => api.get('/stats/daily').then(r => r.data);
+export const statsRecent  = () => api.get('/stats/recent-contacts').then(r => r.data);
+export const globalSearch = (q) => api.get('/search', { params: { q } }).then(r => r.data);
 export const wpStatus= () => api.get('/whatsapp/status').then(r => r.data);
 export const wpQR    = () => api.get('/whatsapp/qrcode').then(r => r.data);
 export const pipeline= {
