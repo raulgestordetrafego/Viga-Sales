@@ -12,10 +12,13 @@ const uploadsDir = path.join(__dirname, '../../uploads');
 
 // Salva base64 como arquivo, retorna URL pública
 function saveBase64File(base64DataUri, type) {
-  const match = base64DataUri.match(/^data:([^;]+);base64,(.+)$/s);
-  if (!match) throw new Error('Formato base64 inválido');
-  const [, mimeType, data] = match;
-  const ext = mimeType.split('/')[1]?.split(';')[0] || (type === 'audio' ? 'ogg' : 'bin');
+  // Suporta mimetypes com parâmetros ex: "audio/webm;codecs=opus"
+  const semiIdx = base64DataUri.indexOf(';base64,');
+  if (!base64DataUri.startsWith('data:') || semiIdx === -1) throw new Error('Formato base64 inválido');
+  const mimeType = base64DataUri.slice(5, semiIdx); // ex: "audio/webm;codecs=opus"
+  const data = base64DataUri.slice(semiIdx + 8);    // dados após ";base64,"
+  const baseMime = mimeType.split(';')[0];           // ex: "audio/webm"
+  const ext = baseMime.split('/')[1] || (type === 'audio' ? 'webm' : 'bin');
   const filename = `${uuidv4()}.${ext}`;
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
   fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(data, 'base64'));
