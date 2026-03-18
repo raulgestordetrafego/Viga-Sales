@@ -1,7 +1,27 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, '../../uploads');
+
+// Salva base64 como arquivo, retorna URL pública
+function saveBase64File(base64DataUri, type) {
+  const match = base64DataUri.match(/^data:([^;]+);base64,(.+)$/s);
+  if (!match) throw new Error('Formato base64 inválido');
+  const [, mimeType, data] = match;
+  const ext = mimeType.split('/')[1]?.split(';')[0] || (type === 'audio' ? 'ogg' : 'bin');
+  const filename = `${uuidv4()}.${ext}`;
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(data, 'base64'));
+  const appUrl = process.env.APP_URL || 'http://localhost:3000';
+  return `${appUrl}/uploads/${filename}`;
+}
 
 const router = express.Router();
 
@@ -68,8 +88,15 @@ router.post('/:id/messages', async (req, res) => {
     `, [req.params.id]);
     if (!conv) return res.status(404).json({ error: 'Conversa não encontrada' });
 
-    // Se veio base64, usa diretamente como media_url (Evolution API v2 aceita data URI)
-    const effectiveMediaUrl = req.body.base64 || media_url;
+    // Se veio base64, salva em disco e obtém URL pública
+    let effectiveMediaUrl = media_url;
+    if (req.body.base64 && type !== 'text') {
+      try {
+        effectiveMediaUrl = saveBase64File(req.body.base64, type);
+      } catch(e) {
+        return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
+      }
+    }
 
     // Enviar via Evolution API
     let result;
@@ -86,8 +113,7 @@ router.post('/:id/messages', async (req, res) => {
     // Salvar mensagem no banco
     const msgId = uuidv4();
     const now = new Date().toISOString();
-    // Não salvar base64 no banco — sem media_url real para mídia base64
-    const savedMediaUrl = req.body.base64 ? null : (media_url || null);
+    const savedMediaUrl = effectiveMediaUrl || null;
 
     await run(`
       INSERT INTO messages (id, conversation_id, whatsapp_message_id, direction, type, content, media_url, status, timestamp)

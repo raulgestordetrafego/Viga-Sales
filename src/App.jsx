@@ -1350,10 +1350,9 @@ function Conversations({ initialContact }) {
       });
       setMessages(prev=>prev.some(m=>m.id===sent.id)?prev:[...prev,{
         ...sent,
-        // show locally until server confirms
-        media_url: preview.url,
+        media_url: sent.media_url || preview.url,
       }]);
-    } catch(e) { toast.error('Erro ao enviar mídia'); setMediaPreview(preview); }
+    } catch(e) { toast.error('Erro ao enviar mídia: '+(e?.response?.data?.error||e?.message||'')); setMediaPreview(preview); }
     finally { setSending(false); }
   };
 

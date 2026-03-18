@@ -115,20 +115,12 @@ export async function sendTextMessage(phone, text) {
   return res.data;
 }
 
-export async function sendImageMessage(phone, imageData, caption = '') {
+export async function sendImageMessage(phone, imageUrl, caption = '') {
   const instance = getInstance();
-  let media = imageData;
-  let mimetype;
-  // Evolution API v2 espera base64 puro (sem prefixo data URI)
-  if (imageData && imageData.startsWith('data:')) {
-    const match = imageData.match(/^data:([^;]+);base64,(.+)$/s);
-    if (match) { mimetype = match[1]; media = match[2]; }
-  }
   const res = await getApi().post(`/message/sendMedia/${instance}`, {
     number: formatPhone(phone),
     mediatype: 'image',
-    media,
-    ...(mimetype && { mimetype }),
+    media: imageUrl,
     caption,
   });
   return res.data;
@@ -145,18 +137,12 @@ export async function sendDocumentMessage(phone, documentUrl, fileName) {
   return res.data;
 }
 
-export async function sendAudioMessage(phone, audioData) {
+export async function sendAudioMessage(phone, audioUrl) {
   const instance = getInstance();
-  let audio = audioData;
-  // Evolution API v2 espera base64 puro (sem prefixo data URI)
-  if (audioData && audioData.startsWith('data:')) {
-    const match = audioData.match(/^data:[^;]+;base64,(.+)$/s);
-    if (match) { audio = match[1]; }
-  }
   // sendWhatsAppAudio envia como mensagem de voz (PTT), encoding:true converte para opus/ogg
   const res = await getApi().post(`/message/sendWhatsAppAudio/${instance}`, {
     number: formatPhone(phone),
-    audio,
+    audio: audioUrl,
     encoding: true,
   });
   return res.data;

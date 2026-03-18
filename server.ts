@@ -572,6 +572,11 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     }
   });
 
+  // Uploads estáticos
+  const uploadsDir = path.join(__dirname, 'uploads');
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  app.use('/uploads', express.static(uploadsDir));
+
   // API Routes
   app.use("/api/contacts", contactRoutes);
   app.use("/api/conversations", conversationRoutes);
