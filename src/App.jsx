@@ -2092,7 +2092,7 @@ export default function App() {
     <>
       {/* Header */}
       <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
-        <div style={{display:'flex',alignItems:'center',gap:compact?0:12}}>
+        <div onClick={()=>!isMobile&&setSidebarCollapsed(v=>!v)} style={{display:'flex',alignItems:'center',gap:compact?0:12,cursor:isMobile?'default':'pointer'}} title={isMobile?'':compact?'Expandir menu':'Recolher menu'}>
           <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
             <svg width="22" height="44" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* ── Cubo flutuando (dot do i) ── */}
@@ -2113,18 +2113,6 @@ export default function App() {
             <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
           </div>}
         </div>
-        {!isMobile && !compact && (
-          <button onClick={()=>setSidebarCollapsed(true)} title="Recolher menu" style={{background:'transparent',border:'none',color:C.dim,cursor:'pointer',fontSize:18,padding:'4px',borderRadius:8,display:'flex',alignItems:'center'}}
-            onMouseOver={e=>e.currentTarget.style.color=C.text} onMouseOut={e=>e.currentTarget.style.color=C.dim}>
-            ◀
-          </button>
-        )}
-        {!isMobile && compact && (
-          <div style={{position:'absolute',top:18,right:-14,background:C.primary,borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',boxShadow:`0 2px 8px ${C.primary}60`,zIndex:10}}
-            onClick={()=>setSidebarCollapsed(false)}>
-            <span style={{color:'#fff',fontSize:14}}>▶</span>
-          </div>
-        )}
       </div>
 
       {/* Nav */}
