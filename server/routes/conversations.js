@@ -91,33 +91,45 @@ router.post('/:id/messages', async (req, res) => {
     `, [req.params.id]);
     if (!conv) return res.status(404).json({ error: 'Conversa não encontrada' });
 
-    // Se veio base64, salva em disco e obtém URL pública
-    let effectiveMediaUrl = media_url;
-    if (req.body.base64 && type !== 'text') {
-      try {
-        effectiveMediaUrl = saveBase64File(req.body.base64, type);
-        console.log(`[Media] Arquivo salvo: ${effectiveMediaUrl}`);
-      } catch(e) {
-        return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
-      }
-    }
-
     // Enviar via Evolution API
     let result;
+    let savedMediaUrl = media_url || null;
+
     if (type === 'text') {
       result = await evolutionApi.sendTextMessage(conv.phone, content);
     } else if (type === 'image') {
-      result = await evolutionApi.sendImageMessage(conv.phone, effectiveMediaUrl, content);
+      // Imagem: passa base64 direto para Evolution API (sendMedia aceita base64 puro)
+      const imgData = req.body.base64 || media_url;
+      result = await evolutionApi.sendImageMessage(conv.phone, imgData, content);
+      // Também salva em disco para exibir no histórico
+      if (req.body.base64) {
+        try { savedMediaUrl = saveBase64File(req.body.base64, type); } catch(_) {}
+      }
     } else if (type === 'audio') {
-      result = await evolutionApi.sendAudioMessage(conv.phone, effectiveMediaUrl);
+      // Áudio: salva em disco e passa URL (sendWhatsAppAudio funciona com URL)
+      if (req.body.base64) {
+        try {
+          const audioUrl = saveBase64File(req.body.base64, type);
+          savedMediaUrl = audioUrl;
+          console.log(`[Media] Áudio salvo: ${audioUrl}`);
+          result = await evolutionApi.sendAudioMessage(conv.phone, audioUrl);
+        } catch(e) {
+          return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
+        }
+      } else {
+        result = await evolutionApi.sendAudioMessage(conv.phone, media_url);
+      }
     } else if (type === 'document') {
-      result = await evolutionApi.sendDocumentMessage(conv.phone, effectiveMediaUrl, content);
+      let docUrl = media_url;
+      if (req.body.base64) {
+        try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
+      }
+      result = await evolutionApi.sendDocumentMessage(conv.phone, docUrl, content);
     }
 
     // Salvar mensagem no banco
     const msgId = uuidv4();
     const now = new Date().toISOString();
-    const savedMediaUrl = effectiveMediaUrl || null;
 
     await run(`
       INSERT INTO messages (id, conversation_id, whatsapp_message_id, direction, type, content, media_url, status, timestamp)

@@ -115,13 +115,30 @@ export async function sendTextMessage(phone, text) {
   return res.data;
 }
 
-export async function sendImageMessage(phone, imageUrl, caption = '') {
+export async function sendImageMessage(phone, imageData, caption = '', mimetype = 'image/jpeg') {
   const instance = getInstance();
+  let media = imageData;
+  let mt = mimetype;
+
+  // Se for data URI, extrai base64 puro e mimetype
+  if (imageData && imageData.startsWith('data:')) {
+    const idx = imageData.indexOf(';base64,');
+    if (idx !== -1) {
+      mt = imageData.slice(5, idx).split(';')[0]; // ex: "image/jpeg"
+      media = imageData.slice(idx + 8);           // base64 puro
+    }
+  }
+
+  const ext = mt.split('/')[1] || 'jpg';
+  console.log(`[Evolution] sendImageMessage: mediatype=image, mimetype=${mt}, mediaLen=${media.length}`);
+
   const res = await getApi().post(`/message/sendMedia/${instance}`, {
     number: formatPhone(phone),
     mediatype: 'image',
-    media: imageUrl,
-    caption,
+    mimetype: mt,
+    media,
+    caption: caption || '',
+    fileName: `image.${ext}`,
   });
   return res.data;
 }
