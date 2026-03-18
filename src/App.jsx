@@ -1990,9 +1990,53 @@ function Settings() {
 
 // ─── User Management ──────────────────────────────────────────────────────────
 
+function ChangePasswordModal({ userId, onClose }) {
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (password !== confirm) return toast.error('As senhas não coincidem');
+    if (password.length < 6) return toast.error('Mínimo 6 caracteres');
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('crm_token');
+      const r = await fetch(`/api/users/${userId}/password`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ password }),
+      });
+      if (!r.ok) { const d = await r.json(); throw new Error(d.error || 'Erro'); }
+      toast.success('Senha alterada com sucesso!');
+      onClose();
+    } catch (err) { toast.error(err.message); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'#000a',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={onClose}>
+      <div style={{background:'#1e2a35',borderRadius:16,padding:28,width:360,border:'1px solid #2a3942'}} onClick={e=>e.stopPropagation()}>
+        <div style={{fontSize:16,fontWeight:700,color:'#e9edef',marginBottom:20}}>🔑 Alterar Senha</div>
+        <form onSubmit={handleSave} style={{display:'flex',flexDirection:'column',gap:14}}>
+          <input type="password" placeholder="Nova senha" value={password} onChange={e=>setPassword(e.target.value)}
+            style={{background:'#2a3942',border:'1px solid #3d4a54',borderRadius:10,padding:'11px 14px',color:'#e9edef',fontSize:14,outline:'none'}} />
+          <input type="password" placeholder="Confirmar senha" value={confirm} onChange={e=>setConfirm(e.target.value)}
+            style={{background:'#2a3942',border:'1px solid #3d4a54',borderRadius:10,padding:'11px 14px',color:'#e9edef',fontSize:14,outline:'none'}} />
+          <div style={{display:'flex',gap:10,marginTop:4}}>
+            <Btn variant="outline" onClick={onClose} style={{flex:1}}>Cancelar</Btn>
+            <Btn type="submit" disabled={saving} style={{flex:1}}>{saving ? 'Salvando...' : 'Salvar'}</Btn>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [changePwdUserId, setChangePwdUserId] = useState(null);
   const currentUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
   const isMaster = currentUser?.role === 'master';
 
@@ -2061,22 +2105,29 @@ function UserManagement() {
               </div>
               <Badge color={statusColor(u.status)}>{statusLabel(u.status)}</Badge>
               <span style={{fontSize:12,color:C.muted}}>{roleLabel(u.role)}</span>
-              {isMaster && u.role !== 'master' && (
-                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                  {u.status !== 'active' && <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>Ativar</Btn>}
-                  {u.status === 'active' && <Btn size="sm" variant="outline" onClick={() => updateStatus(u.id, 'suspended')}>Suspender</Btn>}
-                  <select value={u.role} onChange={e => updateRole(u.id, e.target.value)} style={{padding:'5px 10px',borderRadius:8,background:C.surface,border:`1px solid ${C.border}`,color:C.text,fontSize:12,cursor:'pointer'}}>
-                    <option value="user">Usuário</option>
-                    <option value="admin">Admin</option>
-                    <option value="master">Master</option>
-                  </select>
-                  <Btn size="sm" variant="danger" onClick={() => deleteUser(u.id)}>🗑️</Btn>
-                </div>
-              )}
+              <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                {/* Qualquer um pode trocar sua própria senha; master pode trocar de todos */}
+                {(isMaster || u.id === currentUser?.id) && (
+                  <Btn size="sm" variant="outline" onClick={() => setChangePwdUserId(u.id)}>🔑 Senha</Btn>
+                )}
+                {isMaster && u.role !== 'master' && (
+                  <>
+                    {u.status !== 'active' && <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>Ativar</Btn>}
+                    {u.status === 'active' && <Btn size="sm" variant="outline" onClick={() => updateStatus(u.id, 'suspended')}>Suspender</Btn>}
+                    <select value={u.role} onChange={e => updateRole(u.id, e.target.value)} style={{padding:'5px 10px',borderRadius:8,background:C.surface,border:`1px solid ${C.border}`,color:C.text,fontSize:12,cursor:'pointer'}}>
+                      <option value="user">Usuário</option>
+                      <option value="admin">Admin</option>
+                      <option value="master">Master</option>
+                    </select>
+                    <Btn size="sm" variant="danger" onClick={() => deleteUser(u.id)}>🗑️</Btn>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </Card>
+      {changePwdUserId && <ChangePasswordModal userId={changePwdUserId} onClose={() => setChangePwdUserId(null)} />}
     </div>
   );
 }

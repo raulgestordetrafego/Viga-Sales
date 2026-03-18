@@ -245,22 +245,37 @@ async function startServer() {
 
   // ── User management (admin/master) ────────────────────────────────────────
   app.get("/api/users", async (req: any, res) => {
-    if (!['master','admin'].includes(req.session?.role)) return res.status(403).json({ error: 'Sem permissão' });
+    const session = getSession(req);
+    if (!session || !['master','admin'].includes(session.role)) return res.status(403).json({ error: 'Sem permissão' });
     const users = await query('SELECT id, name, email, role, status, created_at FROM users ORDER BY created_at DESC');
     res.json(users);
   });
 
   app.patch("/api/users/:id/status", async (req: any, res) => {
-    if (!['master','admin'].includes(req.session?.role)) return res.status(403).json({ error: 'Sem permissão' });
-    const { status } = req.body; // active | suspended | pending
+    const session = getSession(req);
+    if (!session || !['master','admin'].includes(session.role)) return res.status(403).json({ error: 'Sem permissão' });
+    const { status } = req.body;
     await run('UPDATE users SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, req.params.id]);
     res.json({ ok: true });
   });
 
   app.patch("/api/users/:id/role", async (req: any, res) => {
-    if (req.session?.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode alterar funções' });
-    const { role } = req.body; // master | admin | user
+    const session = getSession(req);
+    if (!session || session.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode alterar funções' });
+    const { role } = req.body;
     await run('UPDATE users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [role, req.params.id]);
+    res.json({ ok: true });
+  });
+
+  app.patch("/api/users/:id/password", async (req: any, res) => {
+    const session = getSession(req);
+    if (!session) return res.status(401).json({ error: 'Não autenticado' });
+    // Usuário só pode trocar a própria senha; master pode trocar de qualquer um
+    if (session.userId !== req.params.id && session.role !== 'master') return res.status(403).json({ error: 'Sem permissão' });
+    const { password } = req.body;
+    if (!password || password.length < 6) return res.status(400).json({ error: 'Senha deve ter no mínimo 6 caracteres' });
+    const hashed = await bcrypt.hash(password, 12);
+    await run('UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [hashed, req.params.id]);
     res.json({ ok: true });
   });
 
