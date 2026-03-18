@@ -210,8 +210,8 @@ export async function run(sql, params = []) {
 }
 
 async function hashPwd(pwd) {
-  const { createHash } = await import('crypto');
-  return createHash('sha256').update(pwd + 'viga-salt-2024').digest('hex');
+  const bcrypt = await import('bcrypt');
+  return bcrypt.default.hash(pwd, 12);
 }
 
 export { hashPwd };
@@ -329,6 +329,14 @@ async function initializeSchema() {
       scheduled_at TEXT NOT NULL,
       status TEXT DEFAULT 'pending',
       sent_at TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS audit_log (
+      id TEXT PRIMARY KEY,
+      action TEXT NOT NULL,
+      user_id TEXT,
+      ip TEXT,
+      meta TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];

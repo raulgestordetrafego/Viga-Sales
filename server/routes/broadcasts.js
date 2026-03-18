@@ -57,6 +57,13 @@ router.post('/', async (req, res) => {
 // POST /broadcasts/:id/send - disparar
 router.post('/:id/send', async (req, res) => {
   try {
+    // Audit log do disparo em massa
+    try {
+      const ip = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').toString().split(',')[0].trim();
+      await run(`INSERT INTO audit_log (id, action, user_id, ip, meta, created_at) VALUES (?, 'broadcast_send', NULL, ?, ?, CURRENT_TIMESTAMP)`,
+        [uuidv4(), ip, JSON.stringify({ broadcastId: req.params.id })]);
+    } catch (_) {}
+
     const broadcast = await queryOne('SELECT * FROM broadcasts WHERE id = ?', [req.params.id]);
     if (!broadcast) return res.status(404).json({ error: 'Disparo não encontrado' });
     if (broadcast.status === 'running') return res.status(400).json({ error: 'Disparo já em andamento' });

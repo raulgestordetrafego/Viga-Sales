@@ -8,6 +8,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from "bcrypt";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 // Routes
 import contactRoutes from "./server/routes/contacts.js";
@@ -27,16 +30,59 @@ async function startServer() {
   console.log("STARTING SERVER...");
   const app = express();
   const server = http.createServer(app);
+  const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
+    ? ['https://vigasales.shop', 'https://www.vigasales.shop']
+    : ['http://localhost:3000', 'http://localhost:5173'];
+
   const io = new Server(server, {
-    cors: { origin: "*" },
+    cors: { origin: ALLOWED_ORIGINS, credentials: true },
   });
 
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  const IS_PROD = process.env.NODE_ENV === 'production';
+
+  // ── Segurança: HTTPS redirect em produção ─────────────────────────────────
+  if (IS_PROD) {
+    app.use((req, res, next) => {
+      if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] !== 'https') {
+        return res.redirect(301, `https://${req.headers.host}${req.url}`);
+      }
+      next();
+    });
+  }
+
+  // ── Helmet: headers de segurança ──────────────────────────────────────────
+  app.use(helmet({
+    contentSecurityPolicy: false, // Vite SPA precisa de CSP flexível
+    crossOriginEmbedderPolicy: false,
+  }));
 
   // Middlewares
-  app.use(cors());
-  app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+  app.use(cors({
+    origin: ALLOWED_ORIGINS,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-N8N-AUTH'],
+  }));
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+  // ── Rate limiting ─────────────────────────────────────────────────────────
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 5,
+    message: { error: 'Muitas tentativas de login. Tente novamente em 15 minutos.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  const apiLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minuto
+    max: 300,
+    message: { error: 'Muitas requisições. Aguarde um momento.' },
+    skip: (req) => !IS_PROD, // só em produção
+  });
+  app.use('/api', apiLimiter);
 
   // In-memory logs for debugging
   const n8nLogs = [];
@@ -67,26 +113,92 @@ async function startServer() {
   });
 
   // ── Auth ──────────────────────────────────────────────────────────────────
-  // sessions: token → { userId, name, email, role }
-  const sessions = new Map<string, { userId: string; name: string; email: string; role: string }>();
+  const SESSION_TTL_MS      = 8 * 60 * 60 * 1000;  // 8 horas
+  const INACTIVITY_TTL_MS   = 30 * 60 * 1000;       // 30 min sem atividade
+
+  interface SessionData {
+    userId: string; name: string; email: string; role: string;
+    expiresAt: number;   // timestamp absoluto (8h)
+    lastActivity: number; // timestamp da última requisição
+  }
+  const sessions = new Map<string, SessionData>();
 
   const getToken = (req: any) => (req.headers.authorization || '').replace('Bearer ', '');
-  const getSession = (req: any) => sessions.get(getToken(req));
+  const getSession = (req: any): SessionData | undefined => {
+    const token = getToken(req);
+    const s = sessions.get(token);
+    if (!s) return undefined;
+    const now = Date.now();
+    if (now > s.expiresAt || now - s.lastActivity > INACTIVITY_TTL_MS) {
+      sessions.delete(token);
+      return undefined;
+    }
+    s.lastActivity = now; // renova atividade
+    return s;
+  };
+
+  // Limpeza periódica de sessões expiradas (a cada 15 min)
+  setInterval(() => {
+    const now = Date.now();
+    for (const [token, s] of sessions.entries()) {
+      if (now > s.expiresAt || now - s.lastActivity > INACTIVITY_TTL_MS) {
+        sessions.delete(token);
+      }
+    }
+  }, 15 * 60 * 1000);
+
+  // ── Audit Log ─────────────────────────────────────────────────────────────
+  async function auditLog(action: string, userId: string | null, req: any, meta: object = {}) {
+    try {
+      const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+      await run(
+        `INSERT INTO audit_log (id, action, user_id, ip, meta, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [uuidv4(), action, userId || null, ip, JSON.stringify(meta)]
+      );
+    } catch (_) { /* não bloqueia a operação principal */ }
+  }
 
   app.get("/api/ping", (req, res) => res.send("pong"));
 
+  // ── Helpers de senha ──────────────────────────────────────────────────────
+  const BCRYPT_ROUNDS = 12;
+  const sha256Legacy  = (pwd: string) => crypto.createHash('sha256').update(pwd + 'viga-salt-2024').digest('hex');
+  const isBcryptHash  = (h: string) => h.startsWith('$2b$') || h.startsWith('$2a$');
+
   // Login
-  app.post("/api/auth/login", async (req, res) => {
+  app.post("/api/auth/login", loginLimiter, async (req, res) => {
     try {
       const { email, password } = req.body;
       if (!email || !password) return res.status(400).json({ error: 'Email e senha obrigatórios' });
-      const hash = crypto.createHash('sha256').update(password + 'viga-salt-2024').digest('hex');
-      const user = await queryOne('SELECT * FROM users WHERE email = ? AND password_hash = ?', [email, hash]);
-      if (!user) return res.status(401).json({ error: 'Email ou senha incorretos' });
-      if (user.status === 'pending') return res.status(403).json({ error: 'pending', message: 'Sua conta aguarda aprovação do administrador' });
-      if (user.status === 'suspended') return res.status(403).json({ error: 'suspended', message: 'Sua conta foi suspensa. Contate o administrador.' });
+
+      const user = await queryOne('SELECT * FROM users WHERE email = ?', [email]);
+      if (!user) {
+        await bcrypt.compare('dummy', '$2b$12$dummydummydummydummydudummydummydummydummydum'); // timing-safe
+        return res.status(401).json({ error: 'Email ou senha incorretos' });
+      }
+
+      // Suporte a hash legado SHA-256 + migração automática para bcrypt
+      let passwordOk = false;
+      if (isBcryptHash(user.password_hash)) {
+        passwordOk = await bcrypt.compare(password, user.password_hash);
+      } else {
+        // Hash antigo SHA-256 — verifica e migra
+        passwordOk = (sha256Legacy(password) === user.password_hash);
+        if (passwordOk) {
+          const newHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+          await run('UPDATE users SET password_hash = ? WHERE id = ?', [newHash, user.id]);
+          console.log(`[Auth] Senha de ${email} migrada SHA-256 → bcrypt`);
+        }
+      }
+
+      if (!passwordOk) return res.status(401).json({ error: 'Email ou senha incorretos' });
+      if (user.status === 'pending')   return res.status(403).json({ error: 'pending',    message: 'Sua conta aguarda aprovação do administrador' });
+      if (user.status === 'suspended') return res.status(403).json({ error: 'suspended',  message: 'Sua conta foi suspensa. Contate o administrador.' });
+
       const token = uuidv4();
-      sessions.set(token, { userId: user.id, name: user.name, email: user.email, role: user.role });
+      const now = Date.now();
+      sessions.set(token, { userId: user.id, name: user.name, email: user.email, role: user.role, expiresAt: now + SESSION_TTL_MS, lastActivity: now });
+      await auditLog('login', user.id, req, { email });
       res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
@@ -94,16 +206,17 @@ async function startServer() {
   });
 
   // Register (self-signup → pending)
-  app.post("/api/auth/register", async (req, res) => {
+  app.post("/api/auth/register", loginLimiter, async (req, res) => {
     try {
       const { name, email, password } = req.body;
       if (!name || !email || !password) return res.status(400).json({ error: 'Nome, email e senha obrigatórios' });
-      if (password.length < 6) return res.status(400).json({ error: 'Senha deve ter pelo menos 6 caracteres' });
+      if (password.length < 8) return res.status(400).json({ error: 'Senha deve ter pelo menos 8 caracteres' });
       const existing = await queryOne('SELECT id FROM users WHERE email = ?', [email]);
       if (existing) return res.status(409).json({ error: 'Este email já está cadastrado' });
-      const hash = crypto.createHash('sha256').update(password + 'viga-salt-2024').digest('hex');
+      const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
       const id = uuidv4();
       await run(`INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'user', 'pending')`, [id, name, email, hash]);
+      await auditLog('register', id, req, { email });
       res.json({ ok: true, message: 'Cadastro enviado! Aguarde a aprovação do administrador.' });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
@@ -111,7 +224,9 @@ async function startServer() {
   });
 
   // Logout
-  app.post("/api/auth/logout", (req, res) => {
+  app.post("/api/auth/logout", (req: any, res) => {
+    const s = getSession(req);
+    if (s) auditLog('logout', s.userId, req, {});
     sessions.delete(getToken(req));
     res.json({ ok: true });
   });
@@ -150,9 +265,26 @@ async function startServer() {
   });
 
   app.delete("/api/users/:id", async (req: any, res) => {
-    if (req.session?.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode remover usuários' });
+    const session = getSession(req);
+    if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode remover usuários' });
     await run('DELETE FROM users WHERE id = ?', [req.params.id]);
+    await auditLog('delete_user', session?.userId || null, req, { targetId: req.params.id });
     res.json({ ok: true });
+  });
+
+  // ── Audit Log (somente master) ────────────────────────────────────────────
+  app.get("/api/audit-log", async (req: any, res) => {
+    const session = getSession(req);
+    if (session?.role !== 'master') return res.status(403).json({ error: 'Sem permissão' });
+    try {
+      const logs = await query(`
+        SELECT al.*, u.name as user_name, u.email as user_email
+        FROM audit_log al
+        LEFT JOIN users u ON u.id = al.user_id
+        ORDER BY al.created_at DESC LIMIT 200
+      `);
+      res.json(logs);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
   // ── Follow-up: contatos inativos ─────────────────────────────────────────
@@ -565,12 +697,14 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
 
   app.get("/api/whatsapp/config", (req, res) => {
     const appUrl = process.env.APP_URL || `http://localhost:${PORT}`;
+    const rawKey = process.env.EVOLUTION_API_KEY || '';
     res.json({
       webhook_url: `${appUrl}/webhook/evolution`,
       n8n_url: `${appUrl}/api/n8n/message`,
       instance: process.env.EVOLUTION_INSTANCE || 'default',
       api_url: process.env.EVOLUTION_API_URL || 'http://localhost:8080',
-      api_key: process.env.EVOLUTION_API_KEY || '',
+      // Nunca expõe a chave inteira — mostra apenas últimos 4 caracteres
+      api_key_hint: rawKey ? `****${rawKey.slice(-4)}` : '',
       forward_url: process.env.FORWARD_WEBHOOK_URL || '',
       n8n_logs: n8nLogs,
       webhook_logs: webhookLogs
@@ -636,8 +770,18 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   // Webhook Evolution API
   app.post("/webhook/evolution", async (req, res) => {
     try {
+      // Validação de segredo do webhook (se WEBHOOK_SECRET estiver configurado)
+      const webhookSecret = process.env.WEBHOOK_SECRET;
+      if (webhookSecret) {
+        const incomingSecret = req.headers['x-webhook-secret'] || req.headers['apikey'];
+        if (!incomingSecret || incomingSecret !== webhookSecret) {
+          console.warn(`[Webhook] Acesso negado — secret inválido. IP: ${req.socket?.remoteAddress}`);
+          return res.status(401).send('Unauthorized');
+        }
+      }
+
       const payload = req.body;
-      
+
       // Save to raw logs for deep debugging
       try {
         await run("INSERT INTO raw_webhooks (payload) VALUES (?)", [JSON.stringify(payload)]);
