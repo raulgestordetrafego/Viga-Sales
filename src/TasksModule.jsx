@@ -102,6 +102,47 @@ const genId  = () => Date.now() + Math.floor(Math.random() * 9999);
 const fmtDue = (d) => { if (!d) return ''; return new Date(d + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); };
 const overdue = (t) => t.due && new Date(t.due + 'T00:00:00') < new Date(new Date().toDateString()) && t.column !== 'Concluído';
 
+// ─── Recorrência ──────────────────────────────────────────────────────────────
+const RECURRENCE_LABELS = { '': 'Sem recorrência', 'Diário': '🔁 Diário', 'Semanal': '🔁 Semanal', 'Mensal': '🔁 Mensal' };
+function calcNextDue(due, recurrence) {
+  const base = due ? new Date(due + 'T00:00:00') : new Date();
+  if (recurrence === 'Diário')  base.setDate(base.getDate() + 1);
+  else if (recurrence === 'Semanal') base.setDate(base.getDate() + 7);
+  else if (recurrence === 'Mensal')  base.setMonth(base.getMonth() + 1);
+  return base.toISOString().split('T')[0];
+}
+
+// ─── Google Calendar link ─────────────────────────────────────────────────────
+function gcalLink(task) {
+  const title = encodeURIComponent(task.title || '');
+  const details = encodeURIComponent(task.description || '');
+  let dates = '';
+  if (task.due) {
+    const s = task.due.replace(/-/g, '');
+    const e = new Date(task.due + 'T00:00:00'); e.setDate(e.getDate() + 1);
+    dates = `${s}/${e.toISOString().split('T')[0].replace(/-/g,'')}`;
+  } else {
+    const t = new Date(), e = new Date(t); e.setDate(e.getDate() + 1);
+    const fmt = d => d.toISOString().split('T')[0].replace(/-/g,'');
+    dates = `${fmt(t)}/${fmt(e)}`;
+  }
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
+}
+
+// ─── Templates da Agência ─────────────────────────────────────────────────────
+const TEMPLATES = [
+  { id:'tpl1', icon:'📊', name:'Revisão Diária de Contas',         recurrence:'Diário',  priority:'Alta',  tags:['Rotina','Ads'],        description:'Verificar métricas, budget, CPL e performance das campanhas ativas. Checar alertas de conta.' },
+  { id:'tpl2', icon:'⚙️',  name:'Otimização Semanal de Campanhas', recurrence:'Semanal', priority:'Alta',  tags:['Otimização','Ads'],    description:'Ajuste de lances, pausar criativos de baixa performance, escalar os bons. Revisar públicos.' },
+  { id:'tpl3', icon:'📈', name:'Relatório Mensal para Cliente',    recurrence:'Mensal',  priority:'Alta',  tags:['Relatório','Cliente'], description:'Elaborar relatório com resultados do mês: CPL, ROAS, alcance, leads e recomendações.' },
+  { id:'tpl4', icon:'🧾', name:'Ficha de Cliente — Onboarding',   recurrence:'',        priority:'Alta',  tags:['Onboarding','Cliente'],description:'Preencher ficha completa: nicho, produto, público, verba, objetivos, concorrentes e materiais disponíveis.' },
+  { id:'tpl5', icon:'🔍', name:'Auditoria de Pixel/Tags',         recurrence:'Mensal',  priority:'Média', tags:['Técnico','Pixel'],     description:'Verificar se todos os eventos do pixel estão disparando corretamente. Testar com Pixel Helper.' },
+  { id:'tpl6', icon:'💰', name:'Verificação de Budget Diário',    recurrence:'Diário',  priority:'Alta',  tags:['Budget','Ads'],        description:'Conferir se o gasto do dia está dentro do esperado. Ajustar limites diários se necessário.' },
+  { id:'tpl7', icon:'🎨', name:'Revisão de Criativos',            recurrence:'Semanal', priority:'Média', tags:['Criativo','Design'],   description:'Avaliar performance dos criativos ativos. Solicitar novos se frequência acima de 2,5.' },
+  { id:'tpl8', icon:'📞', name:'Follow-up com Cliente',           recurrence:'Semanal', priority:'Média', tags:['Cliente','CRM'],       description:'Alinhar expectativas, apresentar resultados parciais e coletar feedbacks para melhorias.' },
+  { id:'tpl9', icon:'🧪', name:'Teste A/B de Criativos',         recurrence:'Mensal',  priority:'Média', tags:['Teste','Criativo'],    description:'Criar e lançar teste A/B com pelo menos 2 novos criativos para validar hipóteses.' },
+  { id:'tpl10',icon:'🕵️', name:'Análise de Concorrência',        recurrence:'Mensal',  priority:'Baixa', tags:['Estratégia'],          description:'Verificar anúncios e estratégias dos concorrentes na Biblioteca de Anúncios do Meta/Google.' },
+];
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function Overlay({ onClick }) {
@@ -192,7 +233,7 @@ function Tag({ children }) {
 }
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
-function TasksDashboard({ data, onOpenProject, onNewProject, onDeleteProject }) {
+function TasksDashboard({ data, onOpenProject, onNewProject, onDeleteProject, onUseTemplate }) {
   const allTasks  = data.projects.flatMap(p => p.tasks);
   const total     = allTasks.length;
   const done      = allTasks.filter(t => t.column === 'Concluído').length;
@@ -272,6 +313,36 @@ function TasksDashboard({ data, onOpenProject, onNewProject, onDeleteProject }) 
           <div style={{ fontSize:13, fontWeight:600 }}>Criar novo projeto</div>
         </div>
       </div>
+
+      {/* ── Templates section ── */}
+      {onUseTemplate && data.projects.length > 0 && (
+        <div style={{ marginTop:36 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:14 }}>📋 Modelos de Tarefa</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:12 }}>
+            {TEMPLATES.map(tpl => (
+              <div key={tpl.id} style={{ background:C.card, borderRadius:14, border:`1px solid ${C.border}`, padding:'14px 16px', cursor:'pointer', transition:'all .15s' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor=C.warning; e.currentTarget.style.transform='translateY(-2px)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; }}>
+                <div style={{ display:'flex', alignItems:'flex-start', gap:10, marginBottom:8 }}>
+                  <span style={{ fontSize:20 }}>{tpl.icon}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:C.text, lineHeight:1.3 }}>{tpl.name}</div>
+                    <div style={{ fontSize:11, color:C.dim, marginTop:3, lineHeight:1.5 }}>{tpl.description.slice(0,70)}...</div>
+                  </div>
+                </div>
+                <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+                  <PriorityBadge p={tpl.priority} />
+                  {tpl.recurrence && <span style={{ background:`${C.sky}18`, color:C.sky, fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, border:`1px solid ${C.sky}30` }}>🔁 {tpl.recurrence}</span>}
+                  {tpl.tags.slice(0,2).map(t => <Tag key={t}>{t}</Tag>)}
+                </div>
+                <button onClick={() => onUseTemplate(tpl)} style={{ width:'100%', background:`${C.warning}18`, border:`1px solid ${C.warning}35`, color:C.warning, borderRadius:8, padding:'7px', fontSize:12, fontWeight:700, cursor:'pointer' }}>
+                  Usar este modelo →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -349,6 +420,7 @@ function KanbanCard({ task, onClick, onDragStart, onDragEnd }) {
       <div style={{ fontSize:13, fontWeight:600, color:C.text, marginBottom:9, lineHeight:1.4 }}>{task.title}</div>
       <div style={{ display:'flex', alignItems:'center', gap:5, flexWrap:'wrap' }}>
         <PriorityBadge p={task.priority} />
+        {task.recurrence && <span style={{ fontSize:9, fontWeight:700, color:C.sky, background:`${C.sky}18`, padding:'1px 6px', borderRadius:20, border:`1px solid ${C.sky}30` }}>🔁 {task.recurrence}</span>}
         {task.tags?.map(tag => <Tag key={tag}>{tag}</Tag>)}
         {task.checklist?.length > 0 && (
           <span style={{ fontSize:10, color:C.dim, marginLeft:'auto' }}>☑ {checkDone}/{task.checklist.length}</span>
@@ -510,10 +582,66 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
           <TInput label="Prazo" type="date" value={task.due || ''} onChange={e => onUpdate(task.id, { due: e.target.value })} />
           <TInput label="Responsável" value={task.assignee || ''} onChange={e => onUpdate(task.id, { assignee: e.target.value })} placeholder="Ex: RS" />
           <TInput label="Tags (vírgula)" value={(task.tags || []).join(', ')} onChange={e => onUpdate(task.id, { tags: e.target.value.split(',').map(x => x.trim()).filter(Boolean) })} placeholder="Bug, Urgente..." />
-          <button onClick={() => { if (confirm('Excluir esta tarefa?')) onDelete(task.id); }} style={{ width:'100%', marginTop:8, background:`${C.danger}18`, border:`1px solid ${C.danger}35`, color:C.danger, borderRadius:10, padding:'10px', fontSize:13, fontWeight:700, cursor:'pointer' }}>
+
+          {/* Recorrência */}
+          <TSelect label="🔁 Recorrência" value={task.recurrence || ''} onChange={e => onUpdate(task.id, { recurrence: e.target.value })}>
+            <option value="">Sem recorrência</option>
+            <option value="Diário">Diário</option>
+            <option value="Semanal">Semanal</option>
+            <option value="Mensal">Mensal</option>
+          </TSelect>
+          {task.recurrence && (
+            <div style={{ background:`${C.sky}12`, border:`1px solid ${C.sky}30`, borderRadius:8, padding:'6px 10px', fontSize:11, color:C.sky, marginBottom:14 }}>
+              🔁 Recria automaticamente ({task.recurrence.toLowerCase()}) ao concluir
+            </div>
+          )}
+
+          {/* Google Calendar */}
+          <a href={gcalLink(task)} target="_blank" rel="noopener noreferrer" style={{
+            display:'flex', alignItems:'center', justifyContent:'center', gap:7,
+            width:'100%', marginBottom:8, background:`${C.success}15`, border:`1px solid ${C.success}35`,
+            color:C.success, borderRadius:10, padding:'10px', fontSize:13, fontWeight:700,
+            cursor:'pointer', textDecoration:'none',
+          }}>
+            📅 Adicionar ao Google Calendar
+          </a>
+
+          <button onClick={() => { if (confirm('Excluir esta tarefa?')) onDelete(task.id); }} style={{ width:'100%', marginTop:0, background:`${C.danger}18`, border:`1px solid ${C.danger}35`, color:C.danger, borderRadius:10, padding:'10px', fontSize:13, fontWeight:700, cursor:'pointer' }}>
             🗑 Excluir tarefa
           </button>
         </div>
+      </div>
+    </TModal>
+  );
+}
+
+// ─── Template → Project Modal ─────────────────────────────────────────────────
+function TemplateProjectModal({ tpl, projects, onClose, onSave }) {
+  const [projId, setProjId] = useState(projects[0]?.id || '');
+  const [due,    setDue]    = useState('');
+  const proj = projects.find(p => p.id === Number(projId) || p.id === projId);
+  return (
+    <TModal open onClose={onClose} title={`${tpl.icon} ${tpl.name}`} maxWidth={440}>
+      <div style={{ background:C.bg, borderRadius:10, padding:'10px 14px', fontSize:12, color:C.muted, marginBottom:16, lineHeight:1.6 }}>{tpl.description}</div>
+      <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:16 }}>
+        <PriorityBadge p={tpl.priority} />
+        {tpl.recurrence && <span style={{ background:`${C.sky}18`, color:C.sky, fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, border:`1px solid ${C.sky}30` }}>🔁 {tpl.recurrence}</span>}
+        {tpl.tags.map(t => <Tag key={t}>{t}</Tag>)}
+      </div>
+      <TSelect label="Adicionar ao projeto *" value={projId} onChange={e => setProjId(e.target.value)}>
+        {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+      </TSelect>
+      <TInput label="Prazo inicial" type="date" value={due} onChange={e => setDue(e.target.value)} />
+      {tpl.recurrence && (
+        <div style={{ background:`${C.sky}12`, border:`1px solid ${C.sky}30`, borderRadius:10, padding:'8px 12px', fontSize:12, color:C.sky, marginBottom:14 }}>
+          🔁 Será recriada automaticamente ({tpl.recurrence.toLowerCase()}) ao concluir
+        </div>
+      )}
+      <div style={{ display:'flex', justifyContent:'flex-end', gap:10 }}>
+        <button onClick={onClose} style={{ background:C.surface, border:`1px solid ${C.border}`, color:C.muted, borderRadius:10, padding:'10px 18px', fontSize:14, fontWeight:600, cursor:'pointer' }}>Cancelar</button>
+        <button onClick={() => projId && onSave(proj?.id ?? projId, { title:tpl.name, description:tpl.description, priority:tpl.priority, tags:[...tpl.tags], recurrence:tpl.recurrence, due, assignee:'RS' })} disabled={!projId} style={{ background:`linear-gradient(135deg,${C.warning},${C.primary})`, border:'none', color:'#fff', borderRadius:10, padding:'10px 20px', fontSize:14, fontWeight:700, cursor:'pointer', boxShadow:`0 4px 14px ${C.warning}40` }}>
+          Criar tarefa
+        </button>
       </div>
     </TModal>
   );
@@ -552,16 +680,17 @@ function NewProjectModal({ onClose, onSave }) {
 }
 
 // ─── New Task Modal ───────────────────────────────────────────────────────────
-function NewTaskModal({ col, columns, onClose, onSave }) {
-  const [title,    setTitle]    = useState('');
-  const [desc,     setDesc]     = useState('');
-  const [priority, setPriority] = useState('Média');
-  const [due,      setDue]      = useState('');
-  const [assignee, setAssignee] = useState('RS');
-  const [column,   setColumn]   = useState(col);
-  const [tags,     setTags]     = useState('');
+function NewTaskModal({ col, columns, onClose, onSave, prefill = {} }) {
+  const [title,      setTitle]      = useState(prefill.title || '');
+  const [desc,       setDesc]       = useState(prefill.description || '');
+  const [priority,   setPriority]   = useState(prefill.priority || 'Média');
+  const [due,        setDue]        = useState(prefill.due || '');
+  const [assignee,   setAssignee]   = useState(prefill.assignee || 'RS');
+  const [column,     setColumn]     = useState(col);
+  const [tags,       setTags]       = useState((prefill.tags || []).join(', '));
+  const [recurrence, setRecurrence] = useState(prefill.recurrence || '');
   return (
-    <TModal open onClose={onClose} title="Nova Tarefa">
+    <TModal open onClose={onClose} title={prefill.title ? `📋 Usar modelo: ${prefill.title}` : 'Nova Tarefa'}>
       <TInput label="Título *" value={title} onChange={e => setTitle(e.target.value)} placeholder="O que precisa ser feito?" autoFocus required />
       <TInput label="Descrição" textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Detalhes..." rows={3} />
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
@@ -576,10 +705,23 @@ function NewTaskModal({ col, columns, onClose, onSave }) {
         <TInput label="Prazo" type="date" value={due} onChange={e => setDue(e.target.value)} />
         <TInput label="Responsável" value={assignee} onChange={e => setAssignee(e.target.value)} placeholder="Ex: RS" />
       </div>
-      <TInput label="Tags (vírgula)" value={tags} onChange={e => setTags(e.target.value)} placeholder="Ex: Bug, Urgente, Front" />
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+        <TSelect label="🔁 Recorrência" value={recurrence} onChange={e => setRecurrence(e.target.value)}>
+          <option value="">Sem recorrência</option>
+          <option value="Diário">Diário</option>
+          <option value="Semanal">Semanal</option>
+          <option value="Mensal">Mensal</option>
+        </TSelect>
+        <TInput label="Tags (vírgula)" value={tags} onChange={e => setTags(e.target.value)} placeholder="Ex: Rotina, Ads" />
+      </div>
+      {recurrence && (
+        <div style={{ background:`${C.sky}12`, border:`1px solid ${C.sky}30`, borderRadius:10, padding:'8px 12px', fontSize:12, color:C.sky, marginBottom:14, display:'flex', alignItems:'center', gap:8 }}>
+          🔁 Esta tarefa será recriada automaticamente ({recurrence.toLowerCase()}) quando concluída.
+        </div>
+      )}
       <div style={{ display:'flex', justifyContent:'flex-end', gap:10, marginTop:4 }}>
         <button onClick={onClose} style={{ background:C.surface, border:`1px solid ${C.border}`, color:C.muted, borderRadius:10, padding:'10px 20px', fontSize:14, fontWeight:600, cursor:'pointer' }}>Cancelar</button>
-        <button onClick={() => title.trim() && onSave({ title: title.trim(), description: desc, priority, due, assignee, column, tags: tags.split(',').map(x=>x.trim()).filter(Boolean) })} disabled={!title.trim()} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:10, padding:'10px 22px', fontSize:14, fontWeight:700, cursor:title.trim()?'pointer':'not-allowed', opacity:title.trim()?1:.5, boxShadow:`0 4px 14px ${C.primary}40` }}>
+        <button onClick={() => title.trim() && onSave({ title: title.trim(), description: desc, priority, due, assignee, column, tags: tags.split(',').map(x=>x.trim()).filter(Boolean), recurrence })} disabled={!title.trim()} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:10, padding:'10px 22px', fontSize:14, fontWeight:700, cursor:title.trim()?'pointer':'not-allowed', opacity:title.trim()?1:.5, boxShadow:`0 4px 14px ${C.primary}40` }}>
           Criar Tarefa
         </button>
       </div>
@@ -614,6 +756,7 @@ export default function TasksModule({ currentUser }) {
   const [filterPrio,   setFilterPrio]   = useState('');
   const [dragTask,     setDragTask]     = useState(null);
   const [dragOverCol,  setDragOverCol]  = useState(null);
+  const [showTemplates,setShowTemplates]= useState(false);
 
   useEffect(() => { save(data); }, [data]);
 
@@ -624,10 +767,27 @@ export default function TasksModule({ currentUser }) {
 
   const addProject  = (d)  => mut(s => s.projects.push({ id:genId(), tasks:[], columns:['A Fazer','Em Andamento','Em Revisão','Concluído'], ...d }));
   const delProject  = (id) => { mut(s => { s.projects = s.projects.filter(p => p.id !== id); }); if (activeId === id) { setActiveId(null); setView('dashboard'); } };
-  const addTask     = (col, d) => mut(s => { const p = s.projects.find(x => x.id === activeId); p.tasks.push({ id:genId(), column:col, checklist:[], comments:[], tags:[], ...d }); });
+  const addTask     = (col, d) => mut(s => { const p = s.projects.find(x => x.id === activeId); p.tasks.push({ id:genId(), column:col, checklist:[], comments:[], tags:[], recurrence:'', ...d }); });
+  const addTaskToProject = (projId, col, d) => mut(s => { const p = s.projects.find(x => x.id === projId); if (p) p.tasks.push({ id:genId(), column:col || p.columns[0] || 'A Fazer', checklist:[], comments:[], tags:[], recurrence:'', ...d }); });
   const updateTask  = (id, patch) => mut(s => { const p = s.projects.find(x => x.id === activeId); const t = p.tasks.find(x => x.id === id); Object.assign(t, patch); });
   const deleteTask  = (id) => { mut(s => { const p = s.projects.find(x => x.id === activeId); p.tasks = p.tasks.filter(x => x.id !== id); }); setModal(null); };
-  const moveTask    = (id, col) => mut(s => { const p = s.projects.find(x => x.id === activeId); const t = p.tasks.find(x => x.id === id); if (t) t.column = col; });
+  const moveTask    = (id, col) => mut(s => {
+    const p = s.projects.find(x => x.id === activeId);
+    const t = p.tasks.find(x => x.id === id);
+    if (!t) return;
+    const wasNotDone = t.column !== 'Concluído';
+    t.column = col;
+    // Auto-criar próxima ocorrência para tarefas recorrentes
+    if (col === 'Concluído' && wasNotDone && t.recurrence && t.recurrence !== '') {
+      const nextDue = calcNextDue(t.due, t.recurrence);
+      p.tasks.push({
+        id: genId(), title: t.title, description: t.description || '',
+        priority: t.priority, tags: [...(t.tags || [])], assignee: t.assignee || '',
+        recurrence: t.recurrence, due: nextDue,
+        column: p.columns[0] || 'A Fazer', checklist: [], comments: [],
+      });
+    }
+  });
   const addColumn   = (col) => mut(s => { const p = s.projects.find(x => x.id === activeId); if (!p.columns.includes(col)) p.columns.push(col); });
 
   // ── Drag ──
@@ -681,11 +841,41 @@ export default function TasksModule({ currentUser }) {
             ＋ Novo Projeto
           </button>
         ) : (
-          <button onClick={() => setModal({ type:'newTask', col: project?.columns[0] })} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:10, padding:'9px 18px', fontSize:13, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6, boxShadow:`0 4px 14px ${C.primary}40` }}>
-            ＋ Tarefa
-          </button>
+          <>
+            <button onClick={() => setShowTemplates(v => !v)} style={{ background: showTemplates ? `${C.warning}22` : C.card, border:`1px solid ${showTemplates ? C.warning : C.border}`, color: showTemplates ? C.warning : C.muted, borderRadius:10, padding:'9px 16px', fontSize:13, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+              📋 Modelos
+            </button>
+            <button onClick={() => setModal({ type:'newTask', col: project?.columns[0] })} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:10, padding:'9px 18px', fontSize:13, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6, boxShadow:`0 4px 14px ${C.primary}40` }}>
+              ＋ Tarefa
+            </button>
+          </>
         )}
       </div>
+
+      {/* ── Templates panel ── */}
+      {view === 'project' && showTemplates && (
+        <div style={{ background:C.card, borderBottom:`1px solid ${C.border}`, padding:'14px 20px' }}>
+          <div style={{ fontSize:11, fontWeight:700, color:C.warning, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:12 }}>📋 Modelos de Tarefa — clique para usar</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:10 }}>
+            {TEMPLATES.map(tpl => (
+              <div key={tpl.id} onClick={() => { setShowTemplates(false); setModal({ type:'newTask', col: project?.columns[0], prefill: tpl }); }}
+                style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 14px', cursor:'pointer', transition:'all .15s' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor=C.warning; e.currentTarget.style.background=`${C.warning}0a`; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.background=C.surface; }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+                  <span style={{ fontSize:16 }}>{tpl.icon}</span>
+                  <span style={{ fontSize:13, fontWeight:700, color:C.text, flex:1, lineHeight:1.3 }}>{tpl.name}</span>
+                </div>
+                <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:6 }}>
+                  <PriorityBadge p={tpl.priority} />
+                  {tpl.recurrence && <span style={{ background:`${C.sky}18`, color:C.sky, fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, border:`1px solid ${C.sky}30` }}>🔁 {tpl.recurrence}</span>}
+                  {tpl.tags.slice(0,2).map(t => <Tag key={t}>{t}</Tag>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Filter bar (project only) ── */}
       {view === 'project' && (
@@ -719,6 +909,7 @@ export default function TasksModule({ currentUser }) {
             onOpenProject={id => { setActiveId(id); setView('project'); }}
             onNewProject={() => setModal({ type:'newProject' })}
             onDeleteProject={delProject}
+            onUseTemplate={tpl => setModal({ type:'useTemplate', tpl })}
           />
         )}
         {view === 'project' && project && projectView === 'kanban' && (
@@ -742,7 +933,8 @@ export default function TasksModule({ currentUser }) {
       {/* ── Modals ── */}
       {modal?.type === 'newProject'  && <NewProjectModal onClose={() => setModal(null)} onSave={d => { addProject(d); setModal(null); }} />}
       {modal?.type === 'newColumn'   && <NewColumnModal  onClose={() => setModal(null)} onSave={n => { addColumn(n); setModal(null); }} />}
-      {modal?.type === 'newTask'     && <NewTaskModal col={modal.col} columns={project?.columns||[]} onClose={() => setModal(null)} onSave={d => { addTask(modal.col, d); setModal(null); }} />}
+      {modal?.type === 'newTask'     && <NewTaskModal col={modal.col} columns={project?.columns||[]} prefill={modal.prefill||{}} onClose={() => setModal(null)} onSave={d => { addTask(modal.col, d); setModal(null); }} />}
+      {modal?.type === 'useTemplate' && <TemplateProjectModal tpl={modal.tpl} projects={data.projects} onClose={() => setModal(null)} onSave={(projId, d) => { addTaskToProject(projId, null, d); setModal(null); }} />}
       {modal?.type === 'taskDetail'  && (
         <TaskDetailModal
           task={modal.task}
