@@ -3,7 +3,7 @@
 // Dados persistidos em localStorage (chave: 'viga-tasks-data').
 // Para migrar para o banco SQLite, basta trocar loadData/saveData por chamadas de API.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // ─── Design tokens (espelha os do App.jsx) ───────────────────────────────────
 const C = {
@@ -142,6 +142,191 @@ const TEMPLATES = [
   { id:'tpl9', icon:'🧪', name:'Teste A/B de Criativos',         recurrence:'Mensal',  priority:'Média', tags:['Teste','Criativo'],    description:'Criar e lançar teste A/B com pelo menos 2 novos criativos para validar hipóteses.' },
   { id:'tpl10',icon:'🕵️', name:'Análise de Concorrência',        recurrence:'Mensal',  priority:'Baixa', tags:['Estratégia'],          description:'Verificar anúncios e estratégias dos concorrentes na Biblioteca de Anúncios do Meta/Google.' },
 ];
+
+// ─── Coaching Tips ────────────────────────────────────────────────────────────
+const COACHING_TIPS = [
+  { icon:'📊', cat:'Métricas',     text:'Sempre cheque o CPL pela manhã. Se estiver >20% acima da meta, pause os conjuntos de anúncios mais caros imediatamente.' },
+  { icon:'🎯', cat:'Estratégia',   text:'Regra de ouro: nunca escale um anúncio que não converte no budget atual. Valide primeiro, escale depois.' },
+  { icon:'💬', cat:'Clientes',     text:'Fale com pelo menos 1 cliente por dia — mesmo que seja para compartilhar um resultado positivo. Relacionamento é retenção.' },
+  { icon:'🔥', cat:'Criativos',    text:'Criativo com frequência >2.5? Já está saturando. Renove antes de perceber a queda na performance.' },
+  { icon:'💰', cat:'Budget',       text:'Budget diário gastando menos de 80% até as 18h? Verifique se o público está muito restrito ou se a entrega está limitada.' },
+  { icon:'🧪', cat:'Testes',       text:'Sempre tenha ao menos 1 teste A/B ativo por conta. Quem para de testar, para de crescer.' },
+  { icon:'📱', cat:'Criativos',    text:'Vídeos curtos (7-15s) com gancho nos 3 primeiros segundos têm 2× mais chance de manter a atenção no feed.' },
+  { icon:'🔍', cat:'Pixel',        text:'Pixel disparando errado é dinheiro jogado fora. Audite os eventos de conversão com o Pixel Helper 1× por semana.' },
+  { icon:'📈', cat:'ROAS',         text:'ROAS abaixo de 2? Revise o funil antes de culpar o tráfego — o problema pode estar na landing page.' },
+  { icon:'🤝', cat:'Clientes',     text:'Antes de apresentar resultados, contextualize o cenário do período. Isso protege a conta nos meses difíceis.' },
+  { icon:'🎨', cat:'Criativos',    text:'UGC converte em média 4× mais que material publicitário tradicional. Peça depoimentos dos clientes regularmente.' },
+  { icon:'🚦', cat:'Otimização',   text:'Pare de otimizar antes de 50 eventos de conversão no período. Dados insuficientes = otimizações erradas.' },
+  { icon:'📅', cat:'Rotina',       text:'Segunda é para planejar e revisar campanhas. Sexta é para fechar relatórios. Rituais semanais criam consistência.' },
+  { icon:'🌍', cat:'Público',      text:'Lookalike de compradores converte 3× mais do que interesses frios. Sempre que possível, use dados próprios.' },
+  { icon:'⚡', cat:'Velocidade',   text:'Landing page com >3s de carregamento perde até 40% dos leads. Velocidade é conversão.' },
+  { icon:'📦', cat:'Oferta',       text:'Às vezes o problema não é o anúncio — é a oferta. Teste o benefício principal antes de mudar o criativo.' },
+  { icon:'🗓', cat:'Planejamento', text:'Planeje criativos com 15 dias de antecedência. Urgência = baixa qualidade. Antecipação = melhores resultados.' },
+  { icon:'🔄', cat:'Retenção',     text:'Manter um cliente custa 5× menos do que conquistar um novo. Invista em relatórios bonitos e comunicação constante.' },
+  { icon:'💡', cat:'Inovação',     text:'30 minutos por semana na Biblioteca de Anúncios dos concorrentes. Não para copiar — para se inspirar e se antecipar.' },
+  { icon:'🏆', cat:'Resultado',    text:'Resultado bom? Documente o que funcionou imediatamente. A memória falha; o registro serve para todos os clientes.' },
+  { icon:'📋', cat:'Processos',    text:'Sem processo, você vira escravo da urgência. Com processo, você controla o trabalho. Documente tudo que se repete.' },
+  { icon:'🎁', cat:'Proposta',     text:'Nunca envie proposta sem uma call antes. Entender a dor do cliente aumenta a taxa de fechamento em 60%.' },
+  { icon:'📉', cat:'Crise',        text:'Conta em queda? Antes de entrar em pânico: verifique pixel ativo, reprovações e se o público não está esgotado.' },
+  { icon:'🔑', cat:'Acesso',       text:'Sempre tenha acesso admin ao BM e conta do cliente. Perder acesso no meio de campanha ativa é pesadelo.' },
+  { icon:'💬', cat:'Relatório',    text:'O melhor relatório conta uma história: situação → ação → resultado → próximo passo. Não é só número.' },
+  { icon:'🕵️', cat:'Concorrência', text:'Analise os 3 maiores concorrentes do seu cliente na Biblioteca de Anúncios 1× por mês. Insights valem ouro.' },
+  { icon:'🎬', cat:'Vídeo',        text:'Hook de vídeo: comece com o problema, não com a solução. "Você está perdendo leads por isso..." chama mais atenção.' },
+  { icon:'📣', cat:'Copy',         text:'A melhor copy é a que o cliente já usa ao falar do produto. Entreviste compradores satisfeitos para coletar linguagem.' },
+  { icon:'🛡', cat:'Segurança',    text:'Conta do cliente com 2FA ativa? BM com backup de admin? Segurança da conta é responsabilidade sua também.' },
+  { icon:'🌱', cat:'Crescimento',  text:'Agências que crescem têm processos de onboarding padronizados. Crie um checklist de ativação e use em todo cliente novo.' },
+];
+
+const getTodayTip = () => {
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const day = Math.floor((Date.now() - start.getTime()) / 86400000);
+  return COACHING_TIPS[day % COACHING_TIPS.length];
+};
+
+// ─── Daily Coaching Panel ─────────────────────────────────────────────────────
+function DailyCoachingPanel({ data, onDismiss, onSettings }) {
+  const tip  = getTodayTip();
+  const today = new Date().toISOString().split('T')[0];
+  const dueTasks = data.projects.flatMap(p =>
+    p.tasks.filter(t => t.due === today && t.column !== 'Concluído')
+  );
+  const recurringActive = data.projects.flatMap(p =>
+    p.tasks.filter(t => t.recurrence && t.column !== 'Concluído')
+  ).length;
+
+  const dayName = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
+  const dateStr = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
+
+  return (
+    <div style={{ background:`linear-gradient(135deg, #1a1f2e 0%, #141824 100%)`, border:`1px solid ${C.border}`, borderLeft:`4px solid ${C.warning}`, borderRadius:18, padding:'20px 24px', marginBottom:28, position:'relative', overflow:'hidden' }}>
+      {/* Background decoration */}
+      <div style={{ position:'absolute', right:-20, top:-20, fontSize:100, opacity:.04, pointerEvents:'none' }}>{tip.icon}</div>
+
+      <div style={{ display:'flex', alignItems:'flex-start', gap:16, flexWrap:'wrap' }}>
+        {/* Left: tip */}
+        <div style={{ flex:1, minWidth:240 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
+            <span style={{ background:`${C.warning}20`, color:C.warning, fontSize:10, fontWeight:800, padding:'3px 9px', borderRadius:20, textTransform:'uppercase', letterSpacing:'.08em', border:`1px solid ${C.warning}35` }}>☀️ Coaching do dia</span>
+            <span style={{ fontSize:11, color:C.dim }}>{dayName}, {dateStr}</span>
+          </div>
+          <div style={{ display:'flex', alignItems:'flex-start', gap:10 }}>
+            <span style={{ fontSize:26, flexShrink:0, marginTop:2 }}>{tip.icon}</span>
+            <div>
+              <span style={{ background:`${C.primary}15`, color:C.primary, fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, border:`1px solid ${C.primary}30`, marginBottom:6, display:'inline-block' }}>{tip.cat}</span>
+              <p style={{ margin:0, fontSize:14, color:C.text, lineHeight:1.6, fontWeight:500 }}>{tip.text}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: today summary */}
+        <div style={{ display:'flex', flexDirection:'column', gap:8, minWidth:160, alignItems:'flex-end' }}>
+          <div style={{ display:'flex', gap:10 }}>
+            <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'10px 16px', textAlign:'center', minWidth:72 }}>
+              <div style={{ fontSize:22, fontWeight:800, color: dueTasks.length > 0 ? C.warning : C.success }}>{dueTasks.length}</div>
+              <div style={{ fontSize:10, color:C.dim, fontWeight:600 }}>para hoje</div>
+            </div>
+            <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'10px 16px', textAlign:'center', minWidth:72 }}>
+              <div style={{ fontSize:22, fontWeight:800, color:C.sky }}>{recurringActive}</div>
+              <div style={{ fontSize:10, color:C.dim, fontWeight:600 }}>recorrentes</div>
+            </div>
+          </div>
+          <div style={{ display:'flex', gap:8 }}>
+            <button onClick={onSettings} title="Configurar notificações" style={{ background:C.card, border:`1px solid ${C.border}`, color:C.dim, borderRadius:8, padding:'6px 10px', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+              🔔 Notificações
+            </button>
+            <button onClick={onDismiss} style={{ background:'transparent', border:`1px solid ${C.border}`, color:C.dim, borderRadius:8, padding:'6px 10px', fontSize:12, cursor:'pointer' }}>
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Due today list */}
+      {dueTasks.length > 0 && (
+        <div style={{ marginTop:14, paddingTop:14, borderTop:`1px solid ${C.border}`, display:'flex', gap:8, flexWrap:'wrap' }}>
+          <span style={{ fontSize:11, color:C.dim, fontWeight:700, alignSelf:'center' }}>📋 Hoje:</span>
+          {dueTasks.slice(0, 5).map(t => (
+            <span key={t.id} style={{ background:`${C.warning}12`, color:C.warning, fontSize:11, fontWeight:600, padding:'3px 10px', borderRadius:20, border:`1px solid ${C.warning}25` }}>
+              {t.title}
+            </span>
+          ))}
+          {dueTasks.length > 5 && <span style={{ fontSize:11, color:C.dim }}>+{dueTasks.length - 5} mais</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Coaching Settings Modal ──────────────────────────────────────────────────
+function CoachingSettingsModal({ settings, onClose, onSave }) {
+  const [enabled, setEnabled] = useState(settings.enabled || false);
+  const [time,    setTime]    = useState(settings.time    || '08:00');
+  const [perm,    setPerm]    = useState(typeof Notification !== 'undefined' ? Notification.permission : 'default');
+
+  const requestPermission = async () => {
+    if (typeof Notification === 'undefined') return;
+    const p = await Notification.requestPermission();
+    setPerm(p);
+    if (p === 'granted') setEnabled(true);
+  };
+
+  const permLabel = { granted:'✅ Concedida', denied:'❌ Bloqueada — libere nas config. do browser', default:'⚠️ Não solicitada ainda' };
+
+  return (
+    <TModal open onClose={onClose} title="🔔 Coaching Diário" maxWidth={440}>
+      <p style={{ fontSize:13, color:C.muted, lineHeight:1.6, marginBottom:20 }}>
+        Receba uma dica diária de gestão de agência de tráfego no horário que escolher. A notificação também avisa sobre tarefas com prazo para hoje.
+      </p>
+
+      {/* Permission status */}
+      <div style={{ background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 14px', marginBottom:16, fontSize:12, color:C.muted }}>
+        <span style={{ fontWeight:700 }}>Permissão do browser: </span>{permLabel[perm]}
+        {perm === 'default' && (
+          <button onClick={requestPermission} style={{ marginLeft:10, background:`${C.primary}20`, border:`1px solid ${C.primary}40`, color:C.primary, borderRadius:6, padding:'3px 10px', fontSize:11, fontWeight:700, cursor:'pointer' }}>
+            Solicitar agora
+          </button>
+        )}
+      </div>
+
+      {/* Toggle */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'12px 16px', marginBottom:16 }}>
+        <span style={{ fontSize:14, color:C.text, fontWeight:600 }}>Ativar notificação diária</span>
+        <button
+          onClick={() => perm === 'granted' ? setEnabled(v => !v) : requestPermission()}
+          style={{ width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', position:'relative', transition:'background .2s',
+            background: enabled && perm === 'granted' ? C.success : C.border }}>
+          <div style={{ position:'absolute', top:3, left: enabled && perm === 'granted' ? 22 : 2, width:18, height:18, borderRadius:'50%', background:'#fff', transition:'left .2s', boxShadow:'0 1px 4px rgba(0,0,0,.3)' }} />
+        </button>
+      </div>
+
+      {/* Time */}
+      <div style={{ marginBottom:20 }}>
+        <label style={{ display:'block', fontSize:11, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Horário da notificação</label>
+        <input type="time" value={time} onChange={e => setTime(e.target.value)} style={{
+          background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 13px',
+          color:C.text, fontSize:14, outline:'none', fontFamily:'inherit', width:'100%',
+        }} />
+        <p style={{ fontSize:11, color:C.dim, marginTop:6 }}>Recomendado: 08:00 — antes de começar a checar as campanhas.</p>
+      </div>
+
+      {/* Preview */}
+      <div style={{ background:`${C.warning}10`, border:`1px solid ${C.warning}30`, borderRadius:10, padding:'12px 14px', marginBottom:20 }}>
+        <div style={{ fontSize:11, fontWeight:700, color:C.warning, marginBottom:6 }}>Prévia da notificação:</div>
+        <div style={{ fontSize:12, color:C.muted, lineHeight:1.5 }}>
+          <strong style={{ color:C.text }}>☀️ Viga Sales — Coaching do dia</strong><br />
+          {getTodayTip().icon} {getTodayTip().text.slice(0, 80)}...
+        </div>
+      </div>
+
+      <div style={{ display:'flex', justifyContent:'flex-end', gap:10 }}>
+        <button onClick={onClose} style={{ background:C.surface, border:`1px solid ${C.border}`, color:C.muted, borderRadius:10, padding:'10px 18px', fontSize:14, fontWeight:600, cursor:'pointer' }}>Cancelar</button>
+        <button onClick={() => onSave({ enabled: enabled && perm === 'granted', time, perm })} style={{ background:`linear-gradient(135deg,${C.warning},${C.primary})`, border:'none', color:'#fff', borderRadius:10, padding:'10px 20px', fontSize:14, fontWeight:700, cursor:'pointer', boxShadow:`0 4px 14px ${C.warning}40` }}>
+          Salvar
+        </button>
+      </div>
+    </TModal>
+  );
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -747,18 +932,45 @@ function NewColumnModal({ onClose, onSave }) {
 
 // ─── Main TasksModule ─────────────────────────────────────────────────────────
 export default function TasksModule({ currentUser }) {
-  const [data,         setData]         = useState(load);
-  const [view,         setView]         = useState('dashboard'); // 'dashboard' | 'project'
-  const [activeId,     setActiveId]     = useState(null);
-  const [projectView,  setProjectView]  = useState('kanban');   // 'kanban' | 'list'
-  const [modal,        setModal]        = useState(null);
-  const [search,       setSearch]       = useState('');
-  const [filterPrio,   setFilterPrio]   = useState('');
-  const [dragTask,     setDragTask]     = useState(null);
-  const [dragOverCol,  setDragOverCol]  = useState(null);
-  const [showTemplates,setShowTemplates]= useState(false);
+  const [data,           setData]           = useState(load);
+  const [view,           setView]           = useState('dashboard');
+  const [activeId,       setActiveId]       = useState(null);
+  const [projectView,    setProjectView]    = useState('kanban');
+  const [modal,          setModal]          = useState(null);
+  const [search,         setSearch]         = useState('');
+  const [filterPrio,     setFilterPrio]     = useState('');
+  const [dragTask,       setDragTask]       = useState(null);
+  const [dragOverCol,    setDragOverCol]    = useState(null);
+  const [showTemplates,  setShowTemplates]  = useState(false);
+  const [coachDismissed, setCoachDismissed] = useState(() => localStorage.getItem('viga-coach-dismissed') === new Date().toISOString().split('T')[0]);
+  const [coachSettings,  setCoachSettings]  = useState(() => { try { return JSON.parse(localStorage.getItem('viga-coaching-settings') || '{}'); } catch { return {}; } });
+  const notifTimer = useRef(null);
 
   useEffect(() => { save(data); }, [data]);
+
+  // ── Coaching notifications ──
+  useEffect(() => {
+    const scheduleNext = () => {
+      if (!coachSettings.enabled) return;
+      const [h, m] = (coachSettings.time || '08:00').split(':').map(Number);
+      const next = new Date(); next.setHours(h, m, 0, 0);
+      if (next <= new Date()) next.setDate(next.getDate() + 1);
+      const ms = next.getTime() - Date.now();
+      notifTimer.current = setTimeout(() => {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          const tip = getTodayTip();
+          const today = new Date().toISOString().split('T')[0];
+          const due = data.projects.flatMap(p => p.tasks.filter(t => t.due === today && t.column !== 'Concluído')).length;
+          const body = `${tip.icon} ${tip.text.slice(0, 90)}...${due > 0 ? `\n📋 ${due} tarefa(s) para hoje.` : ''}`;
+          new Notification('☀️ Viga Sales — Coaching do dia', { body, icon: '/vite.svg' });
+        }
+        scheduleNext();
+      }, ms);
+    };
+    clearTimeout(notifTimer.current);
+    scheduleNext();
+    return () => clearTimeout(notifTimer.current);
+  }, [coachSettings.enabled, coachSettings.time]);
 
   const project = data.projects.find(p => p.id === activeId);
 
@@ -835,6 +1047,17 @@ export default function TasksModule({ currentUser }) {
           </div>
         )}
 
+        {/* 🔔 Coaching button */}
+        <button onClick={() => setModal({ type:'coachSettings' })} title="Coaching diário" style={{
+          background: coachSettings.enabled ? `${C.warning}20` : C.card,
+          border: `1px solid ${coachSettings.enabled ? C.warning : C.border}`,
+          color: coachSettings.enabled ? C.warning : C.dim,
+          borderRadius:10, padding:'9px 12px', fontSize:13, cursor:'pointer',
+          display:'flex', alignItems:'center', gap:5, fontWeight:600,
+        }}>
+          🔔 {coachSettings.enabled ? 'Coaching ativo' : 'Coaching'}
+        </button>
+
         {/* Actions */}
         {view === 'dashboard' ? (
           <button onClick={() => setModal({ type:'newProject' })} style={{ background:`linear-gradient(135deg,${C.primary},${C.purple})`, border:'none', color:'#fff', borderRadius:10, padding:'9px 18px', fontSize:13, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6, boxShadow:`0 4px 14px ${C.primary}40` }}>
@@ -904,13 +1127,22 @@ export default function TasksModule({ currentUser }) {
       {/* ── Content ── */}
       <div style={{ flex:1, overflowY: view==='project' && projectView==='kanban' ? 'hidden' : 'auto', overflowX: view==='project' && projectView==='kanban' ? 'hidden' : 'hidden', padding: view==='project' && projectView==='kanban' ? '16px 20px' : pagePad, display:'flex', flexDirection:'column' }}>
         {view === 'dashboard' && (
-          <TasksDashboard
-            data={data}
-            onOpenProject={id => { setActiveId(id); setView('project'); }}
-            onNewProject={() => setModal({ type:'newProject' })}
-            onDeleteProject={delProject}
-            onUseTemplate={tpl => setModal({ type:'useTemplate', tpl })}
-          />
+          <>
+            {!coachDismissed && (
+              <DailyCoachingPanel
+                data={data}
+                onDismiss={() => { setCoachDismissed(true); localStorage.setItem('viga-coach-dismissed', new Date().toISOString().split('T')[0]); }}
+                onSettings={() => setModal({ type:'coachSettings' })}
+              />
+            )}
+            <TasksDashboard
+              data={data}
+              onOpenProject={id => { setActiveId(id); setView('project'); }}
+              onNewProject={() => setModal({ type:'newProject' })}
+              onDeleteProject={delProject}
+              onUseTemplate={tpl => setModal({ type:'useTemplate', tpl })}
+            />
+          </>
         )}
         {view === 'project' && project && projectView === 'kanban' && (
           <KanbanBoard
@@ -931,6 +1163,17 @@ export default function TasksModule({ currentUser }) {
       </div>
 
       {/* ── Modals ── */}
+      {modal?.type === 'coachSettings' && (
+        <CoachingSettingsModal
+          settings={coachSettings}
+          onClose={() => setModal(null)}
+          onSave={s => {
+            setCoachSettings(s);
+            localStorage.setItem('viga-coaching-settings', JSON.stringify(s));
+            setModal(null);
+          }}
+        />
+      )}
       {modal?.type === 'newProject'  && <NewProjectModal onClose={() => setModal(null)} onSave={d => { addProject(d); setModal(null); }} />}
       {modal?.type === 'newColumn'   && <NewColumnModal  onClose={() => setModal(null)} onSave={n => { addColumn(n); setModal(null); }} />}
       {modal?.type === 'newTask'     && <NewTaskModal col={modal.col} columns={project?.columns||[]} prefill={modal.prefill||{}} onClose={() => setModal(null)} onSave={d => { addTask(modal.col, d); setModal(null); }} />}
