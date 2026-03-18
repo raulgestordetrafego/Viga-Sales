@@ -96,6 +96,7 @@ router.post('/:id/messages', async (req, res) => {
     if (req.body.base64 && type !== 'text') {
       try {
         effectiveMediaUrl = saveBase64File(req.body.base64, type);
+        console.log(`[Media] Arquivo salvo: ${effectiveMediaUrl}`);
       } catch(e) {
         return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
       }
@@ -130,20 +131,22 @@ router.post('/:id/messages', async (req, res) => {
     const message = await queryOne('SELECT * FROM messages WHERE id = ?', [msgId]);
     res.json(message);
   } catch (err) {
-    console.error('POST /conversations/:id/messages error:', err);
+    console.error('POST /conversations/:id/messages error:', err.message);
     if (err.response && err.response.data) {
-      console.error('Evolution API Error Data:', JSON.stringify(err.response.data));
-      
-      let errorMessage = err.response.data.message || 'Erro na Evolution API';
-      
-      // Check if it's a "number does not exist" error
-      if (Array.isArray(err.response.data.message)) {
-        const notExists = err.response.data.message.find(m => m.exists === false);
-        if (notExists) {
-          errorMessage = `O número ${notExists.number.split('@')[0]} não possui WhatsApp.`;
-        }
+      const raw = err.response.data;
+      console.error('Evolution API Error:', JSON.stringify(raw));
+
+      let errorMessage = 'Erro na Evolution API';
+      if (typeof raw.message === 'string') errorMessage = raw.message;
+      else if (typeof raw.error === 'string') errorMessage = raw.error;
+      else if (typeof raw.details === 'string') errorMessage = raw.details;
+      else errorMessage = JSON.stringify(raw).slice(0, 200);
+
+      if (Array.isArray(raw.message)) {
+        const notExists = raw.message.find(m => m.exists === false);
+        if (notExists) errorMessage = `O número ${notExists.number.split('@')[0]} não possui WhatsApp.`;
       }
-      
+
       res.status(err.response.status).json({ error: errorMessage });
     } else {
       res.status(500).json({ error: err.message });
