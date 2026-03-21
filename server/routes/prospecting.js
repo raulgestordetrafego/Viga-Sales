@@ -1,6 +1,66 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { query, queryOne, run } from '../db/database.js';
+import { query, queryOne, run, getDb } from '../db/database.js';
+
+// Cria contato + conversa no CRM quando um prospect é marcado como enviado
+async function syncProspectToConversation(prospect, message) {
+  try {
+    const cleanPhone = String(prospect.phone).replace(/\D/g, '');
+    const contactName = prospect.name || prospect.company || cleanPhone;
+    const now = new Date().toISOString();
+
+    // Encontrar ou criar contato
+    let contact = await queryOne(
+      'SELECT * FROM contacts WHERE phone = ? OR phone LIKE ?',
+      [cleanPhone, `%${cleanPhone.slice(-8)}`]
+    );
+
+    if (!contact) {
+      const id = uuidv4();
+      await run(
+        `INSERT INTO contacts (id, name, phone, company, status, pipeline_stage, last_interaction, created_at, updated_at)
+         VALUES (?, ?, ?, ?, 'active', 'stage_lead', ?, ?, ?)`,
+        [id, contactName, cleanPhone, prospect.company || null, now, now, now]
+      );
+      contact = await queryOne('SELECT * FROM contacts WHERE id = ?', [id]);
+    }
+
+    // Encontrar ou criar conversa
+    let conv = await queryOne(
+      'SELECT * FROM conversations WHERE contact_id = ? ORDER BY updated_at DESC LIMIT 1',
+      [contact.id]
+    );
+
+    if (!conv) {
+      const id = uuidv4();
+      const chatId = `${cleanPhone}@s.whatsapp.net`;
+      await run(
+        `INSERT INTO conversations (id, contact_id, whatsapp_chat_id, status, last_message, last_message_at, created_at, updated_at)
+         VALUES (?, ?, ?, 'open', ?, ?, ?, ?)`,
+        [id, contact.id, chatId, message || '[prospecção]', now, now, now]
+      );
+      conv = await queryOne('SELECT * FROM conversations WHERE id = ?', [id]);
+    } else {
+      await run(
+        `UPDATE conversations SET last_message = ?, last_message_at = ?, updated_at = ? WHERE id = ?`,
+        [message || '[prospecção]', now, now, conv.id]
+      );
+    }
+
+    // Salvar a mensagem enviada
+    if (message) {
+      await run(
+        `INSERT OR IGNORE INTO messages (id, conversation_id, direction, type, content, status, timestamp, created_at)
+         VALUES (?, ?, 'outbound', 'text', ?, 'sent', ?, ?)`,
+        [uuidv4(), conv.id, message, now, now]
+      );
+    }
+
+    return contact;
+  } catch (err) {
+    console.error('[syncProspectToConversation] Erro:', err.message);
+  }
+}
 
 const router = express.Router();
 
@@ -195,25 +255,8 @@ router.get('/queue', async (req, res) => {
       }
     }
 
-    let sql = "SELECT * FROM prospects WHERE status = 'novo'";
-    const params = [];
-
-    if (campaign_id) { sql += ' AND campaign_id = ?'; params.push(campaign_id); }
-
-    sql += ' ORDER BY created_at ASC LIMIT ?';
-    params.push(Number(limit));
-
-    const prospects = await query(sql, params);
-
-    // Reserva imediatamente para evitar disparos duplicados em triggers consecutivos
-    if (prospects.length > 0) {
-      const ids = prospects.map(p => p.id);
-      const placeholders = ids.map(() => '?').join(', ');
-      await run(
-        `UPDATE prospects SET status = 'reservado', updated_at = CURRENT_TIMESTAMP WHERE id IN (${placeholders})`,
-        ids
-      );
-    }
+    // Reserva atômica — SELECT + UPDATE em transação única, impossível duplicar
+    const prospects = await getDb().atomicReserve(campaign_id || null, Number(limit));
 
     res.json({ prospects: prospects.map(parseProspect) });
   } catch (err) {
@@ -343,6 +386,11 @@ router.patch('/:id/status', async (req, res) => {
           'UPDATE prospecting_campaigns SET sent_today = sent_today + 1 WHERE id = ?',
           [campaign_id]
         );
+      }
+      // Sincroniza prospect como contato + conversa no CRM automaticamente
+      const prospect = await queryOne('SELECT * FROM prospects WHERE id = ?', [req.params.id]);
+      if (prospect) {
+        await syncProspectToConversation(prospect, message || prospect.ai_message || null);
       }
     }
     if (status === 'respondeu') extra.push('responded_at = CURRENT_TIMESTAMP');

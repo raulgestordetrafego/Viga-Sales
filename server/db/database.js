@@ -137,6 +137,67 @@ class DatabaseWrapper {
     }
   }
 
+  // Reserva atômica: SELECT + UPDATE em transação única — impossível duplicar
+  async atomicReserve(campaignId, limit) {
+    if (this.isPostgres) {
+      const client = await this.pool.connect();
+      try {
+        await client.query('BEGIN');
+        const result = await client.query(
+          `SELECT * FROM prospects
+           WHERE status = 'novo'
+             ${campaignId ? "AND campaign_id = $2" : ""}
+             AND NOT EXISTS (
+               SELECT 1 FROM prospecting_logs
+               WHERE prospect_id = prospects.id AND action = 'enviado'
+             )
+           ORDER BY created_at ASC
+           LIMIT $1
+           FOR UPDATE SKIP LOCKED`,
+          campaignId ? [limit, campaignId] : [limit]
+        );
+        if (result.rows.length > 0) {
+          const ids = result.rows.map(r => `'${r.id}'`).join(',');
+          await client.query(
+            `UPDATE prospects SET status = 'reservado', updated_at = CURRENT_TIMESTAMP WHERE id IN (${ids})`
+          );
+        }
+        await client.query('COMMIT');
+        return result.rows;
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.release();
+      }
+    } else {
+      // SQLite: transação síncrona — atomicidade garantida
+      const db = this.sqlite;
+      const reserve = db.transaction((campaignId, limit) => {
+        const rows = db.prepare(
+          `SELECT * FROM prospects
+           WHERE status = 'novo'
+             ${campaignId ? "AND campaign_id = ?" : ""}
+             AND NOT EXISTS (
+               SELECT 1 FROM prospecting_logs
+               WHERE prospect_id = prospects.id AND action = 'enviado'
+             )
+           ORDER BY created_at ASC
+           LIMIT ?`
+        ).all(...(campaignId ? [campaignId, limit] : [limit]));
+
+        if (rows.length > 0) {
+          const ph = rows.map(() => '?').join(', ');
+          db.prepare(
+            `UPDATE prospects SET status = 'reservado', updated_at = CURRENT_TIMESTAMP WHERE id IN (${ph})`
+          ).run(...rows.map(r => r.id));
+        }
+        return rows;
+      });
+      return reserve(campaignId || null, limit);
+    }
+  }
+
   async exec(sql) {
     if (this.isPostgres) {
       if (!this.pool) throw new Error('Postgres pool not initialized');
