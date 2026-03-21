@@ -31,14 +31,18 @@ async function generateAIMessage(prospect) {
     prospect.website && `Site: ${prospect.website}`,
   ].filter(Boolean).join('\n');
 
-  const prompt = `Você é um especialista em prospecção de clientes via WhatsApp.
-Gere uma mensagem de prospecção CURTA (máximo 3 parágrafos), CASUAL e PERSONALIZADA para o seguinte prospect:
+  const senderName = process.env.SENDER_NAME || 'Raul';
+  const senderCompany = process.env.SENDER_COMPANY || 'Viga Sales';
+
+  const prompt = `Você é ${senderName}, da empresa ${senderCompany}, especialista em prospecção de clientes via WhatsApp.
+Escreva uma mensagem de prospecção CURTA (máximo 3 parágrafos), CASUAL e PERSONALIZADA para o seguinte prospect:
 
 ${context}
 
 Regras:
+- Escreva na primeira pessoa como ${senderName} da ${senderCompany} — nunca use placeholders como [Seu Nome] ou [Sua Empresa]
 - Tom amigável e humano, não robótico
-- Mencione o nome da empresa ou cidade para personalizar
+- Mencione o nome da empresa ou cidade do prospect para personalizar
 - Apresente brevemente o serviço (CRM de WhatsApp para gestão de clientes)
 - Termine com uma pergunta aberta simples para iniciar conversa
 - Não use emojis em excesso (máximo 2)
