@@ -204,6 +204,17 @@ router.get('/queue', async (req, res) => {
     params.push(Number(limit));
 
     const prospects = await query(sql, params);
+
+    // Reserva imediatamente para evitar disparos duplicados em triggers consecutivos
+    if (prospects.length > 0) {
+      const ids = prospects.map(p => p.id);
+      const placeholders = ids.map(() => '?').join(', ');
+      await run(
+        `UPDATE prospects SET status = 'reservado', updated_at = CURRENT_TIMESTAMP WHERE id IN (${placeholders})`,
+        ids
+      );
+    }
+
     res.json({ prospects: prospects.map(parseProspect) });
   } catch (err) {
     res.status(500).json({ error: err.message });
