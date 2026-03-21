@@ -16,6 +16,7 @@ import helmet from "helmet";
 import contactRoutes from "./server/routes/contacts.js";
 import conversationRoutes from "./server/routes/conversations.js";
 import broadcastRoutes from "./server/routes/broadcasts.js";
+import prospectingRoutes from "./server/routes/prospecting.js";
 import { handleWebhook } from "./server/webhook/handler.js";
 import evolutionApi from "./server/services/evolutionApi.js";
 import { initDb, queryOne, run, query, hashPwd } from "./server/db/database.js";
@@ -596,6 +597,7 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   app.use("/api/contacts", contactRoutes);
   app.use("/api/conversations", conversationRoutes);
   app.use("/api/broadcasts", broadcastRoutes);
+  app.use("/api/prospects", prospectingRoutes);
 
   // Error handling middleware
   app.use((err, req, res, next) => {

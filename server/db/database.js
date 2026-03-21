@@ -338,6 +338,54 @@ async function initializeSchema() {
       ip TEXT,
       meta TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS prospecting_campaigns (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      segment TEXT,
+      city TEXT,
+      status TEXT DEFAULT 'active',
+      daily_limit INTEGER DEFAULT 40,
+      message_template TEXT,
+      use_ai INTEGER DEFAULT 1,
+      sent_today INTEGER DEFAULT 0,
+      last_reset_date TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS prospects (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      phone TEXT UNIQUE NOT NULL,
+      email TEXT,
+      company TEXT,
+      segment TEXT,
+      city TEXT,
+      address TEXT,
+      website TEXT,
+      instagram TEXT,
+      rating DECIMAL,
+      reviews_count INTEGER,
+      source TEXT DEFAULT 'manual',
+      raw_data TEXT,
+      status TEXT DEFAULT 'novo',
+      ai_message TEXT,
+      campaign_id TEXT,
+      sent_at TEXT,
+      follow_up_at TEXT,
+      responded_at TEXT,
+      notes TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS prospecting_logs (
+      id TEXT PRIMARY KEY,
+      prospect_id TEXT NOT NULL,
+      campaign_id TEXT,
+      action TEXT NOT NULL,
+      message TEXT,
+      error TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 
