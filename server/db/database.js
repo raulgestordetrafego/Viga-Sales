@@ -399,6 +399,12 @@ async function initializeSchema() {
 
   // Migrações incrementais
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN notes TEXT`); } catch {}
+  // Corrigir campaign_id dos prospects importados antes da criação da campanha
+  try {
+    await db.run(
+      `UPDATE prospects SET campaign_id = '5f31cd5b-e90f-4dd9-b956-79e0edd40b07' WHERE campaign_id = '3d3d099e-f232-4b22-b93f-5282c5fd95f5'`
+    );
+  } catch {}
 
   // Seed default stages
   const stages = [
