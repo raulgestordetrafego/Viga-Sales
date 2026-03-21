@@ -7,7 +7,7 @@ import ClientBriefing from './ClientBriefing';
 import {
   LayoutDashboard, Users, MessageSquare, TrendingUp,
   Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
-  Search, LogOut, Paperclip, Mic, MicOff, X, Send,
+  Search, LogOut, Paperclip, Mic, MicOff, X, Send, Target,
 } from 'lucide-react';
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
@@ -2132,6 +2132,254 @@ function UserManagement() {
   );
 }
 
+// ─── Prospecting ──────────────────────────────────────────────────────────────
+
+function Prospecting() {
+  const [prospects, setProspects]       = useState([]);
+  const [stats, setStats]               = useState(null);
+  const [loading, setLoading]           = useState(true);
+  const [search, setSearch]             = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [selected, setSelected]         = useState(null);
+
+  const tok = () => localStorage.getItem('crm_token');
+
+  const STATUS_LIST = [
+    { id:'all',        label:'Todos',       color: C.dim      },
+    { id:'novo',       label:'Novo',        color:'#3b82f6'   },
+    { id:'enviado',    label:'Enviado',     color:'#f59e0b'   },
+    { id:'respondeu',  label:'Respondeu',   color:'#10b981'   },
+    { id:'follow-up',  label:'Follow-up',   color:'#8b5cf6'   },
+    { id:'convertido', label:'Convertido',  color:'#059669'   },
+    { id:'descartado', label:'Descartado',  color:'#ef4444'   },
+  ];
+
+  const statusColor = s => STATUS_LIST.find(x => x.id === s)?.color || C.dim;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ limit: 500 });
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+      const [pRes, sRes] = await Promise.all([
+        fetch(`/api/prospects?${params}`, { headers: { Authorization: `Bearer ${tok()}` } }),
+        fetch('/api/prospects/stats/summary', { headers: { Authorization: `Bearer ${tok()}` } }),
+      ]);
+      const pData = await pRes.json();
+      const sData = await sRes.json();
+      setProspects(Array.isArray(pData) ? pData : pData.prospects || []);
+      setStats(sData);
+    } catch { toast.error('Erro ao carregar prospects'); }
+    finally   { setLoading(false); }
+  }, [statusFilter]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const updateStatus = async (id, status) => {
+    try {
+      await fetch(`/api/prospects/${id}/status`, {
+        method:'PATCH',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${tok()}` },
+        body: JSON.stringify({ status }),
+      });
+      toast.success('Status atualizado');
+      setSelected(s => s?.id === id ? { ...s, status } : s);
+      load();
+    } catch { toast.error('Erro ao atualizar status'); }
+  };
+
+  const filtered = prospects.filter(p => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (p.name||'').toLowerCase().includes(q)
+        || (p.company||'').toLowerCase().includes(q)
+        || (p.phone||'').includes(q)
+        || (p.city||'').toLowerCase().includes(q);
+  });
+
+  const statCount = key => stats?.[key === 'follow-up' ? 'follow_up' : key] || 0;
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      {/* Header */}
+      <div>
+        <h2 style={{margin:0,fontSize:22,fontWeight:700,color:C.text}}>Prospecção</h2>
+        <p style={{margin:'4px 0 0',fontSize:13,color:C.dim}}>Leads captados via Google Maps / n8n</p>
+      </div>
+
+      {/* Stats */}
+      {stats && (
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(110px,1fr))',gap:12}}>
+          {[
+            {label:'Total',      value:stats.total,      color:C.primary  },
+            {label:'Novos',      value:stats.novo,       color:'#3b82f6'  },
+            {label:'Enviados',   value:stats.enviado,    color:'#f59e0b'  },
+            {label:'Responderam',value:stats.respondeu,  color:'#10b981'  },
+            {label:'Follow-up',  value:stats.follow_up,  color:'#8b5cf6'  },
+            {label:'Convertidos',value:stats.convertido, color:'#059669'  },
+          ].map(s=>(
+            <div key={s.label} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'14px 16px'}}>
+              <div style={{fontSize:22,fontWeight:700,color:s.color}}>{s.value}</div>
+              <div style={{fontSize:11,color:C.dim,marginTop:2}}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Lista */}
+      <Card noPad>
+        {/* Busca + filtros */}
+        <div style={{padding:'12px 16px',borderBottom:`1px solid ${C.border}`,display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+          <input
+            value={search} onChange={e=>setSearch(e.target.value)}
+            placeholder="🔍 Buscar por nome, empresa, telefone ou cidade..."
+            style={{flex:1,minWidth:200,padding:'8px 12px',background:C.surface,border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:13,outline:'none'}}
+          />
+          <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+            {STATUS_LIST.map(s=>(
+              <button key={s.id} onClick={()=>setStatusFilter(s.id)} style={{
+                padding:'6px 12px',borderRadius:20,border:'none',cursor:'pointer',fontSize:12,fontWeight:600,transition:'all 0.15s',
+                background: statusFilter===s.id ? s.color : C.surface,
+                color:       statusFilter===s.id ? '#fff'   : C.dim,
+              }}>
+                {s.label}{s.id!=='all' ? ` (${statCount(s.id)})` : ''}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading ? (
+          <div style={{padding:48,textAlign:'center',color:C.dim}}>Carregando...</div>
+        ) : filtered.length===0 ? (
+          <EmptyState icon="🎯" title="Nenhum prospect encontrado" sub="Os leads captados pelo n8n aparecerão aqui" />
+        ) : (
+          <div style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+              <thead>
+                <tr style={{background:C.surface}}>
+                  {['Empresa / Contato','Telefone','Cidade','Avaliação','Status',''].map(h=>(
+                    <th key={h} style={{padding:'10px 16px',textAlign:'left',fontWeight:600,color:C.dim,fontSize:11,textTransform:'uppercase',letterSpacing:'0.05em',whiteSpace:'nowrap'}}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((p,i)=>(
+                  <tr key={p.id} onClick={()=>setSelected(p)}
+                    style={{borderTop:`1px solid ${C.border}`,cursor:'pointer',transition:'background 0.1s',
+                      background: i%2===0 ? 'transparent' : `${C.surface}50`}}
+                    onMouseEnter={e=>e.currentTarget.style.background=`${C.primary}10`}
+                    onMouseLeave={e=>e.currentTarget.style.background=i%2===0?'transparent':`${C.surface}50`}
+                  >
+                    <td style={{padding:'12px 16px'}}>
+                      <div style={{fontWeight:600,color:C.text}}>{p.company||p.name||'—'}</div>
+                      {p.company&&p.name&&p.company!==p.name&&<div style={{fontSize:11,color:C.dim,marginTop:2}}>{p.name}</div>}
+                    </td>
+                    <td style={{padding:'12px 16px',color:C.dim,fontFamily:'monospace',fontSize:12}}>{p.phone}</td>
+                    <td style={{padding:'12px 16px',color:C.dim}}>{p.city||'—'}</td>
+                    <td style={{padding:'12px 16px'}}>
+                      {p.rating
+                        ? <span style={{color:'#f59e0b',fontWeight:600}}>★ <span style={{fontWeight:400,color:C.dim}}>{p.rating}</span></span>
+                        : '—'}
+                    </td>
+                    <td style={{padding:'12px 16px'}}>
+                      <span style={{background:`${statusColor(p.status)}20`,color:statusColor(p.status),padding:'3px 10px',borderRadius:20,fontSize:11,fontWeight:700}}>
+                        {p.status||'novo'}
+                      </span>
+                    </td>
+                    <td style={{padding:'12px 16px'}}>
+                      <button onClick={e=>{e.stopPropagation();window.open(`https://wa.me/55${p.phone}`,'_blank');}}
+                        style={{background:'#25D366',color:'#fff',border:'none',borderRadius:8,padding:'5px 12px',fontSize:11,fontWeight:700,cursor:'pointer'}}>
+                        WhatsApp
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {!loading&&filtered.length>0&&(
+          <div style={{padding:'10px 16px',borderTop:`1px solid ${C.border}`,color:C.dim,fontSize:12}}>
+            {filtered.length} prospect{filtered.length!==1?'s':''}
+          </div>
+        )}
+      </Card>
+
+      {/* Drawer */}
+      {selected&&(
+        <div onClick={()=>setSelected(null)}
+          style={{position:'fixed',inset:0,background:'#00000060',zIndex:1000,display:'flex',justifyContent:'flex-end'}}>
+          <div onClick={e=>e.stopPropagation()} style={{
+            width:'min(420px,100vw)',background:C.card,height:'100%',overflowY:'auto',
+            borderLeft:`1px solid ${C.border}`,boxShadow:'-8px 0 32px #00000030',
+            padding:24,display:'flex',flexDirection:'column',gap:20,
+          }}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <div>
+                <h3 style={{margin:0,fontSize:18,fontWeight:700,color:C.text}}>{selected.company||selected.name||'Prospect'}</h3>
+                {selected.company&&selected.name&&selected.company!==selected.name&&(
+                  <div style={{fontSize:13,color:C.dim,marginTop:4}}>{selected.name}</div>
+                )}
+                <div style={{marginTop:8}}>
+                  <span style={{background:`${statusColor(selected.status)}20`,color:statusColor(selected.status),padding:'3px 12px',borderRadius:20,fontSize:12,fontWeight:700}}>
+                    {selected.status||'novo'}
+                  </span>
+                </div>
+              </div>
+              <button onClick={()=>setSelected(null)} style={{background:'none',border:'none',cursor:'pointer',color:C.dim,fontSize:24,lineHeight:1}}>×</button>
+            </div>
+
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {[
+                {label:'Telefone',   value:selected.phone},
+                {label:'Cidade',     value:selected.city},
+                {label:'Segmento',   value:selected.segment},
+                {label:'E-mail',     value:selected.email},
+                {label:'Site',       value:selected.website},
+                {label:'Instagram',  value:selected.instagram},
+                {label:'Endereço',   value:selected.address},
+                {label:'Avaliação',  value:selected.rating?`${selected.rating}/5 (${selected.reviews_count||0} avaliações)`:null},
+                {label:'Fonte',      value:selected.source},
+              ].filter(f=>f.value).map(f=>(
+                <div key={f.label} style={{display:'flex',gap:8,alignItems:'flex-start'}}>
+                  <span style={{fontSize:11,color:C.dim,minWidth:80,fontWeight:600,paddingTop:2}}>{f.label}</span>
+                  <span style={{fontSize:13,color:C.text,wordBreak:'break-all'}}>{f.value}</span>
+                </div>
+              ))}
+            </div>
+
+            {selected.ai_message&&(
+              <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:10,padding:14}}>
+                <div style={{fontSize:11,fontWeight:700,color:C.dim,marginBottom:8,letterSpacing:'0.05em'}}>MENSAGEM GERADA PELA IA</div>
+                <div style={{fontSize:13,color:C.text,lineHeight:1.7}}>{selected.ai_message}</div>
+              </div>
+            )}
+
+            <div>
+              <div style={{fontSize:11,fontWeight:700,color:C.dim,marginBottom:10,letterSpacing:'0.05em'}}>ALTERAR STATUS</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                {STATUS_LIST.filter(s=>s.id!=='all').map(s=>(
+                  <button key={s.id} onClick={()=>updateStatus(selected.id,s.id)} style={{
+                    padding:'6px 14px',borderRadius:20,cursor:'pointer',fontSize:12,fontWeight:600,transition:'all 0.15s',
+                    border:`1.5px solid ${s.color}`,
+                    background: selected.status===s.id ? s.color : 'transparent',
+                    color:       selected.status===s.id ? '#fff'  : s.color,
+                  }}>{s.label}</button>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={()=>window.open(`https://wa.me/55${selected.phone}`,'_blank')}
+              style={{background:'#25D366',color:'#fff',border:'none',borderRadius:10,padding:'12px 20px',fontSize:14,fontWeight:700,cursor:'pointer',width:'100%',marginTop:'auto'}}>
+              Abrir no WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── App Shell ────────────────────────────────────────────────────────────────
 
 const NAV = [
@@ -2140,6 +2388,7 @@ const NAV = [
   { id:'conversations', label:'Conversas',      Icon: MessageSquare   },
   { id:'pipeline',      label:'Pipeline',       Icon: TrendingUp      },
   { id:'followups',     label:'Follow-ups',     Icon: Repeat2         },
+  { id:'prospecting',   label:'Prospecção',     Icon: Target          },
   { id:'broadcasts',    label:'Disparos',       Icon: Megaphone       },
   { id:'tasks',         label:'Tarefas',        Icon: CheckSquare     },
   { id:'settings',      label:'Configurações',  Icon: SettingsIcon    },
@@ -2234,19 +2483,19 @@ export default function App() {
 
   const navigate=(id)=>{ setPage(id); setInitialConv(null); if(id==='conversations') setUnread(0); setSidebarOpen(false); };
 
+  // Atalho Ctrl+K para busca (deve ficar ANTES do return condicional)
+  useEffect(()=>{
+    const h=(e)=>{ if((e.metaKey||e.ctrlKey)&&e.key==='k'){ e.preventDefault(); setSearchOpen(true); } if(e.key==='Escape') setSearchOpen(false); };
+    window.addEventListener('keydown',h);
+    return ()=>window.removeEventListener('keydown',h);
+  },[]);
+
   if (!authed) return <LoginPage onLogin={(user) => { setCurrentUser(user); setAuthed(true); }} />;
 
   const wpColor=wpState==='open'?C.success:wpState==='checking'?C.warning:C.danger;
   const wpLabel=wpState==='open'?'Conectado':wpState==='checking'?'Verificando...':'Desconectado';
 
   const pagePad = isMobile ? '16px' : '40px 52px';
-
-  // Atalho Ctrl+K para busca
-  useEffect(()=>{
-    const h=(e)=>{ if((e.metaKey||e.ctrlKey)&&e.key==='k'){ e.preventDefault(); setSearchOpen(true); } if(e.key==='Escape') setSearchOpen(false); };
-    window.addEventListener('keydown',h);
-    return ()=>window.removeEventListener('keydown',h);
-  },[]);
 
   // ── Sidebar content (shared between mobile overlay and desktop) ──
   const SidebarContent = ({ compact }) => (
@@ -2449,6 +2698,7 @@ export default function App() {
             {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
             {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Pipeline /></div>}
             {page==='followups'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><FollowUps /></div>}
+            {page==='prospecting'   &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Prospecting /></div>}
             {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Broadcasts /></div>}
             {page==='tasks'         &&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}><TasksModule currentUser={currentUser} /></div>}
             {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Settings /></div>}
