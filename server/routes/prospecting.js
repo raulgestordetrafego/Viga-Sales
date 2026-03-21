@@ -352,6 +352,21 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+// PATCH /api/prospects/:id/notes — salvar observação
+router.patch('/:id/notes', async (req, res) => {
+  try {
+    const { notes } = req.body;
+    await run(
+      'UPDATE prospects SET notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [notes || null, req.params.id]
+    );
+    const prospect = await queryOne('SELECT * FROM prospects WHERE id = ?', [req.params.id]);
+    res.json(parseProspect(prospect));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/prospects/stats/summary — resumo para dashboard
 router.get('/stats/summary', async (req, res) => {
   try {

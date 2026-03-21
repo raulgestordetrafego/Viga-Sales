@@ -2141,6 +2141,8 @@ function Prospecting() {
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selected, setSelected]         = useState(null);
+  const [notes, setNotes]               = useState('');
+  const [savingNotes, setSavingNotes]   = useState(false);
 
   const tok = () => localStorage.getItem('crm_token');
 
@@ -2155,6 +2157,23 @@ function Prospecting() {
   ];
 
   const statusColor = s => STATUS_LIST.find(x => x.id === s)?.color || C.dim;
+
+  const openDrawer = (p) => { setSelected(p); setNotes(p.notes || ''); };
+
+  const saveNotes = async () => {
+    setSavingNotes(true);
+    try {
+      await fetch(`/api/prospects/${selected.id}/notes`, {
+        method:'PATCH',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${tok()}` },
+        body: JSON.stringify({ notes }),
+      });
+      toast.success('Observação salva');
+      setSelected(s => ({ ...s, notes }));
+      load();
+    } catch { toast.error('Erro ao salvar observação'); }
+    finally { setSavingNotes(false); }
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -2264,7 +2283,7 @@ function Prospecting() {
               </thead>
               <tbody>
                 {filtered.map((p,i)=>(
-                  <tr key={p.id} onClick={()=>setSelected(p)}
+                  <tr key={p.id} onClick={()=>openDrawer(p)}
                     style={{borderTop:`1px solid ${C.border}`,cursor:'pointer',transition:'background 0.1s',
                       background: i%2===0 ? 'transparent' : `${C.surface}50`}}
                     onMouseEnter={e=>e.currentTarget.style.background=`${C.primary}10`}
@@ -2367,6 +2386,20 @@ function Prospecting() {
                   }}>{s.label}</button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <div style={{fontSize:11,fontWeight:700,color:C.dim,marginBottom:8,letterSpacing:'0.05em'}}>OBSERVAÇÃO</div>
+              <textarea
+                value={notes}
+                onChange={e=>setNotes(e.target.value)}
+                placeholder="Ex: número inválido, não é do segmento, já é cliente..."
+                rows={3}
+                style={{width:'100%',padding:'10px 12px',background:C.surface,border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:13,resize:'vertical',outline:'none',boxSizing:'border-box',fontFamily:'inherit'}}
+              />
+              <button onClick={saveNotes} disabled={savingNotes} style={{marginTop:6,padding:'7px 16px',background:C.primary,color:'#fff',border:'none',borderRadius:8,fontSize:12,fontWeight:700,cursor:'pointer',opacity:savingNotes?0.6:1}}>
+                {savingNotes ? 'Salvando...' : 'Salvar observação'}
+              </button>
             </div>
 
             <button onClick={()=>window.open(`https://wa.me/55${selected.phone}`,'_blank')}

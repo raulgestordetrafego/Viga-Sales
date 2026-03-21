@@ -397,6 +397,9 @@ async function initializeSchema() {
     }
   }
 
+  // Migrações incrementais
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN notes TEXT`); } catch {}
+
   // Seed default stages
   const stages = [
     ['stage_lead',       'Lead',          '#64748b', 1],
