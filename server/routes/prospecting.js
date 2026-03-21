@@ -412,4 +412,24 @@ router.get('/stats/summary', async (req, res) => {
   }
 });
 
+// GET /api/prospects/logs/failures — relatório de falhas de envio
+router.get('/logs/failures', async (req, res) => {
+  try {
+    const { limit = 100 } = req.query;
+    const logs = await query(
+      `SELECT pl.id, pl.prospect_id, pl.campaign_id, pl.action, pl.error, pl.created_at,
+              p.name, p.company, p.phone, p.city, p.status as prospect_status
+       FROM prospecting_logs pl
+       LEFT JOIN prospects p ON p.id = pl.prospect_id
+       WHERE pl.error IS NOT NULL AND pl.action = 'novo'
+       ORDER BY pl.created_at DESC
+       LIMIT ?`,
+      [Number(limit)]
+    );
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

@@ -20,6 +20,8 @@ services:
       - APP_URL=${APP_URL}
       - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SENDER_NAME=${SENDER_NAME:-Raul}
+      - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
     volumes:
       - viga-sales-db:/app/db
     networks:

@@ -2143,12 +2143,16 @@ function Prospecting() {
   const [selected, setSelected]         = useState(null);
   const [notes, setNotes]               = useState('');
   const [savingNotes, setSavingNotes]   = useState(false);
+  const [tab, setTab]                   = useState('leads'); // 'leads' | 'falhas'
+  const [failures, setFailures]         = useState([]);
+  const [loadingFail, setLoadingFail]   = useState(false);
 
   const tok = () => localStorage.getItem('crm_token');
 
   const STATUS_LIST = [
     { id:'all',        label:'Todos',       color: C.dim      },
     { id:'novo',       label:'Novo',        color:'#3b82f6'   },
+    { id:'reservado',  label:'Reservado',   color:'#6366f1'   },
     { id:'enviado',    label:'Enviado',     color:'#f59e0b'   },
     { id:'respondeu',  label:'Respondeu',   color:'#10b981'   },
     { id:'follow-up',  label:'Follow-up',   color:'#8b5cf6'   },
@@ -2175,6 +2179,15 @@ function Prospecting() {
     finally { setSavingNotes(false); }
   };
 
+  const loadFailures = useCallback(async () => {
+    setLoadingFail(true);
+    try {
+      const r = await fetch('/api/prospects/logs/failures?limit=100', { headers: { Authorization: `Bearer ${tok()}` } });
+      setFailures(await r.json());
+    } catch { toast.error('Erro ao carregar falhas'); }
+    finally { setLoadingFail(false); }
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -2193,6 +2206,19 @@ function Prospecting() {
   }, [statusFilter]);
 
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (tab === 'falhas') loadFailures(); }, [tab, loadFailures]);
+
+  const retryProspect = async (prospectId) => {
+    try {
+      await fetch(`/api/prospects/${prospectId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` },
+        body: JSON.stringify({ status: 'novo' }),
+      });
+      toast.success('Prospect recolocado na fila');
+      loadFailures();
+    } catch { toast.error('Erro ao retentar'); }
+  };
 
   const updateStatus = async (id, status) => {
     try {
@@ -2221,23 +2247,39 @@ function Prospecting() {
   return (
     <div style={{display:'flex',flexDirection:'column',gap:20}}>
       {/* Header */}
-      <div>
-        <h2 style={{margin:0,fontSize:22,fontWeight:700,color:C.text}}>Prospecção</h2>
-        <p style={{margin:'4px 0 0',fontSize:13,color:C.dim}}>Leads captados via Google Maps / n8n</p>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:12}}>
+        <div>
+          <h2 style={{margin:0,fontSize:22,fontWeight:700,color:C.text}}>Prospecção</h2>
+          <p style={{margin:'4px 0 0',fontSize:13,color:C.dim}}>Leads captados via Google Maps / n8n</p>
+        </div>
+        {/* Tabs */}
+        <div style={{display:'flex',gap:4,background:C.surface,borderRadius:10,padding:4,border:`1px solid ${C.border}`}}>
+          {[{id:'leads',label:'Leads'},{id:'falhas',label:'⚠ Falhas'}].map(t=>(
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{
+              padding:'6px 18px',borderRadius:7,border:'none',cursor:'pointer',fontSize:13,fontWeight:600,transition:'all 0.15s',
+              background: tab===t.id ? C.primary : 'transparent',
+              color: tab===t.id ? '#fff' : C.dim,
+            }}>{t.label}</button>
+          ))}
+        </div>
       </div>
 
       {/* Stats */}
       {stats && (
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(110px,1fr))',gap:12}}>
           {[
-            {label:'Total',      value:stats.total,      color:C.primary  },
-            {label:'Novos',      value:stats.novo,       color:'#3b82f6'  },
-            {label:'Enviados',   value:stats.enviado,    color:'#f59e0b'  },
-            {label:'Responderam',value:stats.respondeu,  color:'#10b981'  },
-            {label:'Follow-up',  value:stats.follow_up,  color:'#8b5cf6'  },
-            {label:'Convertidos',value:stats.convertido, color:'#059669'  },
+            {label:'Total',      value:stats.total,          color:C.primary  },
+            {label:'Novos',      value:stats.novo,           color:'#3b82f6'  },
+            {label:'Enviados',   value:stats.enviado,        color:'#f59e0b'  },
+            {label:'Responderam',value:stats.respondeu,      color:'#10b981'  },
+            {label:'Follow-up',  value:stats.follow_up,      color:'#8b5cf6'  },
+            {label:'Convertidos',value:stats.convertido,     color:'#059669'  },
+            {label:'Falhas',     value:failures.length,      color:'#ef4444'  },
           ].map(s=>(
-            <div key={s.label} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'14px 16px'}}>
+            <div key={s.label} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'14px 16px',
+              cursor: s.label==='Falhas' ? 'pointer' : 'default'}}
+              onClick={()=>{ if(s.label==='Falhas'){ setTab('falhas'); loadFailures(); } }}
+            >
               <div style={{fontSize:22,fontWeight:700,color:s.color}}>{s.value}</div>
               <div style={{fontSize:11,color:C.dim,marginTop:2}}>{s.label}</div>
             </div>
@@ -2245,8 +2287,66 @@ function Prospecting() {
         </div>
       )}
 
+      {/* Aba Falhas */}
+      {tab === 'falhas' && (
+        <Card noPad>
+          <div style={{padding:'12px 16px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{fontWeight:700,color:C.text,fontSize:14}}>Relatório de Falhas de Envio</span>
+            <button onClick={loadFailures} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:8,padding:'5px 12px',cursor:'pointer',fontSize:12,color:C.dim}}>↻ Atualizar</button>
+          </div>
+          {loadingFail ? (
+            <div style={{padding:48,textAlign:'center',color:C.dim}}>Carregando...</div>
+          ) : failures.length === 0 ? (
+            <EmptyState icon="✅" title="Nenhuma falha registrada" sub="Todos os envios foram bem-sucedidos" />
+          ) : (
+            <div style={{overflowX:'auto'}}>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+                <thead>
+                  <tr style={{background:C.surface}}>
+                    {['Empresa','Telefone','Erro','Data',''].map(h=>(
+                      <th key={h} style={{padding:'10px 16px',textAlign:'left',fontWeight:600,color:C.dim,fontSize:11,textTransform:'uppercase',letterSpacing:'0.05em',whiteSpace:'nowrap'}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {failures.map((f,i)=>{
+                    let errMsg = f.error || '';
+                    try { const p = JSON.parse(errMsg); errMsg = p?.message || p?.error || errMsg; } catch {}
+                    return (
+                      <tr key={f.id} style={{borderTop:`1px solid ${C.border}`,background:i%2===0?'transparent':`${C.surface}50`}}>
+                        <td style={{padding:'10px 16px'}}>
+                          <div style={{fontWeight:600,color:C.text}}>{f.company||f.name||'—'}</div>
+                        </td>
+                        <td style={{padding:'10px 16px',color:C.dim,fontFamily:'monospace',fontSize:12}}>{f.phone}</td>
+                        <td style={{padding:'10px 16px',color:'#ef4444',maxWidth:300}}>
+                          <span title={f.error} style={{display:'block',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:280}}>
+                            {errMsg || '—'}
+                          </span>
+                        </td>
+                        <td style={{padding:'10px 16px',color:C.dim,whiteSpace:'nowrap',fontSize:12}}>
+                          {new Date(f.created_at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}
+                        </td>
+                        <td style={{padding:'10px 16px'}}>
+                          <button onClick={()=>retryProspect(f.prospect_id)}
+                            style={{background:'#3b82f6',color:'#fff',border:'none',borderRadius:8,padding:'5px 12px',fontSize:11,fontWeight:700,cursor:'pointer'}}>
+                            Retentar
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div style={{padding:'10px 16px',borderTop:`1px solid ${C.border}`,color:C.dim,fontSize:12}}>
+                {failures.length} falha{failures.length!==1?'s':''} registrada{failures.length!==1?'s':''}
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
+
       {/* Lista */}
-      <Card noPad>
+      {tab === 'leads' && <Card noPad>
         {/* Busca + filtros */}
         <div style={{padding:'12px 16px',borderBottom:`1px solid ${C.border}`,display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
           <input
@@ -2322,7 +2422,7 @@ function Prospecting() {
             {filtered.length} prospect{filtered.length!==1?'s':''}
           </div>
         )}
-      </Card>
+      </Card>}
 
       {/* Drawer */}
       {selected&&(
