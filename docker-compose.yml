@@ -1,4 +1,17 @@
 services:
+  postgres-agente:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=agente
+      - POSTGRES_USER=agente
+      - POSTGRES_PASSWORD=AgentViga2024!
+    volumes:
+      - postgres-agente-data:/var/lib/postgresql/data
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - n8n_traefik
+
   viga-sales:
     build: .
     restart: always
@@ -35,3 +48,4 @@ networks:
 
 volumes:
   viga-sales-db:
+  postgres-agente-data:
