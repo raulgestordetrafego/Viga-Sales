@@ -232,6 +232,16 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  // Logout de todos os dispositivos (master only)
+  app.post("/api/auth/logout-all", (req: any, res) => {
+    const session = getSession(req);
+    if (!session || session.role !== 'master') return res.status(403).json({ error: 'Sem permissão' });
+    sessions.clear();
+    io.emit('force_logout');
+    auditLog('logout_all', session.userId, req, {});
+    res.json({ ok: true });
+  });
+
   // Verify
   app.get("/api/auth/verify", (req, res) => {
     const session = getSession(req);

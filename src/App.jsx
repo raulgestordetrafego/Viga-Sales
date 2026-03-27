@@ -2094,6 +2094,17 @@ function UserManagement() {
         </Card>
       )}
 
+      {isMaster && (
+        <div style={{display:'flex',justifyContent:'flex-end'}}>
+          <Btn variant="danger" size="sm" onClick={async()=>{
+            if(!window.confirm('Deslogar TODOS os usuários de todos os dispositivos?')) return;
+            const token=localStorage.getItem('crm_token');
+            await fetch('/api/auth/logout-all',{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+            toast.success('Todos os usuários foram deslogados!');
+          }}>Deslogar todos os dispositivos</Btn>
+        </div>
+      )}
+
       <Card title="👥 Todos os Usuários">
         <div style={{display:'flex',flexDirection:'column',gap:8}}>
           {users.map(u => (
@@ -2568,6 +2579,17 @@ export default function App() {
     const h=(e)=>{ setPage(e.detail.tab); if(e.detail.activeConv) setInitialConv(e.detail.activeConv); };
     window.addEventListener('switchTab',h);
     return ()=>window.removeEventListener('switchTab',h);
+  },[]);
+
+  useEffect(()=>{
+    const h=()=>{
+      localStorage.removeItem('crm_token');
+      localStorage.removeItem('crm_user');
+      setAuthed(false);
+      setCurrentUser(null);
+    };
+    socket.on('force_logout',h);
+    return ()=>socket.off('force_logout',h);
   },[]);
 
   useEffect(()=>{
