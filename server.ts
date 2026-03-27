@@ -276,7 +276,7 @@ async function startServer() {
     const { password } = req.body;
     if (!password || password.length < 6) return res.status(400).json({ error: 'Senha deve ter no mínimo 6 caracteres' });
     const hashed = await bcrypt.hash(password, 12);
-    await run('UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [hashed, req.params.id]);
+    await run('UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [hashed, req.params.id]);
     res.json({ ok: true });
   });
 
