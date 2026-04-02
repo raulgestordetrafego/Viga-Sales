@@ -460,6 +460,19 @@ router.get('/stats/summary', async (req, res) => {
   }
 });
 
+// POST /api/prospects/recovery — libera prospects travados em 'reservado' de volta para 'novo'
+router.post('/recovery', async (req, res) => {
+  try {
+    const result = await run(
+      `UPDATE prospects SET status = 'novo', updated_at = CURRENT_TIMESTAMP WHERE status = 'reservado'`,
+      []
+    );
+    res.json({ released: result.changes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/prospects/logs/failures — relatório de falhas de envio
 router.get('/logs/failures', async (req, res) => {
   try {
