@@ -2235,8 +2235,18 @@ function Prospecting() {
       ]);
       const pData = await pRes.json();
       const sData = await sRes.json();
-      setProspects(Array.isArray(pData) ? pData : pData.prospects || []);
-      setStats(sData);
+      setProspects(Array.isArray(pData) ? pData : (Array.isArray(pData?.prospects) ? pData.prospects : []));
+      // Garante que stats é sempre um objeto com valores numéricos, nunca um erro do Postgres
+      const toNum = v => { const n = parseInt(v); return isNaN(n) ? 0 : n; };
+      setStats({
+        total:      toNum(sData?.total),
+        novo:       toNum(sData?.novo),
+        enviado:    toNum(sData?.enviado),
+        respondeu:  toNum(sData?.respondeu),
+        convertido: toNum(sData?.convertido),
+        follow_up:  toNum(sData?.follow_up),
+        sent_today: toNum(sData?.sent_today),
+      });
     } catch { toast.error('Erro ao carregar prospects'); }
     finally   { setLoading(false); }
   }, [statusFilter]);
@@ -2278,7 +2288,9 @@ function Prospecting() {
         || (p.city||'').toLowerCase().includes(q);
   });
 
-  const statCount = key => stats?.[key === 'follow-up' ? 'follow_up' : key] || 0;
+  // Garante que qualquer valor seja renderizável (nunca um objeto)
+  const safeVal = v => (v === null || v === undefined) ? 0 : (typeof v === 'object' ? JSON.stringify(v) : v);
+  const statCount = key => safeVal(stats?.[key === 'follow-up' ? 'follow_up' : key]) || 0;
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:20}}>
@@ -2304,13 +2316,13 @@ function Prospecting() {
       {stats && (
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(110px,1fr))',gap:12}}>
           {[
-            {label:'Total',      value:stats.total,          color:C.primary  },
-            {label:'Novos',      value:stats.novo,           color:'#3b82f6'  },
-            {label:'Enviados',   value:stats.enviado,        color:'#f59e0b'  },
-            {label:'Responderam',value:stats.respondeu,      color:'#10b981'  },
-            {label:'Follow-up',  value:stats.follow_up,      color:'#8b5cf6'  },
-            {label:'Convertidos',value:stats.convertido,     color:'#059669'  },
-            {label:'Falhas',     value:failures.length,      color:'#ef4444'  },
+            {label:'Total',      value:safeVal(stats.total),          color:C.primary  },
+            {label:'Novos',      value:safeVal(stats.novo),           color:'#3b82f6'  },
+            {label:'Enviados',   value:safeVal(stats.enviado),        color:'#f59e0b'  },
+            {label:'Responderam',value:safeVal(stats.respondeu),      color:'#10b981'  },
+            {label:'Follow-up',  value:safeVal(stats.follow_up),      color:'#8b5cf6'  },
+            {label:'Convertidos',value:safeVal(stats.convertido),     color:'#059669'  },
+            {label:'Falhas',     value:failures.length,               color:'#ef4444'  },
           ].map(s=>(
             <div key={s.label} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'14px 16px',
               cursor: s.label==='Falhas' ? 'pointer' : 'default'}}
