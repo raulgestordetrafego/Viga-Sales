@@ -2194,7 +2194,8 @@ function Prospecting() {
     setLoadingFail(true);
     try {
       const r = await fetch('/api/prospects/logs/failures?limit=100', { headers: { Authorization: `Bearer ${tok()}` } });
-      setFailures(await r.json());
+      const data = await r.json();
+      setFailures(Array.isArray(data) ? data : []);
     } catch { toast.error('Erro ao carregar falhas'); }
     finally { setLoadingFail(false); }
   }, []);

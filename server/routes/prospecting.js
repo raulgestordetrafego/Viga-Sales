@@ -482,7 +482,7 @@ router.get('/logs/failures', async (req, res) => {
               p.name, p.company, p.phone, p.city, p.status as prospect_status
        FROM prospecting_logs pl
        LEFT JOIN prospects p ON p.id = pl.prospect_id
-       WHERE pl.error IS NOT NULL AND pl.action = 'novo'
+       WHERE pl.error IS NOT NULL
        ORDER BY pl.created_at DESC
        LIMIT ?`,
       [Number(limit)]
