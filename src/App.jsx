@@ -2347,7 +2347,12 @@ function Prospecting() {
                 <tbody>
                   {failures.map((f,i)=>{
                     let errMsg = f.error || '';
-                    try { const p = JSON.parse(errMsg); errMsg = p?.message || p?.error || errMsg; } catch {}
+                    try {
+                      const p = JSON.parse(errMsg);
+                      const raw = p?.message || p?.error || errMsg;
+                      errMsg = typeof raw === 'string' ? raw : JSON.stringify(raw);
+                    } catch {}
+                    if (typeof errMsg !== 'string') errMsg = JSON.stringify(errMsg);
                     return (
                       <tr key={f.id} style={{borderTop:`1px solid ${C.border}`,background:i%2===0?'transparent':`${C.surface}50`}}>
                         <td style={{padding:'10px 16px'}}>
