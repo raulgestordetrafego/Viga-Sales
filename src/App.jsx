@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
 import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi } from './api';
@@ -9,6 +9,30 @@ import {
   Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
   Search, LogOut, Paperclip, Mic, MicOff, X, Send, Target,
 } from 'lucide-react';
+
+// ─── Error Boundary ───────────────────────────────────────────────────────────
+class ErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  static getDerivedStateFromError(err) { return { error: err }; }
+  componentDidCatch(err, info) { console.error('[ErrorBoundary]', err, info); }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{padding:40,textAlign:'center',color:'#ef4444',background:'#07101e',minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16}}>
+          <div style={{fontSize:32}}>⚠️</div>
+          <div style={{fontSize:16,fontWeight:700,color:'#fff'}}>Erro na tela</div>
+          <div style={{fontSize:13,color:'#f87171',maxWidth:500,wordBreak:'break-all',background:'#0c1829',padding:'12px 16px',borderRadius:10,border:'1px solid #ef444430'}}>
+            {this.state.error?.message || String(this.state.error)}
+          </div>
+          <button onClick={()=>this.setState({error:null})} style={{marginTop:8,padding:'8px 20px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontWeight:600}}>
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
 const socket = io(window.location.origin);
@@ -2854,7 +2878,7 @@ export default function App() {
             {page==='conversations' &&<div style={{flex:1,display:'flex',overflow:'hidden'}}><Conversations initialContact={initialConv} /></div>}
             {page==='pipeline'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Pipeline /></div>}
             {page==='followups'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><FollowUps /></div>}
-            {page==='prospecting'   &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Prospecting /></div>}
+            {page==='prospecting'   &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><ErrorBoundary><Prospecting /></ErrorBoundary></div>}
             {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Broadcasts /></div>}
             {page==='tasks'         &&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}><TasksModule currentUser={currentUser} /></div>}
             {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Settings /></div>}
