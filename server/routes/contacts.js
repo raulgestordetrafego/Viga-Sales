@@ -41,6 +41,21 @@ router.get('/', async (req, res) => {
 });
 
 // GET /contacts/:id
+// GET /contacts/phone/:phone — busca contato pelo número (usado pelo n8n)
+router.get('/phone/:phone', async (req, res) => {
+  try {
+    const clean = String(req.params.phone).replace(/\D/g, '');
+    const contact = await queryOne(
+      'SELECT * FROM contacts WHERE phone = ? OR phone LIKE ?',
+      [clean, `%${clean.slice(-8)}`]
+    );
+    if (!contact) return res.status(404).json({ error: 'Contato não encontrado' });
+    res.json(parseContact(contact));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const contact = await queryOne('SELECT * FROM contacts WHERE id = ?', [req.params.id]);
