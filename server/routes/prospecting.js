@@ -79,13 +79,47 @@ function normalizePhone(phone) {
   return String(phone).replace(/\D/g, '');
 }
 
+// Segmentos conhecidos do Google Maps (tipos em PT-BR)
+const SEGMENT_NAMES = {
+  restaurant: 'restaurante', food: 'alimentação', bar: 'bar',
+  cafe: 'cafeteria', bakery: 'padaria', meal_delivery: 'delivery',
+  hair_care: 'salão de beleza', beauty_salon: 'salão de beleza',
+  barber_shop: 'barbearia', spa: 'spa', nail_salon: 'manicure',
+  gym: 'academia', health: 'saúde', doctor: 'médico', dentist: 'dentista',
+  physiotherapist: 'fisioterapia', pharmacy: 'farmácia',
+  real_estate_agency: 'imobiliária', lawyer: 'advocacia',
+  accounting: 'contabilidade', insurance_agency: 'seguros',
+  car_dealer: 'concessionária', car_repair: 'mecânica', car_wash: 'lava-rápido',
+  clothing_store: 'loja de roupas', shoe_store: 'sapataria',
+  electronics_store: 'eletrônicos', furniture_store: 'móveis',
+  pet_store: 'pet shop', florist: 'floricultura',
+  school: 'escola', university: 'faculdade',
+  hotel: 'hotel', lodging: 'hospedagem',
+  travel_agency: 'agência de viagens',
+  construction: 'construção civil', general_contractor: 'construtora',
+  plumber: 'encanador', electrician: 'eletricista', painter: 'pintor',
+  cleaning: 'limpeza', laundry: 'lavanderia',
+  photography: 'fotografia', event_venue: 'espaço de eventos',
+};
+
+function resolveSegment(raw) {
+  if (!raw) return null;
+  const str = String(raw).trim();
+  // Segmento puramente numérico (ex: "7", "10") = dado inválido, ignorar
+  if (/^\d+$/.test(str)) return null;
+  // Tentar mapear chave inglesa → PT-BR
+  return SEGMENT_NAMES[str.toLowerCase()] || str;
+}
+
 async function generateAIMessage(prospect) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error('OPENAI_API_KEY não configurada');
 
+  const segmentLabel = resolveSegment(prospect.segment);
+
   const context = [
     prospect.company && `Empresa: ${prospect.company}`,
-    prospect.segment && `Segmento: ${prospect.segment}`,
+    segmentLabel && `Segmento: ${segmentLabel}`,
     prospect.city && `Cidade: ${prospect.city}`,
     prospect.rating && `Avaliação Google: ${prospect.rating}/5 (${prospect.reviews_count || 0} avaliações)`,
     prospect.website && `Site: ${prospect.website}`,
@@ -94,20 +128,24 @@ async function generateAIMessage(prospect) {
   const senderName = process.env.SENDER_NAME || 'Raul';
   const senderCompany = process.env.SENDER_COMPANY || 'Viga Sales';
 
-  const prompt = `Você é ${senderName}, da empresa ${senderCompany}, especialista em prospecção de clientes via WhatsApp.
-Escreva uma mensagem de prospecção CURTA (máximo 3 parágrafos), CASUAL e PERSONALIZADA para o seguinte prospect:
+  const prompt = `Você é ${senderName}, ajudando donos de pequenos negócios no Brasil via WhatsApp.
+Escreva uma primeira mensagem de prospecção para o seguinte prospect:
 
 ${context}
 
+OBJETIVO: abrir conversa usando SPIN Selling — não vender, só entender o negócio.
+Use a técnica de perguntas de SITUAÇÃO: mostre que conhece o segmento deles e faça uma pergunta genuína sobre como eles trabalham hoje.
+
 Regras:
-- Escreva na primeira pessoa como ${senderName} da ${senderCompany} — nunca use placeholders como [Seu Nome] ou [Sua Empresa]
-- Tom amigável e humano, não robótico
-- Mencione o nome da empresa ou cidade do prospect para personalizar
-- Apresente brevemente o serviço (CRM de WhatsApp para gestão de clientes)
-- Termine com uma pergunta aberta simples para iniciar conversa
-- Não use emojis em excesso (máximo 2)
-- Não mencione preço
-- Máximo 150 palavras`;
+- Escreva na primeira pessoa como ${senderName} — nunca use placeholders
+- Tom casual e humano, como se fosse uma mensagem no WhatsApp mesmo
+- Mencione o nome da empresa OU a cidade para personalizar
+- Se souber o segmento (ex: barbearia, restaurante), mencione naturalmente — nunca diga "Segmento X"
+- Faça apenas UMA pergunta no final — aberta, sobre o negócio deles (ex: "há quanto tempo vocês estão no mercado?", "como vocês costumam captar clientes hoje?")
+- Não mencione seu produto ou serviço ainda — o objetivo é ouvir
+- Sem emojis excessivos (máximo 1)
+- Máximo 100 palavras
+- Varie o estilo: às vezes mais formal, às vezes mais coloquial`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -159,7 +197,7 @@ router.get('/campaigns', async (req, res) => {
 // POST /api/prospects/campaigns
 router.post('/campaigns', async (req, res) => {
   try {
-    const { name, segment, city, daily_limit = 40, message_template, use_ai = 1 } = req.body;
+    const { name, segment, city, daily_limit = 30, message_template, use_ai = 1 } = req.body;
     if (!name) return res.status(400).json({ error: 'name obrigatório' });
 
     const id = uuidv4();
@@ -292,7 +330,7 @@ router.post('/', async (req, res) => {
         (id, name, phone, email, company, segment, city, address, website, instagram,
          rating, reviews_count, source, campaign_id, raw_data)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, name, normalizedPhone, email, company, segment, city, address, website,
+      [id, name, normalizedPhone, email, company, resolveSegment(segment) || segment, city, address, website,
        instagram, rating, reviews_count, source, campaign_id,
        raw_data ? JSON.stringify(raw_data) : null]
     );
@@ -331,7 +369,7 @@ router.post('/bulk', async (req, res) => {
             (id, name, phone, email, company, segment, city, address, website,
              instagram, rating, reviews_count, source, campaign_id, raw_data)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [uuidv4(), p.name, normalizedPhone, p.email, p.company, p.segment,
+          [uuidv4(), p.name, normalizedPhone, p.email, p.company, resolveSegment(p.segment) || p.segment,
            p.city, p.address, p.website, p.instagram,
            p.rating, p.reviews_count, source, campaign_id,
            p.raw_data ? JSON.stringify(p.raw_data) : JSON.stringify(p)]
