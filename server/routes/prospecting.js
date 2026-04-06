@@ -15,23 +15,28 @@ async function syncProspectToConversation(prospect, message) {
       [cleanPhone, `%${cleanPhone.slice(-8)}`]
     );
 
+    // Monta nota com contexto da prospecção (segmento + cidade)
+    const prospectNote = [
+      'prospecção_ativa',
+      prospect.segment && `segmento: ${prospect.segment}`,
+      prospect.city    && `cidade: ${prospect.city}`,
+    ].filter(Boolean).join(' | ');
+
     if (!contact) {
       const id = uuidv4();
       await run(
-        `INSERT INTO contacts (id, name, phone, company, tags, status, pipeline_stage, last_interaction, created_at, updated_at)
-         VALUES (?, ?, ?, ?, '["prospecção_ativa"]', 'active', 'stage_lead', ?, ?, ?)`,
-        [id, contactName, cleanPhone, prospect.company || null, now, now, now]
+        `INSERT INTO contacts (id, name, phone, company, tags, notes, status, pipeline_stage, last_interaction, created_at, updated_at)
+         VALUES (?, ?, ?, ?, '["prospecção_ativa"]', ?, 'active', 'stage_lead', ?, ?, ?)`,
+        [id, contactName, cleanPhone, prospect.company || null, prospectNote, now, now, now]
       );
       contact = await queryOne('SELECT * FROM contacts WHERE id = ?', [id]);
     } else {
-      // Garante que o contato existente também tenha a tag
+      // Garante tag + atualiza nota com segmento
       let existingTags = [];
       try { existingTags = JSON.parse(contact.tags || '[]'); } catch {}
-      if (!existingTags.includes('prospecção_ativa')) {
-        existingTags.push('prospecção_ativa');
-        await run('UPDATE contacts SET tags = ?, updated_at = ? WHERE id = ?',
-          [JSON.stringify(existingTags), now, contact.id]);
-      }
+      if (!existingTags.includes('prospecção_ativa')) existingTags.push('prospecção_ativa');
+      await run('UPDATE contacts SET tags = ?, notes = ?, updated_at = ? WHERE id = ?',
+        [JSON.stringify(existingTags), prospectNote, now, contact.id]);
     }
 
     // Encontrar ou criar conversa
