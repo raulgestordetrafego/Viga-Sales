@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AB Capital — Preparatório para Concursos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #06111f;
+      --navy2:   #0c1d30;
+      --navy3:   #102540;
+      --gold:    #c8991a;
+      --gold2:   #e8b535;
+      --gold3:   #f5d06a;
+      --white:   #f4f1ea;
+      --muted:   #8ea3b8;
+      --danger:  #e05c3a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: .35;
+    }
+
+    /* ══════════════════════════════
+       DOBRA 1 — HERO
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(200,153,26,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 10% 80%, rgba(6,17,31,.9) 0%, transparent 70%),
+        var(--navy2);
+    }
+
+    /* diagonal gold stripe */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 42vw;
+      height: 130%;
+      background: linear-gradient(170deg, rgba(200,153,26,.07) 0%, rgba(200,153,26,.03) 50%, transparent 100%);
+      border-left: 1px solid rgba(200,153,26,.18);
+      transform: skewX(-8deg);
+      pointer-events: none;
+    }
+
+    /* ─── NAV BAR ─── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 5%;
+      border-bottom: 1px solid rgba(200,153,26,.15);
+      position: relative;
+      z-index: 10;
+      animation: fadeDown .6s ease both;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      text-decoration: none;
+    }
+
+    .nav-logo-text {
+      font-family: 'Barlow', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: #e8f0f8;
+    }
+
+    .nav-badge {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--navy);
+      background: var(--gold2);
+      padding: .25rem .7rem;
+      border-radius: 2px;
+    }
+
+    /* ─── HERO BODY ─── */
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5vh 5% 4vh;
+      position: relative;
+      z-index: 5;
+      max-width: 760px;
+      animation: fadeUp .8s .2s ease both;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 2px;
+      background: var(--gold2);
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      line-height: .95;
+      letter-spacing: .02em;
+      color: var(--white);
+      margin-bottom: .6rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--gold2);
+      -webkit-text-stroke: 1px var(--gold);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─── BULLETS ─── */
+    .benefits {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .benefits li {
+      display: flex;
+      align-items: flex-start;
+      gap: .9rem;
+      font-size: .95rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--white);
+      animation: fadeUp .6s ease both;
+    }
+
+    .benefits li:nth-child(1) { animation-delay: .35s; }
+    .benefits li:nth-child(2) { animation-delay: .45s; }
+    .benefits li:nth-child(3) { animation-delay: .55s; }
+    .benefits li:nth-child(4) { animation-delay: .65s; }
+
+    .check {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .check svg { width: 11px; height: 11px; }
+
+    /* ─── CTA BUTTON ─── */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      background: var(--gold2);
+      color: var(--navy);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 1rem 2.2rem;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 6px 30px rgba(232,181,53,.25);
+      width: fit-content;
+      animation: fadeUp .6s .7s ease both;
+    }
+
+    .cta-btn:hover {
+      background: var(--gold3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(232,181,53,.35);
+    }
+
+    .cta-btn svg { width: 18px; height: 18px; }
+
+    /* ─── SOCIAL PROOF STRIP ─── */
+    .proof-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 3rem;
+      padding: 1.5rem 5%;
+      border-top: 1px solid rgba(200,153,26,.12);
+      position: relative;
+      z-index: 5;
+      animation: fadeUp .6s .85s ease both;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.9rem;
+      letter-spacing: .04em;
+      color: var(--gold2);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════
+       DOBRA 2 — FORMULÁRIO
+    ══════════════════════════════ */
+    .form-section {
+      background:
+        radial-gradient(ellipse 70% 50% at 30% 50%, rgba(200,153,26,.06) 0%, transparent 60%),
+        var(--navy);
+      padding: 5rem 5% 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative lines */
+    .form-section::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .35;
+    }
+
+    .form-container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .form-eyebrow {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: .02em;
+      color: var(--white);
+      margin-bottom: .75rem;
+    }
+
+    h2 span { color: var(--gold2); }
+
+    .form-desc {
+      font-size: .92rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── URGENCY BAR ─── */
+    .urgency {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      background: rgba(224,92,58,.12);
+      border: 1px solid rgba(224,92,58,.3);
+      border-radius: 4px;
+      padding: .75rem 1rem;
+      margin-bottom: 2rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #f08060;
+      letter-spacing: .02em;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* ─── FORM CARD ─── */
+    .form-card {
+      background: var(--navy2);
+      border: 1px solid rgba(200,153,26,.2);
+      border-radius: 8px;
+      padding: 2.2rem;
+      box-shadow: 0 24px 80px rgba(0,0,0,.4);
+    }
+
+    .form-group {
+      margin-bottom: 1.3rem;
+    }
+
+    label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(200,153,26,.2);
+      border-radius: 4px;
+      padding: .85rem 1rem;
+      font-family: 'Barlow', sans-serif;
+      font-size: .95rem;
+      color: var(--white);
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder { color: rgba(142,163,184,.4); }
+
+    input:focus, select:focus {
+      border-color: var(--gold2);
+      background: rgba(200,153,26,.05);
+      box-shadow: 0 0 0 3px rgba(200,153,26,.1);
+    }
+
+    /* custom select arrow */
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--gold2);
+      pointer-events: none;
+    }
+
+    select option {
+      background: var(--navy2);
+      color: var(--white);
+    }
+
+    /* row for 2 inputs */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ─── SUBMIT BUTTON ─── */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold3) 100%);
+      color: var(--navy);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 1.1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: .6rem;
+      transition: transform .15s, box-shadow .2s, opacity .2s;
+      box-shadow: 0 8px 32px rgba(232,181,53,.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 44px rgba(232,181,53,.4);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    /* ─── TRUST BADGES ─── */
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.2rem 2rem;
+      margin-top: 1.6rem;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .badge svg { width: 14px; height: 14px; color: var(--gold); }
+
+    /* ─── SUCCESS STATE ─── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .form-card.submitted .form-body { display: none; }
+    .form-card.submitted .success-msg { display: block; }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+    }
+
+    .success-icon svg { width: 30px; height: 30px; color: var(--navy); }
+
+    .success-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      letter-spacing: .04em;
+      color: var(--gold2);
+      margin-bottom: .5rem;
+    }
+
+    .success-text {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════
+       ANIMATIONS
+    ═══════════════════════ */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.5); opacity: .5; }
+    }
+
+    /* scroll-triggered fade-in for form section */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .proof-strip { gap: 1rem 2rem; }
+      .form-card { padding: 1.5rem 1.2rem; }
+      h1 { font-size: clamp(2.8rem, 13vw, 4rem); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     DOBRA 1 — HERO
+═══════════════════════════════════════ -->
+<section class="hero">
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">
+      <!-- AB Capital logo vetorizado -->
+      <svg width="44" height="40" viewBox="0 0 110 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer shape: hexagon with sharp left point, flat right section with cut corners -->
+        <path d="M5,50 L26,8 L72,8 L90,26 L90,74 L72,92 L26,92 Z"
+              fill="none" stroke="#C4A020" stroke-width="5.5" stroke-linejoin="miter"/>
+        <!-- Center vertical spine (right leg of A + left side of B) -->
+        <line x1="53" y1="8" x2="53" y2="92" stroke="#C4A020" stroke-width="5.5" stroke-linecap="butt"/>
+        <!-- A crossbar at midheight — from left diagonal to center spine -->
+        <line x1="26" y1="50" x2="53" y2="50" stroke="#C4A020" stroke-width="5" stroke-linecap="round"/>
+        <!-- B upper D-curve -->
+        <path d="M53,8 Q87,8 87,29 Q87,50 53,50" fill="none" stroke="#C4A020" stroke-width="5" stroke-linecap="butt"/>
+        <!-- B lower D-curve (slightly wider, like original) -->
+        <path d="M53,50 Q91,50 91,71 Q91,92 53,92" fill="none" stroke="#C4A020" stroke-width="5" stroke-linecap="butt"/>
+      </svg>
+      <span class="nav-logo-text">AB Capital</span>
+    </a>
+    <span class="nav-badge">Turma 2026</span>
+  </nav>
+
+  <div class="hero-body">
+    <p class="hero-eyebrow">Preparatório de alta performance</p>
+
+    <h1>Sua <em>aprovação</em><br>começa aqui.</h1>
+
+    <p class="hero-sub">
+      Metodologia focada, professores que já foram aprovados e material atualizado para você conquistar a vaga dos seus sonhos no serviço público.
+    </p>
+
+    <ul class="benefits">
+      <li>
+        <span class="check">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#06111f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </span>
+        <span><strong>+3.200 aprovados</strong> nos últimos 4 anos em concursos federais</span>
+      </li>
+      <li>
+        <span class="check">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#06111f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </span>
+        <span><strong>Resolução de provas anteriores</strong> com correção ao vivo todo sábado</span>
+      </li>
+      <li>
+        <span class="check">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#06111f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </span>
+        <span><strong>Plano de estudos personalizado</strong> — mesmo para quem tem pouco tempo</span>
+      </li>
+      <li>
+        <span class="check">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#06111f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </span>
+        <span><strong>Acesso vitalício</strong> às aulas gravadas + atualizações sem custo extra</span>
+      </li>
+    </ul>
+
+    <a href="#form" class="cta-btn">
+      Quero minha vaga gratuita
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="proof-strip">
+    <div class="stat">
+      <span class="stat-num">3.200+</span>
+      <span class="stat-label">Aprovados</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">97%</span>
+      <span class="stat-label">Satisfação</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">12</span>
+      <span class="stat-label">Anos no mercado</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">480h</span>
+      <span class="stat-label">Conteúdo disponível</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════
+     DOBRA 2 — FORMULÁRIO
+═══════════════════════════════════════ -->
+<section class="form-section" id="form">
+  <div class="form-container fade-in">
+
+    <div class="form-header">
+      <span class="form-eyebrow">Vagas limitadas · Turma abril 2026</span>
+      <h2>Garanta sua <span>aula gratuita</span><br>agora mesmo</h2>
+      <p class="form-desc">
+        Preencha o formulário e um de nossos consultores entrará em contato<br>em menos de 2 horas via WhatsApp.
+      </p>
+    </div>
+
+    <div class="urgency">
+      <span class="pulse-dot"></span>
+      <span>&#9889; 14 pessoas visualizando esta página agora — restam apenas <strong>8 vagas</strong> para a consulta gratuita</span>
+    </div>
+
+    <div class="form-card" id="formCard">
+      <div class="form-body">
+        <form id="leadForm" novalidate>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nome completo</label>
+              <input type="text" id="name" placeholder="Seu nome" required />
+            </div>
+            <div class="form-group">
+              <label for="whatsapp">WhatsApp</label>
+              <input type="tel" id="whatsapp" placeholder="(11) 99999-9999" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="concurso">Concurso de interesse</label>
+            <div class="select-wrap">
+              <select id="concurso" required>
+                <option value="" disabled selected>Selecione o concurso...</option>
+                <option value="pf">Polícia Federal</option>
+                <option value="rf">Receita Federal</option>
+                <option value="inss">INSS</option>
+                <option value="bb">Banco do Brasil</option>
+                <option value="outros">Outros</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Quero minha consulta gratuita &rarr;
+          </button>
+
+        </form>
+
+        <div class="trust-badges">
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Sem spam
+          </span>
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Dados protegidos (LGPD)
+          </span>
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Resposta em até 2h
+          </span>
+        </div>
+      </div>
+
+      <div class="success-msg" id="successMsg">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <p class="success-title">Cadastro realizado!</p>
+        <p class="success-text">
+          Recebemos seus dados. Nossa equipe vai te chamar no WhatsApp<br>
+          <strong style="color: var(--gold2);">em menos de 2 horas</strong> para agendar sua aula gratuita.<br><br>
+          Fique de olho nas mensagens!
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     RODAPÉ
+═══════════════════════════════════════ -->
+<footer style="background:#040e1a;border-top:1px solid rgba(200,153,26,.12);padding:2rem 5%;text-align:center;">
+  <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:1rem;">
+    <svg width="28" height="25" viewBox="0 0 110 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5,50 L26,8 L72,8 L90,26 L90,74 L72,92 L26,92 Z" fill="none" stroke="#C4A020" stroke-width="5.5" stroke-linejoin="miter"/>
+      <line x1="53" y1="8" x2="53" y2="92" stroke="#C4A020" stroke-width="5.5" stroke-linecap="butt"/>
+      <line x1="26" y1="50" x2="53" y2="50" stroke="#C4A020" stroke-width="5" stroke-linecap="round"/>
+      <path d="M53,8 Q87,8 87,29 Q87,50 53,50" fill="none" stroke="#C4A020" stroke-width="5" stroke-linecap="butt"/>
+      <path d="M53,50 Q91,50 91,71 Q91,92 53,92" fill="none" stroke="#C4A020" stroke-width="5" stroke-linecap="butt"/>
+    </svg>
+    <span style="font-family:'Barlow',sans-serif;font-size:1rem;font-weight:700;color:#e8f0f8;letter-spacing:.04em;">AB Capital</span>
+  </div>
+  <p style="font-size:.72rem;color:#506070;line-height:1.8;letter-spacing:.02em;">
+    Ab Capital Consultoria de Neg&oacute;cios Ltda &nbsp;&bull;&nbsp; CNPJ 51.291.728/0001-50<br>
+    Quadra Setor I Norte Qi 2, 32, Lote 32 Loja 01, Setor Industrial (Taguatinga)<br>
+    Bras&iacute;lia &ndash; DF, CEP 72.135-020
+  </p>
+  <p style="font-size:.65rem;color:#354550;margin-top:.8rem;">
+    &copy; 2026 AB Capital. Todos os direitos reservados.
+  </p>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+
+  // WhatsApp mask
+  var wpp = document.getElementById('whatsapp');
+  wpp.addEventListener('input', function() {
+    var v = wpp.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 6) v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+    else if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+    else if (v.length > 0) v = '(' + v;
+    wpp.value = v;
+  });
+
+  // Form submit
+  document.getElementById('leadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('whatsapp').value.trim();
+    var concurso = document.getElementById('concurso').value;
+
+    if (!name || !email || !phone || !concurso) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    var btn = e.target.querySelector('.submit-btn');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    setTimeout(function() {
+      document.getElementById('formCard').classList.add('submitted');
+    }, 900);
+  });
+</script>
+</body>
+</html>
