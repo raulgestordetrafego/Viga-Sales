@@ -107,8 +107,10 @@
   .kanban-col-title { font-size: 13px; font-weight: 600; }
   .kanban-col-count { font-size: 12px; color: var(--muted); background: var(--bg); padding: 2px 8px; border-radius: 10px; }
   .kanban-items { padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; }
-  .kanban-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; transition: border-color .2s; }
+  .kanban-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: grab; transition: border-color .2s, opacity .2s; }
   .kanban-card:hover { border-color: var(--accent); }
+  .kanban-card.dragging { opacity: .4; cursor: grabbing; }
+  .kanban-col.drag-over { background: rgba(201,162,39,.08); outline: 2px dashed var(--accent); outline-offset: -4px; }
   .kanban-card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .kanban-card-phone { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .kanban-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
@@ -162,8 +164,7 @@
 <div id="login-page">
   <div class="login-card">
     <div class="login-logo">
-      <div class="brand">AB CAPITAL</div>
-      <div class="sub">Plataforma de Gestão</div>
+      <img src="/abcapital/logo.png" alt="AB Capital" style="height:56px;object-fit:contain">
     </div>
     <h2>Entrar</h2>
     <div class="form-field">
@@ -183,8 +184,7 @@
 <div id="app" class="hidden">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="brand">AB CAPITAL</div>
-      <div class="sub">CRM</div>
+      <img src="/abcapital/logo.png" alt="AB Capital" style="height:36px;object-fit:contain;display:block">
     </div>
     <nav class="sidebar-nav">
       <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
@@ -728,7 +728,10 @@ async function renderPipeline() {
     });
 
     el.innerHTML = `<div class="kanban">` + STAGES.map(s => `
-      <div class="kanban-col">
+      <div class="kanban-col" data-stage="${s.id}"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleKanbanDrop(event,'${s.id}')">
         <div class="kanban-col-header" style="border-top:3px solid ${s.color}">
           <span class="kanban-col-title" style="color:${s.color}">${s.label}</span>
           <span class="kanban-col-count">${byStage[s.id].length}</span>
@@ -738,7 +741,11 @@ async function renderPipeline() {
             const photo = l.photo_path
               ? `<img src="${l.photo_path}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);float:right;margin-left:8px">`
               : '';
-            return `<div class="kanban-card" onclick="openLeadSheet('${l.id}')">
+            return `<div class="kanban-card" draggable="true"
+              data-id="${l.id}"
+              ondragstart="event.dataTransfer.setData('leadId','${l.id}');this.classList.add('dragging')"
+              ondragend="this.classList.remove('dragging')"
+              onclick="openLeadSheet('${l.id}')">
               ${photo}
               <div class="kanban-card-name">${esc(l.name)}</div>
               <div class="kanban-card-phone">${fmt(l.phone)}</div>
@@ -753,6 +760,18 @@ async function renderPipeline() {
         </div>
       </div>`).join('') + `</div>`;
   } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
+}
+
+async function handleKanbanDrop(event, targetStage) {
+  event.preventDefault();
+  const col = event.currentTarget;
+  col.classList.remove('drag-over');
+  const leadId = event.dataTransfer.getData('leadId');
+  if (!leadId) return;
+  try {
+    await api('PUT', `/leads/${leadId}`, { pipeline_stage: targetStage });
+    renderPipeline();
+  } catch (e) { toast('Erro ao mover lead: ' + e.message, 'error'); }
 }
 
 // ── Prospects ─────────────────────────────────────────────────────────────────
