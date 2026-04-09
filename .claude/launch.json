@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "viga-sales-dev",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["tsx", "server.ts"],
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["/Users/raulysdyxyamferreirasantos/Downloads/viga-sales/serve_landing.cjs"],
       "port": 3000
     }
   ]

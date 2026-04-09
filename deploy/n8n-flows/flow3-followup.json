@@ -1,0 +1,271 @@
+{
+  "name": "3 - Viga Sales | Follow-up Automático (3 dias)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * 1-6"
+            }
+          ]
+        }
+      },
+      "id": "schedule-followup",
+      "name": "Todo dia às 10h (Seg-Sáb)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-campaign",
+              "name": "campaign_id",
+              "value": "SUBSTITUA_PELO_ID_DA_CAMPANHA",
+              "type": "string"
+            },
+            {
+              "id": "cfg-viga",
+              "name": "viga_url",
+              "value": "https://vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-auth",
+              "name": "viga_token",
+              "value": "SUBSTITUA_PELO_SEU_TOKEN_JWT",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-url",
+              "name": "evolution_url",
+              "value": "https://evolution.vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-key",
+              "name": "evolution_key",
+              "value": "SUBSTITUA_PELA_SUA_EVOLUTION_API_KEY",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-inst",
+              "name": "evolution_instance",
+              "value": "Raul",
+              "type": "string"
+            },
+            {
+              "id": "cfg-days",
+              "name": "days_without_response",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "cfg-limit",
+              "name": "daily_followup_limit",
+              "value": 20,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "config-node",
+      "name": "Configurações",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.viga_url }}/api/prospects?status=enviado&days_since={{ $json.days_without_response }}&limit={{ $json.daily_followup_limit }}&campaign_id={{ $json.campaign_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.viga_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-followup-list",
+      "name": "Buscar Prospects para Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-followup",
+              "leftValue": "={{ $json.prospects.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-list",
+      "name": "Tem prospects para follow-up?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [940, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const queue = $input.first().json;\nreturn queue.prospects.map(p => ({ json: p }));"
+      },
+      "id": "split-prospects",
+      "name": "Separar Prospects",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1180, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gera mensagem de follow-up personalizada usando OpenAI via Viga Sales\nconst prospect = $input.first().json;\n\n// Monta contexto\nconst context = [\n  prospect.company && `Empresa: ${prospect.company}`,\n  prospect.segment && `Segmento: ${prospect.segment}`,\n  prospect.city && `Cidade: ${prospect.city}`,\n].filter(Boolean).join(', ');\n\nconst followUpPrompts = [\n  `Oi! Passando para ver se recebeu minha mensagem anterior sobre o ${prospect.company || 'sua empresa'}. 😊 Posso te mostrar como nosso CRM ajuda negócios como o seu a não perder nenhum cliente no WhatsApp. Tem 5 minutos para uma conversa rápida?`,\n  `Olá! Tentei falar com vocês antes. Sei que o dia a dia é corrido, mas queria mostrar como podemos ajudar o ${prospect.company || 'seu negócio'} a atender mais clientes pelo WhatsApp de forma organizada. Vale uma conversa?`,\n  `Ei! Última tentativa de contato 😄 — nossa ferramenta ajuda empresas como ${prospect.company || 'a sua'} a não perder leads no WhatsApp. Se tiver interesse, é só responder aqui!`\n];\n\n// Seleciona mensagem aleatória para variar\nconst message = followUpPrompts[Math.floor(Math.random() * followUpPrompts.length)];\n\nreturn [{ json: { prospect, message } }];"
+      },
+      "id": "generate-followup-msg",
+      "name": "Gerar Mensagem Follow-up",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1420, 220]
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * 300 + 120) }}",
+        "unit": "seconds"
+      },
+      "id": "wait-random",
+      "name": "Aguardar (2-7 min, anti-spam)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1660, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configurações').item.json.evolution_url }}/message/sendText/{{ $('Configurações').item.json.evolution_instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Configurações').item.json.evolution_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.prospect.phone, text: $json.message }) }}",
+        "options": {}
+      },
+      "id": "send-followup",
+      "name": "Enviar Follow-up WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1900, 220],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Configurações').item.json.viga_url }}/api/prospects/{{ $('Gerar Mensagem Follow-up').item.json.prospect.id }}/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Configurações').item.json.viga_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ status: 'follow-up', campaign_id: $('Gerar Mensagem Follow-up').item.json.prospect.campaign_id, message: $('Gerar Mensagem Follow-up').item.json.message }) }}",
+        "options": {}
+      },
+      "id": "update-followup-status",
+      "name": "Marcar como Follow-up Enviado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2140, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('ℹ️ Sem prospects para follow-up hoje.');\nreturn [{ json: { status: 'sem_followups', timestamp: new Date().toISOString() } }];"
+      },
+      "id": "no-followup",
+      "name": "Sem Follow-ups Pendentes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1180, 400]
+    }
+  ],
+  "connections": {
+    "Todo dia às 10h (Seg-Sáb)": {
+      "main": [[{ "node": "Configurações", "type": "main", "index": 0 }]]
+    },
+    "Configurações": {
+      "main": [[{ "node": "Buscar Prospects para Follow-up", "type": "main", "index": 0 }]]
+    },
+    "Buscar Prospects para Follow-up": {
+      "main": [[{ "node": "Tem prospects para follow-up?", "type": "main", "index": 0 }]]
+    },
+    "Tem prospects para follow-up?": {
+      "main": [
+        [{ "node": "Separar Prospects", "type": "main", "index": 0 }],
+        [{ "node": "Sem Follow-ups Pendentes", "type": "main", "index": 0 }]
+      ]
+    },
+    "Separar Prospects": {
+      "main": [[{ "node": "Gerar Mensagem Follow-up", "type": "main", "index": 0 }]]
+    },
+    "Gerar Mensagem Follow-up": {
+      "main": [[{ "node": "Aguardar (2-7 min, anti-spam)", "type": "main", "index": 0 }]]
+    },
+    "Aguardar (2-7 min, anti-spam)": {
+      "main": [[{ "node": "Enviar Follow-up WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Enviar Follow-up WhatsApp": {
+      "main": [[{ "node": "Marcar como Follow-up Enviado", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [{ "name": "viga-sales" }, { "name": "prospecção" }, { "name": "follow-up" }]
+}

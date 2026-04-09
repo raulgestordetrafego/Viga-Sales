@@ -1,0 +1,205 @@
+{
+  "name": "1 - Viga Sales | Google Maps Lead Scraper",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Disparar Manualmente",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-keyword",
+              "name": "keyword",
+              "value": "restaurantes",
+              "type": "string"
+            },
+            {
+              "id": "cfg-city",
+              "name": "city",
+              "value": "Campo Grande",
+              "type": "string"
+            },
+            {
+              "id": "cfg-segment",
+              "name": "segment",
+              "value": "restaurante",
+              "type": "string"
+            },
+            {
+              "id": "cfg-campaign",
+              "name": "campaign_id",
+              "value": "SUBSTITUA_PELO_ID_DA_CAMPANHA",
+              "type": "string"
+            },
+            {
+              "id": "cfg-apify",
+              "name": "apify_token",
+              "value": "SUBSTITUA_PELO_SEU_TOKEN_APIFY",
+              "type": "string"
+            },
+            {
+              "id": "cfg-max",
+              "name": "max_results",
+              "value": 100,
+              "type": "number"
+            },
+            {
+              "id": "cfg-viga",
+              "name": "viga_url",
+              "value": "https://vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-auth",
+              "name": "viga_token",
+              "value": "SUBSTITUA_PELO_SEU_TOKEN_JWT",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "config-node",
+      "name": "Configurações",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.apify.com/v2/acts/compass~crawler-google-places/runs?token={{ $json.apify_token }}&waitForFinish=120",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "searchStringsArray",
+              "value": "=[\"{{ $json.keyword }} em {{ $json.city }}\"]"
+            },
+            {
+              "name": "maxCrawledPlacesPerSearch",
+              "value": "={{ $json.max_results }}"
+            },
+            {
+              "name": "language",
+              "value": "pt-BR"
+            },
+            {
+              "name": "countryCode",
+              "value": "br"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "apify-run",
+      "name": "Apify - Buscar Google Maps",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.apify.com/v2/actor-runs/{{ $json.id }}/dataset/items?token={{ $('Configurações').item.json.apify_token }}&format=json",
+        "options": {}
+      },
+      "id": "apify-results",
+      "name": "Buscar Resultados Apify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst config = $('Configurações').item.json;\nconst results = [];\n\nfor (const item of items) {\n  const place = item.json;\n  \n  // Pular sem telefone\n  if (!place.phone && !place.phoneUnformatted) continue;\n  \n  const phone = (place.phoneUnformatted || place.phone || '')\n    .replace(/\\D/g, '')\n    .replace(/^0/, '55');\n  \n  // Garantir DDI 55 (Brasil)\n  const normalizedPhone = phone.startsWith('55') ? phone : '55' + phone;\n  \n  if (normalizedPhone.length < 12) continue;\n  \n  results.push({\n    json: {\n      name: place.title || place.name || '',\n      phone: normalizedPhone,\n      company: place.title || place.name || '',\n      segment: config.segment,\n      city: place.city || config.city,\n      address: place.address || '',\n      website: place.website || '',\n      rating: place.totalScore || place.rating || null,\n      reviews_count: place.reviewsCount || 0,\n      source: 'google_maps',\n      campaign_id: config.campaign_id,\n      raw_data: {\n        place_id: place.placeId,\n        categories: place.categories,\n        url: place.url,\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "normalize-data",
+      "name": "Normalizar e Filtrar Dados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1180, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configurações').item.json.viga_url }}/api/prospects/bulk",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Configurações').item.json.viga_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prospects: $input.all().map(i => i.json), campaign_id: $('Configurações').item.json.campaign_id, source: 'google_maps' }) }}",
+        "options": {}
+      },
+      "id": "save-viga",
+      "name": "Salvar no Viga Sales",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1420, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $input.first().json;\nconst summary = `✅ Google Maps Scraper concluído!\n\n📊 Resultado:\n• Total recebido: ${result.total}\n• Inseridos: ${result.inserted}\n• Ignorados (já existiam): ${result.skipped}\n• Erros: ${result.errors?.length || 0}`;\n\nconsole.log(summary);\nreturn [{ json: { summary, ...result } }];"
+      },
+      "id": "summary",
+      "name": "Resumo Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1660, 300]
+    }
+  ],
+  "connections": {
+    "Disparar Manualmente": {
+      "main": [[{ "node": "Configurações", "type": "main", "index": 0 }]]
+    },
+    "Configurações": {
+      "main": [[{ "node": "Apify - Buscar Google Maps", "type": "main", "index": 0 }]]
+    },
+    "Apify - Buscar Google Maps": {
+      "main": [[{ "node": "Buscar Resultados Apify", "type": "main", "index": 0 }]]
+    },
+    "Buscar Resultados Apify": {
+      "main": [[{ "node": "Normalizar e Filtrar Dados", "type": "main", "index": 0 }]]
+    },
+    "Normalizar e Filtrar Dados": {
+      "main": [[{ "node": "Salvar no Viga Sales", "type": "main", "index": 0 }]]
+    },
+    "Salvar no Viga Sales": {
+      "main": [[{ "node": "Resumo Final", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [{ "name": "viga-sales" }, { "name": "prospecção" }]
+}

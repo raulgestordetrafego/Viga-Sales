@@ -579,6 +579,24 @@ async function initializeSchema() {
     console.error('[Auth] Erro ao criar master admin:', err.message);
   }
 
+  // Migrations: novos campos em ab_capital_leads
+  const abLeadCols = [
+    ['address', 'TEXT'],
+    ['consortium_name', 'TEXT'],
+    ['installments', 'INTEGER'],
+    ['installment_value', 'REAL'],
+    ['admin_profit_pct', 'REAL'],
+    ['admin_company', 'TEXT'],
+    ['attachment_path', 'TEXT'],
+    ['photo_path', 'TEXT'],
+    ['general_info', 'TEXT'],
+    ['traffic_source', 'TEXT'],
+    ['responsible', 'TEXT'],
+  ];
+  for (const [col, type] of abLeadCols) {
+    try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}
+  }
+
   // Seed AB Capital users
   const abUsers = [
     { name: 'Master', email: 'raulfs.sc@gmail.com', password: 'Jubiblel66*', role: 'master' },
@@ -599,5 +617,32 @@ async function initializeSchema() {
     } catch (err) {
       console.error('[AB Capital] Erro ao criar usuário:', err.message);
     }
+  }
+
+  // Seed lead fictício
+  try {
+    const demoExists = await db.get("SELECT id FROM ab_capital_leads WHERE phone = '11987654321'", []);
+    if (!demoExists) {
+      const { v4: uuidv4 } = await import('uuid');
+      const now = new Date().toISOString();
+      await db.run(
+        `INSERT INTO ab_capital_leads
+          (id, name, phone, email, address, consortium_name, installments, installment_value,
+           admin_profit_pct, admin_company, general_info, traffic_source, responsible,
+           pipeline_stage, source, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'qualificacao', 'manual', ?, ?, ?)`,
+        [
+          uuidv4(), 'Carlos Eduardo Mendes', '11987654321', 'carlos.mendes@email.com',
+          'Rua das Flores, 123 - São Paulo/SP',
+          'Consórcio Imóvel 280k', 120, 1850.00, 18.5, 'Administradora XYZ',
+          'Cliente interessado em quitar imóvel. Já possui entrada de 30%. Muito receptivo.',
+          'Instagram', 'Master',
+          'Enviado proposta inicial. Aguardando retorno.', now, now
+        ]
+      );
+      console.log('[AB Capital] Lead fictício criado');
+    }
+  } catch (err) {
+    console.error('[AB Capital] Erro ao criar lead fictício:', err.message);
   }
 }

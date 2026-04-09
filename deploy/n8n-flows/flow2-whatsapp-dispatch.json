@@ -1,0 +1,302 @@
+{
+  "name": "2 - Viga Sales | Disparo WhatsApp com IA (40/dia)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/15 8-18 * * 1-6"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "A cada 15min (8h-18h, Seg-Sáb)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-campaign",
+              "name": "campaign_id",
+              "value": "SUBSTITUA_PELO_ID_DA_CAMPANHA",
+              "type": "string"
+            },
+            {
+              "id": "cfg-viga",
+              "name": "viga_url",
+              "value": "https://vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-auth",
+              "name": "viga_token",
+              "value": "SUBSTITUA_PELO_SEU_TOKEN_JWT",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-url",
+              "name": "evolution_url",
+              "value": "https://evolution.vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-key",
+              "name": "evolution_key",
+              "value": "SUBSTITUA_PELA_SUA_EVOLUTION_API_KEY",
+              "type": "string"
+            },
+            {
+              "id": "cfg-evo-inst",
+              "name": "evolution_instance",
+              "value": "Raul",
+              "type": "string"
+            },
+            {
+              "id": "cfg-batch",
+              "name": "batch_size",
+              "value": 3,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "config-node",
+      "name": "Configurações",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.viga_url }}/api/prospects/queue?campaign_id={{ $json.campaign_id }}&limit={{ $json.batch_size }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.viga_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-queue",
+      "name": "Buscar Fila de Prospects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-prospects",
+              "leftValue": "={{ $json.prospects.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-queue",
+      "name": "Tem prospects na fila?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [940, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Expande o array de prospects em itens individuais\nconst queue = $input.first().json;\nreturn queue.prospects.map(p => ({ json: p }));"
+      },
+      "id": "split-prospects",
+      "name": "Separar Prospects",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1180, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configurações').item.json.viga_url }}/api/prospects/{{ $json.id }}/generate-message",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Configurações').item.json.viga_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "generate-ai-msg",
+      "name": "Gerar Mensagem com IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1420, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Adiciona delay aleatório entre 3 e 8 minutos (anti-bloqueio)\nconst min = 3 * 60 * 1000;\nconst max = 8 * 60 * 1000;\nconst delay = Math.floor(Math.random() * (max - min + 1)) + min;\n\nconst prospect = $('Separar Prospects').item.json;\nconst message = $input.first().json.message;\n\nreturn [{ json: { prospect, message, delay_ms: delay } }];"
+      },
+      "id": "prepare-send",
+      "name": "Preparar Envio + Delay Aleatório",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1660, 220]
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor($json.delay_ms / 1000) }}",
+        "unit": "seconds"
+      },
+      "id": "wait-random",
+      "name": "Aguardar (anti-spam)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1900, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configurações').item.json.evolution_url }}/message/sendText/{{ $('Configurações').item.json.evolution_instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Configurações').item.json.evolution_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.prospect.phone, text: $json.message }) }}",
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Enviar WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2140, 220],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const sendResult = $input.first();\nconst prospect = $('Preparar Envio + Delay Aleatório').item.json.prospect;\nconst message = $('Preparar Envio + Delay Aleatório').item.json.message;\n\nconst success = !sendResult.error && sendResult.json?.key;\n\nreturn [{\n  json: {\n    prospect_id: prospect.id,\n    campaign_id: prospect.campaign_id,\n    status: success ? 'enviado' : 'novo',\n    message: success ? message : undefined,\n    error: success ? undefined : JSON.stringify(sendResult.json),\n    success\n  }\n}];"
+      },
+      "id": "check-send-result",
+      "name": "Verificar Resultado do Envio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2380, 220]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Configurações').item.json.viga_url }}/api/prospects/{{ $json.prospect_id }}/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Configurações').item.json.viga_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ status: $json.status, campaign_id: $json.campaign_id, message: $json.message, error: $json.error }) }}",
+        "options": {}
+      },
+      "id": "update-status",
+      "name": "Atualizar Status no Viga Sales",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2620, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('✅ Fila vazia ou limite diário atingido. Encerrando ciclo.');\nreturn [{ json: { status: 'sem_prospects', timestamp: new Date().toISOString() } }];"
+      },
+      "id": "no-prospects",
+      "name": "Sem Prospects (Encerrar)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1180, 400]
+    }
+  ],
+  "connections": {
+    "A cada 15min (8h-18h, Seg-Sáb)": {
+      "main": [[{ "node": "Configurações", "type": "main", "index": 0 }]]
+    },
+    "Configurações": {
+      "main": [[{ "node": "Buscar Fila de Prospects", "type": "main", "index": 0 }]]
+    },
+    "Buscar Fila de Prospects": {
+      "main": [[{ "node": "Tem prospects na fila?", "type": "main", "index": 0 }]]
+    },
+    "Tem prospects na fila?": {
+      "main": [
+        [{ "node": "Separar Prospects", "type": "main", "index": 0 }],
+        [{ "node": "Sem Prospects (Encerrar)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Separar Prospects": {
+      "main": [[{ "node": "Gerar Mensagem com IA", "type": "main", "index": 0 }]]
+    },
+    "Gerar Mensagem com IA": {
+      "main": [[{ "node": "Preparar Envio + Delay Aleatório", "type": "main", "index": 0 }]]
+    },
+    "Preparar Envio + Delay Aleatório": {
+      "main": [[{ "node": "Aguardar (anti-spam)", "type": "main", "index": 0 }]]
+    },
+    "Aguardar (anti-spam)": {
+      "main": [[{ "node": "Enviar WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Enviar WhatsApp": {
+      "main": [[{ "node": "Verificar Resultado do Envio", "type": "main", "index": 0 }]]
+    },
+    "Verificar Resultado do Envio": {
+      "main": [[{ "node": "Atualizar Status no Viga Sales", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [{ "name": "viga-sales" }, { "name": "prospecção" }, { "name": "whatsapp" }]
+}

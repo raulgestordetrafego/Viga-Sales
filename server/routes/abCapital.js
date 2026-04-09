@@ -5,7 +5,26 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import { query, queryOne, run } from '../db/database.js';
+
+// ── Upload de arquivos ────────────────────────────────────────────────────────
+const uploadDir = path.join(process.cwd(), 'uploads', 'ab-capital');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}-${uuidv4().slice(0,8)}${ext}`);
+  },
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
 
 const router = express.Router();
 
@@ -172,14 +191,66 @@ router.get('/leads/stats', abAuth, async (req, res) => {
   }
 });
 
+router.get('/leads/:id', abAuth, async (req, res) => {
+  try {
+    const lead = await queryOne('SELECT * FROM ab_capital_leads WHERE id = ?', [req.params.id]);
+    if (!lead) return res.status(404).json({ error: 'Lead não encontrado' });
+    res.json(lead);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.put('/leads/:id', abAuth, async (req, res) => {
   try {
-    const { pipeline_stage, notes } = req.body;
+    const {
+      name, phone, email, address, consortium_name, installments, installment_value,
+      admin_profit_pct, admin_company, general_info, traffic_source, responsible,
+      pipeline_stage, notes,
+    } = req.body;
     const now = new Date().toISOString();
     await run(
-      'UPDATE ab_capital_leads SET pipeline_stage = ?, notes = ?, updated_at = ? WHERE id = ?',
-      [pipeline_stage, notes, now, req.params.id]
+      `UPDATE ab_capital_leads SET
+        name=COALESCE(?,name), phone=COALESCE(?,phone), email=?, address=?,
+        consortium_name=?, installments=?, installment_value=?, admin_profit_pct=?,
+        admin_company=?, general_info=?, traffic_source=?, responsible=?,
+        pipeline_stage=COALESCE(?,pipeline_stage), notes=?, updated_at=?
+       WHERE id=?`,
+      [
+        name||null, phone||null, email||null, address||null,
+        consortium_name||null, installments||null, installment_value||null, admin_profit_pct||null,
+        admin_company||null, general_info||null, traffic_source||null, responsible||null,
+        pipeline_stage||null, notes||null, now,
+        req.params.id,
+      ]
     );
+    const lead = await queryOne('SELECT * FROM ab_capital_leads WHERE id = ?', [req.params.id]);
+    res.json(lead);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/leads/:id/upload', abAuth, upload.fields([
+  { name: 'attachment', maxCount: 1 },
+  { name: 'photo', maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const now = new Date().toISOString();
+    const updates = [];
+    const params = [];
+    if (req.files?.attachment) {
+      updates.push('attachment_path=?');
+      params.push('/uploads/ab-capital/' + req.files.attachment[0].filename);
+    }
+    if (req.files?.photo) {
+      updates.push('photo_path=?');
+      params.push('/uploads/ab-capital/' + req.files.photo[0].filename);
+    }
+    if (!updates.length) return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+    updates.push('updated_at=?');
+    params.push(now, req.params.id);
+    await run(`UPDATE ab_capital_leads SET ${updates.join(',')} WHERE id=?`, params);
     const lead = await queryOne('SELECT * FROM ab_capital_leads WHERE id = ?', [req.params.id]);
     res.json(lead);
   } catch (err) {

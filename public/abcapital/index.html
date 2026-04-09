@@ -31,16 +31,21 @@
   .login-logo { text-align: center; margin-bottom: 32px; }
   .login-logo .brand { font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
   .login-logo .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .login-card h2 { font-size: 20px; margin-bottom: 24px; color: var(--text); }
+  .login-card h2 { font-size: 20px; margin-bottom: 24px; }
+  .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; }
+
+  /* Form */
   .form-field { margin-bottom: 16px; }
-  .form-field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .form-field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
   .form-field input, .form-field select, .form-field textarea {
     width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border);
     border-radius: 8px; color: var(--text); font-size: 14px; transition: border .2s;
   }
-  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
-    outline: none; border-color: var(--accent);
-  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--accent); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all .2s; }
   .btn-primary { background: var(--accent); color: #0f1117; }
   .btn-primary:hover { background: var(--accent2); }
@@ -48,101 +53,101 @@
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-danger { background: var(--danger); color: #fff; }
   .btn-danger:hover { opacity: .85; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
   .btn-full { width: 100%; justify-content: center; }
-  .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; }
 
   /* Layout */
-  #app { display: flex; min-height: 100vh; }
-  .sidebar { width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-  .sidebar-logo { padding: 20px 16px; border-bottom: 1px solid var(--border); }
-  .sidebar-logo .brand { font-size: 20px; font-weight: 700; color: var(--accent); }
-  .sidebar-logo .sub { font-size: 11px; color: var(--muted); }
-  .sidebar-nav { flex: 1; padding: 12px 0; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; color: var(--muted); font-size: 14px; border-radius: 8px; margin: 2px 8px; transition: all .15s; }
-  .nav-item:hover { background: var(--surface2); color: var(--text); }
-  .nav-item.active { background: var(--surface2); color: var(--accent); }
+  #app { display: flex; height: 100vh; overflow: hidden; }
+  .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+  .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo .brand { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
+  .sidebar-logo .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; font-size: 14px; color: var(--muted); cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
   .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active { color: var(--accent); background: var(--surface2); border-left-color: var(--accent); }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
   .user-info { display: flex; align-items: center; gap: 10px; }
-  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #0f1117; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
-  .user-name { font-size: 13px; font-weight: 500; }
-  .user-role { font-size: 11px; color: var(--muted); }
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .topbar { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); }
-  .topbar h1 { font-size: 18px; font-weight: 600; }
-  .page { flex: 1; padding: 24px; overflow-y: auto; }
-  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-  .page-title { font-size: 20px; font-weight: 600; }
+  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #0f1117; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .user-name { font-size: 13px; font-weight: 600; }
+  .user-role { font-size: 11px; color: var(--muted); text-transform: uppercase; }
 
-  /* Cards / Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 60px; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
+  .topbar h1 { font-size: 18px; font-weight: 600; }
+  .page { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
   .stat-value { font-size: 32px; font-weight: 700; color: var(--accent); }
   .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
   /* Table */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .table-toolbar { padding: 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-  .search-box { flex: 1; min-width: 200px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; }
-  .search-box:focus { outline: none; border-color: var(--accent); }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); background: var(--surface2); border-bottom: 1px solid var(--border); }
-  td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .table-toolbar { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 12px 16px; text-align: left; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); font-weight: 600; white-space: nowrap; }
+  td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--surface2); }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
-  .badge-novo      { background: #1e293b; color: #94a3b8; }
-  .badge-contato   { background: #1e3a5f; color: #60a5fa; }
-  .badge-proposta  { background: #3b2f00; color: #fbbf24; }
-  .badge-ganho     { background: #14532d; color: #4ade80; }
-  .badge-perdido   { background: #450a0a; color: #f87171; }
-  .badge-enviado   { background: #1e3a5f; color: #60a5fa; }
-  .badge-respondido{ background: #14532d; color: #4ade80; }
-  .badge-agendado  { background: #3b2f00; color: #fbbf24; }
-  .badge-convertido{ background: #1a1042; color: #a78bfa; }
+  .search-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 8px 12px; font-size: 13px; flex: 1; min-width: 180px; }
+  .search-box:focus { outline: none; border-color: var(--accent); }
+  .pagination { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
 
-  /* Pagination */
-  .pagination { display: flex; align-items: center; gap: 8px; padding: 16px; border-top: 1px solid var(--border); justify-content: flex-end; }
-  .pagination span { font-size: 13px; color: var(--muted); }
+  /* Badge */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
 
-  /* Modal */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
-  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-title { font-size: 16px; font-weight: 600; }
-  .modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
-  .modal-body { padding: 24px; }
-  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  /* Toast */
-  #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-  .toast-item { padding: 12px 20px; border-radius: 10px; font-size: 14px; animation: slideIn .3s ease; max-width: 320px; }
-  .toast-success { background: #14532d; color: #4ade80; border: 1px solid #166534; }
-  .toast-error   { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-  /* Pipeline kanban */
-  .kanban { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
-  .kanban-col { min-width: 240px; max-width: 260px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; flex-shrink: 0; }
+  /* Kanban */
+  .kanban { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px; height: calc(100vh - 124px); }
+  .kanban-col { flex: 0 0 260px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
   .kanban-col-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .kanban-col-title { font-size: 13px; font-weight: 600; }
   .kanban-col-count { font-size: 12px; color: var(--muted); background: var(--bg); padding: 2px 8px; border-radius: 10px; }
-  .kanban-items { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .kanban-items { padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; }
   .kanban-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; transition: border-color .2s; }
   .kanban-card:hover { border-color: var(--accent); }
-  .kanban-card-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
-  .kanban-card-phone { font-size: 12px; color: var(--muted); }
-  .kanban-card-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .kanban-card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .kanban-card-phone { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .kanban-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .kanban-tag { background: var(--surface2); border-radius: 4px; padding: 2px 6px; font-size: 11px; color: var(--muted); }
+
+  /* Stage progress bar */
+  .stage-bar { display: flex; gap: 3px; margin: 8px 0; }
+  .stage-step { flex: 1; height: 5px; border-radius: 3px; background: var(--border); }
+  .stage-step.done { background: var(--accent); }
+  .stage-step.won { background: var(--success); }
+  .stage-step.lost { background: var(--danger); }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 640px; max-height: 90vh; display: flex; flex-direction: column; }
+  .modal-lg { max-width: 840px; }
+  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .modal-title { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px; line-height: 1; }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+
+  /* Section title inside modal */
+  .section-title { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-top: 4px; }
+
+  /* Toast */
+  #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast-item { padding: 12px 18px; border-radius: 10px; font-size: 14px; animation: slideIn .3s ease; max-width: 320px; }
+  @keyframes slideIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+  .toast-success { background: #14532d; color: #4ade80; border: 1px solid #166534; }
+  .toast-error   { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; }
+  .toast-info    { background: #1e3a5f; color: #60a5fa; border: 1px solid #1d4ed8; }
 
   /* Responsive */
   @media (max-width: 768px) {
     .sidebar { display: none; }
-    .form-row { grid-template-columns: 1fr; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
   }
-
   .hidden { display: none !important; }
   .loading { color: var(--muted); font-size: 14px; padding: 40px; text-align: center; }
   .empty { color: var(--muted); font-size: 14px; padding: 40px; text-align: center; }
@@ -151,7 +156,6 @@
 </head>
 <body>
 
-<!-- Toast container -->
 <div id="toast"></div>
 
 <!-- Login -->
@@ -221,8 +225,6 @@
       <h1 id="topbar-title">Dashboard</h1>
       <div id="topbar-actions"></div>
     </div>
-
-    <!-- Pages -->
     <div class="page" id="page-dashboard"></div>
     <div class="page hidden" id="page-leads"></div>
     <div class="page hidden" id="page-pipeline"></div>
@@ -231,10 +233,20 @@
   </div>
 </div>
 
-<!-- Modal container -->
 <div id="modal-container"></div>
 
 <script>
+// ── Stages ────────────────────────────────────────────────────────────────────
+const STAGES = [
+  { id: 'analise',          label: 'Análise',          color: '#60a5fa' },
+  { id: 'qualificacao',     label: 'Qualificação',     color: '#a78bfa' },
+  { id: 'reuniao_agendada', label: 'Reunião Agendada', color: '#fbbf24' },
+  { id: 'ganho',            label: 'Ganho',            color: '#4ade80' },
+  { id: 'perdido',          label: 'Perdido',          color: '#f87171' },
+];
+const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s]));
+const TRAFFIC_SOURCES = ['Instagram','Facebook','Google','Indicação','WhatsApp','Site','TikTok','YouTube','Outro'];
+
 // ── State ─────────────────────────────────────────────────────────────────────
 const state = {
   token: localStorage.getItem('ab_token') || null,
@@ -248,15 +260,23 @@ const API = '/api/ab-capital';
 async function api(method, path, body) {
   const res = await fetch(API + path, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(state.token ? { Authorization: 'Bearer ' + state.token } : {}),
-    },
+    headers: { 'Content-Type': 'application/json', ...(state.token ? { Authorization: 'Bearer ' + state.token } : {}) },
     body: body ? JSON.stringify(body) : undefined,
   });
   if (res.status === 401) { doLogout(); return null; }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+  return data;
+}
+
+async function apiUpload(path, formData) {
+  const res = await fetch(API + path, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + state.token },
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Erro no upload');
   return data;
 }
 
@@ -287,54 +307,41 @@ async function doLogin() {
     localStorage.setItem('ab_token', data.token);
     localStorage.setItem('ab_user', JSON.stringify(data.user));
     showApp();
-  } catch (e) {
-    errEl.textContent = e.message;
-  }
+  } catch (e) { errEl.textContent = e.message; }
 }
 
 function doLogout() {
-  state.token = null;
-  state.user = null;
-  localStorage.removeItem('ab_token');
-  localStorage.removeItem('ab_user');
+  state.token = null; state.user = null;
+  localStorage.removeItem('ab_token'); localStorage.removeItem('ab_user');
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login-page').style.display = 'flex';
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin();
+});
+
 function showApp() {
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('app').classList.remove('hidden');
-  // User info
   const u = state.user;
   document.getElementById('user-name').textContent = u.name;
   document.getElementById('user-role').textContent = u.role;
   document.getElementById('user-avatar').textContent = (u.name || '?')[0].toUpperCase();
-  // Hide users nav if not master/admin
-  if (u.role !== 'master' && u.role !== 'admin') {
-    document.getElementById('nav-users').classList.add('hidden');
-  }
+  if (u.role !== 'master' && u.role !== 'admin') document.getElementById('nav-users').classList.add('hidden');
   navigate('dashboard');
 }
-
-// Enter key no login
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin();
-});
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 const PAGE_TITLES = { dashboard: 'Dashboard', leads: 'Leads', pipeline: 'Pipeline', prospects: 'Prospecção Ativa', users: 'Usuários' };
 
 function navigate(page) {
   state.page = page;
-  document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.page === page);
-  });
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
   document.querySelectorAll('.page').forEach(el => el.classList.add('hidden'));
   document.getElementById('page-' + page).classList.remove('hidden');
   document.getElementById('topbar-title').textContent = PAGE_TITLES[page] || page;
   document.getElementById('topbar-actions').innerHTML = '';
-
   if (page === 'dashboard') renderDashboard();
   else if (page === 'leads') renderLeads();
   else if (page === 'pipeline') renderPipeline();
@@ -349,27 +356,15 @@ async function renderDashboard() {
   try {
     const stats = await api('GET', '/leads/stats');
     if (!stats) return;
-    const stageMap = { novo: 'Novo', contato: 'Contato', proposta: 'Proposta', ganho: 'Ganho', perdido: 'Perdido' };
-    const stagesHtml = (stats.stages || []).map(s =>
-      `<tr><td>${stageMap[s.pipeline_stage] || s.pipeline_stage}</td><td style="text-align:right;font-weight:600">${s.c}</td></tr>`
-    ).join('');
+    const stagesHtml = (stats.stages || []).map(s => {
+      const st = STAGE_MAP[s.pipeline_stage];
+      return `<tr><td style="color:${st?.color||'#fff'}">${st?.label||s.pipeline_stage}</td><td style="text-align:right;font-weight:600">${s.c}</td></tr>`;
+    }).join('');
     el.innerHTML = `
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total de Leads</div>
-          <div class="stat-value">${stats.total_leads}</div>
-          <div class="stat-sub">capturados pela landing page</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Leads Hoje</div>
-          <div class="stat-value">${stats.leads_today}</div>
-          <div class="stat-sub">novos contatos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Prospects</div>
-          <div class="stat-value">${stats.total_prospects}</div>
-          <div class="stat-sub">prospecção ativa</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Total de Leads</div><div class="stat-value">${stats.total_leads}</div><div class="stat-sub">capturados</div></div>
+        <div class="stat-card"><div class="stat-label">Leads Hoje</div><div class="stat-value">${stats.leads_today}</div><div class="stat-sub">novos contatos</div></div>
+        <div class="stat-card"><div class="stat-label">Prospects</div><div class="stat-value">${stats.total_prospects}</div><div class="stat-sub">prospecção ativa</div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="table-wrap">
@@ -381,14 +376,12 @@ async function renderDashboard() {
           <div style="padding:16px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px">Acesso Rápido</div>
           <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
             <button class="btn btn-primary" onclick="navigate('leads')">Ver todos os Leads</button>
+            <button class="btn btn-ghost" onclick="navigate('pipeline')">Pipeline Kanban</button>
             <button class="btn btn-ghost" onclick="navigate('prospects')">Prospecção Ativa</button>
-            <button class="btn btn-ghost" onclick="navigate('pipeline')">Pipeline de Vendas</button>
           </div>
         </div>
       </div>`;
-  } catch (e) {
-    el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`;
-  }
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
 // ── Leads ─────────────────────────────────────────────────────────────────────
@@ -396,69 +389,306 @@ let leadsState = { page: 1, search: '', stage: '' };
 
 async function renderLeads() {
   const el = document.getElementById('page-leads');
-  const tb = document.getElementById('topbar-actions');
-  tb.innerHTML = '';
+  document.getElementById('topbar-actions').innerHTML =
+    `<button class="btn btn-primary btn-sm" onclick="openNewLead()">+ Novo Lead</button>`;
   el.innerHTML = '<div class="loading">Carregando...</div>';
-
   try {
     const params = new URLSearchParams({ page: leadsState.page, limit: 50 });
     if (leadsState.search) params.set('search', leadsState.search);
-    if (leadsState.stage)  params.set('stage', leadsState.stage);
+    if (leadsState.stage) params.set('stage', leadsState.stage);
     const data = await api('GET', `/leads?${params}`);
     if (!data) return;
 
-    const stages = ['novo','contato','proposta','ganho','perdido'];
-    const stageLabel = { novo:'Novo', contato:'Contato', proposta:'Proposta', ganho:'Ganho', perdido:'Perdido' };
-    const badgeClass = { novo:'badge-novo', contato:'badge-contato', proposta:'badge-proposta', ganho:'badge-ganho', perdido:'badge-perdido' };
-    const objLabel = { capital:'Capital de giro', imovel:'Imóvel', reforma:'Reforma', quitacao:'Quitação', investimento:'Investimentos', outros:'Outro' };
-
-    const rows = data.leads.map(l => `
-      <tr>
-        <td><strong>${esc(l.name)}</strong></td>
+    const rows = data.leads.map(l => {
+      const st = STAGE_MAP[l.pipeline_stage] || STAGES[0];
+      const avatar = l.photo_path
+        ? `<img src="${l.photo_path}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0">`
+        : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:13px;flex-shrink:0">${(l.name||'?')[0].toUpperCase()}</div>`;
+      return `<tr style="cursor:pointer" onclick="openLeadSheet('${l.id}')">
+        <td><div style="display:flex;align-items:center;gap:10px">${avatar}<strong>${esc(l.name)}</strong></div></td>
         <td>${fmt(l.phone)}</td>
-        <td>${esc(l.email || '—')}</td>
-        <td>${objLabel[l.objective] || l.objective || '—'}</td>
-        <td><span class="badge ${badgeClass[l.pipeline_stage] || 'badge-novo'}">${stageLabel[l.pipeline_stage] || l.pipeline_stage}</span></td>
+        <td>${esc(l.email||'—')}</td>
+        <td>${l.consortium_name ? esc(l.consortium_name) : '—'}</td>
+        <td>${l.installment_value ? 'R$ ' + fmtMoney(l.installment_value) : '—'}</td>
+        <td><span class="badge" style="background:${st.color}22;color:${st.color}">${st.label}</span></td>
         <td>${fmtDate(l.created_at)}</td>
-        <td>
-          <select onchange="updateLeadStage('${l.id}', this.value, '${esc(l.notes||'')}')">
-            ${stages.map(s => `<option value="${s}" ${l.pipeline_stage===s?'selected':''}>${stageLabel[s]}</option>`).join('')}
-          </select>
-        </td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
 
     el.innerHTML = `
       <div class="table-wrap">
         <div class="table-toolbar">
           <input class="search-box" placeholder="Buscar por nome, telefone..." value="${esc(leadsState.search)}"
             oninput="leadsState.search=this.value;leadsState.page=1;renderLeads()" />
-          <select class="search-box" style="max-width:160px" onchange="leadsState.stage=this.value;leadsState.page=1;renderLeads()">
+          <select class="search-box" style="max-width:190px" onchange="leadsState.stage=this.value;leadsState.page=1;renderLeads()">
             <option value="">Todos os estágios</option>
-            ${stages.map(s=>`<option value="${s}" ${leadsState.stage===s?'selected':''}>${stageLabel[s]}</option>`).join('')}
+            ${STAGES.map(s=>`<option value="${s.id}" ${leadsState.stage===s.id?'selected':''}>${s.label}</option>`).join('')}
           </select>
           <span style="color:var(--muted);font-size:13px">${data.total} leads</span>
         </div>
         <table>
-          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Objetivo</th><th>Estágio</th><th>Criado</th><th>Mover</th></tr></thead>
+          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Consórcio</th><th>Parcela</th><th>Estágio</th><th>Criado</th></tr></thead>
           <tbody>${rows || '<tr><td colspan="7" class="empty">Nenhum lead encontrado</td></tr>'}</tbody>
         </table>
         <div class="pagination">
-          <span>Página ${data.page} de ${Math.max(1, Math.ceil(data.total/data.limit))}</span>
+          <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
           <button class="btn btn-ghost btn-sm" onclick="leadsState.page=Math.max(1,leadsState.page-1);renderLeads()" ${data.page<=1?'disabled':''}>← Ant</button>
           <button class="btn btn-ghost btn-sm" onclick="leadsState.page++;renderLeads()" ${data.page*data.limit>=data.total?'disabled':''}>Próx →</button>
         </div>
       </div>`;
-  } catch (e) {
-    el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`;
-  }
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
-async function updateLeadStage(id, stage, notes) {
+// ── Ficha de Lead ─────────────────────────────────────────────────────────────
+async function openLeadSheet(id) {
+  const lead = await api('GET', `/leads/${id}`);
+  if (!lead) return;
+  renderLeadSheetModal(lead);
+}
+
+function renderLeadSheetModal(lead) {
+  const st = STAGE_MAP[lead.pipeline_stage] || STAGES[0];
+  const stageIdx = STAGES.findIndex(s => s.id === lead.pipeline_stage);
+
+  const stageBar = STAGES.map((s, i) => {
+    let cls = 'stage-step';
+    if (i <= stageIdx) {
+      cls += s.id === 'ganho' ? ' won' : s.id === 'perdido' ? ' lost' : ' done';
+    }
+    return `<div class="${cls}" title="${s.label}"></div>`;
+  }).join('');
+
+  const photoHtml = lead.photo_path
+    ? `<img src="${lead.photo_path}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+    : `<span style="font-size:28px;font-weight:700;color:var(--accent)">${(lead.name||'?')[0].toUpperCase()}</span>`;
+
+  const attachHtml = lead.attachment_path
+    ? `<a href="${lead.attachment_path}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver Anexo</a>`
+    : `<span style="color:var(--muted);font-size:13px">Nenhum arquivo</span>`;
+
+  const stageOptions = STAGES.map(s =>
+    `<option value="${s.id}" ${lead.pipeline_stage===s.id?'selected':''}>${s.label}</option>`
+  ).join('');
+
+  const trafficOptions = TRAFFIC_SOURCES.map(o =>
+    `<option value="${o}" ${lead.traffic_source===o?'selected':''}>${o}</option>`
+  ).join('');
+
+  document.getElementById('modal-container').innerHTML = `
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <span class="modal-title">Ficha do Lead</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+
+        <!-- Cabeçalho com foto -->
+        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+            ${photoHtml}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">${esc(lead.name)}</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)">
+              <span>${fmt(lead.phone)}</span>
+              ${lead.email?`<span>${esc(lead.email)}</span>`:''}
+              ${lead.traffic_source?`<span>📣 ${esc(lead.traffic_source)}</span>`:''}
+              ${lead.responsible?`<span>👤 ${esc(lead.responsible)}</span>`:''}
+            </div>
+            <div style="margin-top:10px">
+              <div class="stage-bar">${stageBar}</div>
+              <span class="badge" style="background:${st.color}22;color:${st.color}">${st.label}</span>
+            </div>
+          </div>
+          <label class="btn btn-ghost btn-sm" style="cursor:pointer;flex-shrink:0">
+            📷 Foto
+            <input type="file" accept="image/*" style="display:none" onchange="uploadLeadFile('${lead.id}','photo',this)">
+          </label>
+        </div>
+
+        <!-- Formulário -->
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+
+          <div>
+            <div class="section-title">Dados Pessoais</div>
+            <div class="form-row">
+              <div class="form-field"><label>Nome Completo</label><input id="lf-name" value="${esc(lead.name||'')}" /></div>
+              <div class="form-field"><label>WhatsApp</label><input id="lf-phone" value="${esc(lead.phone||'')}" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>E-mail</label><input id="lf-email" type="email" value="${esc(lead.email||'')}" /></div>
+              <div class="form-field"><label>Endereço</label><input id="lf-address" value="${esc(lead.address||'')}" /></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Dados do Consórcio</div>
+            <div class="form-row">
+              <div class="form-field"><label>Nome do Consórcio</label><input id="lf-consortium_name" value="${esc(lead.consortium_name||'')}" /></div>
+              <div class="form-field"><label>Empresa Administradora</label><input id="lf-admin_company" value="${esc(lead.admin_company||'')}" /></div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-field"><label>Nº de Parcelas</label><input id="lf-installments" type="number" value="${lead.installments||''}" /></div>
+              <div class="form-field"><label>Valor da Parcela (R$)</label><input id="lf-installment_value" type="number" step="0.01" value="${lead.installment_value||''}" /></div>
+              <div class="form-field"><label>% Lucro Administradora</label><input id="lf-admin_profit_pct" type="number" step="0.1" value="${lead.admin_profit_pct||''}" /></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Gestão</div>
+            <div class="form-row">
+              <div class="form-field"><label>Estágio no Pipeline</label>
+                <select id="lf-pipeline_stage">${stageOptions}</select>
+              </div>
+              <div class="form-field"><label>Fonte de Tráfego</label>
+                <select id="lf-traffic_source">
+                  <option value="">Selecionar...</option>
+                  ${trafficOptions}
+                </select>
+              </div>
+            </div>
+            <div class="form-field"><label>Responsável pelo Lead</label>
+              <input id="lf-responsible" value="${esc(lead.responsible||'')}" placeholder="Nome do vendedor" />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Informações Gerais sobre o Cliente</label>
+            <textarea id="lf-general_info" rows="3" style="resize:vertical">${esc(lead.general_info||'')}</textarea>
+          </div>
+
+          <div class="form-field">
+            <label>Anotações / Histórico</label>
+            <textarea id="lf-notes" rows="3" style="resize:vertical">${esc(lead.notes||'')}</textarea>
+          </div>
+
+          <div>
+            <div class="section-title">Anexo (máx. 20 MB por cliente)</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              ${attachHtml}
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                📎 Enviar Arquivo
+                <input type="file" style="display:none" onchange="uploadLeadFile('${lead.id}','attachment',this)">
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDeleteLead('${lead.id}')">Excluir</button>
+        <button class="btn btn-primary" onclick="saveLeadSheet('${lead.id}')">Salvar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function saveLeadSheet(id) {
   try {
-    await api('PUT', `/leads/${id}`, { pipeline_stage: stage, notes });
-    toast('Estágio atualizado');
+    const g = id => document.getElementById(id)?.value ?? '';
+    await api('PUT', `/leads/${id}`, {
+      name:              g('lf-name'),
+      phone:             g('lf-phone'),
+      email:             g('lf-email'),
+      address:           g('lf-address'),
+      consortium_name:   g('lf-consortium_name'),
+      installments:      g('lf-installments')      ? Number(g('lf-installments'))      : null,
+      installment_value: g('lf-installment_value') ? Number(g('lf-installment_value')) : null,
+      admin_profit_pct:  g('lf-admin_profit_pct')  ? Number(g('lf-admin_profit_pct'))  : null,
+      admin_company:     g('lf-admin_company'),
+      pipeline_stage:    g('lf-pipeline_stage'),
+      traffic_source:    g('lf-traffic_source'),
+      responsible:       g('lf-responsible'),
+      general_info:      g('lf-general_info'),
+      notes:             g('lf-notes'),
+    });
+    toast('Lead salvo!');
+    closeModal();
+    if (state.page === 'leads') renderLeads();
+    else if (state.page === 'pipeline') renderPipeline();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function uploadLeadFile(id, field, input) {
+  if (!input.files[0]) return;
+  const fd = new FormData();
+  fd.append(field, input.files[0]);
+  toast('Enviando...', 'info');
+  try {
+    const updated = await apiUpload(`/leads/${id}/upload`, fd);
+    toast('Arquivo enviado!');
+    closeModal();
+    renderLeadSheetModal(updated);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function confirmDeleteLead(id) {
+  if (!confirm('Excluir este lead?')) return;
+  try {
+    await api('DELETE', `/leads/${id}`);
+    toast('Lead excluído');
+    closeModal();
     renderLeads();
   } catch (e) { toast(e.message, 'error'); }
+}
+
+function openNewLead() {
+  const stageOpts = STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+  const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
+  showModal('Novo Lead', `
+    <div class="form-row">
+      <div class="form-field"><label>Nome *</label><input id="m-name" /></div>
+      <div class="form-field"><label>WhatsApp *</label><input id="m-phone" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>E-mail</label><input id="m-email" type="email" /></div>
+      <div class="form-field"><label>Endereço</label><input id="m-address" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Nome do Consórcio</label><input id="m-consortium" /></div>
+      <div class="form-field"><label>Empresa Administradora</label><input id="m-admin_company" /></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Nº Parcelas</label><input id="m-installments" type="number" /></div>
+      <div class="form-field"><label>Valor Parcela (R$)</label><input id="m-installment_value" type="number" step="0.01" /></div>
+      <div class="form-field"><label>% Lucro Adm.</label><input id="m-admin_profit_pct" type="number" step="0.1" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Estágio</label><select id="m-stage">${stageOpts}</select></div>
+      <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
+    </div>
+    <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
+    <div class="form-field"><label>Informações Gerais</label>
+      <textarea id="m-general_info" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
+    </div>`,
+    async () => {
+      const name = document.getElementById('m-name').value.trim();
+      const phone = document.getElementById('m-phone').value.trim();
+      if (!name || !phone) throw new Error('Nome e WhatsApp são obrigatórios');
+      // Cria lead via rota pública
+      const created = await api('POST', '/leads/public', { name, phone, email: document.getElementById('m-email').value });
+      // Busca e atualiza com campos extras
+      const list = await api('GET', `/leads?limit=5&search=${encodeURIComponent(phone)}`);
+      if (list?.leads?.[0]) {
+        await api('PUT', `/leads/${list.leads[0].id}`, {
+          address:           document.getElementById('m-address').value,
+          consortium_name:   document.getElementById('m-consortium').value,
+          installments:      document.getElementById('m-installments').value ? Number(document.getElementById('m-installments').value) : null,
+          installment_value: document.getElementById('m-installment_value').value ? Number(document.getElementById('m-installment_value').value) : null,
+          admin_profit_pct:  document.getElementById('m-admin_profit_pct').value ? Number(document.getElementById('m-admin_profit_pct').value) : null,
+          admin_company:     document.getElementById('m-admin_company').value,
+          pipeline_stage:    document.getElementById('m-stage').value,
+          traffic_source:    document.getElementById('m-traffic').value,
+          responsible:       document.getElementById('m-responsible').value,
+          general_info:      document.getElementById('m-general_info').value,
+        });
+      }
+      toast('Lead criado!');
+      renderLeads();
+    }
+  );
 }
 
 // ── Pipeline Kanban ───────────────────────────────────────────────────────────
@@ -466,66 +696,42 @@ async function renderPipeline() {
   const el = document.getElementById('page-pipeline');
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
-    const STAGES = [
-      { id: 'novo',     label: 'Novo',      color: '#64748b' },
-      { id: 'contato',  label: 'Contato',   color: '#3b82f6' },
-      { id: 'proposta', label: 'Proposta',  color: '#f59e0b' },
-      { id: 'ganho',    label: 'Ganho',     color: '#22c55e' },
-      { id: 'perdido',  label: 'Perdido',   color: '#ef4444' },
-    ];
     const all = await api('GET', '/leads?limit=500');
     if (!all) return;
 
     const byStage = {};
     STAGES.forEach(s => { byStage[s.id] = []; });
     all.leads.forEach(l => {
-      if (byStage[l.pipeline_stage]) byStage[l.pipeline_stage].push(l);
+      const key = byStage[l.pipeline_stage] ? l.pipeline_stage : STAGES[0].id;
+      byStage[key].push(l);
     });
-
-    const objLabel = { capital:'Capital de giro', imovel:'Imóvel', reforma:'Reforma', quitacao:'Quitação', investimento:'Investimentos', outros:'Outro' };
 
     el.innerHTML = `<div class="kanban">` + STAGES.map(s => `
       <div class="kanban-col">
-        <div class="kanban-col-header">
+        <div class="kanban-col-header" style="border-top:3px solid ${s.color}">
           <span class="kanban-col-title" style="color:${s.color}">${s.label}</span>
           <span class="kanban-col-count">${byStage[s.id].length}</span>
         </div>
         <div class="kanban-items">
-          ${byStage[s.id].map(l => `
-            <div class="kanban-card" onclick="openLeadDetail('${l.id}')">
+          ${byStage[s.id].map(l => {
+            const photo = l.photo_path
+              ? `<img src="${l.photo_path}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);float:right;margin-left:8px">`
+              : '';
+            return `<div class="kanban-card" onclick="openLeadSheet('${l.id}')">
+              ${photo}
               <div class="kanban-card-name">${esc(l.name)}</div>
               <div class="kanban-card-phone">${fmt(l.phone)}</div>
-              <div class="kanban-card-date">${objLabel[l.objective]||l.objective||''} · ${fmtDate(l.created_at)}</div>
-            </div>`).join('')}
+              <div class="kanban-card-tags">
+                ${l.installment_value ? `<span class="kanban-tag">R$ ${fmtMoney(l.installment_value)}/mês</span>` : ''}
+                ${l.admin_company ? `<span class="kanban-tag">${esc(l.admin_company)}</span>` : ''}
+                ${l.traffic_source ? `<span class="kanban-tag">📣 ${esc(l.traffic_source)}</span>` : ''}
+              </div>
+              ${l.responsible ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">👤 ${esc(l.responsible)}</div>` : ''}
+            </div>`;
+          }).join('')}
         </div>
       </div>`).join('') + `</div>`;
-  } catch (e) {
-    el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`;
-  }
-}
-
-async function openLeadDetail(id) {
-  const stages = ['novo','contato','proposta','ganho','perdido'];
-  const stageLabel = { novo:'Novo', contato:'Contato Feito', proposta:'Proposta', ganho:'Ganho', perdido:'Perdido' };
-  const lead = await api('GET', `/leads?limit=1`).catch(() => null); // buscar pelo id não existe ainda — usar lista
-  // Simple detail via prompt
-  showModal('Editar Lead', `
-    <div class="form-field"><label>Estágio</label>
-      <select id="m-stage">
-        ${stages.map(s=>`<option value="${s}">${stageLabel[s]}</option>`).join('')}
-      </select>
-    </div>
-    <div class="form-field"><label>Anotações</label>
-      <textarea id="m-notes" rows="4" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
-    </div>`,
-    async () => {
-      const stage = document.getElementById('m-stage').value;
-      const notes = document.getElementById('m-notes').value;
-      await api('PUT', `/leads/${id}`, { pipeline_stage: stage, notes });
-      toast('Lead atualizado');
-      renderPipeline();
-    }
-  );
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
 // ── Prospects ─────────────────────────────────────────────────────────────────
@@ -533,48 +739,40 @@ let proState = { page: 1, search: '', status: '' };
 
 async function renderProspects() {
   const el = document.getElementById('page-prospects');
-  const tb = document.getElementById('topbar-actions');
-  tb.innerHTML = `<button class="btn btn-primary btn-sm" onclick="openAddProspect()">+ Adicionar Prospect</button>`;
+  document.getElementById('topbar-actions').innerHTML =
+    `<button class="btn btn-primary btn-sm" onclick="openAddProspect()">+ Adicionar Prospect</button>`;
   el.innerHTML = '<div class="loading">Carregando...</div>';
-
   try {
     const params = new URLSearchParams({ page: proState.page, limit: 50 });
     if (proState.search) params.set('search', proState.search);
     if (proState.status) params.set('status', proState.status);
     const data = await api('GET', `/prospects?${params}`);
     if (!data) return;
-
     const statusLabel = { novo:'Novo', enviado:'Enviado', respondido:'Respondido', agendado:'Agendado', convertido:'Convertido', perdido:'Perdido' };
-    const badgeClass  = { novo:'badge-novo', enviado:'badge-enviado', respondido:'badge-respondido', agendado:'badge-agendado', convertido:'badge-convertido', perdido:'badge-perdido' };
-
     const rows = data.prospects.map(p => `
       <tr>
-        <td><strong>${esc(p.name || p.company || '—')}</strong><br><span style="font-size:11px;color:var(--muted)">${esc(p.company||'')}</span></td>
+        <td><strong>${esc(p.name||p.company||'—')}</strong><br><span style="font-size:11px;color:var(--muted)">${esc(p.company||'')}</span></td>
         <td>${fmt(p.phone)}</td>
-        <td>${esc(p.segment || '—')}</td>
-        <td>${esc(p.city || '—')}</td>
-        <td><span class="badge ${badgeClass[p.status]||'badge-novo'}">${statusLabel[p.status]||p.status}</span></td>
+        <td>${esc(p.segment||'—')}</td>
+        <td>${esc(p.city||'—')}</td>
+        <td><span class="badge" style="background:var(--surface2);color:var(--muted)">${statusLabel[p.status]||p.status}</span></td>
         <td>${fmtDate(p.created_at)}</td>
-        <td>
-          <button class="btn btn-ghost btn-sm" onclick="editProspect('${p.id}','${esc(p.status)}','${esc(p.notes||'')}','${esc(p.ai_message||'')}')">Editar</button>
-        </td>
+        <td><button class="btn btn-ghost btn-sm" onclick="editProspect('${p.id}','${esc(p.status)}','${esc(p.notes||'')}','${esc(p.ai_message||'')}')">Editar</button></td>
       </tr>`).join('');
-
-    const statuses = Object.keys(statusLabel);
     el.innerHTML = `
       <div class="table-wrap">
         <div class="table-toolbar">
           <input class="search-box" placeholder="Buscar..." value="${esc(proState.search)}"
             oninput="proState.search=this.value;proState.page=1;renderProspects()" />
           <select class="search-box" style="max-width:160px" onchange="proState.status=this.value;proState.page=1;renderProspects()">
-            <option value="">Todos os status</option>
-            ${statuses.map(s=>`<option value="${s}" ${proState.status===s?'selected':''}>${statusLabel[s]}</option>`).join('')}
+            <option value="">Todos</option>
+            ${Object.entries(statusLabel).map(([k,v])=>`<option value="${k}" ${proState.status===k?'selected':''}>${v}</option>`).join('')}
           </select>
           <span style="color:var(--muted);font-size:13px">${data.total} prospects</span>
         </div>
         <table>
           <thead><tr><th>Nome/Empresa</th><th>Telefone</th><th>Segmento</th><th>Cidade</th><th>Status</th><th>Criado</th><th></th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="7" class="empty">Nenhum prospect</td></tr>'}</tbody>
+          <tbody>${rows||'<tr><td colspan="7" class="empty">Nenhum prospect</td></tr>'}</tbody>
         </table>
         <div class="pagination">
           <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
@@ -582,44 +780,33 @@ async function renderProspects() {
           <button class="btn btn-ghost btn-sm" onclick="proState.page++;renderProspects()" ${data.page*data.limit>=data.total?'disabled':''}>Próx →</button>
         </div>
       </div>`;
-  } catch (e) {
-    el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`;
-  }
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
 function openAddProspect() {
   showModal('Adicionar Prospect', `
     <div class="form-row">
-      <div class="form-field"><label>Nome</label><input id="m-name" placeholder="Nome ou responsável" /></div>
-      <div class="form-field"><label>Empresa</label><input id="m-company" placeholder="Razão social" /></div>
+      <div class="form-field"><label>Nome</label><input id="m-name" /></div>
+      <div class="form-field"><label>Empresa</label><input id="m-company" /></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label>Telefone *</label><input id="m-phone" placeholder="(11) 99999-9999" /></div>
-      <div class="form-field"><label>E-mail</label><input id="m-email" placeholder="email@empresa.com" /></div>
+      <div class="form-field"><label>Telefone *</label><input id="m-phone" /></div>
+      <div class="form-field"><label>E-mail</label><input id="m-email" /></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label>Segmento</label><input id="m-segment" placeholder="Ex: Médico, Advogado..." /></div>
-      <div class="form-field"><label>Cidade</label><input id="m-city" placeholder="Ex: São Paulo" /></div>
-    </div>
-    <div class="form-row">
-      <div class="form-field"><label>Site</label><input id="m-website" placeholder="https://..." /></div>
-      <div class="form-field"><label>Instagram</label><input id="m-instagram" placeholder="@handle" /></div>
+      <div class="form-field"><label>Segmento</label><input id="m-segment" /></div>
+      <div class="form-field"><label>Cidade</label><input id="m-city" /></div>
     </div>
     <div class="form-field"><label>Anotações</label>
       <textarea id="m-notes" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
     </div>`,
     async () => {
       const phone = document.getElementById('m-phone').value;
-      if (!phone) { toast('Telefone obrigatório', 'error'); return; }
+      if (!phone) throw new Error('Telefone obrigatório');
       await api('POST', '/prospects', {
-        name: document.getElementById('m-name').value,
-        company: document.getElementById('m-company').value,
-        phone,
-        email: document.getElementById('m-email').value,
-        segment: document.getElementById('m-segment').value,
-        city: document.getElementById('m-city').value,
-        website: document.getElementById('m-website').value,
-        instagram: document.getElementById('m-instagram').value,
+        name: document.getElementById('m-name').value, company: document.getElementById('m-company').value,
+        phone, email: document.getElementById('m-email').value,
+        segment: document.getElementById('m-segment').value, city: document.getElementById('m-city').value,
         notes: document.getElementById('m-notes').value,
       });
       toast('Prospect adicionado!');
@@ -629,15 +816,12 @@ function openAddProspect() {
 }
 
 function editProspect(id, status, notes, aiMessage) {
-  const statuses = ['novo','enviado','respondido','agendado','convertido','perdido'];
   const statusLabel = { novo:'Novo', enviado:'Enviado', respondido:'Respondido', agendado:'Agendado', convertido:'Convertido', perdido:'Perdido' };
   showModal('Editar Prospect', `
     <div class="form-field"><label>Status</label>
-      <select id="m-status">
-        ${statuses.map(s=>`<option value="${s}" ${status===s?'selected':''}>${statusLabel[s]}</option>`).join('')}
-      </select>
+      <select id="m-status">${Object.entries(statusLabel).map(([k,v])=>`<option value="${k}" ${status===k?'selected':''}>${v}</option>`).join('')}</select>
     </div>
-    <div class="form-field"><label>Mensagem enviada / rascunho</label>
+    <div class="form-field"><label>Mensagem enviada</label>
       <textarea id="m-ai" rows="4" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical">${esc(aiMessage)}</textarea>
     </div>
     <div class="form-field"><label>Anotações</label>
@@ -658,8 +842,8 @@ function editProspect(id, status, notes, aiMessage) {
 // ── Users ─────────────────────────────────────────────────────────────────────
 async function renderUsers() {
   const el = document.getElementById('page-users');
-  const tb = document.getElementById('topbar-actions');
-  tb.innerHTML = `<button class="btn btn-primary btn-sm" onclick="openAddUser()">+ Novo Usuário</button>`;
+  document.getElementById('topbar-actions').innerHTML =
+    `<button class="btn btn-primary btn-sm" onclick="openAddUser()">+ Novo Usuário</button>`;
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
     const users = await api('GET', '/users');
@@ -668,8 +852,8 @@ async function renderUsers() {
       <tr>
         <td><strong>${esc(u.name)}</strong></td>
         <td>${esc(u.email)}</td>
-        <td><span class="badge ${u.role==='master'?'badge-ganho':u.role==='admin'?'badge-contato':'badge-novo'}">${u.role}</span></td>
-        <td><span class="badge ${u.status==='active'?'badge-ganho':'badge-perdido'}">${u.status}</span></td>
+        <td><span class="badge" style="background:var(--surface2);color:var(--muted)">${u.role}</span></td>
+        <td><span class="badge" style="background:${u.status==='active'?'#14532d':'#450a0a'};color:${u.status==='active'?'#4ade80':'#f87171'}">${u.status==='active'?'Ativo':'Inativo'}</span></td>
         <td>${fmtDate(u.created_at)}</td>
         <td><button class="btn btn-ghost btn-sm" onclick="changePassword('${u.id}')">Trocar senha</button></td>
       </tr>`).join('');
@@ -680,9 +864,7 @@ async function renderUsers() {
           <tbody>${rows}</tbody>
         </table>
       </div>`;
-  } catch (e) {
-    el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`;
-  }
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
 function openAddUser() {
@@ -716,10 +898,9 @@ function changePassword(id) {
   );
 }
 
-// ── Modal helper ──────────────────────────────────────────────────────────────
+// ── Modal ─────────────────────────────────────────────────────────────────────
 function showModal(title, bodyHtml, onConfirm) {
-  const c = document.getElementById('modal-container');
-  c.innerHTML = `
+  document.getElementById('modal-container').innerHTML = `
     <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
       <div class="modal">
         <div class="modal-header">
@@ -734,37 +915,33 @@ function showModal(title, bodyHtml, onConfirm) {
       </div>
     </div>`;
   document.getElementById('modal-confirm').onclick = async () => {
-    try {
-      await onConfirm();
-      closeModal();
-    } catch (e) { toast(e.message, 'error'); }
+    try { await onConfirm(); closeModal(); }
+    catch (e) { toast(e.message, 'error'); }
   };
 }
 
-function closeModal() {
-  document.getElementById('modal-container').innerHTML = '';
-}
+function closeModal() { document.getElementById('modal-container').innerHTML = ''; }
 
 // ── Utils ─────────────────────────────────────────────────────────────────────
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function fmt(phone) {
-  const d = String(phone || '').replace(/\D/g,'');
-  if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
-  if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  const d = String(phone||'').replace(/\D/g,'');
+  if (d.length===11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  if (d.length===10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
   return phone;
 }
 function fmtDate(str) {
   if (!str) return '—';
-  const d = new Date(str);
-  return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  return new Date(str).toLocaleDateString('pt-BR') + ' ' + new Date(str).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtMoney(val) {
+  return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
-if (state.token && state.user) {
-  showApp();
-}
+if (state.token && state.user) showApp();
 </script>
 </body>
 </html>

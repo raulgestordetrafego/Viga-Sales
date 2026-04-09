@@ -1,0 +1,201 @@
+{
+  "name": "4 - Viga Sales | Relatório Diário de Prospecção",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Todo dia às 21h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-url",
+              "name": "viga_url",
+              "value": "https://vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cfg-token",
+              "name": "viga_token",
+              "value": "255e5345-be71-4f34-bf22-fdcae2b2131b",
+              "type": "string"
+            },
+            {
+              "id": "cfg-email",
+              "name": "email_destino",
+              "value": "raulfs.sc@gmail.com",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "config",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.viga_url }}/api/prospects/stats/summary",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.viga_token }}"
+            }
+          ]
+        }
+      },
+      "id": "get-stats",
+      "name": "Buscar Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Config').item.json.viga_url }}/api/prospects/logs/failures?limit=20",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Config').item.json.viga_token }}"
+            }
+          ]
+        }
+      },
+      "id": "get-failures",
+      "name": "Buscar Falhas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "merge",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "build-html",
+              "name": "html",
+              "value": "=<!DOCTYPE html>\n<html>\n<body style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;\">\n\n<h2 style=\"color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 8px;\">Relatório de Prospecção — Viga Sales CRM</h2>\n<p style=\"color: #666; font-size: 14px;\">Data: {{ new Date().toLocaleDateString('pt-BR') }}</p>\n\n<h3>Resumo do Funil</h3>\n<table style=\"width: 100%; border-collapse: collapse; margin-bottom: 20px;\">\n  <tr style=\"background: #f5f5f5;\">\n    <th style=\"text-align: left; padding: 10px; border: 1px solid #ddd;\">Indicador</th>\n    <th style=\"text-align: center; padding: 10px; border: 1px solid #ddd;\">Qtd</th>\n  </tr>\n  <tr>\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Total de prospects na base</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd; font-weight: bold;\">{{ $('Buscar Stats').item.json.total }}</td>\n  </tr>\n  <tr style=\"background: #f9f9f9;\">\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Enviados hoje</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd; color: {{ $('Buscar Stats').item.json.sent_today > 0 ? '#2e7d32' : '#e65100' }}; font-weight: bold;\">{{ $('Buscar Stats').item.json.sent_today }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Total já contatados</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd;\">{{ $('Buscar Stats').item.json.enviado }}</td>\n  </tr>\n  <tr style=\"background: #f9f9f9;\">\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Responderam</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd;\">{{ $('Buscar Stats').item.json.respondeu }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Em follow-up</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd;\">{{ $('Buscar Stats').item.json.follow_up }}</td>\n  </tr>\n  <tr style=\"background: #f9f9f9;\">\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">Convertidos</td>\n    <td style=\"text-align: center; padding: 10px; border: 1px solid #ddd;\">{{ $('Buscar Stats').item.json.convertido }}</td>\n  </tr>\n</table>\n\n<h3>Taxa de Conversão</h3>\n<p>Resposta: <strong>{{ $('Buscar Stats').item.json.enviado > 0 ? (($('Buscar Stats').item.json.respondeu / $('Buscar Stats').item.json.enviado) * 100).toFixed(1) : 0 }}%</strong> &nbsp;|&nbsp; Conversão: <strong>{{ $('Buscar Stats').item.json.enviado > 0 ? (($('Buscar Stats').item.json.convertido / $('Buscar Stats').item.json.enviado) * 100).toFixed(1) : 0 }}%</strong></p>\n\n<hr style=\"border: none; border-top: 1px solid #eee; margin: 20px 0;\">\n<p style=\"color: #999; font-size: 12px;\">Relatório gerado automaticamente pelo Viga Sales CRM — vigasales.shop</p>\n</body>\n</html>",
+              "type": "string"
+            },
+            {
+              "id": "build-subject",
+              "name": "subject",
+              "value": "=Relatório de Prospecção Viga Sales - {{ new Date().toLocaleDateString('pt-BR') }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "build-email",
+      "name": "Montar Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Config').item.json.email_destino }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Enviar Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1340, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SUBSTITUA_PELO_ID_DA_CREDENTIAL_GMAIL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Todo dia às 21h": {
+      "main": [
+        [{ "node": "Config", "type": "main", "index": 0 }]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          { "node": "Buscar Stats", "type": "main", "index": 0 },
+          { "node": "Buscar Falhas", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Buscar Stats": {
+      "main": [
+        [{ "node": "Merge", "type": "main", "index": 0 }]
+      ]
+    },
+    "Buscar Falhas": {
+      "main": [
+        [{ "node": "Merge", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [{ "node": "Montar Email", "type": "main", "index": 0 }]
+      ]
+    },
+    "Montar Email": {
+      "main": [
+        [{ "node": "Enviar Email", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    { "name": "viga-sales" },
+    { "name": "relatorio" }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-02T00:00:00.000Z",
+  "versionId": "1"
+}

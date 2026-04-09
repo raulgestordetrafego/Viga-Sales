@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<meta name="facebook-domain-verification" content="379t6xzyym3pvlfj5j0d2avb1w6vj3" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cardiocor | Cardiologia Águas Claras</title>
+<meta name="description" content="Pioneira em cardiologia em Águas Claras desde 2009. Consultas, exames e acompanhamento cardiovascular com médicos especializados em Brasília/DF."/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#0a3376",
+          "primary-container": "#2a4b8e",
+          "secondary": "#006687",
+          "secondary-fixed": "#c1e8ff",
+          "on-secondary-fixed": "#001e2b",
+          "tertiary": "#cf312e",
+          "on-primary": "#ffffff",
+          "on-secondary": "#ffffff",
+          "surface": "#fbf9f8",
+          "surface-bright": "#fbf9f8",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f6f3f2",
+          "surface-container": "#f0eded",
+          "surface-container-high": "#eae8e7",
+          "surface-container-highest": "#e4e2e1",
+          "on-surface": "#1b1c1c",
+          "on-surface-variant": "#444650",
+          "outline": "#747782",
+          "outline-variant": "#c4c6d2",
+          "inverse-surface": "#303030",
+          "surface-dim": "#dcd9d9",
+        },
+        fontFamily: {
+          headline: ["Manrope"],
+          body: ["Inter"],
+          label: ["Inter"]
+        },
+        borderRadius: {
+          DEFAULT: "0.25rem",
+          lg: "0.5rem",
+          xl: "0.75rem",
+          full: "9999px"
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .text-tracked-out { letter-spacing: 0.15em; }
+  .glass-header { background: rgba(251,249,248,0.92); backdrop-filter: blur(20px); }
+  .ambient-shadow { box-shadow: 0 40px 60px -15px rgba(27,28,28,0.06); }
+  .primary-gradient { background: linear-gradient(135deg,#0a3376 0%,#2a4b8e 100%); }
+  .red-gradient { background: linear-gradient(135deg,#cf312e 0%,#a82828 100%); }
+  .wa-gradient { background: linear-gradient(to top,#34a741,#43d854); }
+</style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+
+<!-- Barra superior com telefones -->
+<div class="bg-primary text-on-primary py-2 px-6 hidden md:block border-b border-white/5" id="top-bar">
+  <div class="max-w-screen-xl mx-auto flex justify-between items-center text-xs font-medium tracking-wide">
+    <div class="flex gap-6 flex-wrap">
+      <a class="flex items-center gap-1.5 hover:text-secondary-fixed transition-colors" href="tel:06134354900">
+        <span class="material-symbols-outlined text-[15px]">call</span>(61) 3435-4900
+      </a>
+      <a class="flex items-center gap-1.5 hover:text-secondary-fixed transition-colors" href="tel:06134355900">
+        <span class="material-symbols-outlined text-[15px]">call</span>(61) 3435-5900
+      </a>
+      <a class="flex items-center gap-1.5 hover:text-secondary-fixed transition-colors" href="tel:06133814357">
+        <span class="material-symbols-outlined text-[15px]">call</span>(61) 3381-4357
+      </a>
+      <a class="flex items-center gap-1.5 hover:text-secondary-fixed transition-colors" href="tel:06133814361">
+        <span class="material-symbols-outlined text-[15px]">call</span>(61) 3381-4361
+      </a>
+    </div>
+    <a class="flex items-center gap-1.5 hover:text-secondary-fixed transition-colors font-bold" href="https://wa.me/5561995536502" target="_blank" rel="noopener">
+      <span class="material-symbols-outlined text-[15px]">chat</span>(61) 99553-6502 — WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- Header / Navbar -->
+<header class="fixed w-full z-50 glass-header top-0 md:top-9 border-b border-outline-variant/20" id="navbar">
+  <nav class="flex justify-between items-center px-6 md:px-12 py-4 w-full max-w-screen-xl mx-auto">
+    <a href="#home">
+      <img src="https://clinicacardiocor.com.br/wp-content/themes/cardiocor/assets/images/lg-cardiocor.png" alt="Cardiocor — Clínica Cardiológica Ltda" style="height:52px;width:auto;"/>
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="hidden lg:flex items-center gap-6" id="desktop-nav">
+      <a class="text-primary font-bold border-b-2 border-primary pb-0.5 font-label text-xs tracking-widest uppercase" href="#home">Home</a>
+      <a class="text-stone-600 font-medium hover:text-primary transition-colors font-label text-xs tracking-widest uppercase" href="#quem-somos">Quem Somos</a>
+      <a class="text-stone-600 font-medium hover:text-primary transition-colors font-label text-xs tracking-widest uppercase" href="#consultas">Consultas</a>
+      <a class="text-stone-600 font-medium hover:text-primary transition-colors font-label text-xs tracking-widest uppercase" href="#exames">Exames</a>
+      <a class="text-stone-600 font-medium hover:text-primary transition-colors font-label text-xs tracking-widest uppercase" href="#convenios">Convênios</a>
+      <a class="text-stone-600 font-medium hover:text-primary transition-colors font-label text-xs tracking-widest uppercase" href="#blog">Blog</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a href="#contato" class="primary-gradient text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:shadow-lg transition-all hover:-translate-y-0.5 hidden md:inline-flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px]">calendar_today</span>Agendar Consulta
+      </a>
+      <!-- Mobile hamburger -->
+      <button id="hamburger" class="lg:hidden p-2 rounded-lg hover:bg-surface-container" aria-label="Menu">
+        <span class="material-symbols-outlined text-primary">menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden lg:hidden px-6 pb-4 border-t border-outline-variant/20 bg-white/95">
+    <div class="flex flex-col gap-1 pt-3">
+      <a href="#home" class="py-2.5 px-3 text-sm font-bold text-primary rounded-lg hover:bg-surface-container uppercase tracking-widest">Home</a>
+      <a href="#quem-somos" class="py-2.5 px-3 text-sm font-medium text-stone-600 rounded-lg hover:bg-surface-container uppercase tracking-widest">Quem Somos</a>
+      <a href="#consultas" class="py-2.5 px-3 text-sm font-medium text-stone-600 rounded-lg hover:bg-surface-container uppercase tracking-widest">Consultas</a>
+      <a href="#exames" class="py-2.5 px-3 text-sm font-medium text-stone-600 rounded-lg hover:bg-surface-container uppercase tracking-widest">Exames</a>
+      <a href="#convenios" class="py-2.5 px-3 text-sm font-medium text-stone-600 rounded-lg hover:bg-surface-container uppercase tracking-widest">Convênios</a>
+      <a href="#blog" class="py-2.5 px-3 text-sm font-medium text-stone-600 rounded-lg hover:bg-surface-container uppercase tracking-widest">Blog</a>
+      <a href="#contato" class="mt-2 primary-gradient text-white py-3 px-3 rounded-lg text-sm font-bold text-center">Agendar Consulta</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative min-h-screen pt-32 flex items-center overflow-hidden" id="home">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/85 to-surface/20 z-10"></div>
+    <img class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2y3hjiDEjKOdhIvRr210xvVkAXMhFq-boBPkjC0hXm175rn7g12Ubzsv0TZXEd3Wz76eNhu0OqP6MzC61Pf2a0GEzx921MK8of1rXPVc1xqk8ixFZs-gd_8TwKRZCyAwgJFUEyOoaQOpiYU0T6D4oP-8iLhT6M2YciDJy8Uz5nUpjJFWM6UR8jb2V0HJ_RnD-A5qWCD4QhCJ6deuuEHOahC0LjLXuwQNvvpZKJZ8CKFkuGZfn1QOO6UCOMx-cmcn_FtMuFfCVNcxQ" alt="Médica cardiologista"/>
+  </div>
+  <div class="relative z-20 max-w-screen-xl mx-auto px-6 md:px-12 w-full py-20">
+    <div class="max-w-2xl">
+      <span class="inline-block bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded text-[10px] font-bold tracking-[0.2em] uppercase mb-6">Excelência em Cardiologia · Águas Claras</span>
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold font-headline text-primary mb-6 leading-[1.08]">Cuidando do seu coração</h1>
+      <p class="text-lg text-on-surface-variant mb-10 max-w-lg leading-relaxed">Referência em diagnóstico e tratamento cardiovascular com tecnologia de ponta e atendimento humanizado em Águas Claras, Brasília.</p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="#contato" class="primary-gradient text-white px-8 py-4 rounded-lg font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-3 ambient-shadow hover:-translate-y-0.5 transition-transform">
+          Agende sua consulta
+          <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+        </a>
+        <a href="#exames" class="bg-surface-container-high text-primary px-8 py-4 rounded-lg font-bold text-sm tracking-widest uppercase border border-outline-variant/20 hover:bg-surface-container transition-colors text-center">
+          Nossos Exames
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Localização -->
+<section class="py-20 bg-surface-container-low" id="quem-somos">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-7 bg-surface-container-lowest p-10 md:p-12 rounded-xl ambient-shadow flex flex-col justify-between">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-4">Águas Claras Shopping</h2>
+          <p class="text-on-surface-variant text-lg mb-8 leading-relaxed">Nossa unidade está estrategicamente localizada para oferecer conveniência e segurança. No coração de Águas Claras, dentro de um dos principais centros comerciais da região.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-primary text-3xl mt-0.5">location_on</span>
+              <div>
+                <h4 class="font-bold text-primary mb-1">Endereço</h4>
+                <p class="text-sm text-stone-500 leading-relaxed">Salas 314, 315 e 316<br>Águas Claras Shopping<br>Águas Claras — Brasília/DF</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-primary text-3xl mt-0.5">schedule</span>
+              <div>
+                <h4 class="font-bold text-primary mb-1">Horários</h4>
+                <p class="text-sm text-stone-500 leading-relaxed">Seg — Sex: 08h às 18h<br>Terça e Quinta: até 19h<br>Sábados: 08h às 12h</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-primary text-3xl mt-0.5">call</span>
+              <div>
+                <h4 class="font-bold text-primary mb-1">Telefones</h4>
+                <p class="text-sm text-stone-500 leading-relaxed">
+                  <a href="tel:06134354900" class="hover:text-primary">(61) 3435-4900</a><br>
+                  <a href="tel:06134355900" class="hover:text-primary">(61) 3435-5900</a><br>
+                  <a href="tel:06133814357" class="hover:text-primary">(61) 3381-4357</a><br>
+                  <a href="tel:06133814361" class="hover:text-primary">(61) 3381-4361</a><br>
+                  <a href="tel:06133821757" class="hover:text-primary">(61) 3382-1757</a>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-primary text-3xl mt-0.5">chat</span>
+              <div>
+                <h4 class="font-bold text-primary mb-1">WhatsApp</h4>
+                <a href="https://wa.me/5561995536502" target="_blank" rel="noopener" class="text-sm text-stone-500 hover:text-primary">(61) 99553-6502</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <a href="https://www.google.com/maps/search/Águas+Claras+Shopping+Brasília+DF" target="_blank" rel="noopener" class="primary-gradient text-white px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 hover:-translate-y-0.5 transition-transform">
+            <span class="material-symbols-outlined text-[16px]">map</span>Traçar rota
+          </a>
+          <a href="https://wa.me/5561995536502?text=Olá! Gostaria de agendar uma consulta." target="_blank" rel="noopener" class="wa-gradient text-[#16471c] px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 hover:-translate-y-0.5 transition-transform">
+            <span class="material-symbols-outlined text-[16px]">chat</span>Fale agora
+          </a>
+        </div>
+      </div>
+      <div class="lg:col-span-5 relative h-72 lg:h-auto rounded-xl overflow-hidden ambient-shadow">
+        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD230taPisT-FnAlac97CJblIsEmXXrtRtl0_y83fSIWqZwvs9qzwO5ai4F0Rsh45nXWbSg4AIgmtsfSTGgGa8KFtdTyFqdsYmuFFQ9_cPQWa0MyxBZn3PKfTKe9BFvwtYHF7lYA1S2WfiNI4vMUlMTncvXVIYhSzzWnQ7rfuCZ-4ux8PSFpvVJY93YhU5kh0PWZP5NjG6t9_7tjX_FQrTPHHjTk872XdjnZJ50y8WJ6YM2PkcNBfNOl71U2DAY8fg-nH24M5n5DGi5" alt="Águas Claras Shopping"/>
+        <div class="absolute inset-0 bg-primary/15 mix-blend-multiply"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Especialidades -->
+<section class="py-24 md:py-32" id="consultas">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+      <div class="max-w-2xl">
+        <h2 class="text-4xl md:text-5xl font-extrabold font-headline text-primary mb-4">Nossas Especialidades</h2>
+        <p class="text-on-surface-variant text-lg leading-relaxed">Nossos profissionais médicos são especialistas prontos para atender você com afeto, atenção e carinho.</p>
+      </div>
+      <div class="text-primary font-bold tracking-widest text-sm uppercase shrink-0">Excelência Médica</div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">favorite</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Check Up Cardiológico</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Avaliação completa da saúde do seu coração para prevenção e diagnóstico precoce.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer lg:translate-y-6" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">clinical_notes</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Risco Cirúrgico</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Avaliação cardiológica pré-operatória para garantir sua segurança em procedimentos cirúrgicos.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">stethoscope</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Clínica Médica</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Atendimento clínico geral integrado à cardiologia para cuidado integral da sua saúde.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer lg:translate-y-6" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">monitor_heart</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Arritmologia</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Diagnóstico e tratamento especializado de distúrbios do ritmo cardíaco.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">bloodtype</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Angiologia</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Diagnóstico e tratamento das doenças dos vasos sanguíneos — artérias e veias.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer lg:translate-y-6" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">science</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Endocrinologia</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Tratamento de diabetes, tireoide e obesidade com impacto na saúde cardiovascular.</p>
+      </div>
+
+      <div class="bg-surface p-8 rounded-xl hover:bg-surface-container-low transition-colors duration-500 group border-b-4 border-transparent hover:border-secondary cursor-pointer sm:col-span-2 lg:col-span-2" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+        <div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-secondary text-2xl">nutrition</span>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3">Nutrição</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed">Orientação nutricional especializada para controle de fatores de risco cardiovascular — colesterol, diabetes e hipertensão.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Exames -->
+<section class="py-24 md:py-32 bg-primary" id="exames">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div class="relative">
+      <div class="absolute -top-10 -left-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl"></div>
+      <img class="rounded-2xl ambient-shadow w-full relative z-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmk1DdSdcGFnKkb5mqSamA9uTBBmJubXkXITcnrRCHVHIZ80eq7-dsnd1nDk8mHgd4xQKjIrnbpNIso7OLNut89R9iAWMn-aUHguqKQCqLK3GiqqqLFP5IVvXfk-Oj46ceULgcbP6cxQ9JMZ4KPR7JG36sZZLGDFEvUKF0Usq9Yyf5_ciC6JRjHXcGoODA29IGQsf3sZJ5yyCcT34vJEcqBRIqN2YVUeL6tmbjJMg2H9aJaUEpWT1SXtJlZ2AHyJZzN6OXLFv2AWqR" alt="Equipamentos de cardiologia"/>
+      <div class="absolute -bottom-5 -right-5 bg-secondary text-white p-7 rounded-xl z-20 ambient-shadow hidden md:block">
+        <div class="text-4xl font-extrabold mb-1 font-headline">+20</div>
+        <div class="text-xs uppercase tracking-widest font-bold">Tipos de Exames</div>
+      </div>
+    </div>
+    <div class="text-white">
+      <h2 class="text-4xl md:text-5xl font-extrabold font-headline mb-6 leading-tight">Exames Diagnósticos</h2>
+      <p class="text-blue-200 text-lg mb-10 leading-relaxed">Equipamentos modernos e equipe técnica altamente qualificada para resultados precisos e ágeis.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10 mb-10">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Eletrocardiograma</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Ecodopplercardiograma colorido</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Doppler de carótidas e vertebrais</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Doppler de aorta abdominal</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Doppler de artérias renais</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Doppler venoso de membros</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Doppler arterial de membros</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Teste ergométrico computadorizado</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">Holter 24h</span></div>
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span><span class="text-base">MAPA 24h</span></div>
+      </div>
+      <a href="#contato" class="inline-flex items-center gap-2 bg-white text-primary px-7 py-3.5 rounded-lg font-bold text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-transform">
+        Agendar Exame<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Convênios -->
+<section class="py-16 bg-surface-container-high overflow-hidden" id="convenios">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+      <div>
+        <h3 class="text-2xl font-bold font-headline text-primary mb-2">Convênios e Planos de Saúde</h3>
+        <p class="text-on-surface-variant">Atendemos particular e os principais planos de saúde do mercado.</p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-8">
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">UNIMED</div>
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">AMIL</div>
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">BRADESCO</div>
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">SULAMÉRICA</div>
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">PORTO SEGURO</div>
+        <div class="text-sm font-extrabold text-stone-400 hover:text-primary transition-colors cursor-pointer tracking-wider">GOLDEN CROSS</div>
+        <div class="text-sm font-extrabold text-[#cf312e] tracking-wider">PARTICULAR</div>
+      </div>
+    </div>
+    <div class="mt-8 text-center">
+      <a href="https://wa.me/5561995536502?text=Olá! Gostaria de verificar se meu convênio é aceito." target="_blank" rel="noopener" class="inline-flex items-center gap-2 border-2 border-primary text-primary px-7 py-3 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-primary hover:text-white transition-colors">
+        Verificar meu convênio<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section class="py-24 md:py-32" id="blog">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-extrabold font-headline text-primary mb-4">Educação e Saúde</h2>
+      <p class="text-on-surface-variant max-w-2xl mx-auto text-lg">Informação de qualidade é o primeiro passo para uma vida mais saudável. Acompanhe as dicas dos nossos especialistas.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <article class="group">
+        <div class="relative h-56 rounded-xl overflow-hidden mb-5 ambient-shadow">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADgPtB0KpNQR0v-Dg-go3M-Rz79up_HK-MEwQ0bjch0FKuCkxz2vRDBSceI0DASpesD-IU68tNOFoN6qwNYBttXQZ7OhT9t2gK4-ot7GsdqajiJgnTJfrh4Ks2gLb-kUywL2OaBCo0TMDYnD23zHc7anb_qhjQzBu7I6CAMABoY3DqJ4CZlq3vFffKtCJdyI4IqLUcACf67FGnb0OHBDgsveDpOiouhGzO98Nwe1LFhbnhTItXCKbLNnbq59JU9GDgDL6kmdJdfom3" alt="Alimentos saudáveis"/>
+          <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase text-primary">Prevenção</div>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3 group-hover:text-secondary transition-colors">Alimentos que fortalecem seu coração diariamente</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Descubra quais nutrientes não podem faltar no seu prato para manter a saúde cardiovascular em dia...</p>
+        <a href="#blog" class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-1.5">Leia mais <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+      </article>
+      <article class="group">
+        <div class="relative h-56 rounded-xl overflow-hidden mb-5 ambient-shadow">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFMwWbxYF_6K_Aqef3JyPmSctKiAVTFuUWPvJtfCm3AYoSwiaRsrlWtgCnh2jD1E_iuv4g1bj9Iryut8GlwLoUu7zYcifDDIGp2x0tiStI3fFdS3_FY2DrCQUi8hSCiUPLwR9DLtVJPOLWsWY4ziZ_iZzWLbf6TnOnMb-9vFOnOi2l_5VhNtqQOn6yc_vyt1GQL68bqDDaMOtd8t_vm26II31K7nMUgqOR9TbwnWgtbTg4XmeX0NSlvIJkBXmTp-VYfv1C54lw2Sv" alt="Atividade física"/>
+          <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase text-primary">Estilo de Vida</div>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3 group-hover:text-secondary transition-colors">Atividade física: por onde começar com segurança</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">A importância da avaliação médica antes de iniciar uma rotina de exercícios físicos de alta intensidade...</p>
+        <a href="#blog" class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-1.5">Leia mais <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+      </article>
+      <article class="group">
+        <div class="relative h-56 rounded-xl overflow-hidden mb-5 ambient-shadow">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNXVNKRApKREC3-JVnW1Y5jOOAF1FCMM7XkABEDNh1z6n-NzbN_2lch5q6bvCuBQdSYnN-NKXtg7tLHd1TYG9GpxkikJbzexxAMoqD0-RdXoRDfembyxnLuFl4x50VznNbwFg-sS_mu21obzrnKK8CDYD4UAvtXz8NoSR1ZJsdEU6pszXBjMk966pl-EBC3I6-qah0-4sGGmZGZsI7VcEHdSHA-T29ljBpBI8hBeR7Uj3jpvVqxkm2Xgf-PanDFBuCEJpKqILJZ01X" alt="Pressão arterial"/>
+          <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase text-primary">Informativo</div>
+        </div>
+        <h3 class="text-lg font-bold font-headline text-primary mb-3 group-hover:text-secondary transition-colors">Pressão Alta: o inimigo silencioso e como combatê-lo</h3>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Entenda por que a hipertensão é tão perigosa e como o controle preventivo pode salvar sua vida...</p>
+        <a href="#blog" class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-1.5">Leia mais <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Contato -->
+<section class="py-24 md:py-32 bg-surface-container-low" id="contato">
+  <div class="max-w-screen-xl mx-auto px-6 md:px-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div>
+        <h2 class="text-4xl md:text-5xl font-extrabold font-headline text-primary mb-6 leading-tight">Fale conosco ou marque sua consulta</h2>
+        <p class="text-on-surface-variant text-lg mb-10 leading-relaxed">Estamos prontos para atender você. Preencha o formulário e nossa equipe entrará em contato em breve para confirmar seu horário.</p>
+        <div class="space-y-6">
+          <div class="flex items-center gap-5">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">call</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-1">Telefones</h4>
+              <p class="font-bold text-primary text-sm leading-relaxed">
+                <a href="tel:06134354900">(61) 3435-4900</a> · <a href="tel:06134355900">(61) 3435-5900</a><br>
+                <a href="tel:06133814357">(61) 3381-4357</a> · <a href="tel:06133814361">(61) 3381-4361</a> · <a href="tel:06133821757">(61) 3382-1757</a>
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-5">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">chat</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-1">WhatsApp</h4>
+              <a href="https://wa.me/5561995536502" target="_blank" rel="noopener" class="font-bold text-primary">(61) 99553-6502</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-5">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">location_on</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-1">Endereço</h4>
+              <p class="font-bold text-primary text-sm">Águas Claras Shopping, Salas 314, 315 e 316<br>Águas Claras — Brasília/DF</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-5">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-1">Horários</h4>
+              <p class="font-bold text-primary text-sm">Seg–Sex: 8h–18h · Ter/Qui: até 19h · Sáb: 8h–12h</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-lowest p-8 md:p-10 rounded-2xl ambient-shadow">
+        <form id="contact-form" class="space-y-5" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-widest">Nome Completo *</label>
+              <input id="f-nome" type="text" placeholder="Seu nome" class="w-full bg-surface-container-high rounded-lg p-3.5 text-sm focus:ring-2 focus:ring-secondary-fixed outline-none border-none"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-widest">Telefone *</label>
+              <input id="f-tel" type="tel" placeholder="(61) 9xxxx-xxxx" class="w-full bg-surface-container-high rounded-lg p-3.5 text-sm focus:ring-2 focus:ring-secondary-fixed outline-none border-none"/>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-widest">Assunto *</label>
+            <select id="f-assunto" class="w-full bg-surface-container-high rounded-lg p-3.5 text-sm focus:ring-2 focus:ring-secondary-fixed outline-none border-none appearance-none">
+              <option value="">Selecione...</option>
+              <option>Marcar consulta ou exame</option>
+              <option>Dúvida sobre convênio</option>
+              <option>Sugestão</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-widest">Especialidade / Exame</label>
+            <select id="f-esp" class="w-full bg-surface-container-high rounded-lg p-3.5 text-sm focus:ring-2 focus:ring-secondary-fixed outline-none border-none appearance-none">
+              <option value="">Selecione (opcional)...</option>
+              <optgroup label="Consultas">
+                <option>Check Up Cardiológico</option>
+                <option>Risco Cirúrgico</option>
+                <option>Clínica Médica</option>
+                <option>Arritmologia</option>
+                <option>Angiologia</option>
+                <option>Endocrinologia</option>
+                <option>Nutrição</option>
+              </optgroup>
+              <optgroup label="Exames">
+                <option>Eletrocardiograma</option>
+                <option>Ecodopplercardiograma colorido</option>
+                <option>Doppler de carótidas e vertebrais</option>
+                <option>Doppler de aorta abdominal</option>
+                <option>Doppler de artérias renais</option>
+                <option>Doppler venoso de membros inferiores</option>
+                <option>Doppler arterial de membros inferiores</option>
+                <option>Teste ergométrico computadorizado</option>
+                <option>Holter</option>
+                <option>MAPA</option>
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-widest">Mensagem</label>
+            <textarea id="f-msg" rows="3" placeholder="Como podemos ajudar?" class="w-full bg-surface-container-high rounded-lg p-3.5 text-sm focus:ring-2 focus:ring-secondary-fixed outline-none border-none resize-none"></textarea>
+          </div>
+          <button type="submit" class="w-full primary-gradient text-white py-4 rounded-lg font-bold text-sm tracking-widest uppercase hover:scale-[1.01] transition-transform ambient-shadow">
+            Enviar Mensagem
+          </button>
+          <div id="form-msg" class="hidden text-center py-3 px-4 rounded-lg text-sm font-bold"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-stone-100 w-full">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 md:px-12 py-14 w-full max-w-screen-xl mx-auto">
+    <div class="space-y-5">
+      <a href="#home">
+        <img src="https://clinicacardiocor.com.br/wp-content/themes/cardiocor/assets/images/lg-cardiocor.png" alt="Cardiocor" style="height:44px;width:auto;"/>
+      </a>
+      <p class="text-stone-500 text-sm leading-relaxed max-w-xs">Excelência e humanização no cuidado do seu coração. Sua saúde é nosso maior compromisso em Águas Claras, Brasília.</p>
+      <div class="flex gap-3">
+        <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors text-primary">
+          <span class="material-symbols-outlined text-[18px]">share</span>
+        </a>
+        <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors text-primary">
+          <span class="material-symbols-outlined text-[18px]">photo_camera</span>
+        </a>
+        <a href="https://wa.me/5561995536502" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center hover:bg-green-500 hover:text-white transition-colors text-green-600">
+          <span class="material-symbols-outlined text-[18px]">chat</span>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4 class="text-primary font-bold uppercase tracking-widest text-xs mb-6">Navegação</h4>
+      <ul class="space-y-3 text-stone-500 text-sm">
+        <li><a href="#home" class="hover:text-primary transition-colors">Home</a></li>
+        <li><a href="#quem-somos" class="hover:text-primary transition-colors">Quem Somos</a></li>
+        <li><a href="#consultas" class="hover:text-primary transition-colors">Consultas</a></li>
+        <li><a href="#exames" class="hover:text-primary transition-colors">Exames</a></li>
+        <li><a href="#convenios" class="hover:text-primary transition-colors">Convênios</a></li>
+        <li><a href="#blog" class="hover:text-primary transition-colors">Blog</a></li>
+        <li><a href="#contato" class="hover:text-primary transition-colors">Contato</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-primary font-bold uppercase tracking-widest text-xs mb-6">Unidade Águas Claras</h4>
+      <p class="text-stone-500 text-sm mb-3 leading-relaxed">Águas Claras Shopping<br>Salas 314, 315 e 316<br>Águas Claras — Brasília/DF</p>
+      <p class="text-stone-500 text-sm font-bold mb-2">Telefones:</p>
+      <p class="text-stone-500 text-sm leading-relaxed">
+        <a href="tel:06134354900" class="hover:text-primary">(61) 3435-4900</a><br>
+        <a href="tel:06134355900" class="hover:text-primary">(61) 3435-5900</a><br>
+        <a href="tel:06133814357" class="hover:text-primary">(61) 3381-4357</a><br>
+        <a href="https://wa.me/5561995536502" target="_blank" rel="noopener" class="hover:text-primary">(61) 99553-6502 (WhatsApp)</a>
+      </p>
+    </div>
+  </div>
+  <div class="px-6 md:px-12 py-6 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center gap-4 max-w-screen-xl mx-auto">
+    <p class="text-stone-400 text-xs uppercase tracking-widest">© 2024 Cardiocor Clínica Cardiológica Ltda. Todos os direitos reservados. | CNPJ: 11.072.257/0001-75</p>
+    <div class="flex gap-6 text-xs font-bold uppercase tracking-widest">
+      <a href="#" class="text-stone-400 hover:text-primary">Política de Privacidade</a>
+      <a href="#" class="text-stone-400 hover:text-primary">Termos de Uso</a>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp flutuante -->
+<a href="https://wa.me/5561995536502?text=Olá! Vim pelo site e gostaria de agendar uma consulta." target="_blank" rel="noopener" class="fixed bottom-6 right-5 z-50 wa-gradient text-[#16471c] font-bold text-sm px-5 py-3 rounded-full shadow-lg flex items-center gap-2 hover:-translate-y-1 transition-transform" style="box-shadow:0 4px 20px rgba(52,167,65,0.5)">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="#16471c">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  Fale agora
+</a>
+
+<script>
+  // Hamburger
+  document.getElementById('hamburger').addEventListener('click', function() {
+    var m = document.getElementById('mobile-menu');
+    m.classList.toggle('hidden');
+  });
+  document.querySelectorAll('#mobile-menu a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.add('hidden');
+    });
+  });
+
+  // Navbar offset for top bar
+  var topBar = document.getElementById('top-bar');
+  var navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) {
+      navbar.classList.remove('md:top-9');
+      navbar.classList.add('top-0');
+    } else {
+      navbar.classList.add('md:top-9');
+      navbar.classList.remove('top-0');
+    }
+  });
+
+  // Phone mask
+  var telInput = document.getElementById('f-tel');
+  if (telInput) {
+    telInput.addEventListener('input', function() {
+      var v = this.value.replace(/\D/g,'').substring(0,11);
+      if (v.length > 6) v = '('+v.substring(0,2)+') '+v.substring(2,7)+'-'+v.substring(7);
+      else if (v.length > 2) v = '('+v.substring(0,2)+') '+v.substring(2);
+      else if (v.length > 0) v = '('+v;
+      this.value = v;
+    });
+  }
+
+  // Form → WhatsApp
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var nome = document.getElementById('f-nome').value.trim();
+    var tel  = document.getElementById('f-tel').value.trim();
+    var ass  = document.getElementById('f-assunto').value;
+    var esp  = document.getElementById('f-esp').value;
+    var msg  = document.getElementById('f-msg').value.trim();
+    var fb   = document.getElementById('form-msg');
+
+    if (!nome || !tel || !ass) {
+      fb.className = 'text-center py-3 px-4 rounded-lg text-sm font-bold bg-red-50 text-red-600';
+      fb.textContent = '⚠ Preencha nome, telefone e assunto.';
+      return;
+    }
+
+    var waMsg = 'Olá! Me chamo *'+nome+'*.\nTelefone: '+tel+'\nAssunto: '+ass;
+    if (esp) waMsg += '\nServiço: '+esp;
+    if (msg) waMsg += '\nMensagem: '+msg;
+
+    fb.className = 'text-center py-3 px-4 rounded-lg text-sm font-bold bg-green-50 text-green-700';
+    fb.textContent = '✓ Redirecionando para o WhatsApp...';
+    this.reset();
+    setTimeout(function() { window.open('https://wa.me/5561995536502?text='+encodeURIComponent(waMsg),'_blank'); }, 700);
+  });
+</script>
+</body>
+</html>
