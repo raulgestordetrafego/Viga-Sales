@@ -335,10 +335,10 @@ async function startServer() {
 
   // ── AI Suggestions ───────────────────────────────────────────────────────
   app.post("/api/ai/suggest", async (req: any, res) => {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      console.error('[AI] OPENAI_API_KEY não configurada');
-      return res.status(503).json({ error: 'OPENAI_API_KEY não configurada no servidor' });
+      console.error('[AI] GEMINI_API_KEY não configurada');
+      return res.status(503).json({ error: 'GEMINI_API_KEY não configurada no servidor' });
     }
     try {
       const { contactName, phone, company, stage, notes } = req.body;
@@ -355,15 +355,21 @@ Notas: ${notes || 'sem notas'}
 
 Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
 
-      const { default: OpenAI } = await import('openai');
-      const openai = new OpenAI({ apiKey });
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 200,
-        temperature: 0.7,
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const geminiRes = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 200 },
+        }),
       });
-      const suggestion = completion.choices?.[0]?.message?.content?.trim();
+      if (!geminiRes.ok) {
+        const err = await geminiRes.json();
+        throw new Error(`Gemini error: ${err.error?.message || geminiRes.statusText}`);
+      }
+      const data = await geminiRes.json();
+      const suggestion = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
       console.log(`[AI] Suggestion generated for ${contactName}`);
       res.json({ suggestion });
     } catch (err: any) {

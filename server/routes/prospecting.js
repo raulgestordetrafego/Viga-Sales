@@ -126,8 +126,8 @@ function resolveSegment(raw) {
 }
 
 async function generateAIMessage(prospect) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error('OPENAI_API_KEY não configurada');
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY não configurada');
 
   const segmentLabel = resolveSegment(prospect.segment);
 
@@ -140,7 +140,6 @@ async function generateAIMessage(prospect) {
   ].filter(Boolean).join('\n');
 
   const senderName = process.env.SENDER_NAME || 'Raul';
-  const senderCompany = process.env.SENDER_COMPANY || 'Viga Sales';
 
   const prompt = `Você é ${senderName}, ajudando donos de pequenos negócios no Brasil via WhatsApp.
 Escreva uma primeira mensagem de prospecção para o seguinte prospect:
@@ -161,27 +160,24 @@ Regras:
 - Máximo 100 palavras
 - Varie o estilo: às vezes mais formal, às vezes mais coloquial`;
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+  const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 300,
-      temperature: 0.8,
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.8, maxOutputTokens: 300 },
     }),
   });
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(`OpenAI error: ${err.error?.message}`);
+    throw new Error(`Gemini error: ${err.error?.message || response.statusText}`);
   }
 
   const data = await response.json();
-  return data.choices[0].message.content.trim();
+  return data.candidates[0].content.parts[0].text.trim();
 }
 
 async function resetDailyCountIfNeeded(campaignId) {
