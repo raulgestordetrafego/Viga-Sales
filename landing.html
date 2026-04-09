@@ -805,12 +805,13 @@
     btn.textContent = 'Enviando...';
     btn.disabled = true;
 
-    fetch('/api/ab-capital/leads/public', {
+    fetch('https://app.abcapital.com.br/api/ab-capital/leads/public', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, phone: phone, email: email, objective: concurso })
     })
-    .catch(function() {}) // falha silenciosa — não bloqueia a UX
+    .then(function(r) { return r.ok ? r.json() : Promise.reject('erro ' + r.status); })
+    .catch(function(err) { console.error('Lead não salvo:', err); })
     .finally(function() {
       document.getElementById('formCard').classList.add('submitted');
     });
