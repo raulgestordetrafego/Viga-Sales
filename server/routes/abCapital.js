@@ -128,7 +128,7 @@ router.post('/leads/public', async (req, res) => {
 
     await run(
       `INSERT INTO ab_capital_leads (id, name, phone, email, objective, source, pipeline_stage, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 'landing', 'novo', ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, 'landing', 'analise', ?, ?)`,
       [id, name.trim(), cleanPhone, email?.trim() || null, objective || null, now, now]
     );
 
@@ -206,7 +206,7 @@ router.put('/leads/:id', abAuth, async (req, res) => {
     const {
       name, phone, email, address, consortium_name, installments, installment_value,
       admin_profit_pct, admin_company, general_info, traffic_source, responsible,
-      pipeline_stage, notes,
+      pipeline_stage, notes, credit_value,
     } = req.body;
     const now = new Date().toISOString();
     await run(
@@ -214,12 +214,14 @@ router.put('/leads/:id', abAuth, async (req, res) => {
         name=COALESCE(?,name), phone=COALESCE(?,phone), email=?, address=?,
         consortium_name=?, installments=?, installment_value=?, admin_profit_pct=?,
         admin_company=?, general_info=?, traffic_source=?, responsible=?,
+        credit_value=?,
         pipeline_stage=COALESCE(?,pipeline_stage), notes=?, updated_at=?
        WHERE id=?`,
       [
         name||null, phone||null, email||null, address||null,
         consortium_name||null, installments||null, installment_value||null, admin_profit_pct||null,
         admin_company||null, general_info||null, traffic_source||null, responsible||null,
+        credit_value||null,
         pipeline_stage||null, notes||null, now,
         req.params.id,
       ]

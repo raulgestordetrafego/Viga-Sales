@@ -592,6 +592,7 @@ async function initializeSchema() {
     ['general_info', 'TEXT'],
     ['traffic_source', 'TEXT'],
     ['responsible', 'TEXT'],
+    ['credit_value', 'REAL'],
   ];
   for (const [col, type] of abLeadCols) {
     try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}
