@@ -58,9 +58,11 @@ setInterval(() => {
 router.post('/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('[AB Login] body:', JSON.stringify({ email, passwordLen: password?.length }));
     if (!email || !password) return res.status(400).json({ error: 'Email e senha obrigatórios' });
 
     const user = await queryOne('SELECT * FROM ab_capital_users WHERE email = ?', [email]);
+    console.log('[AB Login] user found:', user ? user.email : 'NOT FOUND');
     if (!user) {
       await bcrypt.compare('dummy', '$2b$12$dummydummydummydummydudummydummydummydummydum');
       return res.status(401).json({ error: 'Email ou senha incorretos' });
@@ -68,6 +70,7 @@ router.post('/auth/login', async (req, res) => {
     if (user.status !== 'active') return res.status(403).json({ error: 'Conta inativa' });
 
     const ok = await bcrypt.compare(password, user.password_hash);
+    console.log('[AB Login] bcrypt ok:', ok);
     if (!ok) return res.status(401).json({ error: 'Email ou senha incorretos' });
 
     const token = uuidv4();

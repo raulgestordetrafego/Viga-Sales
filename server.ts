@@ -43,6 +43,9 @@ async function startServer() {
   const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
   const IS_PROD = process.env.NODE_ENV === 'production';
 
+  // ── Trust proxy (Traefik / nginx) ────────────────────────────────────────
+  app.set('trust proxy', 1);
+
   // ── Segurança: HTTPS redirect em produção ─────────────────────────────────
   if (IS_PROD) {
     app.use((req, res, next) => {
