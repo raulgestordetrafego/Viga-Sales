@@ -33,7 +33,7 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-    ? ['https://vigasales.shop', 'https://www.vigasales.shop']
+    ? ['https://vigasales.shop', 'https://www.vigasales.shop', 'https://abcapital.com.br', 'https://www.abcapital.com.br', 'https://app.abcapital.com.br']
     : ['http://localhost:3000', 'http://localhost:5173'];
 
   const io = new Server(server, {
