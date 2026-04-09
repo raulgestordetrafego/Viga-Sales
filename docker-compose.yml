@@ -17,12 +17,33 @@ services:
     restart: always
     labels:
       - traefik.enable=true
+      - traefik.docker.network=n8n_default
+
+      # ── Viga Sales ────────────────────────────────────────────────────────
       - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`)
       - traefik.http.routers.vigasales.tls=true
       - traefik.http.routers.vigasales.entrypoints=web,websecure
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
       - traefik.http.services.vigasales.loadbalancer.server.port=3000
-      - traefik.docker.network=n8n_default
+
+      # ── AB Capital — Landing page (abcapital.com.br) ──────────────────────
+      - traefik.http.routers.abcapital-landing.rule=Host(`abcapital.com.br`) || Host(`www.abcapital.com.br`)
+      - traefik.http.routers.abcapital-landing.tls=true
+      - traefik.http.routers.abcapital-landing.entrypoints=web,websecure
+      - traefik.http.routers.abcapital-landing.tls.certresolver=mytlschallenge
+      - traefik.http.routers.abcapital-landing.service=vigasales
+      - traefik.http.routers.abcapital-landing.middlewares=abcapital-landing-prefix
+      - traefik.http.middlewares.abcapital-landing-prefix.replacepathregex.regex=^/(?!api/)(.*)
+      - traefik.http.middlewares.abcapital-landing-prefix.replacepathregex.replacement=/landing
+
+      # ── AB Capital — CRM (app.abcapital.com.br) ───────────────────────────
+      - traefik.http.routers.abcapital-crm.rule=Host(`app.abcapital.com.br`)
+      - traefik.http.routers.abcapital-crm.tls=true
+      - traefik.http.routers.abcapital-crm.entrypoints=web,websecure
+      - traefik.http.routers.abcapital-crm.tls.certresolver=mytlschallenge
+      - traefik.http.routers.abcapital-crm.service=vigasales
+      - traefik.http.routers.abcapital-crm.middlewares=abcapital-crm-prefix
+      - traefik.http.middlewares.abcapital-crm-prefix.addprefix.prefix=/abcapital
     environment:
       - NODE_ENV=production
       - PORT=3000
