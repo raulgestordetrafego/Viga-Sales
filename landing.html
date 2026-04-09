@@ -805,9 +805,15 @@
     btn.textContent = 'Enviando...';
     btn.disabled = true;
 
-    setTimeout(function() {
+    fetch('/api/ab-capital/leads/public', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, phone: phone, email: email, objective: concurso })
+    })
+    .catch(function() {}) // falha silenciosa — não bloqueia a UX
+    .finally(function() {
       document.getElementById('formCard').classList.add('submitted');
-    }, 900);
+    });
   });
 </script>
 </body>

@@ -447,6 +447,78 @@ async function initializeSchema() {
       message TEXT,
       error TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // ── AB Capital ────────────────────────────────────────────────────────────
+    `CREATE TABLE IF NOT EXISTS ab_capital_users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT DEFAULT 'user',
+      status TEXT DEFAULT 'active',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS ab_capital_leads (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      email TEXT,
+      objective TEXT,
+      source TEXT DEFAULT 'landing',
+      pipeline_stage TEXT DEFAULT 'novo',
+      notes TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS ab_capital_prospects (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      phone TEXT UNIQUE NOT NULL,
+      email TEXT,
+      company TEXT,
+      segment TEXT,
+      city TEXT,
+      address TEXT,
+      website TEXT,
+      instagram TEXT,
+      rating DECIMAL,
+      reviews_count INTEGER,
+      source TEXT DEFAULT 'manual',
+      raw_data TEXT,
+      status TEXT DEFAULT 'novo',
+      ai_message TEXT,
+      campaign_id TEXT,
+      sent_at TEXT,
+      follow_up_at TEXT,
+      responded_at TEXT,
+      notes TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS ab_capital_campaigns (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      segment TEXT,
+      city TEXT,
+      status TEXT DEFAULT 'active',
+      daily_limit INTEGER DEFAULT 40,
+      message_template TEXT,
+      use_ai INTEGER DEFAULT 1,
+      sent_today INTEGER DEFAULT 0,
+      last_reset_date TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS ab_capital_prospecting_logs (
+      id TEXT PRIMARY KEY,
+      prospect_id TEXT NOT NULL,
+      campaign_id TEXT,
+      action TEXT NOT NULL,
+      message TEXT,
+      error TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 
@@ -505,5 +577,27 @@ async function initializeSchema() {
     }
   } catch (err) {
     console.error('[Auth] Erro ao criar master admin:', err.message);
+  }
+
+  // Seed AB Capital users
+  const abUsers = [
+    { name: 'Master', email: 'raulfs.sc@gmail.com', password: 'Jubiblel66*', role: 'master' },
+    { name: 'adm',    email: 'contato@abcapital.com.br', password: '12345678', role: 'admin' },
+  ];
+  for (const u of abUsers) {
+    try {
+      const exists = await db.get('SELECT id FROM ab_capital_users WHERE email = ?', [u.email]);
+      if (!exists) {
+        const { v4: uuidv4 } = await import('uuid');
+        const hash = await hashPwd(u.password);
+        await db.run(
+          `INSERT INTO ab_capital_users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, ?, 'active')`,
+          [uuidv4(), u.name, u.email, hash, u.role]
+        );
+        console.log('[AB Capital] Usuário criado:', u.email);
+      }
+    } catch (err) {
+      console.error('[AB Capital] Erro ao criar usuário:', err.message);
+    }
   }
 }
