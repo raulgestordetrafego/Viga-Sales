@@ -26,23 +26,41 @@ services:
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
       - traefik.http.services.vigasales.loadbalancer.server.port=3000
 
-      # ── AB Capital — Landing page (abcapital.com.br) ──────────────────────
+      # ── AB Capital — Landing page: API passa direto ───────────────────────
+      - traefik.http.routers.abcapital-landing-api.rule=(Host(`abcapital.com.br`) || Host(`www.abcapital.com.br`)) && PathPrefix(`/api/`)
+      - traefik.http.routers.abcapital-landing-api.tls=true
+      - traefik.http.routers.abcapital-landing-api.entrypoints=web,websecure
+      - traefik.http.routers.abcapital-landing-api.tls.certresolver=mytlschallenge
+      - traefik.http.routers.abcapital-landing-api.service=vigasales
+      - traefik.http.routers.abcapital-landing-api.priority=20
+
+      # ── AB Capital — Landing page: resto vai para /landing ────────────────
       - traefik.http.routers.abcapital-landing.rule=Host(`abcapital.com.br`) || Host(`www.abcapital.com.br`)
       - traefik.http.routers.abcapital-landing.tls=true
       - traefik.http.routers.abcapital-landing.entrypoints=web,websecure
       - traefik.http.routers.abcapital-landing.tls.certresolver=mytlschallenge
       - traefik.http.routers.abcapital-landing.service=vigasales
-      - traefik.http.routers.abcapital-landing.middlewares=abcapital-landing-prefix
-      - traefik.http.middlewares.abcapital-landing-prefix.replacepathregex.regex=^/(?!api/)(.*)
-      - traefik.http.middlewares.abcapital-landing-prefix.replacepathregex.replacement=/landing
+      - traefik.http.routers.abcapital-landing.middlewares=abcapital-landing-rewrite
+      - traefik.http.routers.abcapital-landing.priority=10
+      - traefik.http.middlewares.abcapital-landing-rewrite.replacepathregex.regex=^/(.*)
+      - traefik.http.middlewares.abcapital-landing-rewrite.replacepathregex.replacement=/landing
 
-      # ── AB Capital — CRM (app.abcapital.com.br) ───────────────────────────
+      # ── AB Capital — CRM: API passa direto (sem prefixo) ─────────────────
+      - traefik.http.routers.abcapital-crm-api.rule=Host(`app.abcapital.com.br`) && PathPrefix(`/api/`)
+      - traefik.http.routers.abcapital-crm-api.tls=true
+      - traefik.http.routers.abcapital-crm-api.entrypoints=web,websecure
+      - traefik.http.routers.abcapital-crm-api.tls.certresolver=mytlschallenge
+      - traefik.http.routers.abcapital-crm-api.service=vigasales
+      - traefik.http.routers.abcapital-crm-api.priority=20
+
+      # ── AB Capital — CRM: SPA com prefixo /abcapital ─────────────────────
       - traefik.http.routers.abcapital-crm.rule=Host(`app.abcapital.com.br`)
       - traefik.http.routers.abcapital-crm.tls=true
       - traefik.http.routers.abcapital-crm.entrypoints=web,websecure
       - traefik.http.routers.abcapital-crm.tls.certresolver=mytlschallenge
       - traefik.http.routers.abcapital-crm.service=vigasales
       - traefik.http.routers.abcapital-crm.middlewares=abcapital-crm-prefix
+      - traefik.http.routers.abcapital-crm.priority=10
       - traefik.http.middlewares.abcapital-crm-prefix.addprefix.prefix=/abcapital
     environment:
       - NODE_ENV=production
