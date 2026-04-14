@@ -29,9 +29,6 @@
   #login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
   .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 420px; }
   .login-logo { text-align: center; margin-bottom: 32px; }
-  .login-logo .brand { font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
-  .login-logo .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .login-card h2 { font-size: 20px; margin-bottom: 24px; }
   .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; }
 
   /* Form */
@@ -42,10 +39,10 @@
     border-radius: 8px; color: var(--text); font-size: 14px; transition: border .2s;
   }
   .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--accent); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-  /* Toggle switch */
+  /* Toggle */
   .toggle-wrap { display: flex; align-items: center; gap: 10px; }
   .toggle { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; }
@@ -63,15 +60,15 @@
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-danger { background: var(--danger); color: #fff; }
   .btn-danger:hover { opacity: .85; }
-  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-success { background: var(--success); color: #0f1117; }
+  .btn-success:hover { opacity: .9; }
+  .btn-sm  { padding: 6px 14px; font-size: 13px; }
   .btn-full { width: 100%; justify-content: center; }
 
   /* Layout */
   #app { display: flex; height: 100vh; overflow: hidden; }
   .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
   .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
-  .sidebar-logo .brand { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
-  .sidebar-logo .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; font-size: 14px; color: var(--muted); cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
   .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
@@ -91,17 +88,17 @@
   /* Stats */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .stat-card.danger { border-color: #7f1d1d; background: #1a0808; }
+  .stat-card.danger  { border-color: #7f1d1d; background: #1a0808; }
   .stat-card.success { border-color: #14532d; background: #081a0e; }
   .stat-card.warning { border-color: #78350f; background: #1a1008; }
   .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
   .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
-  .stat-value.danger { color: var(--danger); }
+  .stat-value.danger  { color: var(--danger); }
   .stat-value.success { color: var(--success); }
   .stat-value.warning { color: var(--warning); }
   .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
-  /* Progress bar */
+  /* Progress */
   .progress-wrap { margin-top: 12px; }
   .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
@@ -133,20 +130,19 @@
   .kanban-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: grab; transition: border-color .2s, opacity .2s; }
   .kanban-card:hover { border-color: var(--accent); }
   .kanban-card.dragging { opacity: .4; cursor: grabbing; }
-  .kanban-card.atraso { border-left: 3px solid var(--danger) !important; background: #1a0808; }
-  .kanban-card.cancelado { opacity: .5; border-style: dashed; }
+  .kanban-card.converted { border-left: 3px solid var(--success) !important; }
   .kanban-col.drag-over { background: rgba(201,162,39,.08); outline: 2px dashed var(--accent); outline-offset: -4px; }
   .kanban-card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .kanban-card-phone { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .kanban-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .kanban-tag { background: var(--surface2); border-radius: 4px; padding: 2px 6px; font-size: 11px; color: var(--muted); }
-  .kanban-tag.danger { background: #450a0a; color: #f87171; }
+  .kanban-tag.success { background: #081a0e; color: #4ade80; }
 
-  /* Stage progress bar */
+  /* Stage bar */
   .stage-bar { display: flex; gap: 3px; margin: 8px 0; }
   .stage-step { flex: 1; height: 5px; border-radius: 3px; background: var(--border); }
   .stage-step.done { background: var(--accent); }
-  .stage-step.won { background: var(--success); }
+  .stage-step.won  { background: var(--success); }
   .stage-step.lost { background: var(--danger); }
 
   /* Modal */
@@ -159,8 +155,6 @@
   .modal-close:hover { color: var(--text); }
   .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
   .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
-
-  /* Section title inside modal */
   .section-title { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-top: 4px; }
 
   /* Toast */
@@ -171,19 +165,17 @@
   .toast-error   { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; }
   .toast-info    { background: #1e3a5f; color: #60a5fa; border: 1px solid #1d4ed8; }
 
-  /* Responsive */
   @media (max-width: 768px) {
     .sidebar { display: none; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
   }
   .hidden { display: none !important; }
   .loading { color: var(--muted); font-size: 14px; padding: 40px; text-align: center; }
-  .empty { color: var(--muted); font-size: 14px; padding: 40px; text-align: center; }
+  .empty   { color: var(--muted); font-size: 14px; padding: 40px; text-align: center; }
   select option { background: var(--surface); }
 </style>
 </head>
 <body>
-
 <div id="toast"></div>
 
 <!-- Login -->
@@ -192,15 +184,9 @@
     <div class="login-logo">
       <img src="logo.png" alt="AB Capital" style="height:56px;object-fit:contain">
     </div>
-    <h2>Entrar</h2>
-    <div class="form-field">
-      <label>E-mail</label>
-      <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="username" />
-    </div>
-    <div class="form-field">
-      <label>Senha</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
-    </div>
+    <h2 style="font-size:20px;margin-bottom:24px">Entrar</h2>
+    <div class="form-field"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com" autocomplete="username" /></div>
+    <div class="form-field"><label>Senha</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" /></div>
     <div id="login-error" class="error-msg"></div>
     <button class="btn btn-primary btn-full" style="margin-top:20px" onclick="doLogin()">Entrar</button>
   </div>
@@ -224,6 +210,10 @@
       <div class="nav-item" data-page="pipeline" onclick="navigate('pipeline')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Pipeline
+      </div>
+      <div class="nav-item" data-page="clientes" onclick="navigate('clientes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.37a16 16 0 0 0 5.72 5.72l1.16-1.84a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 14.5"/></svg>
+        Clientes
       </div>
       <div class="nav-item" data-page="prospects" onclick="navigate('prospects')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -252,18 +242,19 @@
       <h1 id="topbar-title">Dashboard</h1>
       <div id="topbar-actions"></div>
     </div>
-    <div class="page" id="page-dashboard"></div>
-    <div class="page hidden" id="page-leads"></div>
-    <div class="page hidden" id="page-pipeline"></div>
-    <div class="page hidden" id="page-prospects"></div>
-    <div class="page hidden" id="page-users"></div>
+    <div class="page"         id="page-dashboard"></div>
+    <div class="page hidden"  id="page-leads"></div>
+    <div class="page hidden"  id="page-pipeline"></div>
+    <div class="page hidden"  id="page-clientes"></div>
+    <div class="page hidden"  id="page-prospects"></div>
+    <div class="page hidden"  id="page-users"></div>
   </div>
 </div>
 
 <div id="modal-container"></div>
 
 <script>
-// ── Constantes ────────────────────────────────────────────────────────────────
+// ── Constantes ─────────────────────────────────────────────────────────────────
 const STAGES = [
   { id: 'analise',          label: 'Análise',          color: '#60a5fa' },
   { id: 'qualificacao',     label: 'Qualificação',     color: '#a78bfa' },
@@ -271,7 +262,7 @@ const STAGES = [
   { id: 'ganho',            label: 'Ganho',            color: '#4ade80' },
   { id: 'perdido',          label: 'Perdido',          color: '#f87171' },
 ];
-const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s]));
+const STAGE_MAP      = Object.fromEntries(STAGES.map(s => [s.id, s]));
 const TRAFFIC_SOURCES = ['Instagram','Facebook','Google','Indicação','WhatsApp','Site','TikTok','YouTube','Outro'];
 const ADMINISTRADORAS = [
   'Embracon','Porto Seguro Consórcios','Rodobens Consórcios',
@@ -279,15 +270,16 @@ const ADMINISTRADORAS = [
   'Santander Consórcios','BB Consórcios','Sicredi Consórcios',
   'Ademicon','Consorcamp','Midway Consórcios','Minasul','Outra',
 ];
+const CLIENT_STATUS = { ativo:'Ativo', atraso:'Em Atraso', cancelado:'Cancelado', quitado:'Quitado' };
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────────────
 const state = {
   token: localStorage.getItem('ab_token') || null,
   user:  JSON.parse(localStorage.getItem('ab_user') || 'null'),
   page:  'dashboard',
 };
 
-// ── API ───────────────────────────────────────────────────────────────────────
+// ── API ────────────────────────────────────────────────────────────────────────
 const API = '/api/ab-capital';
 
 async function api(method, path, body) {
@@ -313,7 +305,7 @@ async function apiUpload(path, formData) {
   return data;
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
+// ── Toast ──────────────────────────────────────────────────────────────────────
 function toast(msg, type = 'success') {
   const el = document.createElement('div');
   el.className = `toast-item toast-${type}`;
@@ -322,7 +314,7 @@ function toast(msg, type = 'success') {
   setTimeout(() => el.remove(), 3500);
 }
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
+// ── Auth ───────────────────────────────────────────────────────────────────────
 async function doLogin() {
   const email    = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
@@ -344,18 +336,14 @@ async function doLogin() {
 }
 
 function openChangePassword() {
-  const mc = document.getElementById('modal-container');
-  mc.innerHTML = `
+  document.getElementById('modal-container').innerHTML = `
     <div class="modal-overlay" onclick="if(event.target===this)this.remove()">
       <div class="modal" style="max-width:400px">
-        <div class="modal-header">
-          <span class="modal-title">Trocar senha</span>
-          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
-        </div>
+        <div class="modal-header"><span class="modal-title">Trocar senha</span><button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button></div>
         <div class="modal-body">
-          <div class="form-field"><label>Senha atual</label><input type="password" id="cp-current" placeholder="••••••••" /></div>
-          <div class="form-field"><label>Nova senha</label><input type="password" id="cp-new" placeholder="••••••••" /></div>
-          <div class="form-field"><label>Confirmar nova senha</label><input type="password" id="cp-confirm" placeholder="••••••••" /></div>
+          <div class="form-field"><label>Senha atual</label><input type="password" id="cp-current" /></div>
+          <div class="form-field"><label>Nova senha</label><input type="password" id="cp-new" /></div>
+          <div class="form-field"><label>Confirmar nova senha</label><input type="password" id="cp-confirm" /></div>
           <div id="cp-error" style="color:var(--danger);font-size:13px;margin-top:4px"></div>
         </div>
         <div class="modal-footer">
@@ -394,15 +382,15 @@ function showApp() {
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('app').classList.remove('hidden');
   const u = state.user;
-  document.getElementById('user-name').textContent    = u.name;
-  document.getElementById('user-role').textContent    = u.role;
-  document.getElementById('user-avatar').textContent  = (u.name || '?')[0].toUpperCase();
+  document.getElementById('user-name').textContent   = u.name;
+  document.getElementById('user-role').textContent   = u.role;
+  document.getElementById('user-avatar').textContent = (u.name || '?')[0].toUpperCase();
   if (u.role !== 'master' && u.role !== 'admin') document.getElementById('nav-users').classList.add('hidden');
   navigate('dashboard');
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
-const PAGE_TITLES = { dashboard: 'Dashboard', leads: 'Leads', pipeline: 'Pipeline', prospects: 'Prospecção Ativa', users: 'Usuários' };
+// ── Navigation ─────────────────────────────────────────────────────────────────
+const PAGE_TITLES = { dashboard:'Dashboard', leads:'Leads', pipeline:'Pipeline', clientes:'Clientes', prospects:'Prospecção Ativa', users:'Usuários' };
 
 function navigate(page) {
   state.page = page;
@@ -411,81 +399,66 @@ function navigate(page) {
   document.getElementById('page-' + page).classList.remove('hidden');
   document.getElementById('topbar-title').textContent = PAGE_TITLES[page] || page;
   document.getElementById('topbar-actions').innerHTML = '';
-  if (page === 'dashboard') renderDashboard();
-  else if (page === 'leads') renderLeads();
-  else if (page === 'pipeline') renderPipeline();
+  if      (page === 'dashboard') renderDashboard();
+  else if (page === 'leads')     renderLeads();
+  else if (page === 'pipeline')  renderPipeline();
+  else if (page === 'clientes')  renderClientes();
   else if (page === 'prospects') renderProspects();
-  else if (page === 'users') renderUsers();
+  else if (page === 'users')     renderUsers();
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
+// ── Dashboard ──────────────────────────────────────────────────────────────────
 async function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
-    const stats = await api('GET', '/leads/stats');
-    if (!stats) return;
-    const fin = stats.financials || {};
+    const [stats, cStats] = await Promise.all([
+      api('GET', '/leads/stats'),
+      api('GET', '/clientes/stats'),
+    ]);
+    if (!stats || !cStats) return;
     const isMasterAdmin = state.user?.role === 'master' || state.user?.role === 'admin';
-
-    const target   = fin.revenue_target || 3_000_000;
-    const progress = Math.min((fin.total_commission / target) * 100, 100);
-    const pctStr   = progress.toFixed(1);
+    const target   = 3_000_000;
+    const progress = Math.min((cStats.total_commission / target) * 100, 100);
 
     const stagesHtml = (stats.stages || []).map(s => {
       const st = STAGE_MAP[s.pipeline_stage];
-      return `<tr>
-        <td style="color:${st?.color||'#fff'}">${st?.label||s.pipeline_stage}</td>
-        <td style="text-align:right;font-weight:600">${s.c}</td>
-      </tr>`;
+      return `<tr><td style="color:${st?.color||'#fff'}">${st?.label||s.pipeline_stage}</td><td style="text-align:right;font-weight:600">${s.c}</td></tr>`;
     }).join('');
-
-    // Cards financeiros só para master/admin
-    const finCards = isMasterAdmin ? `
-      <div class="stat-card ${fin.overdue_count > 0 ? 'danger' : ''}">
-        <div class="stat-label">⚠ Em Atraso</div>
-        <div class="stat-value ${fin.overdue_count > 0 ? 'danger' : ''}">${fin.overdue_count || 0}</div>
-        <div class="stat-sub">leads com parcela atrasada</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Crédito Total (Carteira)</div>
-        <div class="stat-value" style="font-size:20px">R$ ${fmtMoney(fin.total_credit || 0)}</div>
-        <div class="stat-sub">soma dos créditos</div>
-      </div>
-      <div class="stat-card success">
-        <div class="stat-label">Comissão Estimada</div>
-        <div class="stat-value success" style="font-size:20px">R$ ${fmtMoney(fin.total_commission || 0)}</div>
-        <div class="stat-sub">média 4% sobre crédito</div>
-      </div>
-      <div class="stat-card warning">
-        <div class="stat-label">Saldo Restante Carteira</div>
-        <div class="stat-value warning" style="font-size:20px">R$ ${fmtMoney(fin.remaining_balance || 0)}</div>
-        <div class="stat-sub">parcelas × saldo devedor</div>
-      </div>` : '';
 
     el.innerHTML = `
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">Total de Leads</div>
+          <div class="stat-label">Leads Ativos</div>
           <div class="stat-value">${stats.total_leads}</div>
-          <div class="stat-sub">capturados</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Leads Hoje</div>
-          <div class="stat-value">${stats.leads_today}</div>
-          <div class="stat-sub">novos contatos</div>
+          <div class="stat-sub">${stats.leads_today} hoje</div>
         </div>
         <div class="stat-card success">
-          <div class="stat-label">Ganhos</div>
-          <div class="stat-value success">${fin.won_count || 0}</div>
-          <div class="stat-sub">contratos fechados</div>
+          <div class="stat-label">Clientes</div>
+          <div class="stat-value success">${cStats.ativos || 0}</div>
+          <div class="stat-sub">contratos ativos</div>
+        </div>
+        ${isMasterAdmin ? `
+        <div class="stat-card ${cStats.em_atraso > 0 ? 'danger' : ''}">
+          <div class="stat-label">⚠ Em Atraso</div>
+          <div class="stat-value ${cStats.em_atraso > 0 ? 'danger' : ''}">${cStats.em_atraso || 0}</div>
+          <div class="stat-sub">clientes inadimplentes</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Prospects</div>
-          <div class="stat-value">${stats.total_prospects}</div>
-          <div class="stat-sub">prospecção ativa</div>
+          <div class="stat-label">Crédito Total</div>
+          <div class="stat-value" style="font-size:20px">R$ ${fmtMoney(cStats.total_credit || 0)}</div>
+          <div class="stat-sub">carteira de clientes</div>
         </div>
-        ${finCards}
+        <div class="stat-card success">
+          <div class="stat-label">Comissão Estimada</div>
+          <div class="stat-value success" style="font-size:20px">R$ ${fmtMoney(cStats.total_commission || 0)}</div>
+          <div class="stat-sub">média 4% do crédito</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">Saldo Devedor</div>
+          <div class="stat-value warning" style="font-size:20px">R$ ${fmtMoney(cStats.remaining_balance || 0)}</div>
+          <div class="stat-sub">parcelas restantes</div>
+        </div>` : ''}
       </div>
 
       ${isMasterAdmin ? `
@@ -493,12 +466,10 @@ async function renderDashboard() {
         <div class="stat-label">Meta de Receita — R$ 3.000.000</div>
         <div class="progress-wrap">
           <div class="progress-label">
-            <span>Comissão acumulada: R$ ${fmtMoney(fin.total_commission || 0)}</span>
-            <span>${pctStr}%</span>
+            <span>Comissão acumulada: R$ ${fmtMoney(cStats.total_commission || 0)}</span>
+            <span>${progress.toFixed(1)}%</span>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill ${progress >= 100 ? 'over' : ''}" style="width:${pctStr}%"></div>
-          </div>
+          <div class="progress-bar"><div class="progress-fill ${progress >= 100 ? 'over' : ''}" style="width:${progress.toFixed(1)}%"></div></div>
         </div>
       </div>` : ''}
 
@@ -511,16 +482,17 @@ async function renderDashboard() {
         <div class="table-wrap">
           <div style="padding:16px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px">Acesso Rápido</div>
           <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
-            <button class="btn btn-primary" onclick="navigate('leads')">Ver todos os Leads</button>
-            <button class="btn btn-ghost" onclick="navigate('pipeline')">Pipeline Kanban</button>
-            <button class="btn btn-ghost" onclick="navigate('prospects')">Prospecção Ativa</button>
+            <button class="btn btn-primary"  onclick="navigate('pipeline')">Pipeline Kanban</button>
+            <button class="btn btn-success"  onclick="navigate('clientes')">Ver Clientes</button>
+            <button class="btn btn-ghost"    onclick="navigate('leads')">Ver Leads</button>
+            <button class="btn btn-ghost"    onclick="navigate('prospects')">Prospecção Ativa</button>
           </div>
         </div>
       </div>`;
   } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
-// ── Leads ─────────────────────────────────────────────────────────────────────
+// ── Leads ──────────────────────────────────────────────────────────────────────
 let leadsState = { page: 1, search: '', stage: '' };
 
 async function renderLeads() {
@@ -538,19 +510,16 @@ async function renderLeads() {
     const rows = data.leads.map(l => {
       const st = STAGE_MAP[l.pipeline_stage] || STAGES[0];
       const avatar = l.photo_path
-        ? `<img src="${l.photo_path}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0">`
-        : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:13px;flex-shrink:0">${(l.name||'?')[0].toUpperCase()}</div>`;
-      const flags = [
-        l.status_atraso ? `<span class="badge" style="background:#450a0a;color:#f87171">Atraso</span>` : '',
-        l.status_cancelamento ? `<span class="badge" style="background:#1c1c1c;color:#6b7280">Cancelado</span>` : '',
-      ].filter(Boolean).join(' ');
-      return `<tr style="cursor:pointer${l.status_atraso ? ';background:#1a0808' : ''}" onclick="openLeadSheet('${l.id}')">
-        <td><div style="display:flex;align-items:center;gap:10px">${avatar}<div><strong>${esc(l.name)}</strong>${flags ? '<div style="margin-top:3px">'+flags+'</div>' : ''}</div></div></td>
+        ? `<img src="${l.photo_path}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border)">`
+        : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:13px">${(l.name||'?')[0].toUpperCase()}</div>`;
+      const converted = l.converted_to_client_id
+        ? `<span class="badge" style="background:#081a0e;color:#4ade80;margin-left:6px">✓ Cliente</span>` : '';
+      return `<tr style="cursor:pointer" onclick="openLeadSheet('${l.id}')">
+        <td><div style="display:flex;align-items:center;gap:10px">${avatar}<div><strong>${esc(l.name)}</strong>${converted}</div></div></td>
         <td>${fmt(l.phone)}</td>
         <td>${esc(l.email||'—')}</td>
         <td>${l.consortium_name ? esc(l.consortium_name) : '—'}</td>
         <td>${l.credit_value ? 'R$ '+fmtMoney(l.credit_value) : '—'}</td>
-        <td>${l.installment_value ? 'R$ '+fmtMoney(l.installment_value) : '—'}</td>
         <td>${l.admin_company ? esc(l.admin_company) : '—'}</td>
         <td><span class="badge" style="background:${st.color}22;color:${st.color}">${st.label}</span></td>
         <td>${fmtDate(l.created_at)}</td>
@@ -569,8 +538,8 @@ async function renderLeads() {
           <span style="color:var(--muted);font-size:13px">${data.total} leads</span>
         </div>
         <table>
-          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Modalidade</th><th>Crédito</th><th>Parcela</th><th>Administradora</th><th>Estágio</th><th>Criado</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="9" class="empty">Nenhum lead encontrado</td></tr>'}</tbody>
+          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Modalidade</th><th>Crédito</th><th>Administradora</th><th>Estágio</th><th>Criado</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="8" class="empty">Nenhum lead encontrado</td></tr>'}</tbody>
         </table>
         <div class="pagination">
           <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
@@ -581,7 +550,7 @@ async function renderLeads() {
   } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
-// ── Ficha de Lead ─────────────────────────────────────────────────────────────
+// ── Ficha de Lead (simplificada — sem campos de contrato) ──────────────────────
 async function openLeadSheet(id) {
   const lead = await api('GET', `/leads/${id}`);
   if (!lead) return;
@@ -591,12 +560,9 @@ async function openLeadSheet(id) {
 function renderLeadSheetModal(lead) {
   const st       = STAGE_MAP[lead.pipeline_stage] || STAGES[0];
   const stageIdx = STAGES.findIndex(s => s.id === lead.pipeline_stage);
-
   const stageBar = STAGES.map((s, i) => {
     let cls = 'stage-step';
-    if (i <= stageIdx) {
-      cls += s.id === 'ganho' ? ' won' : s.id === 'perdido' ? ' lost' : ' done';
-    }
+    if (i <= stageIdx) cls += s.id === 'ganho' ? ' won' : s.id === 'perdido' ? ' lost' : ' done';
     return `<div class="${cls}" title="${s.label}"></div>`;
   }).join('');
 
@@ -604,25 +570,15 @@ function renderLeadSheetModal(lead) {
     ? `<img src="${lead.photo_path}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
     : `<span style="font-size:28px;font-weight:700;color:var(--accent)">${(lead.name||'?')[0].toUpperCase()}</span>`;
 
-  const attachHtml = lead.attachment_path
-    ? `<a href="${lead.attachment_path}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver Anexo</a>`
-    : `<span style="color:var(--muted);font-size:13px">Nenhum arquivo</span>`;
+  const stageOptions   = STAGES.map(s => `<option value="${s.id}" ${lead.pipeline_stage===s.id?'selected':''}>${s.label}</option>`).join('');
+  const trafficOptions = TRAFFIC_SOURCES.map(o => `<option value="${o}" ${lead.traffic_source===o?'selected':''}>${o}</option>`).join('');
+  const admOptions     = ADMINISTRADORAS.map(o => `<option value="${o}" ${lead.admin_company===o?'selected':''}>${o}</option>`).join('');
 
-  const stageOptions  = STAGES.map(s =>
-    `<option value="${s.id}" ${lead.pipeline_stage===s.id?'selected':''}>${s.label}</option>`
-  ).join('');
-  const trafficOptions = TRAFFIC_SOURCES.map(o =>
-    `<option value="${o}" ${lead.traffic_source===o?'selected':''}>${o}</option>`
-  ).join('');
-  const admOptions = ADMINISTRADORAS.map(o =>
-    `<option value="${o}" ${lead.admin_company===o?'selected':''}>${o}</option>`
-  ).join('');
-
-  // Calcula comissão estimada em tempo real
-  const commPct = lead.commission_pct || 4;
-  const commVal = lead.credit_value ? (lead.credit_value * commPct / 100) : 0;
-  const parcRestantes = (lead.installments || 0) - (lead.parcelas_pagas || 0);
-  const saldoRestante = parcRestantes > 0 && lead.installment_value ? parcRestantes * lead.installment_value : 0;
+  const convertedBanner = lead.converted_to_client_id ? `
+    <div style="background:#081a0e;border:1px solid #14532d;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <span style="color:#4ade80;font-size:13px;font-weight:600">✓ Lead convertido em cliente</span>
+      <button class="btn btn-success btn-sm" onclick="closeModal();navigate('clientes')">Ver Cliente →</button>
+    </div>` : '';
 
   document.getElementById('modal-container').innerHTML = `
   <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -632,18 +588,10 @@ function renderLeadSheetModal(lead) {
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
       <div class="modal-body" style="padding:0">
-
-        <!-- Cabeçalho com foto -->
-        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)${lead.status_atraso ? ';border-left:4px solid var(--danger)' : ''}">
-          <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
-            ${photoHtml}
-          </div>
+        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${photoHtml}</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:20px;font-weight:700;margin-bottom:4px">
-              ${esc(lead.name)}
-              ${lead.status_atraso ? '<span class="badge" style="background:#450a0a;color:#f87171;margin-left:8px;font-size:10px">ATRASO</span>' : ''}
-              ${lead.status_cancelamento ? '<span class="badge" style="background:#1c1c1c;color:#6b7280;margin-left:4px;font-size:10px">CANCELADO</span>' : ''}
-            </div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">${esc(lead.name)}</div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)">
               <span>${fmt(lead.phone)}</span>
               ${lead.email ? `<span>${esc(lead.email)}</span>` : ''}
@@ -661,16 +609,8 @@ function renderLeadSheetModal(lead) {
           </label>
         </div>
 
-        <!-- Resumo financeiro inline -->
-        ${(lead.credit_value || lead.installment_value) ? `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:16px 24px;background:var(--bg);border-bottom:1px solid var(--border)">
-          ${lead.credit_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Crédito</div><div style="font-size:18px;font-weight:700;color:var(--accent)">R$ ${fmtMoney(lead.credit_value)}</div></div>` : ''}
-          ${commVal ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Comissão (${commPct}%)</div><div style="font-size:18px;font-weight:700;color:var(--success)">R$ ${fmtMoney(commVal)}</div></div>` : ''}
-          ${saldoRestante ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Saldo Restante</div><div style="font-size:18px;font-weight:700;color:var(--warning)">R$ ${fmtMoney(saldoRestante)}</div><div style="font-size:11px;color:var(--muted)">${parcRestantes} parcelas</div></div>` : ''}
-        </div>` : ''}
-
-        <!-- Formulário -->
         <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+          ${convertedBanner}
 
           <div>
             <div class="section-title">Dados Pessoais</div>
@@ -682,17 +622,10 @@ function renderLeadSheetModal(lead) {
               <div class="form-field"><label>E-mail</label><input id="lf-email" type="email" value="${esc(lead.email||'')}" /></div>
               <div class="form-field"><label>Endereço</label><input id="lf-address" value="${esc(lead.address||'')}" /></div>
             </div>
-            <div class="form-field">
-              <label>Objetivo Principal <span style="font-size:11px;color:var(--accent)">(preenchido na landing page)</span></label>
-              <select id="lf-objective">
-                <option value="">Não informado</option>
-                ${[['capital','Capital de giro para empresa'],['imovel','Aquisição de imóvel'],['reforma','Reforma ou expansão'],['quitacao','Quitar financiamento'],['investimento','Ampliar investimentos'],['outros','Outro objetivo']].map(([v,t])=>`<option value="${v}" ${lead.objective===v?'selected':''}>${t}</option>`).join('')}
-              </select>
-            </div>
           </div>
 
           <div>
-            <div class="section-title">Dados do Contrato / Consórcio</div>
+            <div class="section-title">Interesse</div>
             <div class="form-row">
               <div class="form-field"><label>Modalidade</label>
                 <select id="lf-consortium_name">
@@ -701,52 +634,16 @@ function renderLeadSheetModal(lead) {
                 </select>
               </div>
               <div class="form-field"><label>Administradora</label>
-                <select id="lf-admin_company">
-                  <option value="">Selecionar...</option>
-                  ${admOptions}
-                </select>
+                <select id="lf-admin_company"><option value="">Selecionar...</option>${admOptions}</select>
               </div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-field"><label>Grupo</label><input id="lf-grupo" value="${esc(lead.grupo||'')}" placeholder="Ex: 0042" /></div>
-              <div class="form-field"><label>Cota</label><input id="lf-cota" value="${esc(lead.cota||'')}" placeholder="Ex: 015" /></div>
-              <div class="form-field"><label>Nº Contrato</label><input id="lf-contrato" value="${esc(lead.contrato||'')}" placeholder="Ex: ABC-12345" /></div>
             </div>
             <div class="form-row">
-              <div class="form-field"><label>Crédito do Consórcio (R$)</label><input id="lf-credit_value" type="number" step="0.01" value="${lead.credit_value||''}" oninput="updateCommCalc()" /></div>
-              <div class="form-field"><label>% Comissão (padrão 4%)</label><input id="lf-commission_pct" type="number" step="0.5" min="3" max="6" value="${lead.commission_pct||4}" oninput="updateCommCalc()" /></div>
-            </div>
-            <div id="comm-calc" style="font-size:13px;color:var(--success);margin-bottom:12px;font-weight:600"></div>
-            <div class="form-row-3">
-              <div class="form-field"><label>Nº de Parcelas</label><input id="lf-installments" type="number" value="${lead.installments||''}" /></div>
-              <div class="form-field"><label>Parcelas Pagas</label><input id="lf-parcelas_pagas" type="number" value="${lead.parcelas_pagas||0}" /></div>
-              <div class="form-field"><label>Valor da Parcela (R$)</label><input id="lf-installment_value" type="number" step="0.01" value="${lead.installment_value||''}" /></div>
-            </div>
-            <div class="form-field"><label>% Lucro Administradora</label><input id="lf-admin_profit_pct" type="number" step="0.1" value="${lead.admin_profit_pct||''}" /></div>
-          </div>
-
-          <div>
-            <div class="section-title">Status do Contrato</div>
-            <div style="display:flex;gap:32px;flex-wrap:wrap">
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Parcela em Atraso</label>
-                <div class="toggle-wrap">
-                  <label class="toggle toggle-danger">
-                    <input type="checkbox" id="lf-status_atraso" ${lead.status_atraso ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Marcar como em atraso</span>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Cancelamento</label>
-                <div class="toggle-wrap">
-                  <label class="toggle toggle-danger">
-                    <input type="checkbox" id="lf-status_cancelamento" ${lead.status_cancelamento ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Contrato cancelado</span>
-                </div>
+              <div class="form-field"><label>Crédito Estimado (R$)</label><input id="lf-credit_value" type="number" step="0.01" value="${lead.credit_value||''}" /></div>
+              <div class="form-field"><label>Objetivo</label>
+                <select id="lf-objective">
+                  <option value="">Não informado</option>
+                  ${[['capital','Capital de giro'],['imovel','Aquisição de imóvel'],['reforma','Reforma'],['quitacao','Quitar financiamento'],['investimento','Investimentos'],['outros','Outro']].map(([v,t])=>`<option value="${v}" ${lead.objective===v?'selected':''}>${t}</option>`).join('')}
+                </select>
               </div>
             </div>
           </div>
@@ -758,97 +655,79 @@ function renderLeadSheetModal(lead) {
                 <select id="lf-pipeline_stage">${stageOptions}</select>
               </div>
               <div class="form-field"><label>Fonte de Tráfego</label>
-                <select id="lf-traffic_source">
-                  <option value="">Selecionar...</option>
-                  ${trafficOptions}
-                </select>
+                <select id="lf-traffic_source"><option value="">Selecionar...</option>${trafficOptions}</select>
               </div>
             </div>
-            <div class="form-field"><label>Responsável pelo Lead</label>
+            <div class="form-field"><label>Responsável</label>
               <input id="lf-responsible" value="${esc(lead.responsible||'')}" placeholder="Nome do vendedor" />
             </div>
           </div>
 
           <div class="form-field">
-            <label>Informações Gerais sobre o Cliente</label>
+            <label>Informações Gerais</label>
             <textarea id="lf-general_info" rows="3" style="resize:vertical">${esc(lead.general_info||'')}</textarea>
           </div>
-
           <div class="form-field">
-            <label>Anotações / Histórico</label>
+            <label>Anotações</label>
             <textarea id="lf-notes" rows="3" style="resize:vertical">${esc(lead.notes||'')}</textarea>
           </div>
-
-          <div>
-            <div class="section-title">Anexo (máx. 20 MB por cliente)</div>
-            <div style="display:flex;align-items:center;gap:12px">
-              ${attachHtml}
-              <label class="btn btn-ghost btn-sm" style="cursor:pointer">
-                📎 Enviar Arquivo
-                <input type="file" style="display:none" onchange="uploadLeadFile('${lead.id}','attachment',this)">
-              </label>
-            </div>
-          </div>
-
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-ghost"    onclick="closeModal()">Cancelar</button>
         <button class="btn btn-danger btn-sm" onclick="confirmDeleteLead('${lead.id}')">Excluir</button>
-        <button class="btn btn-primary" onclick="saveLeadSheet('${lead.id}')">Salvar</button>
+        <button class="btn btn-primary"  onclick="saveLeadSheet('${lead.id}')">Salvar</button>
       </div>
     </div>
   </div>`;
-
-  updateCommCalc();
-}
-
-function updateCommCalc() {
-  const credit = parseFloat(document.getElementById('lf-credit_value')?.value) || 0;
-  const pct    = parseFloat(document.getElementById('lf-commission_pct')?.value) || 4;
-  const el     = document.getElementById('comm-calc');
-  if (!el) return;
-  if (credit > 0) {
-    el.textContent = `Comissão estimada: R$ ${fmtMoney(credit * pct / 100)}`;
-  } else {
-    el.textContent = '';
-  }
 }
 
 async function saveLeadSheet(id) {
   try {
-    const g = id => document.getElementById(id)?.value ?? '';
-    const chk = id => document.getElementById(id)?.checked ?? false;
-    await api('PUT', `/leads/${id}`, {
-      name:                g('lf-name'),
-      phone:               g('lf-phone'),
-      email:               g('lf-email'),
-      address:             g('lf-address'),
-      consortium_name:     g('lf-consortium_name'),
-      credit_value:        g('lf-credit_value')       ? Number(g('lf-credit_value'))       : null,
-      installments:        g('lf-installments')       ? Number(g('lf-installments'))       : null,
-      installment_value:   g('lf-installment_value')  ? Number(g('lf-installment_value'))  : null,
-      admin_profit_pct:    g('lf-admin_profit_pct')   ? Number(g('lf-admin_profit_pct'))   : null,
-      admin_company:       g('lf-admin_company'),
-      pipeline_stage:      g('lf-pipeline_stage'),
-      traffic_source:      g('lf-traffic_source'),
-      responsible:         g('lf-responsible'),
-      general_info:        g('lf-general_info'),
-      notes:               g('lf-notes'),
-      objective:           g('lf-objective'),
-      grupo:               g('lf-grupo'),
-      cota:                g('lf-cota'),
-      contrato:            g('lf-contrato'),
-      commission_pct:      g('lf-commission_pct') ? Number(g('lf-commission_pct')) : null,
-      parcelas_pagas:      g('lf-parcelas_pagas') !== '' ? Number(g('lf-parcelas_pagas')) : null,
-      status_atraso:       chk('lf-status_atraso'),
-      status_cancelamento: chk('lf-status_cancelamento'),
-    });
-    toast('Lead salvo!');
+    const g   = id => document.getElementById(id)?.value ?? '';
+    const body = {
+      name:            g('lf-name'),
+      phone:           g('lf-phone'),
+      email:           g('lf-email'),
+      address:         g('lf-address'),
+      consortium_name: g('lf-consortium_name'),
+      credit_value:    g('lf-credit_value') ? Number(g('lf-credit_value')) : null,
+      admin_company:   g('lf-admin_company'),
+      pipeline_stage:  g('lf-pipeline_stage'),
+      traffic_source:  g('lf-traffic_source'),
+      responsible:     g('lf-responsible'),
+      general_info:    g('lf-general_info'),
+      notes:           g('lf-notes'),
+      objective:       g('lf-objective'),
+    };
+    await api('PUT', `/leads/${id}`, body);
+
+    // Auto-converte se estágio = ganho
+    if (body.pipeline_stage === 'ganho') {
+      await convertLeadToClient(id);
+    } else {
+      toast('Lead salvo!');
+      closeModal();
+      if (state.page === 'leads')    renderLeads();
+      if (state.page === 'pipeline') renderPipeline();
+    }
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function convertLeadToClient(leadId, extraData = {}) {
+  try {
+    const result = await api('POST', `/leads/${leadId}/convert`, {});
+    if (!result) return;
+    if (result.already_existed) {
+      toast('Lead já convertido — abrindo ficha do cliente!', 'info');
+    } else {
+      toast('🎉 Lead convertido em cliente!');
+    }
     closeModal();
-    if (state.page === 'leads') renderLeads();
-    else if (state.page === 'pipeline') renderPipeline();
-    else if (state.page === 'dashboard') renderDashboard();
+    if (state.page === 'leads')    renderLeads();
+    if (state.page === 'pipeline') renderPipeline();
+    // Abre ficha do cliente para preencher contrato
+    openClientSheet(result.cliente.id);
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -890,33 +769,20 @@ function openNewLead() {
     </div>
     <div class="form-row">
       <div class="form-field"><label>Modalidade</label>
-        <select id="m-consortium">
-          <option value="">Selecionar...</option>
-          <option>Automóvel</option><option>Imóvel</option><option>Serviços</option>
-        </select>
+        <select id="m-consortium"><option value="">Selecionar...</option><option>Automóvel</option><option>Imóvel</option><option>Serviços</option></select>
       </div>
       <div class="form-field"><label>Administradora</label>
         <select id="m-admin_company"><option value="">Selecionar...</option>${admOpts}</select>
       </div>
     </div>
-    <div class="form-row-3">
-      <div class="form-field"><label>Grupo</label><input id="m-grupo" /></div>
-      <div class="form-field"><label>Cota</label><input id="m-cota" /></div>
-      <div class="form-field"><label>Nº Contrato</label><input id="m-contrato" /></div>
-    </div>
     <div class="form-row">
-      <div class="form-field"><label>Crédito (R$)</label><input id="m-credit_value" type="number" step="0.01" /></div>
-      <div class="form-field"><label>Nº Parcelas</label><input id="m-installments" type="number" /></div>
-    </div>
-    <div class="form-row">
-      <div class="form-field"><label>Valor Parcela (R$)</label><input id="m-installment_value" type="number" step="0.01" /></div>
-      <div class="form-field"><label>% Lucro Adm.</label><input id="m-admin_profit_pct" type="number" step="0.1" /></div>
-    </div>
-    <div class="form-row">
+      <div class="form-field"><label>Crédito Estimado (R$)</label><input id="m-credit_value" type="number" step="0.01" /></div>
       <div class="form-field"><label>Estágio</label><select id="m-stage">${stageOpts}</select></div>
-      <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
     </div>
-    <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
+    <div class="form-row">
+      <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
+      <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
+    </div>
     <div class="form-field"><label>Informações Gerais</label>
       <textarea id="m-general_info" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
     </div>`,
@@ -927,22 +793,19 @@ function openNewLead() {
       const created = await api('POST', '/leads/public', { name, phone, email: document.getElementById('m-email').value });
       const list = await api('GET', `/leads?limit=5&search=${encodeURIComponent(phone)}`);
       if (list?.leads?.[0]) {
-        await api('PUT', `/leads/${list.leads[0].id}`, {
-          address:           document.getElementById('m-address').value,
-          consortium_name:   document.getElementById('m-consortium').value,
-          installments:      document.getElementById('m-installments').value ? Number(document.getElementById('m-installments').value) : null,
-          credit_value:      document.getElementById('m-credit_value').value ? Number(document.getElementById('m-credit_value').value) : null,
-          installment_value: document.getElementById('m-installment_value').value ? Number(document.getElementById('m-installment_value').value) : null,
-          admin_profit_pct:  document.getElementById('m-admin_profit_pct').value ? Number(document.getElementById('m-admin_profit_pct').value) : null,
-          admin_company:     document.getElementById('m-admin_company').value,
-          grupo:             document.getElementById('m-grupo').value,
-          cota:              document.getElementById('m-cota').value,
-          contrato:          document.getElementById('m-contrato').value,
-          pipeline_stage:    document.getElementById('m-stage').value,
-          traffic_source:    document.getElementById('m-traffic').value,
-          responsible:       document.getElementById('m-responsible').value,
-          general_info:      document.getElementById('m-general_info').value,
+        const lid = list.leads[0].id;
+        const stg = document.getElementById('m-stage').value;
+        await api('PUT', `/leads/${lid}`, {
+          address:         document.getElementById('m-address').value,
+          consortium_name: document.getElementById('m-consortium').value,
+          credit_value:    document.getElementById('m-credit_value').value ? Number(document.getElementById('m-credit_value').value) : null,
+          admin_company:   document.getElementById('m-admin_company').value,
+          pipeline_stage:  stg,
+          traffic_source:  document.getElementById('m-traffic').value,
+          responsible:     document.getElementById('m-responsible').value,
+          general_info:    document.getElementById('m-general_info').value,
         });
+        if (stg === 'ganho') await convertLeadToClient(lid);
       }
       toast('Lead criado!');
       renderLeads();
@@ -950,7 +813,7 @@ function openNewLead() {
   );
 }
 
-// ── Pipeline Kanban ───────────────────────────────────────────────────────────
+// ── Pipeline Kanban ────────────────────────────────────────────────────────────
 async function renderPipeline() {
   const el = document.getElementById('page-pipeline');
   el.innerHTML = '<div class="loading">Carregando...</div>';
@@ -979,9 +842,8 @@ async function renderPipeline() {
             const photo = l.photo_path
               ? `<img src="${l.photo_path}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);float:right;margin-left:8px">`
               : '';
-            return `<div class="kanban-card ${l.status_atraso ? 'atraso' : ''} ${l.status_cancelamento ? 'cancelado' : ''}"
-              draggable="true"
-              data-id="${l.id}"
+            return `<div class="kanban-card ${l.converted_to_client_id ? 'converted' : ''}"
+              draggable="true" data-id="${l.id}"
               ondragstart="event.dataTransfer.setData('leadId','${l.id}');this.classList.add('dragging')"
               ondragend="this.classList.remove('dragging')"
               onclick="openLeadSheet('${l.id}')">
@@ -989,10 +851,9 @@ async function renderPipeline() {
               <div class="kanban-card-name">${esc(l.name)}</div>
               <div class="kanban-card-phone">${fmt(l.phone)}</div>
               <div class="kanban-card-tags">
-                ${l.status_atraso ? `<span class="kanban-tag danger">⚠ Atraso</span>` : ''}
+                ${l.converted_to_client_id ? `<span class="kanban-tag success">✓ Cliente</span>` : ''}
                 ${l.installment_value ? `<span class="kanban-tag">R$ ${fmtMoney(l.installment_value)}/mês</span>` : ''}
                 ${l.admin_company ? `<span class="kanban-tag">${esc(l.admin_company)}</span>` : ''}
-                ${l.grupo ? `<span class="kanban-tag">G ${esc(l.grupo)}</span>` : ''}
                 ${l.traffic_source ? `<span class="kanban-tag">📣 ${esc(l.traffic_source)}</span>` : ''}
               </div>
               ${l.responsible ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">👤 ${esc(l.responsible)}</div>` : ''}
@@ -1011,11 +872,383 @@ async function handleKanbanDrop(event, targetStage) {
   if (!leadId) return;
   try {
     await api('PUT', `/leads/${leadId}`, { pipeline_stage: targetStage });
+    if (targetStage === 'ganho') {
+      // Conversão automática ao arrastar para Ganho
+      const result = await api('POST', `/leads/${leadId}/convert`, {});
+      if (result && !result.already_existed) {
+        toast('🎉 Lead convertido em cliente!');
+        renderPipeline();
+        openClientSheet(result.cliente.id);
+        return;
+      }
+    }
     renderPipeline();
   } catch (e) { toast('Erro ao mover lead: ' + e.message, 'error'); }
 }
 
-// ── Prospects ─────────────────────────────────────────────────────────────────
+// ── Clientes ───────────────────────────────────────────────────────────────────
+let clientesState = { page: 1, search: '', status: '' };
+
+async function renderClientes() {
+  const el = document.getElementById('page-clientes');
+  document.getElementById('topbar-actions').innerHTML =
+    `<button class="btn btn-primary btn-sm" onclick="openNewCliente()">+ Novo Cliente</button>`;
+  el.innerHTML = '<div class="loading">Carregando...</div>';
+  try {
+    const params = new URLSearchParams({ page: clientesState.page, limit: 50 });
+    if (clientesState.search) params.set('search', clientesState.search);
+    if (clientesState.status) params.set('status', clientesState.status);
+    const data = await api('GET', `/clientes?${params}`);
+    if (!data) return;
+
+    const rows = data.clientes.map(c => {
+      const statusColor = { ativo:'#22c55e', atraso:'#ef4444', cancelado:'#6b7280', quitado:'#3b82f6' };
+      const parcRestantes = (c.installments || 0) - (c.parcelas_pagas || 0);
+      const saldo = parcRestantes > 0 && c.installment_value ? parcRestantes * c.installment_value : 0;
+      return `<tr style="cursor:pointer${c.status==='atraso'?';background:#1a0808':''}" onclick="openClientSheet('${c.id}')">
+        <td><strong>${esc(c.name)}</strong><br><span style="font-size:11px;color:var(--muted)">${c.contrato ? esc(c.contrato) : '—'}</span></td>
+        <td>${fmt(c.phone)}</td>
+        <td>${c.admin_company ? esc(c.admin_company) : '—'}</td>
+        <td>${c.grupo ? esc(c.grupo) : '—'} / ${c.cota ? esc(c.cota) : '—'}</td>
+        <td>${c.credit_value ? 'R$ '+fmtMoney(c.credit_value) : '—'}</td>
+        <td>${c.installment_value ? 'R$ '+fmtMoney(c.installment_value) : '—'}</td>
+        <td style="font-size:12px;color:var(--muted)">${parcRestantes > 0 ? parcRestantes+'x restantes' : '—'}</td>
+        <td>${saldo ? 'R$ '+fmtMoney(saldo) : '—'}</td>
+        <td><span class="badge" style="background:${statusColor[c.status]||'#6b7280'}22;color:${statusColor[c.status]||'#6b7280'}">${CLIENT_STATUS[c.status]||c.status}</span></td>
+      </tr>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input class="search-box" placeholder="Buscar por nome, contrato, grupo..." value="${esc(clientesState.search)}"
+            oninput="clientesState.search=this.value;clientesState.page=1;renderClientes()" />
+          <select class="search-box" style="max-width:160px" onchange="clientesState.status=this.value;clientesState.page=1;renderClientes()">
+            <option value="">Todos os status</option>
+            ${Object.entries(CLIENT_STATUS).map(([k,v])=>`<option value="${k}" ${clientesState.status===k?'selected':''}>${v}</option>`).join('')}
+          </select>
+          <span style="color:var(--muted);font-size:13px">${data.total} clientes</span>
+        </div>
+        <table>
+          <thead><tr><th>Nome / Contrato</th><th>WhatsApp</th><th>Administradora</th><th>Grupo/Cota</th><th>Crédito</th><th>Parcela</th><th>Parcelas</th><th>Saldo Devedor</th><th>Status</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="9" class="empty">Nenhum cliente encontrado</td></tr>'}</tbody>
+        </table>
+        <div class="pagination">
+          <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
+          <button class="btn btn-ghost btn-sm" onclick="clientesState.page=Math.max(1,clientesState.page-1);renderClientes()" ${data.page<=1?'disabled':''}>← Ant</button>
+          <button class="btn btn-ghost btn-sm" onclick="clientesState.page++;renderClientes()" ${data.page*data.limit>=data.total?'disabled':''}>Próx →</button>
+        </div>
+      </div>`;
+  } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
+}
+
+async function openClientSheet(id) {
+  const c = await api('GET', `/clientes/${id}`);
+  if (!c) return;
+  renderClientSheetModal(c);
+}
+
+function renderClientSheetModal(c) {
+  const admOptions     = ADMINISTRADORAS.map(o => `<option value="${o}" ${c.admin_company===o?'selected':''}>${o}</option>`).join('');
+  const trafficOptions = TRAFFIC_SOURCES.map(o => `<option value="${o}" ${c.traffic_source===o?'selected':''}>${o}</option>`).join('');
+  const photoHtml = c.photo_path
+    ? `<img src="${c.photo_path}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+    : `<span style="font-size:28px;font-weight:700;color:var(--accent)">${(c.name||'?')[0].toUpperCase()}</span>`;
+  const attachHtml = c.attachment_path
+    ? `<a href="${c.attachment_path}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver Anexo</a>`
+    : `<span style="color:var(--muted);font-size:13px">Nenhum arquivo</span>`;
+
+  const commPct = c.commission_pct || 4;
+  const commVal = c.credit_value ? c.credit_value * commPct / 100 : 0;
+  const parcRestantes = (c.installments || 0) - (c.parcelas_pagas || 0);
+  const saldo = parcRestantes > 0 && c.installment_value ? parcRestantes * c.installment_value : 0;
+
+  document.getElementById('modal-container').innerHTML = `
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <span class="modal-title">Ficha do Cliente</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+
+        <!-- Cabeçalho -->
+        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)${c.status==='atraso'?';border-left:4px solid var(--danger)':''}">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${photoHtml}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">${esc(c.name)}</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)">
+              <span>${fmt(c.phone)}</span>
+              ${c.email ? `<span>${esc(c.email)}</span>` : ''}
+              ${c.responsible ? `<span>👤 ${esc(c.responsible)}</span>` : ''}
+              ${c.contrato ? `<span>📋 ${esc(c.contrato)}</span>` : ''}
+            </div>
+            <div style="margin-top:8px">
+              ${['ativo','atraso','cancelado','quitado'].map(s => {
+                const colors = { ativo:'#22c55e', atraso:'#ef4444', cancelado:'#6b7280', quitado:'#3b82f6' };
+                const sel = c.status === s;
+                return `<button onclick="quickSetClientStatus('${c.id}','${s}')" style="margin-right:6px;margin-top:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid ${colors[s]};background:${sel ? colors[s]+'33' : 'transparent'};color:${colors[s]}">${CLIENT_STATUS[s]}</button>`;
+              }).join('')}
+            </div>
+          </div>
+          <label class="btn btn-ghost btn-sm" style="cursor:pointer;flex-shrink:0">
+            📷 Foto
+            <input type="file" accept="image/*" style="display:none" onchange="uploadClientFile('${c.id}','photo',this)">
+          </label>
+        </div>
+
+        <!-- Resumo financeiro -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:16px 24px;background:var(--bg);border-bottom:1px solid var(--border)">
+          ${c.credit_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Crédito</div><div style="font-size:18px;font-weight:700;color:var(--accent)">R$ ${fmtMoney(c.credit_value)}</div></div>` : ''}
+          ${commVal ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Comissão (${commPct}%)</div><div style="font-size:18px;font-weight:700;color:var(--success)">R$ ${fmtMoney(commVal)}</div></div>` : ''}
+          ${c.installment_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Parcela Mensal</div><div style="font-size:18px;font-weight:700;color:var(--text)">R$ ${fmtMoney(c.installment_value)}</div></div>` : ''}
+          ${saldo ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Saldo Devedor</div><div style="font-size:18px;font-weight:700;color:var(--warning)">R$ ${fmtMoney(saldo)}</div><div style="font-size:11px;color:var(--muted)">${parcRestantes} parcelas</div></div>` : ''}
+        </div>
+
+        <!-- Formulário -->
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+
+          <div>
+            <div class="section-title">Dados Pessoais</div>
+            <div class="form-row">
+              <div class="form-field"><label>Nome Completo</label><input id="cf-name" value="${esc(c.name||'')}" /></div>
+              <div class="form-field"><label>WhatsApp</label><input id="cf-phone" value="${esc(c.phone||'')}" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>E-mail</label><input id="cf-email" type="email" value="${esc(c.email||'')}" /></div>
+              <div class="form-field"><label>Endereço</label><input id="cf-address" value="${esc(c.address||'')}" /></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Dados do Contrato</div>
+            <div class="form-row">
+              <div class="form-field"><label>Modalidade</label>
+                <select id="cf-consortium_name">
+                  <option value="">Selecionar...</option>
+                  ${['Automóvel','Imóvel','Serviços'].map(o=>`<option value="${o}" ${c.consortium_name===o?'selected':''}>${o}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-field"><label>Administradora</label>
+                <select id="cf-admin_company"><option value="">Selecionar...</option>${admOptions}</select>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-field"><label>Grupo</label><input id="cf-grupo" value="${esc(c.grupo||'')}" placeholder="Ex: 0042" /></div>
+              <div class="form-field"><label>Cota</label><input id="cf-cota" value="${esc(c.cota||'')}" placeholder="Ex: 015" /></div>
+              <div class="form-field"><label>Nº Contrato</label><input id="cf-contrato" value="${esc(c.contrato||'')}" placeholder="Ex: ABC-12345" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>Crédito (R$)</label><input id="cf-credit_value" type="number" step="0.01" value="${c.credit_value||''}" oninput="updateClientCommCalc()" /></div>
+              <div class="form-field"><label>% Comissão</label><input id="cf-commission_pct" type="number" step="0.5" min="0" max="10" value="${c.commission_pct||4}" oninput="updateClientCommCalc()" /></div>
+            </div>
+            <div id="cf-comm-calc" style="font-size:13px;color:var(--success);margin-bottom:12px;font-weight:600"></div>
+            <div class="form-row-3">
+              <div class="form-field"><label>Nº Parcelas</label><input id="cf-installments" type="number" value="${c.installments||''}" /></div>
+              <div class="form-field"><label>Parcelas Pagas</label><input id="cf-parcelas_pagas" type="number" value="${c.parcelas_pagas||0}" /></div>
+              <div class="form-field"><label>Valor da Parcela (R$)</label><input id="cf-installment_value" type="number" step="0.01" value="${c.installment_value||''}" /></div>
+            </div>
+            <div class="form-field"><label>% Lucro Administradora</label><input id="cf-admin_profit_pct" type="number" step="0.1" value="${c.admin_profit_pct||''}" /></div>
+          </div>
+
+          <div>
+            <div class="section-title">Status do Contrato</div>
+            <div style="display:flex;gap:32px;flex-wrap:wrap">
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Parcela em Atraso</label>
+                <div class="toggle-wrap">
+                  <label class="toggle toggle-danger">
+                    <input type="checkbox" id="cf-status_atraso" ${c.status_atraso ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Marcar como em atraso</span>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Cancelamento</label>
+                <div class="toggle-wrap">
+                  <label class="toggle toggle-danger">
+                    <input type="checkbox" id="cf-status_cancelamento" ${c.status_cancelamento ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Contrato cancelado</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Gestão</div>
+            <div class="form-row">
+              <div class="form-field"><label>Responsável</label><input id="cf-responsible" value="${esc(c.responsible||'')}" /></div>
+              <div class="form-field"><label>Fonte de Tráfego</label>
+                <select id="cf-traffic_source"><option value="">Selecionar...</option>${trafficOptions}</select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field"><label>Informações Gerais</label>
+            <textarea id="cf-general_info" rows="3" style="resize:vertical">${esc(c.general_info||'')}</textarea>
+          </div>
+          <div class="form-field"><label>Anotações</label>
+            <textarea id="cf-notes" rows="3" style="resize:vertical">${esc(c.notes||'')}</textarea>
+          </div>
+
+          <div>
+            <div class="section-title">Anexo (máx. 20 MB)</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              ${attachHtml}
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                📎 Enviar Arquivo
+                <input type="file" style="display:none" onchange="uploadClientFile('${c.id}','attachment',this)">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost"    onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDeleteCliente('${c.id}')">Excluir</button>
+        <button class="btn btn-primary"  onclick="saveClientSheet('${c.id}')">Salvar</button>
+      </div>
+    </div>
+  </div>`;
+
+  updateClientCommCalc();
+}
+
+function updateClientCommCalc() {
+  const credit = parseFloat(document.getElementById('cf-credit_value')?.value) || 0;
+  const pct    = parseFloat(document.getElementById('cf-commission_pct')?.value) || 4;
+  const el     = document.getElementById('cf-comm-calc');
+  if (!el) return;
+  el.textContent = credit > 0 ? `Comissão estimada: R$ ${fmtMoney(credit * pct / 100)}` : '';
+}
+
+async function quickSetClientStatus(id, status) {
+  try {
+    const c = await api('PUT', `/clientes/${id}`, { status });
+    if (c) { closeModal(); renderClientSheetModal(c); }
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function saveClientSheet(id) {
+  try {
+    const g   = id => document.getElementById(id)?.value ?? '';
+    const chk = id => document.getElementById(id)?.checked ?? false;
+    const updated = await api('PUT', `/clientes/${id}`, {
+      name:                g('cf-name'),
+      phone:               g('cf-phone'),
+      email:               g('cf-email'),
+      address:             g('cf-address'),
+      consortium_name:     g('cf-consortium_name'),
+      admin_company:       g('cf-admin_company'),
+      grupo:               g('cf-grupo'),
+      cota:                g('cf-cota'),
+      contrato:            g('cf-contrato'),
+      credit_value:        g('cf-credit_value')       ? Number(g('cf-credit_value'))       : null,
+      commission_pct:      g('cf-commission_pct')     ? Number(g('cf-commission_pct'))     : null,
+      installments:        g('cf-installments')       ? Number(g('cf-installments'))       : null,
+      installment_value:   g('cf-installment_value')  ? Number(g('cf-installment_value'))  : null,
+      parcelas_pagas:      g('cf-parcelas_pagas') !== '' ? Number(g('cf-parcelas_pagas')) : null,
+      admin_profit_pct:    g('cf-admin_profit_pct')   ? Number(g('cf-admin_profit_pct'))   : null,
+      status_atraso:       chk('cf-status_atraso'),
+      status_cancelamento: chk('cf-status_cancelamento'),
+      responsible:         g('cf-responsible'),
+      traffic_source:      g('cf-traffic_source'),
+      general_info:        g('cf-general_info'),
+      notes:               g('cf-notes'),
+    });
+    toast('Cliente salvo!');
+    closeModal();
+    if (state.page === 'clientes') renderClientes();
+    if (state.page === 'dashboard') renderDashboard();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function uploadClientFile(id, field, input) {
+  if (!input.files[0]) return;
+  const fd = new FormData();
+  fd.append(field, input.files[0]);
+  toast('Enviando...', 'info');
+  try {
+    const updated = await apiUpload(`/clientes/${id}/upload`, fd);
+    toast('Arquivo enviado!');
+    closeModal();
+    renderClientSheetModal(updated);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function confirmDeleteCliente(id) {
+  if (!confirm('Excluir este cliente? Esta ação não pode ser desfeita.')) return;
+  try {
+    await api('DELETE', `/clientes/${id}`);
+    toast('Cliente excluído');
+    closeModal();
+    renderClientes();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function openNewCliente() {
+  const admOpts     = ADMINISTRADORAS.map(o => `<option>${o}</option>`).join('');
+  const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
+  showModal('Novo Cliente', `
+    <div class="form-row">
+      <div class="form-field"><label>Nome *</label><input id="m-name" /></div>
+      <div class="form-field"><label>WhatsApp *</label><input id="m-phone" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Modalidade</label>
+        <select id="m-consortium"><option value="">Selecionar...</option><option>Automóvel</option><option>Imóvel</option><option>Serviços</option></select>
+      </div>
+      <div class="form-field"><label>Administradora</label>
+        <select id="m-adm"><option value="">Selecionar...</option>${admOpts}</select>
+      </div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Grupo</label><input id="m-grupo" /></div>
+      <div class="form-field"><label>Cota</label><input id="m-cota" /></div>
+      <div class="form-field"><label>Nº Contrato</label><input id="m-contrato" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Crédito (R$)</label><input id="m-credit" type="number" step="0.01" /></div>
+      <div class="form-field"><label>% Comissão</label><input id="m-comm" type="number" step="0.5" value="4" /></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Nº Parcelas</label><input id="m-installments" type="number" /></div>
+      <div class="form-field"><label>Parcelas Pagas</label><input id="m-pagas" type="number" value="0" /></div>
+      <div class="form-field"><label>Valor Parcela (R$)</label><input id="m-installment_value" type="number" step="0.01" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
+      <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
+    </div>`,
+    async () => {
+      const name  = document.getElementById('m-name').value.trim();
+      const phone = document.getElementById('m-phone').value.trim();
+      if (!name || !phone) throw new Error('Nome e WhatsApp são obrigatórios');
+      await api('POST', '/clientes', {
+        name, phone,
+        consortium_name:  document.getElementById('m-consortium').value,
+        admin_company:    document.getElementById('m-adm').value,
+        grupo:            document.getElementById('m-grupo').value,
+        cota:             document.getElementById('m-cota').value,
+        contrato:         document.getElementById('m-contrato').value,
+        credit_value:     document.getElementById('m-credit').value ? Number(document.getElementById('m-credit').value) : null,
+        commission_pct:   Number(document.getElementById('m-comm').value) || 4,
+        installments:     document.getElementById('m-installments').value ? Number(document.getElementById('m-installments').value) : null,
+        parcelas_pagas:   Number(document.getElementById('m-pagas').value) || 0,
+        installment_value:document.getElementById('m-installment_value').value ? Number(document.getElementById('m-installment_value').value) : null,
+        responsible:      document.getElementById('m-responsible').value,
+        traffic_source:   document.getElementById('m-traffic').value,
+      });
+      toast('Cliente criado!');
+      renderClientes();
+    }
+  );
+}
+
+// ── Prospects ──────────────────────────────────────────────────────────────────
 let proState = { page: 1, search: '', status: '' };
 
 async function renderProspects() {
@@ -1085,12 +1318,10 @@ function openAddProspect() {
       const phone = document.getElementById('m-phone').value;
       if (!phone) throw new Error('Telefone obrigatório');
       await api('POST', '/prospects', {
-        name:    document.getElementById('m-name').value,
-        company: document.getElementById('m-company').value,
+        name: document.getElementById('m-name').value, company: document.getElementById('m-company').value,
         phone, email: document.getElementById('m-email').value,
-        segment: document.getElementById('m-segment').value,
-        city:    document.getElementById('m-city').value,
-        notes:   document.getElementById('m-notes').value,
+        segment: document.getElementById('m-segment').value, city: document.getElementById('m-city').value,
+        notes: document.getElementById('m-notes').value,
       });
       toast('Prospect adicionado!');
       renderProspects();
@@ -1112,9 +1343,9 @@ function editProspect(id, status, notes, aiMessage) {
     </div>`,
     async () => {
       await api('PUT', `/prospects/${id}`, {
-        status:     document.getElementById('m-status').value,
+        status: document.getElementById('m-status').value,
         ai_message: document.getElementById('m-ai').value,
-        notes:      document.getElementById('m-notes').value,
+        notes: document.getElementById('m-notes').value,
       });
       toast('Prospect atualizado!');
       renderProspects();
@@ -1122,7 +1353,7 @@ function editProspect(id, status, notes, aiMessage) {
   );
 }
 
-// ── Users ─────────────────────────────────────────────────────────────────────
+// ── Users ──────────────────────────────────────────────────────────────────────
 async function renderUsers() {
   const el = document.getElementById('page-users');
   document.getElementById('topbar-actions').innerHTML =
@@ -1149,6 +1380,12 @@ async function renderUsers() {
           <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Criado</th><th>Ações</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
+      </div>
+      <div style="margin-top:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--muted)">
+        <strong style="color:var(--text)">Perfis:</strong>
+        <span style="margin-left:12px"><strong style="color:var(--accent)">Master</strong> — acesso total + configurações</span>
+        <span style="margin-left:12px"><strong style="color:var(--info)">Admin</strong> — vê todos os leads e clientes</span>
+        <span style="margin-left:12px"><strong style="color:var(--muted)">Usuário</strong> — vê apenas próprios leads/clientes</span>
       </div>`;
   } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
@@ -1160,8 +1397,8 @@ function openAddUser() {
     <div class="form-field"><label>Senha</label><input id="m-pwd" type="password" /></div>
     <div class="form-field"><label>Perfil</label>
       <select id="m-role">
-        <option value="user">Usuário (vê apenas próprios leads)</option>
-        <option value="admin">Admin (vê todos os leads)</option>
+        <option value="user">Usuário (vê apenas próprios leads/clientes)</option>
+        <option value="admin">Admin (vê todos)</option>
       </select>
     </div>`,
     async () => {
@@ -1197,7 +1434,7 @@ async function toggleUserStatus(id, currentStatus) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+// ── Modal ──────────────────────────────────────────────────────────────────────
 function showModal(title, bodyHtml, onConfirm) {
   document.getElementById('modal-container').innerHTML = `
     <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -1221,7 +1458,7 @@ function showModal(title, bodyHtml, onConfirm) {
 
 function closeModal() { document.getElementById('modal-container').innerHTML = ''; }
 
-// ── Utils ─────────────────────────────────────────────────────────────────────
+// ── Utils ──────────────────────────────────────────────────────────────────────
 function esc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -1239,7 +1476,7 @@ function fmtMoney(val) {
   return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
+// ── Boot ───────────────────────────────────────────────────────────────────────
 if (state.token && state.user) showApp();
 </script>
 </body>

@@ -450,6 +450,37 @@ async function initializeSchema() {
     )`,
 
     // ── AB Capital ────────────────────────────────────────────────────────────
+    `CREATE TABLE IF NOT EXISTS ab_capital_clientes (
+      id TEXT PRIMARY KEY,
+      lead_id TEXT,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      email TEXT,
+      address TEXT,
+      consortium_name TEXT,
+      admin_company TEXT,
+      grupo TEXT,
+      cota TEXT,
+      contrato TEXT,
+      credit_value REAL,
+      commission_pct REAL DEFAULT 4,
+      installments INTEGER,
+      installment_value REAL,
+      parcelas_pagas INTEGER DEFAULT 0,
+      admin_profit_pct REAL,
+      status TEXT DEFAULT 'ativo',
+      status_atraso INTEGER DEFAULT 0,
+      status_cancelamento INTEGER DEFAULT 0,
+      photo_path TEXT,
+      attachment_path TEXT,
+      responsible TEXT,
+      traffic_source TEXT,
+      general_info TEXT,
+      notes TEXT,
+      source TEXT DEFAULT 'conversao',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS ab_capital_users (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -601,6 +632,7 @@ async function initializeSchema() {
     ['status_cancelamento', 'INTEGER DEFAULT 0'],
     ['parcelas_pagas', 'INTEGER DEFAULT 0'],
     ['commission_pct', 'REAL'],
+    ['converted_to_client_id', 'TEXT'],
   ];
   for (const [col, type] of abLeadCols) {
     try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}
