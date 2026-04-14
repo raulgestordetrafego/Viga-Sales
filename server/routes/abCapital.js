@@ -8,7 +8,19 @@ import bcrypt from 'bcrypt';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import rateLimit from 'express-rate-limit';
 import { query, queryOne, run } from '../db/database.js';
+import evolutionApi from '../services/evolutionApi.js';
+
+const AB_CAPITAL_GROUP_ID = '120363426868095162@g.us';
+
+const leadSubmitLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5,                    // máx 5 submissões por IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+});
 
 // ── Upload de arquivos ────────────────────────────────────────────────────────
 const uploadDir = path.join(process.cwd(), 'uploads', 'ab-capital');
@@ -115,9 +127,25 @@ router.get('/auth/me', abAuth, (req, res) => {
   res.json({ user: req.abSession });
 });
 
+router.post('/auth/change-password', abAuth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Preencha todos os campos' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'Nova senha deve ter no mínimo 6 caracteres' });
+    const user = await queryOne('SELECT * FROM ab_capital_users WHERE email = ?', [req.abSession.email]);
+    const ok = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!ok) return res.status(401).json({ error: 'Senha atual incorreta' });
+    const hash = await bcrypt.hash(newPassword, 12);
+    await run('UPDATE ab_capital_users SET password_hash = ?, updated_at = ? WHERE email = ?', [hash, new Date().toISOString(), req.abSession.email]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Leads (captura da landing page — rota PÚBLICA) ───────────────────────────
 
-router.post('/leads/public', async (req, res) => {
+router.post('/leads/public', leadSubmitLimiter, async (req, res) => {
   try {
     const { name, phone, email, objective } = req.body;
     if (!name || !phone) return res.status(400).json({ error: 'Nome e telefone obrigatórios' });
@@ -134,6 +162,34 @@ router.post('/leads/public', async (req, res) => {
 
     console.log(`[AB Capital] Novo lead: ${name} | ${cleanPhone}`);
     res.json({ ok: true, id });
+
+    // Automações em background (não bloqueiam a resposta)
+    setImmediate(async () => {
+      const firstName = name.trim().split(' ')[0];
+
+      // 1. Primeira mensagem para o lead (falha silenciosa se número não existe)
+      try {
+        await evolutionApi.sendTextMessage(
+          cleanPhone,
+          `Olá, ${firstName}! 👋\n\nAqui é da *AB Capital*. Recebemos seu contato e ficamos felizes com seu interesse!\n\nEm breve um de nossos consultores entrará em contato para entender melhor como podemos te ajudar. 😊`
+        );
+        console.log(`[AB Capital] Mensagem enviada para lead ${cleanPhone}`);
+      } catch (err) {
+        console.warn(`[AB Capital] Não foi possível enviar mensagem para ${cleanPhone}:`, err.message);
+      }
+
+      // 2. Notificação no grupo (sempre envia, independente do item acima)
+      try {
+        const objectiveText = objective ? `\n🎯 Objetivo: ${objective}` : '';
+        await evolutionApi.sendTextMessage(
+          AB_CAPITAL_GROUP_ID,
+          `🔔 *Novo lead via landing page!*\n\n👤 Nome: ${name.trim()}\n📱 Telefone: +55 ${cleanPhone}${objectiveText}`
+        );
+        console.log(`[AB Capital] Notificação enviada ao grupo`);
+      } catch (err) {
+        console.error('[AB Capital] Erro ao notificar grupo:', err.message);
+      }
+    });
   } catch (err) {
     console.error('[AB Capital] Erro ao salvar lead:', err.message);
     res.status(500).json({ error: 'Erro ao salvar lead' });
@@ -146,8 +202,11 @@ router.get('/leads', abAuth, async (req, res) => {
   try {
     const { stage, search, page = 1, limit = 50 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
+    const isUser = req.abSession.role === 'user';
     let sql = 'SELECT * FROM ab_capital_leads WHERE 1=1';
     const params = [];
+    // Usuários comuns enxergam apenas seus próprios leads
+    if (isUser) { sql += ' AND responsible = ?'; params.push(req.abSession.name); }
     if (stage) { sql += ' AND pipeline_stage = ?'; params.push(stage); }
     if (search) {
       sql += ' AND (name LIKE ? OR phone LIKE ? OR email LIKE ?)';
@@ -157,12 +216,17 @@ router.get('/leads', abAuth, async (req, res) => {
     sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(Number(limit), offset);
     const leads = await query(sql, params);
-    const [{ total }] = await query(
-      'SELECT COUNT(*) as total FROM ab_capital_leads WHERE 1=1' +
-      (stage ? ' AND pipeline_stage = ?' : '') +
-      (search ? ' AND (name LIKE ? OR phone LIKE ? OR email LIKE ?)' : ''),
-      [...(stage ? [stage] : []), ...(search ? [`%${search}%`, `%${search}%`, `%${search}%`] : [])]
-    );
+
+    let countSql = 'SELECT COUNT(*) as total FROM ab_capital_leads WHERE 1=1';
+    const countParams = [];
+    if (isUser) { countSql += ' AND responsible = ?'; countParams.push(req.abSession.name); }
+    if (stage) { countSql += ' AND pipeline_stage = ?'; countParams.push(stage); }
+    if (search) {
+      countSql += ' AND (name LIKE ? OR phone LIKE ? OR email LIKE ?)';
+      const like = `%${search}%`;
+      countParams.push(like, like, like);
+    }
+    const [{ total }] = await query(countSql, countParams);
     res.json({ leads, total, page: Number(page), limit: Number(limit) });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -172,19 +236,40 @@ router.get('/leads', abAuth, async (req, res) => {
 router.get('/leads/stats', abAuth, async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
-    const [totalRow] = await query('SELECT COUNT(*) as c FROM ab_capital_leads', []);
-    const [todayRow] = await query(
-      "SELECT COUNT(*) as c FROM ab_capital_leads WHERE date(created_at) = ?", [today]
-    );
-    const stages = await query(
-      'SELECT pipeline_stage, COUNT(*) as c FROM ab_capital_leads GROUP BY pipeline_stage', []
-    );
+    const isUser = req.abSession.role === 'user';
+    const scopeClause = isUser ? ` AND responsible = '${req.abSession.name.replace(/'/g, "''")}'` : '';
+
+    const [totalRow]  = await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE 1=1${scopeClause}`, []);
+    const [todayRow]  = await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE date(created_at) = ?${scopeClause}`, [today]);
+    const stages      = await query(`SELECT pipeline_stage, COUNT(*) as c FROM ab_capital_leads WHERE 1=1${scopeClause} GROUP BY pipeline_stage`, []);
     const [prosTotal] = await query('SELECT COUNT(*) as c FROM ab_capital_prospects', []);
+
+    // Financeiro
+    const [finRow] = await query(
+      `SELECT
+         COALESCE(SUM(credit_value), 0)                                                          AS total_credit,
+         COALESCE(SUM(credit_value * COALESCE(commission_pct, 4) / 100), 0)                     AS total_commission,
+         COALESCE(SUM(installment_value * (COALESCE(installments,0) - COALESCE(parcelas_pagas,0))), 0) AS remaining_balance,
+         COUNT(CASE WHEN status_atraso = 1 THEN 1 END)                                          AS overdue_count,
+         COUNT(CASE WHEN status_cancelamento = 1 THEN 1 END)                                    AS cancelled_count,
+         COUNT(CASE WHEN pipeline_stage = 'ganho' THEN 1 END)                                   AS won_count
+       FROM ab_capital_leads WHERE 1=1${scopeClause}`, []
+    );
+
     res.json({
-      total_leads: totalRow.c,
-      leads_today: todayRow.c,
+      total_leads:      totalRow.c,
+      leads_today:      todayRow.c,
       stages,
-      total_prospects: prosTotal.c,
+      total_prospects:  prosTotal.c,
+      financials: {
+        total_credit:      Number(finRow.total_credit      || 0),
+        total_commission:  Number(finRow.total_commission  || 0),
+        remaining_balance: Number(finRow.remaining_balance || 0),
+        overdue_count:     Number(finRow.overdue_count     || 0),
+        cancelled_count:   Number(finRow.cancelled_count   || 0),
+        won_count:         Number(finRow.won_count         || 0),
+        revenue_target:    3_000_000,
+      },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -206,7 +291,10 @@ router.put('/leads/:id', abAuth, async (req, res) => {
     const {
       name, phone, email, address, consortium_name, installments, installment_value,
       admin_profit_pct, admin_company, general_info, traffic_source, responsible,
-      pipeline_stage, notes, credit_value,
+      pipeline_stage, notes, credit_value, objective,
+      // v2
+      grupo, cota, contrato,
+      status_atraso, status_cancelamento, parcelas_pagas, commission_pct,
     } = req.body;
     const now = new Date().toISOString();
     await run(
@@ -214,15 +302,27 @@ router.put('/leads/:id', abAuth, async (req, res) => {
         name=COALESCE(?,name), phone=COALESCE(?,phone), email=?, address=?,
         consortium_name=?, installments=?, installment_value=?, admin_profit_pct=?,
         admin_company=?, general_info=?, traffic_source=?, responsible=?,
-        credit_value=?,
-        pipeline_stage=COALESCE(?,pipeline_stage), notes=?, updated_at=?
+        credit_value=?, objective=COALESCE(?,objective),
+        pipeline_stage=COALESCE(?,pipeline_stage), notes=?,
+        grupo=?, cota=?, contrato=?,
+        status_atraso=COALESCE(?,status_atraso),
+        status_cancelamento=COALESCE(?,status_cancelamento),
+        parcelas_pagas=COALESCE(?,parcelas_pagas),
+        commission_pct=?,
+        updated_at=?
        WHERE id=?`,
       [
         name||null, phone||null, email||null, address||null,
         consortium_name||null, installments||null, installment_value||null, admin_profit_pct||null,
         admin_company||null, general_info||null, traffic_source||null, responsible||null,
-        credit_value||null,
-        pipeline_stage||null, notes||null, now,
+        credit_value||null, objective||null,
+        pipeline_stage||null, notes||null,
+        grupo||null, cota||null, contrato||null,
+        status_atraso != null ? (status_atraso ? 1 : 0) : null,
+        status_cancelamento != null ? (status_cancelamento ? 1 : 0) : null,
+        parcelas_pagas != null ? Number(parcelas_pagas) : null,
+        commission_pct != null ? Number(commission_pct) : null,
+        now,
         req.params.id,
       ]
     );
@@ -446,6 +546,18 @@ router.put('/users/:id/password', abMaster, async (req, res) => {
     const hash = await bcrypt.hash(password, 12);
     await run('UPDATE ab_capital_users SET password_hash = ?, updated_at = ? WHERE id = ?',
       [hash, new Date().toISOString(), req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/users/:id/status', abMaster, async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['active', 'inactive'].includes(status)) return res.status(400).json({ error: 'Status inválido' });
+    await run('UPDATE ab_capital_users SET status = ?, updated_at = ? WHERE id = ?',
+      [status, new Date().toISOString(), req.params.id]);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

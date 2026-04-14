@@ -6,14 +6,14 @@
 <title>AB Capital — CRM</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2e3350;
+    --bg: #091929;
+    --surface: #0e2540;
+    --surface2: #153354;
+    --border: #1e3d63;
     --accent: #c9a227;
     --accent2: #e8c04a;
-    --text: #e8eaf0;
-    --muted: #8891b0;
+    --text: #edf1f7;
+    --muted: #7fa8cc;
     --danger: #ef4444;
     --success: #22c55e;
     --info: #3b82f6;
@@ -44,6 +44,16 @@
   .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--accent); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Toggle switch */
+  .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+  .toggle { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: .2s; }
+  .toggle-slider:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+  .toggle-danger input:checked + .toggle-slider { background: var(--danger); }
 
   /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all .2s; }
@@ -79,11 +89,24 @@
   .page { flex: 1; overflow-y: auto; padding: 24px; }
 
   /* Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .stat-card.danger { border-color: #7f1d1d; background: #1a0808; }
+  .stat-card.success { border-color: #14532d; background: #081a0e; }
+  .stat-card.warning { border-color: #78350f; background: #1a1008; }
   .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
-  .stat-value { font-size: 32px; font-weight: 700; color: var(--accent); }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-value.danger { color: var(--danger); }
+  .stat-value.success { color: var(--success); }
+  .stat-value.warning { color: var(--warning); }
   .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Progress bar */
+  .progress-wrap { margin-top: 12px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .5s; }
+  .progress-fill.over { background: var(--success); }
 
   /* Table */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
@@ -110,11 +133,14 @@
   .kanban-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: grab; transition: border-color .2s, opacity .2s; }
   .kanban-card:hover { border-color: var(--accent); }
   .kanban-card.dragging { opacity: .4; cursor: grabbing; }
+  .kanban-card.atraso { border-left: 3px solid var(--danger) !important; background: #1a0808; }
+  .kanban-card.cancelado { opacity: .5; border-style: dashed; }
   .kanban-col.drag-over { background: rgba(201,162,39,.08); outline: 2px dashed var(--accent); outline-offset: -4px; }
   .kanban-card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .kanban-card-phone { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .kanban-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .kanban-tag { background: var(--surface2); border-radius: 4px; padding: 2px 6px; font-size: 11px; color: var(--muted); }
+  .kanban-tag.danger { background: #450a0a; color: #f87171; }
 
   /* Stage progress bar */
   .stage-bar { display: flex; gap: 3px; margin: 8px 0; }
@@ -126,7 +152,7 @@
   /* Modal */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
   .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 640px; max-height: 90vh; display: flex; flex-direction: column; }
-  .modal-lg { max-width: 840px; }
+  .modal-lg { max-width: 860px; }
   .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .modal-title { font-size: 16px; font-weight: 600; }
   .modal-close { background: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px; line-height: 1; }
@@ -164,16 +190,16 @@
 <div id="login-page">
   <div class="login-card">
     <div class="login-logo">
-      <img src="/abcapital/logo.png" alt="AB Capital" style="height:56px;object-fit:contain">
+      <img src="logo.png" alt="AB Capital" style="height:56px;object-fit:contain">
     </div>
     <h2>Entrar</h2>
     <div class="form-field">
       <label>E-mail</label>
-      <input type="email" id="login-email" placeholder="seu@email.com" />
+      <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="username" />
     </div>
     <div class="form-field">
       <label>Senha</label>
-      <input type="password" id="login-password" placeholder="••••••••" />
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
     </div>
     <div id="login-error" class="error-msg"></div>
     <button class="btn btn-primary btn-full" style="margin-top:20px" onclick="doLogin()">Entrar</button>
@@ -184,7 +210,7 @@
 <div id="app" class="hidden">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <img src="/abcapital/logo.png" alt="AB Capital" style="height:36px;object-fit:contain;display:block">
+      <img src="logo.png" alt="AB Capital" style="height:36px;object-fit:contain;display:block">
     </div>
     <nav class="sidebar-nav">
       <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
@@ -216,7 +242,8 @@
           <div class="user-role" id="user-role">—</div>
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="doLogout()">Sair</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%;justify-content:center" onclick="openChangePassword()">Trocar senha</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px;width:100%;justify-content:center" onclick="doLogout()">Sair</button>
     </div>
   </div>
 
@@ -236,7 +263,7 @@
 <div id="modal-container"></div>
 
 <script>
-// ── Stages ────────────────────────────────────────────────────────────────────
+// ── Constantes ────────────────────────────────────────────────────────────────
 const STAGES = [
   { id: 'analise',          label: 'Análise',          color: '#60a5fa' },
   { id: 'qualificacao',     label: 'Qualificação',     color: '#a78bfa' },
@@ -246,12 +273,18 @@ const STAGES = [
 ];
 const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s]));
 const TRAFFIC_SOURCES = ['Instagram','Facebook','Google','Indicação','WhatsApp','Site','TikTok','YouTube','Outro'];
+const ADMINISTRADORAS = [
+  'Embracon','Porto Seguro Consórcios','Rodobens Consórcios',
+  'Caixa Consórcios','Bradesco Consórcios','Itaú Consórcios',
+  'Santander Consórcios','BB Consórcios','Sicredi Consórcios',
+  'Ademicon','Consorcamp','Midway Consórcios','Minasul','Outra',
+];
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const state = {
   token: localStorage.getItem('ab_token') || null,
-  user: JSON.parse(localStorage.getItem('ab_user') || 'null'),
-  page: 'dashboard',
+  user:  JSON.parse(localStorage.getItem('ab_user') || 'null'),
+  page:  'dashboard',
 };
 
 // ── API ───────────────────────────────────────────────────────────────────────
@@ -291,9 +324,9 @@ function toast(msg, type = 'success') {
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
+  const email    = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
+  const errEl    = document.getElementById('login-error');
   errEl.textContent = '';
   try {
     const data = await fetch(API + '/auth/login', {
@@ -303,10 +336,46 @@ async function doLogin() {
     }).then(r => r.json());
     if (!data.token) { errEl.textContent = data.error || 'Erro ao entrar'; return; }
     state.token = data.token;
-    state.user = data.user;
+    state.user  = data.user;
     localStorage.setItem('ab_token', data.token);
     localStorage.setItem('ab_user', JSON.stringify(data.user));
     showApp();
+  } catch (e) { errEl.textContent = e.message; }
+}
+
+function openChangePassword() {
+  const mc = document.getElementById('modal-container');
+  mc.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)this.remove()">
+      <div class="modal" style="max-width:400px">
+        <div class="modal-header">
+          <span class="modal-title">Trocar senha</span>
+          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-field"><label>Senha atual</label><input type="password" id="cp-current" placeholder="••••••••" /></div>
+          <div class="form-field"><label>Nova senha</label><input type="password" id="cp-new" placeholder="••••••••" /></div>
+          <div class="form-field"><label>Confirmar nova senha</label><input type="password" id="cp-confirm" placeholder="••••••••" /></div>
+          <div id="cp-error" style="color:var(--danger);font-size:13px;margin-top:4px"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+          <button class="btn btn-primary" onclick="submitChangePassword()">Salvar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function submitChangePassword() {
+  const current = document.getElementById('cp-current').value;
+  const newPwd  = document.getElementById('cp-new').value;
+  const confirm = document.getElementById('cp-confirm').value;
+  const errEl   = document.getElementById('cp-error');
+  if (newPwd !== confirm) { errEl.textContent = 'As senhas não coincidem'; return; }
+  try {
+    await api('POST', '/auth/change-password', { currentPassword: current, newPassword: newPwd });
+    document.querySelector('.modal-overlay').remove();
+    toast('Senha alterada com sucesso!');
   } catch (e) { errEl.textContent = e.message; }
 }
 
@@ -325,9 +394,9 @@ function showApp() {
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('app').classList.remove('hidden');
   const u = state.user;
-  document.getElementById('user-name').textContent = u.name;
-  document.getElementById('user-role').textContent = u.role;
-  document.getElementById('user-avatar').textContent = (u.name || '?')[0].toUpperCase();
+  document.getElementById('user-name').textContent    = u.name;
+  document.getElementById('user-role').textContent    = u.role;
+  document.getElementById('user-avatar').textContent  = (u.name || '?')[0].toUpperCase();
   if (u.role !== 'master' && u.role !== 'admin') document.getElementById('nav-users').classList.add('hidden');
   navigate('dashboard');
 }
@@ -356,16 +425,83 @@ async function renderDashboard() {
   try {
     const stats = await api('GET', '/leads/stats');
     if (!stats) return;
+    const fin = stats.financials || {};
+    const isMasterAdmin = state.user?.role === 'master' || state.user?.role === 'admin';
+
+    const target   = fin.revenue_target || 3_000_000;
+    const progress = Math.min((fin.total_commission / target) * 100, 100);
+    const pctStr   = progress.toFixed(1);
+
     const stagesHtml = (stats.stages || []).map(s => {
       const st = STAGE_MAP[s.pipeline_stage];
-      return `<tr><td style="color:${st?.color||'#fff'}">${st?.label||s.pipeline_stage}</td><td style="text-align:right;font-weight:600">${s.c}</td></tr>`;
+      return `<tr>
+        <td style="color:${st?.color||'#fff'}">${st?.label||s.pipeline_stage}</td>
+        <td style="text-align:right;font-weight:600">${s.c}</td>
+      </tr>`;
     }).join('');
+
+    // Cards financeiros só para master/admin
+    const finCards = isMasterAdmin ? `
+      <div class="stat-card ${fin.overdue_count > 0 ? 'danger' : ''}">
+        <div class="stat-label">⚠ Em Atraso</div>
+        <div class="stat-value ${fin.overdue_count > 0 ? 'danger' : ''}">${fin.overdue_count || 0}</div>
+        <div class="stat-sub">leads com parcela atrasada</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Crédito Total (Carteira)</div>
+        <div class="stat-value" style="font-size:20px">R$ ${fmtMoney(fin.total_credit || 0)}</div>
+        <div class="stat-sub">soma dos créditos</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Comissão Estimada</div>
+        <div class="stat-value success" style="font-size:20px">R$ ${fmtMoney(fin.total_commission || 0)}</div>
+        <div class="stat-sub">média 4% sobre crédito</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Saldo Restante Carteira</div>
+        <div class="stat-value warning" style="font-size:20px">R$ ${fmtMoney(fin.remaining_balance || 0)}</div>
+        <div class="stat-sub">parcelas × saldo devedor</div>
+      </div>` : '';
+
     el.innerHTML = `
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label">Total de Leads</div><div class="stat-value">${stats.total_leads}</div><div class="stat-sub">capturados</div></div>
-        <div class="stat-card"><div class="stat-label">Leads Hoje</div><div class="stat-value">${stats.leads_today}</div><div class="stat-sub">novos contatos</div></div>
-        <div class="stat-card"><div class="stat-label">Prospects</div><div class="stat-value">${stats.total_prospects}</div><div class="stat-sub">prospecção ativa</div></div>
+        <div class="stat-card">
+          <div class="stat-label">Total de Leads</div>
+          <div class="stat-value">${stats.total_leads}</div>
+          <div class="stat-sub">capturados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Leads Hoje</div>
+          <div class="stat-value">${stats.leads_today}</div>
+          <div class="stat-sub">novos contatos</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-label">Ganhos</div>
+          <div class="stat-value success">${fin.won_count || 0}</div>
+          <div class="stat-sub">contratos fechados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Prospects</div>
+          <div class="stat-value">${stats.total_prospects}</div>
+          <div class="stat-sub">prospecção ativa</div>
+        </div>
+        ${finCards}
       </div>
+
+      ${isMasterAdmin ? `
+      <div class="stat-card" style="margin-bottom:24px">
+        <div class="stat-label">Meta de Receita — R$ 3.000.000</div>
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Comissão acumulada: R$ ${fmtMoney(fin.total_commission || 0)}</span>
+            <span>${pctStr}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill ${progress >= 100 ? 'over' : ''}" style="width:${pctStr}%"></div>
+          </div>
+        </div>
+      </div>` : ''}
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="table-wrap">
           <div style="padding:16px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px">Leads por Estágio</div>
@@ -395,7 +531,7 @@ async function renderLeads() {
   try {
     const params = new URLSearchParams({ page: leadsState.page, limit: 50 });
     if (leadsState.search) params.set('search', leadsState.search);
-    if (leadsState.stage) params.set('stage', leadsState.stage);
+    if (leadsState.stage)  params.set('stage',  leadsState.stage);
     const data = await api('GET', `/leads?${params}`);
     if (!data) return;
 
@@ -404,13 +540,18 @@ async function renderLeads() {
       const avatar = l.photo_path
         ? `<img src="${l.photo_path}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0">`
         : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:13px;flex-shrink:0">${(l.name||'?')[0].toUpperCase()}</div>`;
-      return `<tr style="cursor:pointer" onclick="openLeadSheet('${l.id}')">
-        <td><div style="display:flex;align-items:center;gap:10px">${avatar}<strong>${esc(l.name)}</strong></div></td>
+      const flags = [
+        l.status_atraso ? `<span class="badge" style="background:#450a0a;color:#f87171">Atraso</span>` : '',
+        l.status_cancelamento ? `<span class="badge" style="background:#1c1c1c;color:#6b7280">Cancelado</span>` : '',
+      ].filter(Boolean).join(' ');
+      return `<tr style="cursor:pointer${l.status_atraso ? ';background:#1a0808' : ''}" onclick="openLeadSheet('${l.id}')">
+        <td><div style="display:flex;align-items:center;gap:10px">${avatar}<div><strong>${esc(l.name)}</strong>${flags ? '<div style="margin-top:3px">'+flags+'</div>' : ''}</div></div></td>
         <td>${fmt(l.phone)}</td>
         <td>${esc(l.email||'—')}</td>
         <td>${l.consortium_name ? esc(l.consortium_name) : '—'}</td>
-        <td>${l.credit_value ? 'R$ ' + fmtMoney(l.credit_value) : '—'}</td>
-        <td>${l.installment_value ? 'R$ ' + fmtMoney(l.installment_value) : '—'}</td>
+        <td>${l.credit_value ? 'R$ '+fmtMoney(l.credit_value) : '—'}</td>
+        <td>${l.installment_value ? 'R$ '+fmtMoney(l.installment_value) : '—'}</td>
+        <td>${l.admin_company ? esc(l.admin_company) : '—'}</td>
         <td><span class="badge" style="background:${st.color}22;color:${st.color}">${st.label}</span></td>
         <td>${fmtDate(l.created_at)}</td>
       </tr>`;
@@ -428,8 +569,8 @@ async function renderLeads() {
           <span style="color:var(--muted);font-size:13px">${data.total} leads</span>
         </div>
         <table>
-          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Modalidade</th><th>Crédito</th><th>Parcela</th><th>Estágio</th><th>Criado</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="7" class="empty">Nenhum lead encontrado</td></tr>'}</tbody>
+          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Modalidade</th><th>Crédito</th><th>Parcela</th><th>Administradora</th><th>Estágio</th><th>Criado</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="9" class="empty">Nenhum lead encontrado</td></tr>'}</tbody>
         </table>
         <div class="pagination">
           <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
@@ -448,7 +589,7 @@ async function openLeadSheet(id) {
 }
 
 function renderLeadSheetModal(lead) {
-  const st = STAGE_MAP[lead.pipeline_stage] || STAGES[0];
+  const st       = STAGE_MAP[lead.pipeline_stage] || STAGES[0];
   const stageIdx = STAGES.findIndex(s => s.id === lead.pipeline_stage);
 
   const stageBar = STAGES.map((s, i) => {
@@ -467,13 +608,21 @@ function renderLeadSheetModal(lead) {
     ? `<a href="${lead.attachment_path}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver Anexo</a>`
     : `<span style="color:var(--muted);font-size:13px">Nenhum arquivo</span>`;
 
-  const stageOptions = STAGES.map(s =>
+  const stageOptions  = STAGES.map(s =>
     `<option value="${s.id}" ${lead.pipeline_stage===s.id?'selected':''}>${s.label}</option>`
   ).join('');
-
   const trafficOptions = TRAFFIC_SOURCES.map(o =>
     `<option value="${o}" ${lead.traffic_source===o?'selected':''}>${o}</option>`
   ).join('');
+  const admOptions = ADMINISTRADORAS.map(o =>
+    `<option value="${o}" ${lead.admin_company===o?'selected':''}>${o}</option>`
+  ).join('');
+
+  // Calcula comissão estimada em tempo real
+  const commPct = lead.commission_pct || 4;
+  const commVal = lead.credit_value ? (lead.credit_value * commPct / 100) : 0;
+  const parcRestantes = (lead.installments || 0) - (lead.parcelas_pagas || 0);
+  const saldoRestante = parcRestantes > 0 && lead.installment_value ? parcRestantes * lead.installment_value : 0;
 
   document.getElementById('modal-container').innerHTML = `
   <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -485,17 +634,21 @@ function renderLeadSheetModal(lead) {
       <div class="modal-body" style="padding:0">
 
         <!-- Cabeçalho com foto -->
-        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)">
+        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)${lead.status_atraso ? ';border-left:4px solid var(--danger)' : ''}">
           <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
             ${photoHtml}
           </div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:20px;font-weight:700;margin-bottom:4px">${esc(lead.name)}</div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">
+              ${esc(lead.name)}
+              ${lead.status_atraso ? '<span class="badge" style="background:#450a0a;color:#f87171;margin-left:8px;font-size:10px">ATRASO</span>' : ''}
+              ${lead.status_cancelamento ? '<span class="badge" style="background:#1c1c1c;color:#6b7280;margin-left:4px;font-size:10px">CANCELADO</span>' : ''}
+            </div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)">
               <span>${fmt(lead.phone)}</span>
-              ${lead.email?`<span>${esc(lead.email)}</span>`:''}
-              ${lead.traffic_source?`<span>📣 ${esc(lead.traffic_source)}</span>`:''}
-              ${lead.responsible?`<span>👤 ${esc(lead.responsible)}</span>`:''}
+              ${lead.email ? `<span>${esc(lead.email)}</span>` : ''}
+              ${lead.traffic_source ? `<span>📣 ${esc(lead.traffic_source)}</span>` : ''}
+              ${lead.responsible ? `<span>👤 ${esc(lead.responsible)}</span>` : ''}
             </div>
             <div style="margin-top:10px">
               <div class="stage-bar">${stageBar}</div>
@@ -507,6 +660,14 @@ function renderLeadSheetModal(lead) {
             <input type="file" accept="image/*" style="display:none" onchange="uploadLeadFile('${lead.id}','photo',this)">
           </label>
         </div>
+
+        <!-- Resumo financeiro inline -->
+        ${(lead.credit_value || lead.installment_value) ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:16px 24px;background:var(--bg);border-bottom:1px solid var(--border)">
+          ${lead.credit_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Crédito</div><div style="font-size:18px;font-weight:700;color:var(--accent)">R$ ${fmtMoney(lead.credit_value)}</div></div>` : ''}
+          ${commVal ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Comissão (${commPct}%)</div><div style="font-size:18px;font-weight:700;color:var(--success)">R$ ${fmtMoney(commVal)}</div></div>` : ''}
+          ${saldoRestante ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Saldo Restante</div><div style="font-size:18px;font-weight:700;color:var(--warning)">R$ ${fmtMoney(saldoRestante)}</div><div style="font-size:11px;color:var(--muted)">${parcRestantes} parcelas</div></div>` : ''}
+        </div>` : ''}
 
         <!-- Formulário -->
         <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
@@ -521,10 +682,17 @@ function renderLeadSheetModal(lead) {
               <div class="form-field"><label>E-mail</label><input id="lf-email" type="email" value="${esc(lead.email||'')}" /></div>
               <div class="form-field"><label>Endereço</label><input id="lf-address" value="${esc(lead.address||'')}" /></div>
             </div>
+            <div class="form-field">
+              <label>Objetivo Principal <span style="font-size:11px;color:var(--accent)">(preenchido na landing page)</span></label>
+              <select id="lf-objective">
+                <option value="">Não informado</option>
+                ${[['capital','Capital de giro para empresa'],['imovel','Aquisição de imóvel'],['reforma','Reforma ou expansão'],['quitacao','Quitar financiamento'],['investimento','Ampliar investimentos'],['outros','Outro objetivo']].map(([v,t])=>`<option value="${v}" ${lead.objective===v?'selected':''}>${t}</option>`).join('')}
+              </select>
+            </div>
           </div>
 
           <div>
-            <div class="section-title">Dados do Consórcio</div>
+            <div class="section-title">Dados do Contrato / Consórcio</div>
             <div class="form-row">
               <div class="form-field"><label>Modalidade</label>
                 <select id="lf-consortium_name">
@@ -532,15 +700,54 @@ function renderLeadSheetModal(lead) {
                   ${['Automóvel','Imóvel','Serviços'].map(o=>`<option value="${o}" ${lead.consortium_name===o?'selected':''}>${o}</option>`).join('')}
                 </select>
               </div>
-              <div class="form-field"><label>Empresa Administradora</label><input id="lf-admin_company" value="${esc(lead.admin_company||'')}" /></div>
+              <div class="form-field"><label>Administradora</label>
+                <select id="lf-admin_company">
+                  <option value="">Selecionar...</option>
+                  ${admOptions}
+                </select>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-field"><label>Grupo</label><input id="lf-grupo" value="${esc(lead.grupo||'')}" placeholder="Ex: 0042" /></div>
+              <div class="form-field"><label>Cota</label><input id="lf-cota" value="${esc(lead.cota||'')}" placeholder="Ex: 015" /></div>
+              <div class="form-field"><label>Nº Contrato</label><input id="lf-contrato" value="${esc(lead.contrato||'')}" placeholder="Ex: ABC-12345" /></div>
             </div>
             <div class="form-row">
-              <div class="form-field"><label>Crédito do Consórcio (R$)</label><input id="lf-credit_value" type="number" step="0.01" value="${lead.credit_value||''}" /></div>
+              <div class="form-field"><label>Crédito do Consórcio (R$)</label><input id="lf-credit_value" type="number" step="0.01" value="${lead.credit_value||''}" oninput="updateCommCalc()" /></div>
+              <div class="form-field"><label>% Comissão (padrão 4%)</label><input id="lf-commission_pct" type="number" step="0.5" min="3" max="6" value="${lead.commission_pct||4}" oninput="updateCommCalc()" /></div>
+            </div>
+            <div id="comm-calc" style="font-size:13px;color:var(--success);margin-bottom:12px;font-weight:600"></div>
+            <div class="form-row-3">
               <div class="form-field"><label>Nº de Parcelas</label><input id="lf-installments" type="number" value="${lead.installments||''}" /></div>
-            </div>
-            <div class="form-row">
+              <div class="form-field"><label>Parcelas Pagas</label><input id="lf-parcelas_pagas" type="number" value="${lead.parcelas_pagas||0}" /></div>
               <div class="form-field"><label>Valor da Parcela (R$)</label><input id="lf-installment_value" type="number" step="0.01" value="${lead.installment_value||''}" /></div>
-              <div class="form-field"><label>% Lucro Administradora</label><input id="lf-admin_profit_pct" type="number" step="0.1" value="${lead.admin_profit_pct||''}" /></div>
+            </div>
+            <div class="form-field"><label>% Lucro Administradora</label><input id="lf-admin_profit_pct" type="number" step="0.1" value="${lead.admin_profit_pct||''}" /></div>
+          </div>
+
+          <div>
+            <div class="section-title">Status do Contrato</div>
+            <div style="display:flex;gap:32px;flex-wrap:wrap">
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Parcela em Atraso</label>
+                <div class="toggle-wrap">
+                  <label class="toggle toggle-danger">
+                    <input type="checkbox" id="lf-status_atraso" ${lead.status_atraso ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Marcar como em atraso</span>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Cancelamento</label>
+                <div class="toggle-wrap">
+                  <label class="toggle toggle-danger">
+                    <input type="checkbox" id="lf-status_cancelamento" ${lead.status_cancelamento ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Contrato cancelado</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -592,32 +799,56 @@ function renderLeadSheetModal(lead) {
       </div>
     </div>
   </div>`;
+
+  updateCommCalc();
+}
+
+function updateCommCalc() {
+  const credit = parseFloat(document.getElementById('lf-credit_value')?.value) || 0;
+  const pct    = parseFloat(document.getElementById('lf-commission_pct')?.value) || 4;
+  const el     = document.getElementById('comm-calc');
+  if (!el) return;
+  if (credit > 0) {
+    el.textContent = `Comissão estimada: R$ ${fmtMoney(credit * pct / 100)}`;
+  } else {
+    el.textContent = '';
+  }
 }
 
 async function saveLeadSheet(id) {
   try {
     const g = id => document.getElementById(id)?.value ?? '';
+    const chk = id => document.getElementById(id)?.checked ?? false;
     await api('PUT', `/leads/${id}`, {
-      name:              g('lf-name'),
-      phone:             g('lf-phone'),
-      email:             g('lf-email'),
-      address:           g('lf-address'),
-      consortium_name:   g('lf-consortium_name'),
-      credit_value:      g('lf-credit_value')       ? Number(g('lf-credit_value'))       : null,
-      installments:      g('lf-installments')       ? Number(g('lf-installments'))       : null,
-      installment_value: g('lf-installment_value')  ? Number(g('lf-installment_value'))  : null,
-      admin_profit_pct:  g('lf-admin_profit_pct')   ? Number(g('lf-admin_profit_pct'))   : null,
-      admin_company:     g('lf-admin_company'),
-      pipeline_stage:    g('lf-pipeline_stage'),
-      traffic_source:    g('lf-traffic_source'),
-      responsible:       g('lf-responsible'),
-      general_info:      g('lf-general_info'),
-      notes:             g('lf-notes'),
+      name:                g('lf-name'),
+      phone:               g('lf-phone'),
+      email:               g('lf-email'),
+      address:             g('lf-address'),
+      consortium_name:     g('lf-consortium_name'),
+      credit_value:        g('lf-credit_value')       ? Number(g('lf-credit_value'))       : null,
+      installments:        g('lf-installments')       ? Number(g('lf-installments'))       : null,
+      installment_value:   g('lf-installment_value')  ? Number(g('lf-installment_value'))  : null,
+      admin_profit_pct:    g('lf-admin_profit_pct')   ? Number(g('lf-admin_profit_pct'))   : null,
+      admin_company:       g('lf-admin_company'),
+      pipeline_stage:      g('lf-pipeline_stage'),
+      traffic_source:      g('lf-traffic_source'),
+      responsible:         g('lf-responsible'),
+      general_info:        g('lf-general_info'),
+      notes:               g('lf-notes'),
+      objective:           g('lf-objective'),
+      grupo:               g('lf-grupo'),
+      cota:                g('lf-cota'),
+      contrato:            g('lf-contrato'),
+      commission_pct:      g('lf-commission_pct') ? Number(g('lf-commission_pct')) : null,
+      parcelas_pagas:      g('lf-parcelas_pagas') !== '' ? Number(g('lf-parcelas_pagas')) : null,
+      status_atraso:       chk('lf-status_atraso'),
+      status_cancelamento: chk('lf-status_cancelamento'),
     });
     toast('Lead salvo!');
     closeModal();
     if (state.page === 'leads') renderLeads();
     else if (state.page === 'pipeline') renderPipeline();
+    else if (state.page === 'dashboard') renderDashboard();
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -645,8 +876,9 @@ async function confirmDeleteLead(id) {
 }
 
 function openNewLead() {
-  const stageOpts = STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+  const stageOpts   = STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
   const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
+  const admOpts     = ADMINISTRADORAS.map(o => `<option>${o}</option>`).join('');
   showModal('Novo Lead', `
     <div class="form-row">
       <div class="form-field"><label>Nome *</label><input id="m-name" /></div>
@@ -660,15 +892,20 @@ function openNewLead() {
       <div class="form-field"><label>Modalidade</label>
         <select id="m-consortium">
           <option value="">Selecionar...</option>
-          <option>Automóvel</option>
-          <option>Imóvel</option>
-          <option>Serviços</option>
+          <option>Automóvel</option><option>Imóvel</option><option>Serviços</option>
         </select>
       </div>
-      <div class="form-field"><label>Empresa Administradora</label><input id="m-admin_company" /></div>
+      <div class="form-field"><label>Administradora</label>
+        <select id="m-admin_company"><option value="">Selecionar...</option>${admOpts}</select>
+      </div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Grupo</label><input id="m-grupo" /></div>
+      <div class="form-field"><label>Cota</label><input id="m-cota" /></div>
+      <div class="form-field"><label>Nº Contrato</label><input id="m-contrato" /></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label>Crédito do Consórcio (R$)</label><input id="m-credit_value" type="number" step="0.01" /></div>
+      <div class="form-field"><label>Crédito (R$)</label><input id="m-credit_value" type="number" step="0.01" /></div>
       <div class="form-field"><label>Nº Parcelas</label><input id="m-installments" type="number" /></div>
     </div>
     <div class="form-row">
@@ -684,12 +921,10 @@ function openNewLead() {
       <textarea id="m-general_info" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
     </div>`,
     async () => {
-      const name = document.getElementById('m-name').value.trim();
+      const name  = document.getElementById('m-name').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
       if (!name || !phone) throw new Error('Nome e WhatsApp são obrigatórios');
-      // Cria lead via rota pública
       const created = await api('POST', '/leads/public', { name, phone, email: document.getElementById('m-email').value });
-      // Busca e atualiza com campos extras
       const list = await api('GET', `/leads?limit=5&search=${encodeURIComponent(phone)}`);
       if (list?.leads?.[0]) {
         await api('PUT', `/leads/${list.leads[0].id}`, {
@@ -700,6 +935,9 @@ function openNewLead() {
           installment_value: document.getElementById('m-installment_value').value ? Number(document.getElementById('m-installment_value').value) : null,
           admin_profit_pct:  document.getElementById('m-admin_profit_pct').value ? Number(document.getElementById('m-admin_profit_pct').value) : null,
           admin_company:     document.getElementById('m-admin_company').value,
+          grupo:             document.getElementById('m-grupo').value,
+          cota:              document.getElementById('m-cota').value,
+          contrato:          document.getElementById('m-contrato').value,
           pipeline_stage:    document.getElementById('m-stage').value,
           traffic_source:    document.getElementById('m-traffic').value,
           responsible:       document.getElementById('m-responsible').value,
@@ -741,7 +979,8 @@ async function renderPipeline() {
             const photo = l.photo_path
               ? `<img src="${l.photo_path}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);float:right;margin-left:8px">`
               : '';
-            return `<div class="kanban-card" draggable="true"
+            return `<div class="kanban-card ${l.status_atraso ? 'atraso' : ''} ${l.status_cancelamento ? 'cancelado' : ''}"
+              draggable="true"
               data-id="${l.id}"
               ondragstart="event.dataTransfer.setData('leadId','${l.id}');this.classList.add('dragging')"
               ondragend="this.classList.remove('dragging')"
@@ -750,8 +989,10 @@ async function renderPipeline() {
               <div class="kanban-card-name">${esc(l.name)}</div>
               <div class="kanban-card-phone">${fmt(l.phone)}</div>
               <div class="kanban-card-tags">
+                ${l.status_atraso ? `<span class="kanban-tag danger">⚠ Atraso</span>` : ''}
                 ${l.installment_value ? `<span class="kanban-tag">R$ ${fmtMoney(l.installment_value)}/mês</span>` : ''}
                 ${l.admin_company ? `<span class="kanban-tag">${esc(l.admin_company)}</span>` : ''}
+                ${l.grupo ? `<span class="kanban-tag">G ${esc(l.grupo)}</span>` : ''}
                 ${l.traffic_source ? `<span class="kanban-tag">📣 ${esc(l.traffic_source)}</span>` : ''}
               </div>
               ${l.responsible ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">👤 ${esc(l.responsible)}</div>` : ''}
@@ -844,10 +1085,12 @@ function openAddProspect() {
       const phone = document.getElementById('m-phone').value;
       if (!phone) throw new Error('Telefone obrigatório');
       await api('POST', '/prospects', {
-        name: document.getElementById('m-name').value, company: document.getElementById('m-company').value,
+        name:    document.getElementById('m-name').value,
+        company: document.getElementById('m-company').value,
         phone, email: document.getElementById('m-email').value,
-        segment: document.getElementById('m-segment').value, city: document.getElementById('m-city').value,
-        notes: document.getElementById('m-notes').value,
+        segment: document.getElementById('m-segment').value,
+        city:    document.getElementById('m-city').value,
+        notes:   document.getElementById('m-notes').value,
       });
       toast('Prospect adicionado!');
       renderProspects();
@@ -869,9 +1112,9 @@ function editProspect(id, status, notes, aiMessage) {
     </div>`,
     async () => {
       await api('PUT', `/prospects/${id}`, {
-        status: document.getElementById('m-status').value,
+        status:     document.getElementById('m-status').value,
         ai_message: document.getElementById('m-ai').value,
-        notes: document.getElementById('m-notes').value,
+        notes:      document.getElementById('m-notes').value,
       });
       toast('Prospect atualizado!');
       renderProspects();
@@ -895,12 +1138,15 @@ async function renderUsers() {
         <td><span class="badge" style="background:var(--surface2);color:var(--muted)">${u.role}</span></td>
         <td><span class="badge" style="background:${u.status==='active'?'#14532d':'#450a0a'};color:${u.status==='active'?'#4ade80':'#f87171'}">${u.status==='active'?'Ativo':'Inativo'}</span></td>
         <td>${fmtDate(u.created_at)}</td>
-        <td><button class="btn btn-ghost btn-sm" onclick="changePassword('${u.id}')">Trocar senha</button></td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="changeUserPassword('${u.id}')">Trocar senha</button>
+          <button class="btn btn-ghost btn-sm" style="margin-left:4px" onclick="toggleUserStatus('${u.id}','${u.status}')">${u.status==='active'?'Desativar':'Ativar'}</button>
+        </td>
       </tr>`).join('');
     el.innerHTML = `
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Criado</th><th></th></tr></thead>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Criado</th><th>Ações</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>`;
@@ -913,14 +1159,17 @@ function openAddUser() {
     <div class="form-field"><label>E-mail</label><input id="m-email" type="email" /></div>
     <div class="form-field"><label>Senha</label><input id="m-pwd" type="password" /></div>
     <div class="form-field"><label>Perfil</label>
-      <select id="m-role"><option value="user">Usuário</option><option value="admin">Admin</option></select>
+      <select id="m-role">
+        <option value="user">Usuário (vê apenas próprios leads)</option>
+        <option value="admin">Admin (vê todos os leads)</option>
+      </select>
     </div>`,
     async () => {
       await api('POST', '/users', {
-        name: document.getElementById('m-name').value,
-        email: document.getElementById('m-email').value,
+        name:     document.getElementById('m-name').value,
+        email:    document.getElementById('m-email').value,
         password: document.getElementById('m-pwd').value,
-        role: document.getElementById('m-role').value,
+        role:     document.getElementById('m-role').value,
       });
       toast('Usuário criado!');
       renderUsers();
@@ -928,7 +1177,7 @@ function openAddUser() {
   );
 }
 
-function changePassword(id) {
+function changeUserPassword(id) {
   showModal('Trocar Senha', `
     <div class="form-field"><label>Nova senha</label><input id="m-pwd" type="password" /></div>`,
     async () => {
@@ -936,6 +1185,16 @@ function changePassword(id) {
       toast('Senha alterada!');
     }
   );
+}
+
+async function toggleUserStatus(id, currentStatus) {
+  const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+  if (!confirm(`${newStatus === 'inactive' ? 'Desativar' : 'Ativar'} este usuário?`)) return;
+  try {
+    await api('PUT', `/users/${id}/status`, { status: newStatus });
+    toast('Status atualizado!');
+    renderUsers();
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────

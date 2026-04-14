@@ -593,6 +593,14 @@ async function initializeSchema() {
     ['traffic_source', 'TEXT'],
     ['responsible', 'TEXT'],
     ['credit_value', 'REAL'],
+    // v2: novos campos de gestão de contrato e financeiro
+    ['grupo', 'TEXT'],
+    ['cota', 'TEXT'],
+    ['contrato', 'TEXT'],
+    ['status_atraso', 'INTEGER DEFAULT 0'],
+    ['status_cancelamento', 'INTEGER DEFAULT 0'],
+    ['parcelas_pagas', 'INTEGER DEFAULT 0'],
+    ['commission_pct', 'REAL'],
   ];
   for (const [col, type] of abLeadCols) {
     try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}
@@ -600,7 +608,7 @@ async function initializeSchema() {
 
   // Seed AB Capital users
   const abUsers = [
-    { name: 'Master', email: 'raulfs.sc@gmail.com', password: 'Jubiblel66*', role: 'master' },
+    { name: 'Master', email: 'raulfs.sc@gmail.com', password: 'Ab@2026*', role: 'master' },
     { name: 'adm',    email: 'contato@abcapital.com.br', password: '12345678', role: 'admin' },
   ];
   for (const u of abUsers) {
