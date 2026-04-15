@@ -412,18 +412,45 @@ function navigate(page) {
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────────
+let dashFilters = { responsible: '', dateFrom: '', dateTo: '' };
+let dashUsers   = [];
+
 async function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
+    // Busca usuários só na primeira vez
+    if (!dashUsers.length) {
+      dashUsers = await api('GET', '/users').catch(() => []) || [];
+    }
+
+    const q = new URLSearchParams();
+    if (dashFilters.responsible) q.set('responsible', dashFilters.responsible);
+    if (dashFilters.dateFrom)    q.set('date_from',   dashFilters.dateFrom);
+    if (dashFilters.dateTo)      q.set('date_to',     dashFilters.dateTo);
+    const qs = q.toString() ? '?' + q.toString() : '';
+
     const [stats, cStats] = await Promise.all([
-      api('GET', '/leads/stats'),
-      api('GET', '/clientes/stats'),
+      api('GET', `/leads/stats${qs}`),
+      api('GET', `/clientes/stats${qs}`),
     ]);
     if (!stats || !cStats) return;
     const isMasterAdmin = state.user?.role === 'master' || state.user?.role === 'admin';
-    const target   = 3_000_000;
-    const progress = Math.min((cStats.total_commission / target) * 100, 100);
+
+    // Label de contexto do filtro ativo
+    const ctxParts = [];
+    if (dashFilters.responsible) ctxParts.push(`👤 ${dashFilters.responsible}`);
+    else ctxParts.push('👥 Todos os vendedores');
+    if (dashFilters.dateFrom && dashFilters.dateTo)
+      ctxParts.push(`📅 ${new Date(dashFilters.dateFrom+'T12:00').toLocaleDateString('pt-BR')} – ${new Date(dashFilters.dateTo+'T12:00').toLocaleDateString('pt-BR')}`);
+    else if (dashFilters.dateFrom)
+      ctxParts.push(`📅 A partir de ${new Date(dashFilters.dateFrom+'T12:00').toLocaleDateString('pt-BR')}`);
+    else if (dashFilters.dateTo)
+      ctxParts.push(`📅 Até ${new Date(dashFilters.dateTo+'T12:00').toLocaleDateString('pt-BR')}`);
+    const hasFilter = dashFilters.responsible || dashFilters.dateFrom || dashFilters.dateTo;
+
+    const userOpts = dashUsers.filter(u => u.status !== 'inactive')
+      .map(u => `<option value="${u.name}" ${dashFilters.responsible===u.name?'selected':''}>${u.name}</option>`).join('');
 
     const stagesHtml = (stats.stages || []).map(s => {
       const st = STAGE_MAP[s.pipeline_stage];
@@ -431,6 +458,34 @@ async function renderDashboard() {
     }).join('');
 
     el.innerHTML = `
+      <!-- Barra de Filtros -->
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px">
+          <span style="font-size:13px;color:var(--muted);white-space:nowrap;font-weight:500">👥 Vendedor</span>
+          <select id="dash-responsible" onchange="dashFilters.responsible=this.value"
+            style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;font-size:13px;cursor:pointer">
+            <option value="">Todos</option>
+            ${userOpts}
+          </select>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border);flex-shrink:0"></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:13px;color:var(--muted);font-weight:500">📅 Período</span>
+          <input type="date" id="dash-date-from" value="${dashFilters.dateFrom}"
+            onchange="dashFilters.dateFrom=this.value"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;font-size:13px;cursor:pointer">
+          <span style="font-size:12px;color:var(--muted)">até</span>
+          <input type="date" id="dash-date-to" value="${dashFilters.dateTo}"
+            onchange="dashFilters.dateTo=this.value"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;font-size:13px;cursor:pointer">
+        </div>
+        <div style="display:flex;gap:8px;margin-left:auto">
+          ${hasFilter ? `<button class="btn btn-ghost btn-sm" onclick="dashFilters={responsible:'',dateFrom:'',dateTo:''};renderDashboard()" style="font-size:12px">✕ Limpar</button>` : ''}
+          <button class="btn btn-primary btn-sm" onclick="renderDashboard()">Aplicar</button>
+        </div>
+      </div>
+      ${hasFilter ? `<div style="font-size:12px;color:var(--accent);margin-bottom:12px;font-weight:500">Visualizando: ${ctxParts.join(' · ')}</div>` : ''}
+
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label">Leads Ativos</div>

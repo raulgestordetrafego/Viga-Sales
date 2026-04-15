@@ -237,15 +237,31 @@ router.get('/leads/stats', abAuth, async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
     const isUser = req.abSession.role === 'user';
-    const scopeClause = isUser ? ` AND responsible = '${req.abSession.name.replace(/'/g, "''")}'` : '';
+    const { responsible, date_from, date_to } = req.query;
 
-    const [totalRow]  = await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE 1=1${scopeClause}`, []);
-    const [todayRow]  = await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE date(created_at) = ?${scopeClause}`, [today]);
-    const stages      = await query(`SELECT pipeline_stage, COUNT(*) as c FROM ab_capital_leads WHERE 1=1${scopeClause} GROUP BY pipeline_stage`, []);
+    // Monta cláusula de filtros dinâmicos
+    const buildWhere = (table) => {
+      const clauses = ['1=1'];
+      const p = [];
+      if (isUser) { clauses.push(`${table}responsible = ?`); p.push(req.abSession.name); }
+      else if (responsible) { clauses.push(`${table}responsible = ?`); p.push(responsible); }
+      if (date_from) { clauses.push(`date(${table}created_at) >= ?`); p.push(date_from); }
+      if (date_to)   { clauses.push(`date(${table}created_at) <= ?`); p.push(date_to); }
+      return { where: clauses.join(' AND '), p };
+    };
+
+    const lf = buildWhere('');
+    const cf = buildWhere('');
+
+    const [totalRow]  = await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE ${lf.where}`, lf.p);
+    const todayParams = [...lf.p];
+    const todayExtra  = date_from || date_to ? '' : ` AND date(created_at) = '${today}'`;
+    const [todayRow]  = date_from || date_to
+      ? [{ c: 0 }]
+      : await query(`SELECT COUNT(*) as c FROM ab_capital_leads WHERE ${lf.where}${todayExtra}`, lf.p);
+    const stages      = await query(`SELECT pipeline_stage, COUNT(*) as c FROM ab_capital_leads WHERE ${lf.where} GROUP BY pipeline_stage`, lf.p);
     const [prosTotal] = await query('SELECT COUNT(*) as c FROM ab_capital_prospects', []);
 
-    // Financeiro vem da tabela de clientes
-    const clientScope = isUser ? ` AND responsible = '${req.abSession.name.replace(/'/g, "''")}'` : '';
     const [finRow] = await query(
       `SELECT
          COALESCE(SUM(credit_value), 0)                                                                    AS total_credit,
@@ -254,7 +270,7 @@ router.get('/leads/stats', abAuth, async (req, res) => {
          COUNT(CASE WHEN status_atraso = 1    THEN 1 END)                                                  AS overdue_count,
          COUNT(CASE WHEN status = 'cancelado' THEN 1 END)                                                  AS cancelled_count,
          COUNT(*) AS won_count
-       FROM ab_capital_clientes WHERE 1=1${clientScope}`, []
+       FROM ab_capital_clientes WHERE ${cf.where}`, cf.p
     );
 
     res.json({
@@ -409,7 +425,14 @@ router.get('/clientes', abAuth, async (req, res) => {
 router.get('/clientes/stats', abAuth, async (req, res) => {
   try {
     const isUser = req.abSession.role === 'user';
-    const scopeClause = isUser ? ` AND responsible = '${req.abSession.name.replace(/'/g, "''")}'` : '';
+    const { responsible, date_from, date_to } = req.query;
+    const clauses = ['1=1'];
+    const p = [];
+    if (isUser) { clauses.push('responsible = ?'); p.push(req.abSession.name); }
+    else if (responsible) { clauses.push('responsible = ?'); p.push(responsible); }
+    if (date_from) { clauses.push('date(created_at) >= ?'); p.push(date_from); }
+    if (date_to)   { clauses.push('date(created_at) <= ?'); p.push(date_to); }
+    const where = clauses.join(' AND ');
     const [row] = await query(
       `SELECT
          COUNT(*) AS total,
@@ -420,7 +443,7 @@ router.get('/clientes/stats', abAuth, async (req, res) => {
          COALESCE(SUM(credit_value), 0) AS total_credit,
          COALESCE(SUM(credit_value * COALESCE(commission_pct,4) / 100), 0) AS total_commission,
          COALESCE(SUM(installment_value * (COALESCE(installments,0) - COALESCE(parcelas_pagas,0))), 0) AS remaining_balance
-       FROM ab_capital_clientes WHERE 1=1${scopeClause}`, []
+       FROM ab_capital_clientes WHERE ${where}`, p
     );
     res.json({ ...row, revenue_target: 3_000_000 });
   } catch (err) {
