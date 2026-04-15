@@ -633,6 +633,7 @@ async function initializeSchema() {
     ['parcelas_pagas', 'INTEGER DEFAULT 0'],
     ['commission_pct', 'REAL'],
     ['converted_to_client_id', 'TEXT'],
+    ['won_at', 'TEXT'],
   ];
   for (const [col, type] of abLeadCols) {
     try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}

@@ -608,10 +608,16 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     }
   });
 
-  // Uploads estáticos
+  // Uploads estáticos — acessíveis via /uploads E /api/uploads (para bypassar prefixo Traefik)
   const uploadsDir = path.join(__dirname, 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
   app.use('/uploads', express.static(uploadsDir));
+  app.use('/api/uploads', express.static(uploadsDir));
+
+  // Logo AB Capital via /api/ (bypassa prefixo Traefik do app.abcapital.com.br)
+  app.get('/api/ab-capital/logo', (req: any, res: any) => {
+    res.sendFile(path.join(__dirname, 'public', 'abcapital', 'logo.png'));
+  });
 
   // API Routes
   app.use("/api/contacts", contactRoutes);

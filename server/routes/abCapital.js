@@ -344,11 +344,11 @@ router.post('/leads/:id/upload', abAuth, upload.fields([
     const params = [];
     if (req.files?.attachment) {
       updates.push('attachment_path=?');
-      params.push('/uploads/ab-capital/' + req.files.attachment[0].filename);
+      params.push('/api/uploads/ab-capital/' + req.files.attachment[0].filename);
     }
     if (req.files?.photo) {
       updates.push('photo_path=?');
-      params.push('/uploads/ab-capital/' + req.files.photo[0].filename);
+      params.push('/api/uploads/ab-capital/' + req.files.photo[0].filename);
     }
     if (!updates.length) return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     updates.push('updated_at=?');
@@ -528,11 +528,11 @@ router.post('/clientes/:id/upload', abAuth, upload.fields([
     const params = [];
     if (req.files?.attachment) {
       updates.push('attachment_path=?');
-      params.push('/uploads/ab-capital/' + req.files.attachment[0].filename);
+      params.push('/api/uploads/ab-capital/' + req.files.attachment[0].filename);
     }
     if (req.files?.photo) {
       updates.push('photo_path=?');
-      params.push('/uploads/ab-capital/' + req.files.photo[0].filename);
+      params.push('/api/uploads/ab-capital/' + req.files.photo[0].filename);
     }
     if (!updates.length) return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     updates.push('updated_at=?');
@@ -581,9 +581,9 @@ router.post('/leads/:id/convert', abAuth, async (req, res) => {
        now, now]
     );
 
-    // Marca o lead como convertido
-    await run('UPDATE ab_capital_leads SET converted_to_client_id = ?, updated_at = ? WHERE id = ?',
-      [id, now, lead.id]);
+    // Marca o lead como convertido e registra data de fechamento
+    await run('UPDATE ab_capital_leads SET converted_to_client_id = ?, won_at = ?, updated_at = ? WHERE id = ?',
+      [id, now, now, lead.id]);
 
     const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [id]);
     res.json({ cliente, already_existed: false });
