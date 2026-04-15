@@ -642,7 +642,7 @@ function renderLeadSheetModal(lead) {
               </div>
             </div>
             <div class="form-row">
-              <div class="form-field"><label>Crédito Estimado (R$)</label><input id="lf-credit_value" type="number" step="0.01" value="${lead.credit_value||''}" /></div>
+              <div class="form-field"><label>Crédito Estimado (R$)</label><input id="lf-credit_value" type="text" inputmode="numeric" placeholder="R$ 0,00" value="${lead.credit_value ? formatBRL(lead.credit_value) : ''}" oninput="maskBRL(this)" /></div>
               <div class="form-field"><label>Objetivo</label>
                 <select id="lf-objective">
                   <option value="">Não informado</option>
@@ -675,6 +675,21 @@ function renderLeadSheetModal(lead) {
             <label>Anotações</label>
             <textarea id="lf-notes" rows="3" style="resize:vertical">${esc(lead.notes||'')}</textarea>
           </div>
+
+          <div>
+            <div class="section-title">Documentos</div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              ${lead.attachment_path
+                ? `<a href="${lead.attachment_path}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver Documento Anexado</a>`
+                : `<span style="color:var(--muted);font-size:13px">Nenhum documento anexado</span>`
+              }
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                📁 ${lead.attachment_path ? 'Substituir' : 'Anexar Documento'}
+                <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none"
+                  onchange="uploadLeadFile('${lead.id}','attachment',this)">
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -695,7 +710,7 @@ async function saveLeadSheet(id) {
       email:           g('lf-email'),
       address:         g('lf-address'),
       consortium_name: g('lf-consortium_name'),
-      credit_value:    g('lf-credit_value') ? Number(g('lf-credit_value')) : null,
+      credit_value:    parseBRL(g('lf-credit_value')),
       admin_company:   g('lf-admin_company'),
       pipeline_stage:  g('lf-pipeline_stage'),
       traffic_source:  g('lf-traffic_source'),
@@ -780,7 +795,7 @@ function openNewLead() {
       </div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label>Crédito Estimado (R$)</label><input id="m-credit_value" type="number" step="0.01" /></div>
+      <div class="form-field"><label>Crédito Estimado (R$)</label><input id="m-credit_value" type="text" inputmode="numeric" placeholder="R$ 0,00" oninput="maskBRL(this)" /></div>
       <div class="form-field"><label>Estágio</label><select id="m-stage">${stageOpts}</select></div>
     </div>
     <div class="form-row">
@@ -802,7 +817,7 @@ function openNewLead() {
         await api('PUT', `/leads/${lid}`, {
           address:         document.getElementById('m-address').value,
           consortium_name: document.getElementById('m-consortium').value,
-          credit_value:    document.getElementById('m-credit_value').value ? Number(document.getElementById('m-credit_value').value) : null,
+          credit_value:    parseBRL(document.getElementById('m-credit_value').value),
           admin_company:   document.getElementById('m-admin_company').value,
           pipeline_stage:  stg,
           traffic_source:  document.getElementById('m-traffic').value,
@@ -1478,6 +1493,21 @@ function fmtDate(str) {
 }
 function fmtMoney(val) {
   return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function formatBRL(val) {
+  if (!val && val !== 0) return '';
+  return 'R$ ' + Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function parseBRL(str) {
+  if (!str) return null;
+  const n = Number(String(str).replace(/R\$\s?/g,'').replace(/\./g,'').replace(',','.'));
+  return isNaN(n) ? null : n;
+}
+function maskBRL(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (!v) { input.value = ''; return; }
+  v = (parseInt(v,10)/100).toFixed(2);
+  input.value = 'R$ ' + parseFloat(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────────
