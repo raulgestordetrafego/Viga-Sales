@@ -502,6 +502,10 @@ router.put('/clientes/:id', abAuth, async (req, res) => {
       installment_value, parcelas_pagas, admin_profit_pct,
       status, status_atraso, status_cancelamento,
       responsible, traffic_source, general_info, notes,
+      // novos campos v2
+      data_adesao, comissao_status, empresa, nf_emitida,
+      data_boleto, data_lance, parceria_pct, parceria_obs,
+      comissao_valor, comissao_recebida,
     } = req.body;
     const now = new Date().toISOString();
     await run(
@@ -517,6 +521,11 @@ router.put('/clientes/:id', abAuth, async (req, res) => {
          status_atraso=COALESCE(?,status_atraso),
          status_cancelamento=COALESCE(?,status_cancelamento),
          responsible=?, traffic_source=?, general_info=?, notes=?,
+         data_adesao=?, comissao_status=COALESCE(?,comissao_status),
+         empresa=COALESCE(?,empresa), nf_emitida=COALESCE(?,nf_emitida),
+         data_boleto=?, data_lance=?,
+         parceria_pct=?, parceria_obs=?,
+         comissao_valor=?, comissao_recebida=COALESCE(?,comissao_recebida),
          updated_at=?
        WHERE id=?`,
       [
@@ -531,6 +540,11 @@ router.put('/clientes/:id', abAuth, async (req, res) => {
         status_atraso != null ? (status_atraso ? 1 : 0) : null,
         status_cancelamento != null ? (status_cancelamento ? 1 : 0) : null,
         responsible||null, traffic_source||null, general_info||null, notes||null,
+        data_adesao||null, comissao_status||null,
+        empresa||null, nf_emitida != null ? (nf_emitida ? 1 : 0) : null,
+        data_boleto||null, data_lance||null,
+        parceria_pct||null, parceria_obs||null,
+        comissao_valor||null, comissao_recebida != null ? Number(comissao_recebida) : null,
         now, req.params.id,
       ]
     );
@@ -563,6 +577,122 @@ router.post('/clientes/:id/upload', abAuth, upload.fields([
     await run(`UPDATE ab_capital_clientes SET ${updates.join(',')} WHERE id=?`, params);
     const c = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
     res.json(c);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Exportação CSV ────────────────────────────────────────────────────────────
+function csvRow(cells) {
+  return cells.map(c => {
+    const v = c == null ? '' : String(c);
+    return v.includes(',') || v.includes('"') || v.includes('\n')
+      ? '"' + v.replace(/"/g, '""') + '"'
+      : v;
+  }).join(',');
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return isNaN(dt) ? d : dt.toLocaleDateString('pt-BR');
+}
+function fmtMoney(n) {
+  if (n == null) return '';
+  return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+}
+
+// Provisão — formato igual à planilha do contador
+router.get('/export/provisao', abAuth, async (req, res) => {
+  try {
+    const clientes = await query(
+      `SELECT * FROM ab_capital_clientes WHERE status != 'cancelado' ORDER BY admin_company, name`, []
+    );
+    const header = csvRow([
+      'Administradora','Nome','Grupo','Cota','Situação','Valor do Bem','Contrato',
+      'Data Adesão','Parcelas','Parcelas Pagas','Parcelas Restantes',
+      '% Comissão','Valor da Comissão','Status Comissão','Comissão Recebida',
+      'Valores Restantes a Receber','Empresa','NF Emitida','Data Boleto','Data Lance',
+      'Parceria %','Obs Parceria','Responsável',
+    ]);
+    const rows = clientes.map(c => {
+      const parcRestantes = (c.installments||0) - (c.parcelas_pagas||0);
+      const comissaoMensal = c.comissao_valor || (c.credit_value && c.commission_pct ? c.credit_value * c.commission_pct / 100 : null);
+      const totalRestante  = comissaoMensal && parcRestantes ? comissaoMensal * parcRestantes : null;
+      const situacao = c.status_atraso ? 'Em atraso' : c.status === 'quitado' ? 'Quitado' : 'Ativa';
+      return csvRow([
+        c.admin_company||'', c.name, c.grupo||'', c.cota||'', situacao,
+        fmtMoney(c.credit_value), c.contrato||'',
+        fmtDate(c.data_adesao||c.created_at), c.installments||'',
+        c.parcelas_pagas||0, parcRestantes,
+        c.commission_pct ? (c.commission_pct * 100).toFixed(4)+'%' : '',
+        fmtMoney(comissaoMensal),
+        c.comissao_status||'pendente',
+        fmtMoney(c.comissao_recebida||0),
+        fmtMoney(totalRestante),
+        c.empresa||'AB', c.nf_emitida ? 'Sim' : 'Não',
+        c.data_boleto||'', c.data_lance||'',
+        c.parceria_pct||'', c.parceria_obs||'', c.responsible||'',
+      ]);
+    });
+    // Linha de totais
+    const totCredit = clientes.reduce((s,c)=>s+(c.credit_value||0),0);
+    const totRecebida = clientes.reduce((s,c)=>s+(c.comissao_recebida||0),0);
+    rows.push(csvRow(['TOTAL','','','','','','','','','','','','','','',fmtMoney(totCredit),'','','','','','','']));
+
+    const bom = '\uFEFF'; // BOM para Excel reconhecer UTF-8
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="provisao_${new Date().toISOString().split('T')[0]}.csv"`);
+    res.end(bom + [header, ...rows].join('\r\n'));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Relatório de Vendas — histórico completo
+router.get('/export/relatorio', abAuth, async (req, res) => {
+  try {
+    const { responsible, date_from, date_to } = req.query;
+    const clauses = ['1=1'];
+    const p = [];
+    if (responsible) { clauses.push('responsible = ?'); p.push(responsible); }
+    if (date_from)   { clauses.push('date(created_at) >= ?'); p.push(date_from); }
+    if (date_to)     { clauses.push('date(created_at) <= ?'); p.push(date_to); }
+    const clientes = await query(
+      `SELECT * FROM ab_capital_clientes WHERE ${clauses.join(' AND ')} ORDER BY created_at DESC`, p
+    );
+    const header = csvRow([
+      'Mês Venda','Administradora','Nº Contrato','Cliente','Valor Venda','Data Venda',
+      '% Comissão','Parcelas','Valor Comissão Total','Valor Parcela Comissão',
+      'Status Comissão','NF Emitida','Empresa','Origem','Data Adesão',
+      'Grupo','Cota','Status Contrato','Parcelas Pagas','Parcelas Restantes',
+      'Comissão Recebida','A Receber','Responsável','Parceria','Obs Parceria',
+    ]);
+    const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const rows = clientes.map(c => {
+      const dt = c.data_adesao ? new Date(c.data_adesao) : new Date(c.created_at);
+      const mes = isNaN(dt) ? '' : MESES[dt.getMonth()]+'/'+dt.getFullYear();
+      const comissaoTotal  = c.credit_value && c.commission_pct ? c.credit_value * c.commission_pct / 100 : null;
+      const comissaoMensal = c.comissao_valor || (comissaoTotal && c.installments ? comissaoTotal / c.installments : null);
+      const parcRestantes  = (c.installments||0) - (c.parcelas_pagas||0);
+      const aReceber       = comissaoMensal ? comissaoMensal * parcRestantes : null;
+      return csvRow([
+        mes, c.admin_company||'', c.contrato||'', c.name,
+        fmtMoney(c.credit_value), fmtDate(c.data_adesao||c.created_at),
+        c.commission_pct ? (c.commission_pct*100).toFixed(2)+'%' : '',
+        c.installments||'', fmtMoney(comissaoTotal), fmtMoney(comissaoMensal),
+        c.comissao_status||'pendente', c.nf_emitida?'Sim':'Não',
+        c.empresa||'AB', c.traffic_source||'', fmtDate(c.data_adesao),
+        c.grupo||'', c.cota||'',
+        c.status_atraso?'Em atraso':c.status||'ativo',
+        c.parcelas_pagas||0, parcRestantes,
+        fmtMoney(c.comissao_recebida||0), fmtMoney(aReceber),
+        c.responsible||'', c.parceria_pct||'', c.parceria_obs||'',
+      ]);
+    });
+    const bom = '\uFEFF';
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="relatorio_vendas_${new Date().toISOString().split('T')[0]}.csv"`);
+    res.end(bom + [header, ...rows].join('\r\n'));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -808,6 +938,24 @@ router.put('/users/:id/status', abMaster, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ── Configurações (Google Sheets webhook) ─────────────────────────────────────
+
+// GET — retorna webhook_url salvo (para o frontend saber se está configurado)
+router.get('/settings/sheets-webhook', abAuth, async (req, res) => {
+  const url = process.env.AB_CAPITAL_SHEETS_WEBHOOK || '';
+  res.json({ webhook_url: url || null });
+});
+
+// PUT — atualiza em memória por env var não é persistente; para persistência
+//       salve no .env do VPS e reinicie. Retorna instrução ao usuário.
+router.put('/settings/sheets-webhook', abMaster, async (req, res) => {
+  const { webhook_url } = req.body;
+  if (!webhook_url) return res.status(400).json({ error: 'webhook_url obrigatório' });
+  // Persiste no .env temporariamente em runtime
+  process.env.AB_CAPITAL_SHEETS_WEBHOOK = webhook_url;
+  res.json({ ok: true, note: 'Salvo em memória. Para persistir após restart, adicione AB_CAPITAL_SHEETS_WEBHOOK no .env do servidor.' });
 });
 
 export default router;

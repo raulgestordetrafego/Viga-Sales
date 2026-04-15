@@ -1047,7 +1047,9 @@ let clientesState = { page: 1, search: '', status: '' };
 async function renderClientes() {
   const el = document.getElementById('page-clientes');
   document.getElementById('topbar-actions').innerHTML =
-    `<button class="btn btn-primary btn-sm" onclick="openNewCliente()">+ Novo Cliente</button>`;
+    `<button class="btn btn-ghost btn-sm" onclick="exportClientes('provisao')" title="Exportar planilha de provisão de comissão">📥 Provisão</button>
+     <button class="btn btn-ghost btn-sm" onclick="exportClientes('relatorio')" title="Exportar relatório completo de vendas">📥 Relatório</button>
+     <button class="btn btn-primary btn-sm" onclick="openNewCliente()">+ Novo Cliente</button>`;
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
     const params = new URLSearchParams({ page: clientesState.page, limit: 50 });
@@ -1241,6 +1243,70 @@ function renderClientSheetModal(c, users = []) {
           </div>
 
           <div>
+            <div class="section-title">Comissão & Parceria</div>
+            <div class="form-row">
+              <div class="form-field"><label>Data de Adesão</label>
+                <input type="date" id="cf-data_adesao" value="${c.data_adesao ? c.data_adesao.split('T')[0] : ''}" />
+              </div>
+              <div class="form-field"><label>Empresa</label>
+                <select id="cf-empresa">
+                  ${['AB','WAB'].map(o=>`<option value="${o}" ${(c.empresa||'AB')===o?'selected':''}>${o}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>Status da Comissão</label>
+                <select id="cf-comissao_status">
+                  <option value="pendente"    ${(c.comissao_status||'pendente')==='pendente'   ?'selected':''}>Pendente</option>
+                  <option value="finalizado"  ${c.comissao_status==='finalizado' ?'selected':''}>Finalizado</option>
+                  <option value="atraso"      ${c.comissao_status==='atraso'     ?'selected':''}>Em Atraso</option>
+                </select>
+              </div>
+              <div class="form-field"><label>Valor da Comissão (R$)</label>
+                <input type="number" step="0.01" id="cf-comissao_valor" value="${c.comissao_valor||''}" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>Data do Boleto</label>
+                <input type="date" id="cf-data_boleto" value="${c.data_boleto ? c.data_boleto.split('T')[0] : ''}" />
+              </div>
+              <div class="form-field"><label>Data do Lance</label>
+                <input type="date" id="cf-data_lance" value="${c.data_lance ? c.data_lance.split('T')[0] : ''}" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label>% Parceria</label>
+                <input type="number" step="0.5" id="cf-parceria_pct" value="${c.parceria_pct||''}" placeholder="Ex: 10" />
+              </div>
+              <div class="form-field"><label>Observação da Parceria</label>
+                <input type="text" id="cf-parceria_obs" value="${esc(c.parceria_obs||'')}" placeholder="Parceiro, detalhes..." />
+              </div>
+            </div>
+            <div style="display:flex;gap:32px;flex-wrap:wrap;margin-top:4px">
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">NF Emitida</label>
+                <div class="toggle-wrap">
+                  <label class="toggle">
+                    <input type="checkbox" id="cf-nf_emitida" ${c.nf_emitida ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Nota fiscal emitida</span>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Comissão Recebida</label>
+                <div class="toggle-wrap">
+                  <label class="toggle">
+                    <input type="checkbox" id="cf-comissao_recebida" ${c.comissao_recebida ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--muted)">Comissão já recebida</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <div class="section-title">Gestão</div>
             <div class="form-row">
               <div class="form-field"><label>Responsável</label>
@@ -1327,11 +1393,24 @@ async function saveClientSheet(id) {
       traffic_source:      g('cf-traffic_source'),
       general_info:        g('cf-general_info'),
       notes:               g('cf-notes'),
+      // Comissão & Parceria
+      data_adesao:         g('cf-data_adesao')      || null,
+      empresa:             g('cf-empresa')           || null,
+      comissao_status:     g('cf-comissao_status')   || null,
+      comissao_valor:      g('cf-comissao_valor')    ? Number(g('cf-comissao_valor'))  : null,
+      data_boleto:         g('cf-data_boleto')       || null,
+      data_lance:          g('cf-data_lance')        || null,
+      parceria_pct:        g('cf-parceria_pct')      ? Number(g('cf-parceria_pct'))    : null,
+      parceria_obs:        g('cf-parceria_obs')      || null,
+      nf_emitida:          chk('cf-nf_emitida'),
+      comissao_recebida:   chk('cf-comissao_recebida'),
     });
     toast('Cliente salvo!');
     closeModal();
     if (state.page === 'clientes') renderClientes();
     if (state.page === 'dashboard') renderDashboard();
+    // Sync Google Sheets via webhook (se configurado)
+    syncClientToSheets(updated).catch(() => {});
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -1346,6 +1425,29 @@ async function uploadClientFile(id, field, input) {
     closeModal();
     renderClientSheetModal(updated);
   } catch (e) { toast(e.message, 'error'); }
+}
+
+// ── Exportação de planilhas ───────────────────────────────────────────────────
+function exportClientes(type) {
+  const params = new URLSearchParams();
+  if (clientesState.status) params.set('status', clientesState.status);
+  if (clientesState.search) params.set('search', clientesState.search);
+  window.location.href = `/api/ab-capital/export/${type}?${params}`;
+}
+
+// ── Google Sheets auto-sync ───────────────────────────────────────────────────
+async function syncClientToSheets(cliente) {
+  if (!cliente) return;
+  try {
+    const cfg = await api('GET', '/settings/sheets-webhook').catch(() => null);
+    const webhookUrl = cfg?.webhook_url;
+    if (!webhookUrl) return;
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cliente),
+    });
+  } catch (_) { /* silently ignore */ }
 }
 
 async function confirmDeleteCliente(id) {
@@ -1555,7 +1657,19 @@ async function renderUsers() {
         <span style="margin-left:12px"><strong style="color:var(--accent)">Master</strong> — acesso total + configurações</span>
         <span style="margin-left:12px"><strong style="color:var(--info)">Admin</strong> — vê todos os leads e clientes</span>
         <span style="margin-left:12px"><strong style="color:var(--muted)">Usuário</strong> — vê apenas próprios leads/clientes</span>
+      </div>
+      <div id="sheets-config-panel" style="margin-top:16px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px">🔗 Google Sheets — Sincronização Automática</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Ao salvar um cliente, os dados são enviados automaticamente para o webhook n8n abaixo, que grava na planilha do Google Sheets.</div>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <div style="flex:1"><label style="font-size:12px;color:var(--muted);font-weight:500;display:block;margin-bottom:4px">URL do Webhook n8n</label>
+            <input id="sheets-webhook-input" type="url" placeholder="https://n8n.exemplo.com/webhook/abc123" style="width:100%;box-sizing:border-box" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveSheetsWebhook()">Salvar</button>
+        </div>
+        <div id="sheets-webhook-status" style="font-size:11px;color:var(--muted);margin-top:8px"></div>
       </div>`;
+    loadSheetsWebhookConfig();
   } catch (e) { el.innerHTML = `<div class="empty">Erro: ${e.message}</div>`; }
 }
 
@@ -1591,6 +1705,31 @@ function changeUserPassword(id) {
       toast('Senha alterada!');
     }
   );
+}
+
+async function saveSheetsWebhook() {
+  const url = document.getElementById('sheets-webhook-input')?.value?.trim();
+  if (!url) return;
+  try {
+    const r = await api('PUT', '/settings/sheets-webhook', { webhook_url: url });
+    document.getElementById('sheets-webhook-status').textContent = '✅ Salvo! ' + (r?.note || '');
+    toast('Webhook salvo!');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function loadSheetsWebhookConfig() {
+  try {
+    const cfg = await api('GET', '/settings/sheets-webhook');
+    const inp = document.getElementById('sheets-webhook-input');
+    const st  = document.getElementById('sheets-webhook-status');
+    if (!inp) return;
+    if (cfg?.webhook_url) {
+      inp.value = cfg.webhook_url;
+      st.textContent = '✅ Webhook configurado';
+    } else {
+      st.textContent = '⚠️ Nenhum webhook configurado — dados não serão sincronizados automaticamente';
+    }
+  } catch (_) {}
 }
 
 async function toggleUserStatus(id, currentStatus) {
