@@ -115,6 +115,17 @@ export async function sendTextMessage(phone, text) {
   return res.data;
 }
 
+export async function sendTextMessageFromInstance(instanceName, phone, text) {
+  const formattedPhone = formatPhone(phone);
+  console.log(`[Evolution] Sending text via instance "${instanceName}" to ${phone} (formatted: ${formattedPhone})`);
+  const res = await getApi().post(`/message/sendText/${instanceName}`, {
+    number: formattedPhone,
+    text,
+    delay: 1200,
+  });
+  return res.data;
+}
+
 export async function sendImageMessage(phone, imageData, caption = '', mimetype = 'image/jpeg') {
   const instance = getInstance();
   let media = imageData;
@@ -219,8 +230,12 @@ export async function getBase64FromMediaMessage(rawMsg) {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 export function formatPhone(phone) {
+  // Se já é um JID completo (grupo ou contato), retorna direto
+  if (typeof phone === 'string' && (phone.endsWith('@g.us') || phone.endsWith('@s.whatsapp.net'))) {
+    return phone;
+  }
   // Remove tudo que não é número
-  let cleaned = phone.replace(/\D/g, '');
+  let cleaned = String(phone).replace(/\D/g, '');
   // Se não tem código do país, adiciona 55 (Brasil)
   if (!cleaned.startsWith('55') && cleaned.length <= 11) {
     cleaned = '55' + cleaned;
@@ -368,6 +383,7 @@ export default {
   getQRCode,
   configureWebhook,
   sendTextMessage,
+  sendTextMessageFromInstance,
   sendImageMessage,
   sendDocumentMessage,
   sendAudioMessage,
