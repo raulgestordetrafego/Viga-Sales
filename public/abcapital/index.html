@@ -556,12 +556,15 @@ async function renderLeads() {
 
 // ── Ficha de Lead (simplificada — sem campos de contrato) ──────────────────────
 async function openLeadSheet(id) {
-  const lead = await api('GET', `/leads/${id}`);
+  const [lead, users] = await Promise.all([
+    api('GET', `/leads/${id}`),
+    api('GET', '/users').catch(() => []),
+  ]);
   if (!lead) return;
-  renderLeadSheetModal(lead);
+  renderLeadSheetModal(lead, users || []);
 }
 
-function renderLeadSheetModal(lead) {
+function renderLeadSheetModal(lead, users = []) {
   const st       = STAGE_MAP[lead.pipeline_stage] || STAGES[0];
   const stageIdx = STAGES.findIndex(s => s.id === lead.pipeline_stage);
   const stageBar = STAGES.map((s, i) => {
@@ -577,6 +580,7 @@ function renderLeadSheetModal(lead) {
   const stageOptions   = STAGES.map(s => `<option value="${s.id}" ${lead.pipeline_stage===s.id?'selected':''}>${s.label}</option>`).join('');
   const trafficOptions = TRAFFIC_SOURCES.map(o => `<option value="${o}" ${lead.traffic_source===o?'selected':''}>${o}</option>`).join('');
   const admOptions     = ADMINISTRADORAS.map(o => `<option value="${o}" ${lead.admin_company===o?'selected':''}>${o}</option>`).join('');
+  const leadUserOpts   = users.filter(u => u.status !== 'inactive').map(u => `<option value="${u.name}" ${lead.responsible===u.name?'selected':''}>${u.name}</option>`).join('');
 
   const convertedBanner = lead.converted_to_client_id ? `
     <div style="background:#081a0e;border:1px solid #14532d;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -667,7 +671,11 @@ function renderLeadSheetModal(lead) {
               </div>
             </div>
             <div class="form-field"><label>Responsável</label>
-              <input id="lf-responsible" value="${esc(lead.responsible||'')}" placeholder="Nome do vendedor" />
+              <select id="lf-responsible">
+                <option value="">Selecionar...</option>
+                ${leadUserOpts}
+                ${lead.responsible && !users.find(u=>u.name===lead.responsible) ? `<option value="${esc(lead.responsible)}" selected>${esc(lead.responsible)}</option>` : ''}
+              </select>
             </div>
           </div>
 
@@ -777,10 +785,12 @@ async function confirmDeleteLead(id) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-function openNewLead() {
+async function openNewLead() {
   const stageOpts   = STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
   const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
   const admOpts     = ADMINISTRADORAS.map(o => `<option>${o}</option>`).join('');
+  const usersData   = await api('GET', '/users').catch(() => []);
+  const newLeadUserOpts = (usersData||[]).filter(u=>u.status!=='inactive').map(u=>`<option value="${u.name}">${u.name}</option>`).join('');
   showModal('Novo Lead', `
     <div class="form-row">
       <div class="form-field"><label>Nome *</label><input id="m-name" /></div>
@@ -804,7 +814,7 @@ function openNewLead() {
     </div>
     <div class="form-row">
       <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
-      <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
+      <div class="form-field"><label>Responsável</label><select id="m-responsible"><option value="">Selecionar...</option>${newLeadUserOpts}</select></div>
     </div>
     <div class="form-field"><label>Informações Gerais</label>
       <textarea id="m-general_info" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
@@ -978,13 +988,17 @@ async function renderClientes() {
 }
 
 async function openClientSheet(id) {
-  const c = await api('GET', `/clientes/${id}`);
+  const [c, users] = await Promise.all([
+    api('GET', `/clientes/${id}`),
+    api('GET', '/users').catch(() => []),
+  ]);
   if (!c) return;
-  renderClientSheetModal(c);
+  renderClientSheetModal(c, users || []);
 }
 
-function renderClientSheetModal(c) {
+function renderClientSheetModal(c, users = []) {
   const admOptions     = ADMINISTRADORAS.map(o => `<option value="${o}" ${c.admin_company===o?'selected':''}>${o}</option>`).join('');
+  const userOpts = users.filter(u => u.status !== 'inactive').map(u => `<option value="${u.name}" ${c.responsible===u.name?'selected':''}>${u.name}</option>`).join('');
   const trafficOptions = TRAFFIC_SOURCES.map(o => `<option value="${o}" ${c.traffic_source===o?'selected':''}>${o}</option>`).join('');
   const photoHtml = c.photo_path
     ? `<img src="${c.photo_path}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
@@ -1119,7 +1133,13 @@ function renderClientSheetModal(c) {
           <div>
             <div class="section-title">Gestão</div>
             <div class="form-row">
-              <div class="form-field"><label>Responsável</label><input id="cf-responsible" value="${esc(c.responsible||'')}" /></div>
+              <div class="form-field"><label>Responsável</label>
+                <select id="cf-responsible">
+                  <option value="">Selecionar...</option>
+                  ${userOpts}
+                  ${c.responsible && !users.find(u=>u.name===c.responsible) ? `<option value="${esc(c.responsible)}" selected>${esc(c.responsible)}</option>` : ''}
+                </select>
+              </div>
               <div class="form-field"><label>Fonte de Tráfego</label>
                 <select id="cf-traffic_source"><option value="">Selecionar...</option>${trafficOptions}</select>
               </div>
