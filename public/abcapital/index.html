@@ -465,17 +465,72 @@ async function renderDashboard() {
         </div>` : ''}
       </div>
 
-      ${isMasterAdmin ? `
-      <div class="stat-card" style="margin-bottom:24px">
-        <div class="stat-label">Meta de Receita — R$ 3.000.000</div>
-        <div class="progress-wrap">
-          <div class="progress-label">
-            <span>Comissão acumulada: R$ ${fmtMoney(cStats.total_commission || 0)}</span>
-            <span>${progress.toFixed(1)}%</span>
+      ${isMasterAdmin ? (() => {
+        const creditTarget = 3_000_000;
+        const commTarget   = creditTarget * 0.04;
+        const creditPct    = Math.min((cStats.total_credit || 0) / creditTarget * 100, 100);
+        const commPct      = Math.min((cStats.total_commission || 0) / commTarget * 100, 100);
+
+        // Cor baseada em crédito contratado (não comissão)
+        const color = creditPct >= 100 ? '#22c55e' : creditPct >= 70 ? '#f59e0b' : '#ef4444';
+
+        function ring(pct, col, label, current, target) {
+          const r = 52, circ = 2 * Math.PI * r;
+          const dash = (pct / 100) * circ;
+          const glow = col === '#22c55e' ? '0 0 18px #22c55e55' : col === '#f59e0b' ? '0 0 18px #f59e0b55' : '0 0 18px #ef444455';
+          return `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;flex:1">
+              <div style="position:relative;width:140px;height:140px">
+                <svg width="140" height="140" viewBox="0 0 120 120" style="transform:rotate(-90deg)">
+                  <circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--border)" stroke-width="10"/>
+                  <circle cx="60" cy="60" r="${r}" fill="none" stroke="${col}" stroke-width="10"
+                    stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
+                    stroke-linecap="round"
+                    style="filter:drop-shadow(${glow});transition:stroke-dasharray .6s ease"/>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+                  <div style="font-size:22px;font-weight:800;color:${col};line-height:1">${pct.toFixed(0)}%</div>
+                  <div style="font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px">${label}</div>
+                </div>
+              </div>
+              <div style="text-align:center;width:100%">
+                <div style="font-size:18px;font-weight:700;color:${col}">R$ ${fmtMoney(current)}</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:2px">de R$ ${fmtMoney(target)}</div>
+                <div style="margin-top:10px;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:${pct.toFixed(1)}%;background:${col};border-radius:3px;transition:width .6s ease"></div>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        return `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+          <div class="stat-card" style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600">Meta de Vendas</div>
+                <div style="font-size:13px;color:var(--muted);margin-top:2px">Crédito contratado</div>
+              </div>
+              <div style="font-size:11px;padding:4px 10px;border-radius:20px;background:${color}22;color:${color};font-weight:700">
+                ${creditPct >= 100 ? '✓ Atingida' : creditPct >= 70 ? '↗ Em curso' : '↘ Abaixo'}
+              </div>
+            </div>
+            ${ring(creditPct, color, 'vendas', cStats.total_credit || 0, creditTarget)}
           </div>
-          <div class="progress-bar"><div class="progress-fill ${progress >= 100 ? 'over' : ''}" style="width:${progress.toFixed(1)}%"></div></div>
-        </div>
-      </div>` : ''}
+          <div class="stat-card" style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600">Resultado de Comissão</div>
+                <div style="font-size:13px;color:var(--muted);margin-top:2px">4% do crédito contratado</div>
+              </div>
+              <div style="font-size:11px;padding:4px 10px;border-radius:20px;background:${color}22;color:${color};font-weight:700">
+                R$ ${fmtMoney(commTarget)} meta
+              </div>
+            </div>
+            ${ring(commPct, color, 'comissão', cStats.total_commission || 0, commTarget)}
+          </div>
+        </div>`;
+      })() : ''}
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="table-wrap">
