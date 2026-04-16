@@ -781,11 +781,14 @@ function renderLeadSheetModal(lead, users = []) {
               </div>
             </div>
             <div class="form-field"><label>Responsável</label>
-              <select id="lf-responsible">
-                <option value="">Selecionar...</option>
-                ${leadUserOpts}
-                ${lead.responsible && !users.find(u=>u.name===lead.responsible) ? `<option value="${esc(lead.responsible)}" selected>${esc(lead.responsible)}</option>` : ''}
-              </select>
+              ${state.user?.role === 'user'
+                ? `<input id="lf-responsible" value="${esc(lead.responsible||state.user.name)}" readonly style="background:var(--surface2);color:var(--muted);cursor:not-allowed" />`
+                : `<select id="lf-responsible">
+                    <option value="">Selecionar...</option>
+                    ${leadUserOpts}
+                    ${lead.responsible && !users.find(u=>u.name===lead.responsible) ? `<option value="${esc(lead.responsible)}" selected>${esc(lead.responsible)}</option>` : ''}
+                  </select>`
+              }
             </div>
           </div>
 
@@ -826,6 +829,7 @@ function renderLeadSheetModal(lead, users = []) {
 async function saveLeadSheet(id) {
   try {
     const g   = id => document.getElementById(id)?.value ?? '';
+    const responsible = g('lf-responsible') || null; // null = mantém o valor atual no backend
     const body = {
       name:            g('lf-name'),
       phone:           g('lf-phone'),
@@ -836,7 +840,7 @@ async function saveLeadSheet(id) {
       admin_company:   g('lf-admin_company'),
       pipeline_stage:  g('lf-pipeline_stage'),
       traffic_source:  g('lf-traffic_source'),
-      responsible:     g('lf-responsible'),
+      responsible,
       general_info:    g('lf-general_info'),
       notes:           g('lf-notes'),
       objective:       g('lf-objective'),
@@ -899,8 +903,22 @@ async function openNewLead() {
   const stageOpts   = STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
   const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
   const admOpts     = ADMINISTRADORAS.map(o => `<option>${o}</option>`).join('');
-  const usersData   = await api('GET', '/users').catch(() => []);
-  const newLeadUserOpts = (usersData||[]).filter(u=>u.status!=='inactive').map(u=>`<option value="${u.name}">${u.name}</option>`).join('');
+
+  const isUser = state.user?.role === 'user';
+  const currentUserName = state.user?.name || '';
+
+  // Vendedor vê só ele mesmo; admin/master vê todos
+  let responsavelHtml;
+  if (isUser) {
+    responsavelHtml = `<input id="m-responsible" value="${esc(currentUserName)}" readonly
+      style="background:var(--surface2);color:var(--muted);cursor:not-allowed" />`;
+  } else {
+    const usersData = await api('GET', '/users').catch(() => []);
+    const opts = (usersData||[]).filter(u=>u.status!=='inactive')
+      .map(u=>`<option value="${u.name}">${u.name}</option>`).join('');
+    responsavelHtml = `<select id="m-responsible"><option value="">Selecionar...</option>${opts}</select>`;
+  }
+
   showModal('Novo Lead', `
     <div class="form-row">
       <div class="form-field"><label>Nome *</label><input id="m-name" /></div>
@@ -924,7 +942,7 @@ async function openNewLead() {
     </div>
     <div class="form-row">
       <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
-      <div class="form-field"><label>Responsável</label><select id="m-responsible"><option value="">Selecionar...</option>${newLeadUserOpts}</select></div>
+      <div class="form-field"><label>Responsável</label>${responsavelHtml}</div>
     </div>
     <div class="form-field"><label>Informações Gerais</label>
       <textarea id="m-general_info" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical"></textarea>
@@ -1111,6 +1129,77 @@ async function openClientSheet(id) {
   ]);
   if (!c) return;
   renderClientSheetModal(c, users || []);
+  // Carrega follow-ups após renderizar o modal
+  loadFollowups(id);
+}
+
+// ── Follow-ups ────────────────────────────────────────────────────────────────
+
+async function loadFollowups(clienteId) {
+  const el = document.getElementById(`followups-list-${clienteId}`);
+  if (!el) return;
+  try {
+    const rows = await api('GET', `/clientes/${clienteId}/followups`);
+    if (!rows || rows.length === 0) {
+      el.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:8px 0">Nenhum follow-up agendado.</div>`;
+      return;
+    }
+    el.innerHTML = rows.map(f => {
+      const isSent = f.status === 'sent';
+      const date = f.scheduled_date ? new Date(f.scheduled_date + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:18px">${isSent ? '✅' : '🔔'}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600">${date}${f.note ? ` — ${esc(f.note)}` : ''}</div>
+            <div style="font-size:11px;color:var(--muted)">
+              ${isSent ? `Lembrete enviado` : `Pendente`} · Por ${esc(f.created_by || '—')}
+            </div>
+          </div>
+          ${!isSent ? `<button class="btn btn-danger btn-sm" onclick="deleteFollowup('${f.id}','${clienteId}')">✕</button>` : ''}
+        </div>`;
+    }).join('');
+  } catch (e) {
+    el.innerHTML = `<div style="color:var(--muted);font-size:13px">Erro ao carregar follow-ups</div>`;
+  }
+}
+
+function openNovoFollowup(clienteId, clienteName) {
+  const today = new Date().toISOString().split('T')[0];
+  showModal('Agendar Follow-up', `
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">
+      Um lembrete será enviado no grupo da AB Capital no dia agendado.
+    </p>
+    <div class="form-field">
+      <label>Data do Follow-up *</label>
+      <input type="date" id="fu-date" min="${today}" value="${today}" />
+    </div>
+    <div class="form-field" style="margin-top:12px">
+      <label>Observação (opcional)</label>
+      <input id="fu-note" placeholder="Ex: Verificar pagamento da parcela, proposta nova..." />
+    </div>`,
+    async () => {
+      const scheduled_date = document.getElementById('fu-date').value;
+      const note = document.getElementById('fu-note').value.trim();
+      if (!scheduled_date) throw new Error('Selecione uma data');
+      await api('POST', `/clientes/${clienteId}/followups`, {
+        scheduled_date,
+        note: note || null,
+        cliente_name: clienteName,
+      });
+      toast('Follow-up agendado! 🔔');
+      loadFollowups(clienteId);
+    }
+  );
+}
+
+async function deleteFollowup(followupId, clienteId) {
+  if (!confirm('Cancelar este follow-up?')) return;
+  try {
+    await api('DELETE', `/followups/${followupId}`);
+    toast('Follow-up cancelado');
+    loadFollowups(clienteId);
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 function renderClientSheetModal(c, users = []) {
@@ -1254,6 +1343,15 @@ function renderClientSheetModal(c, users = []) {
               <button class="btn btn-primary btn-sm" onclick="openNovoContrato('${c.id}')">+ Adicionar Contrato</button>
             </div>
             <div id="contratos-list-${c.id}">${contratosHtml}</div>
+          </div>
+
+          <!-- Seção de Follow-ups -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+              <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.6px">🔔 Follow-ups</span>
+              <button class="btn btn-ghost btn-sm" onclick="openNovoFollowup('${c.id}','${esc(c.name)}')">+ Agendar Lembrete</button>
+            </div>
+            <div id="followups-list-${c.id}"><div style="color:var(--muted);font-size:13px">Carregando...</div></div>
           </div>
 
         </div>

@@ -17,7 +17,6 @@ import contactRoutes from "./server/routes/contacts.js";
 import conversationRoutes from "./server/routes/conversations.js";
 import broadcastRoutes from "./server/routes/broadcasts.js";
 import prospectingRoutes from "./server/routes/prospecting.js";
-import abCapitalRoutes from "./server/routes/abCapital.js";
 import { handleWebhook } from "./server/webhook/handler.js";
 import evolutionApi from "./server/services/evolutionApi.js";
 import { initDb, queryOne, run, query, hashPwd } from "./server/db/database.js";
@@ -33,7 +32,7 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-    ? ['https://vigasales.shop', 'https://www.vigasales.shop', 'https://abcapital.com.br', 'https://www.abcapital.com.br', 'https://app.abcapital.com.br']
+    ? ['https://vigasales.shop', 'https://www.vigasales.shop']
     : ['http://localhost:3000', 'http://localhost:5173'];
 
   const io = new Server(server, {
@@ -614,27 +613,11 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   app.use('/uploads', express.static(uploadsDir));
   app.use('/api/uploads', express.static(uploadsDir));
 
-  // Logo AB Capital via /api/ (bypassa prefixo Traefik do app.abcapital.com.br)
-  app.get('/api/ab-capital/logo', (req: any, res: any) => {
-    res.sendFile(path.join(__dirname, 'public', 'abcapital', 'logo.png'));
-  });
-
   // API Routes
   app.use("/api/contacts", contactRoutes);
   app.use("/api/conversations", conversationRoutes);
   app.use("/api/broadcasts", broadcastRoutes);
   app.use("/api/prospects", prospectingRoutes);
-  app.use("/api/ab-capital", abCapitalRoutes);
-
-  // AB Capital CRM — servir SPA em /abcapital/*
-  app.use("/abcapital", express.static(path.join(__dirname, "public", "abcapital")));
-  app.get("/abcapital", (req, res) => res.sendFile(path.join(__dirname, "public", "abcapital", "index.html")));
-  app.get("/abcapital/*", (req, res) => res.sendFile(path.join(__dirname, "public", "abcapital", "index.html")));
-
-  // Landing page AB Capital
-  app.get("/landing", (req, res) => res.sendFile(path.join(__dirname, "landing.html")));
-  app.get("/abcapital-landing", (req, res) => res.sendFile(path.join(__dirname, "landing.html")));
-
   // Error handling middleware
   app.use((err, req, res, next) => {
     console.error("Unhandled Error:", err);

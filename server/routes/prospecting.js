@@ -125,7 +125,7 @@ function resolveSegment(raw) {
   return SEGMENT_NAMES[str.toLowerCase()] || str;
 }
 
-async function generateAIMessage(prospect) {
+async function generateAIMessage(prospect, campaignTemplate) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada');
 
@@ -141,24 +141,24 @@ async function generateAIMessage(prospect) {
 
   const senderName = process.env.SENDER_NAME || 'Raul';
 
-  const prompt = `Você é ${senderName}, ajudando donos de pequenos negócios no Brasil via WhatsApp.
-Escreva uma primeira mensagem de prospecção para o seguinte prospect:
+  const customInstruction = campaignTemplate
+    ? `ABORDAGEM DA CAMPANHA (siga à risca):
+${campaignTemplate}
+
+`
+    : '';
+
+  const prompt = `Você é ${senderName}, contatando negócios via WhatsApp no Brasil.
+Escreva uma primeira mensagem para o seguinte contato:
 
 ${context}
 
-OBJETIVO: abrir conversa usando SPIN Selling — não vender, só entender o negócio.
-Use a técnica de perguntas de SITUAÇÃO: mostre que conhece o segmento deles e faça uma pergunta genuína sobre como eles trabalham hoje.
-
-Regras:
+${customInstruction}Regras:
 - Escreva na primeira pessoa como ${senderName} — nunca use placeholders
 - Tom casual e humano, como se fosse uma mensagem no WhatsApp mesmo
-- Mencione o nome da empresa OU a cidade para personalizar
-- Se souber o segmento (ex: barbearia, restaurante), mencione naturalmente — nunca diga "Segmento X"
-- Faça apenas UMA pergunta no final — aberta, sobre o negócio deles (ex: "há quanto tempo vocês estão no mercado?", "como vocês costumam captar clientes hoje?")
-- Não mencione seu produto ou serviço ainda — o objetivo é ouvir
+- Máximo 80 palavras
 - Sem emojis excessivos (máximo 1)
-- Máximo 100 palavras
-- Varie o estilo: às vezes mais formal, às vezes mais coloquial`;
+- Varie levemente o estilo a cada geração para não parecer robô`;
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
@@ -402,7 +402,11 @@ router.post('/:id/generate-message', async (req, res) => {
     const prospect = await queryOne('SELECT * FROM prospects WHERE id = ?', [req.params.id]);
     if (!prospect) return res.status(404).json({ error: 'Prospect não encontrado' });
 
-    const message = await generateAIMessage(parseProspect(prospect));
+    const parsed = parseProspect(prospect);
+    const campaign = parsed.campaign_id
+      ? await queryOne('SELECT message_template FROM prospecting_campaigns WHERE id = ?', [parsed.campaign_id])
+      : null;
+    const message = await generateAIMessage(parsed, campaign?.message_template || null);
 
     await run(
       'UPDATE prospects SET ai_message = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
