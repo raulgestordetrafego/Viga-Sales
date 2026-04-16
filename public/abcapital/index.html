@@ -1042,7 +1042,7 @@ async function handleKanbanDrop(event, targetStage) {
 }
 
 // ── Clientes ───────────────────────────────────────────────────────────────────
-let clientesState = { page: 1, search: '', status: '' };
+let clientesState = { page: 1, search: '' };
 
 async function renderClientes() {
   const el = document.getElementById('page-clientes');
@@ -1054,41 +1054,46 @@ async function renderClientes() {
   try {
     const params = new URLSearchParams({ page: clientesState.page, limit: 50 });
     if (clientesState.search) params.set('search', clientesState.search);
-    if (clientesState.status) params.set('status', clientesState.status);
     const data = await api('GET', `/clientes?${params}`);
     if (!data) return;
 
     const rows = data.clientes.map(c => {
-      const statusColor = { ativo:'#22c55e', atraso:'#ef4444', cancelado:'#6b7280', quitado:'#3b82f6' };
-      const parcRestantes = (c.installments || 0) - (c.parcelas_pagas || 0);
-      const saldo = parcRestantes > 0 && c.installment_value ? parcRestantes * c.installment_value : 0;
-      return `<tr style="cursor:pointer${c.status==='atraso'?';background:#1a0808':''}" onclick="openClientSheet('${c.id}')">
-        <td><strong>${esc(c.name)}</strong><br><span style="font-size:11px;color:var(--muted)">${c.contrato ? esc(c.contrato) : '—'}</span></td>
+      const hasAtraso = Number(c.contratos_atraso) > 0;
+      const totalContratos = Number(c.total_contratos) || 0;
+      const totalCredit = Number(c.total_credit) || 0;
+      return `<tr style="cursor:pointer${hasAtraso?';background:#1a0808':''}" onclick="openClientSheet('${c.id}')">
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:13px;flex-shrink:0">${(c.name||'?')[0].toUpperCase()}</div>
+            <div>
+              <strong>${esc(c.name)}</strong>
+              ${c.responsible ? `<br><span style="font-size:11px;color:var(--muted)">👤 ${esc(c.responsible)}</span>` : ''}
+            </div>
+          </div>
+        </td>
         <td>${fmt(c.phone)}</td>
-        <td>${c.admin_company ? esc(c.admin_company) : '—'}</td>
-        <td>${c.grupo ? esc(c.grupo) : '—'} / ${c.cota ? esc(c.cota) : '—'}</td>
-        <td>${c.credit_value ? 'R$ '+fmtMoney(c.credit_value) : '—'}</td>
-        <td>${c.installment_value ? 'R$ '+fmtMoney(c.installment_value) : '—'}</td>
-        <td style="font-size:12px;color:var(--muted)">${parcRestantes > 0 ? parcRestantes+'x restantes' : '—'}</td>
-        <td>${saldo ? 'R$ '+fmtMoney(saldo) : '—'}</td>
-        <td><span class="badge" style="background:${statusColor[c.status]||'#6b7280'}22;color:${statusColor[c.status]||'#6b7280'}">${CLIENT_STATUS[c.status]||c.status}</span></td>
+        <td>${c.email ? esc(c.email) : '—'}</td>
+        <td>
+          <span style="display:inline-flex;align-items:center;gap:6px">
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600">${totalContratos}</span>
+            ${hasAtraso ? `<span class="badge" style="background:#7f1d1d22;color:#f87171">⚠ atraso</span>` : ''}
+          </span>
+        </td>
+        <td>${totalCredit > 0 ? 'R$ '+fmtMoney(totalCredit) : '—'}</td>
+        <td style="font-size:12px;color:var(--muted)">${fmtDate(c.created_at)}</td>
       </tr>`;
     }).join('');
 
     el.innerHTML = `
       <div class="table-wrap">
         <div class="table-toolbar">
-          <input class="search-box" placeholder="Buscar por nome, contrato, grupo..." value="${esc(clientesState.search)}"
+          <input class="search-box" placeholder="Buscar por nome, telefone, e-mail..." value="${esc(clientesState.search)}"
             oninput="clientesState.search=this.value;clientesState.page=1;renderClientes()" />
-          <select class="search-box" style="max-width:160px" onchange="clientesState.status=this.value;clientesState.page=1;renderClientes()">
-            <option value="">Todos os status</option>
-            ${Object.entries(CLIENT_STATUS).map(([k,v])=>`<option value="${k}" ${clientesState.status===k?'selected':''}>${v}</option>`).join('')}
-          </select>
           <span style="color:var(--muted);font-size:13px">${data.total} clientes</span>
         </div>
         <table>
-          <thead><tr><th>Nome / Contrato</th><th>WhatsApp</th><th>Administradora</th><th>Grupo/Cota</th><th>Crédito</th><th>Parcela</th><th>Parcelas</th><th>Saldo Devedor</th><th>Status</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="9" class="empty">Nenhum cliente encontrado</td></tr>'}</tbody>
+          <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Contratos</th><th>Crédito Total</th><th>Cadastrado</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="6" class="empty">Nenhum cliente encontrado</td></tr>'}</tbody>
         </table>
         <div class="pagination">
           <span>Página ${data.page} de ${Math.max(1,Math.ceil(data.total/data.limit))}</span>
@@ -1109,7 +1114,6 @@ async function openClientSheet(id) {
 }
 
 function renderClientSheetModal(c, users = []) {
-  const admOptions     = ADMINISTRADORAS.map(o => `<option value="${o}" ${c.admin_company===o?'selected':''}>${o}</option>`).join('');
   const userOpts = users.filter(u => u.status !== 'inactive').map(u => `<option value="${u.name}" ${c.responsible===u.name?'selected':''}>${u.name}</option>`).join('');
   const trafficOptions = TRAFFIC_SOURCES.map(o => `<option value="${o}" ${c.traffic_source===o?'selected':''}>${o}</option>`).join('');
   const photoHtml = c.photo_path
@@ -1120,10 +1124,47 @@ function renderClientSheetModal(c, users = []) {
     ? `<a href="${attachUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">📎 Ver Anexo</a>`
     : `<span style="color:var(--muted);font-size:13px">Nenhum arquivo</span>`;
 
-  const commPct = c.commission_pct || 4;
-  const commVal = c.credit_value ? c.credit_value * commPct / 100 : 0;
-  const parcRestantes = (c.installments || 0) - (c.parcelas_pagas || 0);
-  const saldo = parcRestantes > 0 && c.installment_value ? parcRestantes * c.installment_value : 0;
+  const contratos = c.contratos || [];
+  const totalCredit = contratos.reduce((s, ct) => s + (ct.credit_value||0), 0);
+  const hasAtraso = contratos.some(ct => ct.status_atraso);
+
+  // Tabela de contratos
+  const contratosHtml = contratos.length > 0 ? `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:8px;text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase">Administradora</th>
+          <th style="padding:8px;text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase">Contrato</th>
+          <th style="padding:8px;text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase">Grupo/Cota</th>
+          <th style="padding:8px;text-align:right;color:var(--muted);font-size:11px;text-transform:uppercase">Crédito</th>
+          <th style="padding:8px;text-align:center;color:var(--muted);font-size:11px;text-transform:uppercase">Parcelas</th>
+          <th style="padding:8px;text-align:center;color:var(--muted);font-size:11px;text-transform:uppercase">Status</th>
+          <th style="padding:8px;text-align:center;color:var(--muted);font-size:11px;text-transform:uppercase">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${contratos.map(ct => {
+          const sColor = { ativo:'#22c55e', cancelado:'#6b7280', quitado:'#3b82f6' };
+          const sc = sColor[ct.status] || '#6b7280';
+          const parcRest = (ct.installments||0) - (ct.parcelas_pagas||0);
+          return `<tr style="border-bottom:1px solid var(--border)${ct.status_atraso?';background:#1a0808':''}">
+            <td style="padding:8px">${ct.admin_company ? esc(ct.admin_company) : '—'}</td>
+            <td style="padding:8px">${ct.contrato ? `<strong>${esc(ct.contrato)}</strong>` : '—'}</td>
+            <td style="padding:8px;font-size:12px;color:var(--muted)">${ct.grupo||'—'} / ${ct.cota||'—'}</td>
+            <td style="padding:8px;text-align:right">${ct.credit_value ? 'R$ '+fmtMoney(ct.credit_value) : '—'}</td>
+            <td style="padding:8px;text-align:center;font-size:12px">${ct.parcelas_pagas||0}/${ct.installments||0} <span style="color:var(--muted)">(${parcRest} rest.)</span></td>
+            <td style="padding:8px;text-align:center">
+              <span class="badge" style="background:${sc}22;color:${sc}">${ct.status||'ativo'}</span>
+              ${ct.status_atraso ? `<span class="badge" style="background:#7f1d1d22;color:#f87171;margin-left:4px">Atraso</span>` : ''}
+            </td>
+            <td style="padding:8px;text-align:center">
+              <button class="btn btn-ghost btn-sm" onclick="openContratoEdit('${ct.id}','${c.id}')">Editar</button>
+              <button class="btn btn-danger btn-sm" style="margin-left:4px" onclick="confirmDeleteContrato('${ct.id}','${c.id}')">✕</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>` : `<div style="color:var(--muted);font-size:13px;padding:16px 0">Nenhum contrato cadastrado ainda.</div>`;
 
   document.getElementById('modal-container').innerHTML = `
   <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -1135,26 +1176,21 @@ function renderClientSheetModal(c, users = []) {
       <div class="modal-body" style="padding:0">
 
         <!-- Cabeçalho -->
-        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)${c.status==='atraso'?';border-left:4px solid var(--danger)':''}">
+        <div style="display:flex;align-items:center;gap:20px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface2)${hasAtraso?';border-left:4px solid var(--danger)':''}">
           <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${photoHtml}</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:20px;font-weight:700;margin-bottom:4px">${esc(c.name)}</div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)">
               <span>${fmt(c.phone)}</span>
               ${c.email ? `<span>${esc(c.email)}</span>` : ''}
+              ${c.cpf_cnpj ? `<span>🪪 ${esc(c.cpf_cnpj)}</span>` : ''}
               ${c.responsible ? `<span>👤 ${esc(c.responsible)}</span>` : ''}
-              ${c.contrato ? `<span>📋 ${esc(c.contrato)}</span>` : ''}
             </div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:4px">
+              ${c.address ? `<span>📍 ${esc(c.address)}</span>` : ''}
               ${c.created_at ? `<span>📅 Cliente desde: ${new Date(c.created_at).toLocaleDateString('pt-BR')}</span>` : ''}
             </div>
-            <div style="margin-top:8px">
-              ${['ativo','atraso','cancelado','quitado'].map(s => {
-                const colors = { ativo:'#22c55e', atraso:'#ef4444', cancelado:'#6b7280', quitado:'#3b82f6' };
-                const sel = c.status === s;
-                return `<button onclick="quickSetClientStatus('${c.id}','${s}')" style="margin-right:6px;margin-top:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid ${colors[s]};background:${sel ? colors[s]+'33' : 'transparent'};color:${colors[s]}">${CLIENT_STATUS[s]}</button>`;
-              }).join('')}
-            </div>
+            ${totalCredit > 0 ? `<div style="margin-top:8px;font-size:13px;color:var(--accent);font-weight:600">💰 Crédito total: R$ ${fmtMoney(totalCredit)} em ${contratos.length} contrato${contratos.length!==1?'s':''}</div>` : ''}
           </div>
           <label class="btn btn-ghost btn-sm" style="cursor:pointer;flex-shrink:0">
             📷 Foto
@@ -1162,16 +1198,8 @@ function renderClientSheetModal(c, users = []) {
           </label>
         </div>
 
-        <!-- Resumo financeiro -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:16px 24px;background:var(--bg);border-bottom:1px solid var(--border)">
-          ${c.credit_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Crédito</div><div style="font-size:18px;font-weight:700;color:var(--accent)">R$ ${fmtMoney(c.credit_value)}</div></div>` : ''}
-          ${commVal ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Comissão (${commPct}%)</div><div style="font-size:18px;font-weight:700;color:var(--success)">R$ ${fmtMoney(commVal)}</div></div>` : ''}
-          ${c.installment_value ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Parcela Mensal</div><div style="font-size:18px;font-weight:700;color:var(--text)">R$ ${fmtMoney(c.installment_value)}</div></div>` : ''}
-          ${saldo ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase">Saldo Devedor</div><div style="font-size:18px;font-weight:700;color:var(--warning)">R$ ${fmtMoney(saldo)}</div><div style="font-size:11px;color:var(--muted)">${parcRestantes} parcelas</div></div>` : ''}
-        </div>
-
-        <!-- Formulário -->
-        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+        <!-- Formulário do cliente -->
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px">
 
           <div>
             <div class="section-title">Dados Pessoais</div>
@@ -1181,129 +1209,9 @@ function renderClientSheetModal(c, users = []) {
             </div>
             <div class="form-row">
               <div class="form-field"><label>E-mail</label><input id="cf-email" type="email" value="${esc(c.email||'')}" /></div>
-              <div class="form-field"><label>Endereço</label><input id="cf-address" value="${esc(c.address||'')}" /></div>
+              <div class="form-field"><label>CPF / CNPJ</label><input id="cf-cpf_cnpj" value="${esc(c.cpf_cnpj||'')}" placeholder="000.000.000-00" /></div>
             </div>
-          </div>
-
-          <div>
-            <div class="section-title">Dados do Contrato</div>
-            <div class="form-row">
-              <div class="form-field"><label>Modalidade</label>
-                <select id="cf-consortium_name">
-                  <option value="">Selecionar...</option>
-                  ${['Automóvel','Imóvel','Serviços'].map(o=>`<option value="${o}" ${c.consortium_name===o?'selected':''}>${o}</option>`).join('')}
-                </select>
-              </div>
-              <div class="form-field"><label>Administradora</label>
-                <select id="cf-admin_company"><option value="">Selecionar...</option>${admOptions}</select>
-              </div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-field"><label>Grupo</label><input id="cf-grupo" value="${esc(c.grupo||'')}" placeholder="Ex: 0042" /></div>
-              <div class="form-field"><label>Cota</label><input id="cf-cota" value="${esc(c.cota||'')}" placeholder="Ex: 015" /></div>
-              <div class="form-field"><label>Nº Contrato</label><input id="cf-contrato" value="${esc(c.contrato||'')}" placeholder="Ex: ABC-12345" /></div>
-            </div>
-            <div class="form-row">
-              <div class="form-field"><label>Crédito (R$)</label><input id="cf-credit_value" type="number" step="0.01" value="${c.credit_value||''}" oninput="updateClientCommCalc()" /></div>
-              <div class="form-field"><label>% Comissão</label><input id="cf-commission_pct" type="number" step="0.5" min="0" max="10" value="${c.commission_pct||4}" oninput="updateClientCommCalc()" /></div>
-            </div>
-            <div id="cf-comm-calc" style="font-size:13px;color:var(--success);margin-bottom:12px;font-weight:600"></div>
-            <div class="form-row-3">
-              <div class="form-field"><label>Nº Parcelas</label><input id="cf-installments" type="number" value="${c.installments||''}" /></div>
-              <div class="form-field"><label>Parcelas Pagas</label><input id="cf-parcelas_pagas" type="number" value="${c.parcelas_pagas||0}" /></div>
-              <div class="form-field"><label>Valor da Parcela (R$)</label><input id="cf-installment_value" type="number" step="0.01" value="${c.installment_value||''}" /></div>
-            </div>
-            <div class="form-field"><label>% Lucro Administradora</label><input id="cf-admin_profit_pct" type="number" step="0.1" value="${c.admin_profit_pct||''}" /></div>
-          </div>
-
-          <div>
-            <div class="section-title">Status do Contrato</div>
-            <div style="display:flex;gap:32px;flex-wrap:wrap">
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Parcela em Atraso</label>
-                <div class="toggle-wrap">
-                  <label class="toggle toggle-danger">
-                    <input type="checkbox" id="cf-status_atraso" ${c.status_atraso ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Marcar como em atraso</span>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Cancelamento</label>
-                <div class="toggle-wrap">
-                  <label class="toggle toggle-danger">
-                    <input type="checkbox" id="cf-status_cancelamento" ${c.status_cancelamento ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Contrato cancelado</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="section-title">Comissão & Parceria</div>
-            <div class="form-row">
-              <div class="form-field"><label>Data de Adesão</label>
-                <input type="date" id="cf-data_adesao" value="${c.data_adesao ? c.data_adesao.split('T')[0] : ''}" />
-              </div>
-              <div class="form-field"><label>Empresa</label>
-                <select id="cf-empresa">
-                  ${['AB','WAB'].map(o=>`<option value="${o}" ${(c.empresa||'AB')===o?'selected':''}>${o}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field"><label>Status da Comissão</label>
-                <select id="cf-comissao_status">
-                  <option value="pendente"    ${(c.comissao_status||'pendente')==='pendente'   ?'selected':''}>Pendente</option>
-                  <option value="finalizado"  ${c.comissao_status==='finalizado' ?'selected':''}>Finalizado</option>
-                  <option value="atraso"      ${c.comissao_status==='atraso'     ?'selected':''}>Em Atraso</option>
-                </select>
-              </div>
-              <div class="form-field"><label>Valor da Comissão (R$)</label>
-                <input type="number" step="0.01" id="cf-comissao_valor" value="${c.comissao_valor||''}" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field"><label>Data do Boleto</label>
-                <input type="date" id="cf-data_boleto" value="${c.data_boleto ? c.data_boleto.split('T')[0] : ''}" />
-              </div>
-              <div class="form-field"><label>Data do Lance</label>
-                <input type="date" id="cf-data_lance" value="${c.data_lance ? c.data_lance.split('T')[0] : ''}" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field"><label>% Parceria</label>
-                <input type="number" step="0.5" id="cf-parceria_pct" value="${c.parceria_pct||''}" placeholder="Ex: 10" />
-              </div>
-              <div class="form-field"><label>Observação da Parceria</label>
-                <input type="text" id="cf-parceria_obs" value="${esc(c.parceria_obs||'')}" placeholder="Parceiro, detalhes..." />
-              </div>
-            </div>
-            <div style="display:flex;gap:32px;flex-wrap:wrap;margin-top:4px">
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">NF Emitida</label>
-                <div class="toggle-wrap">
-                  <label class="toggle">
-                    <input type="checkbox" id="cf-nf_emitida" ${c.nf_emitida ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Nota fiscal emitida</span>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:8px">Comissão Recebida</label>
-                <div class="toggle-wrap">
-                  <label class="toggle">
-                    <input type="checkbox" id="cf-comissao_recebida" ${c.comissao_recebida ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                  </label>
-                  <span style="font-size:13px;color:var(--muted)">Comissão já recebida</span>
-                </div>
-              </div>
-            </div>
+            <div class="form-field"><label>Endereço</label><input id="cf-address" value="${esc(c.address||'')}" /></div>
           </div>
 
           <div>
@@ -1320,13 +1228,12 @@ function renderClientSheetModal(c, users = []) {
                 <select id="cf-traffic_source"><option value="">Selecionar...</option>${trafficOptions}</select>
               </div>
             </div>
-          </div>
-
-          <div class="form-field"><label>Informações Gerais</label>
-            <textarea id="cf-general_info" rows="3" style="resize:vertical">${esc(c.general_info||'')}</textarea>
-          </div>
-          <div class="form-field"><label>Anotações</label>
-            <textarea id="cf-notes" rows="3" style="resize:vertical">${esc(c.notes||'')}</textarea>
+            <div class="form-field"><label>Informações Gerais</label>
+              <textarea id="cf-general_info" rows="2" style="resize:vertical">${esc(c.general_info||'')}</textarea>
+            </div>
+            <div class="form-field"><label>Anotações</label>
+              <textarea id="cf-notes" rows="2" style="resize:vertical">${esc(c.notes||'')}</textarea>
+            </div>
           </div>
 
           <div>
@@ -1339,77 +1246,45 @@ function renderClientSheetModal(c, users = []) {
               </label>
             </div>
           </div>
+
+          <!-- Seção de Contratos -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+              <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.6px">Contratos</span>
+              <button class="btn btn-primary btn-sm" onclick="openNovoContrato('${c.id}')">+ Adicionar Contrato</button>
+            </div>
+            <div id="contratos-list-${c.id}">${contratosHtml}</div>
+          </div>
+
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-ghost"    onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-danger btn-sm" onclick="confirmDeleteCliente('${c.id}')">Excluir</button>
-        <button class="btn btn-primary"  onclick="saveClientSheet('${c.id}')">Salvar</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDeleteCliente('${c.id}')">Excluir Cliente</button>
+        <button class="btn btn-primary" onclick="saveClientSheet('${c.id}')">Salvar</button>
       </div>
     </div>
   </div>`;
-
-  updateClientCommCalc();
-}
-
-function updateClientCommCalc() {
-  const credit = parseFloat(document.getElementById('cf-credit_value')?.value) || 0;
-  const pct    = parseFloat(document.getElementById('cf-commission_pct')?.value) || 4;
-  const el     = document.getElementById('cf-comm-calc');
-  if (!el) return;
-  el.textContent = credit > 0 ? `Comissão estimada: R$ ${fmtMoney(credit * pct / 100)}` : '';
-}
-
-async function quickSetClientStatus(id, status) {
-  try {
-    const c = await api('PUT', `/clientes/${id}`, { status });
-    if (c) { closeModal(); renderClientSheetModal(c); }
-  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function saveClientSheet(id) {
   try {
     const g   = id => document.getElementById(id)?.value ?? '';
-    const chk = id => document.getElementById(id)?.checked ?? false;
     const updated = await api('PUT', `/clientes/${id}`, {
-      name:                g('cf-name'),
-      phone:               g('cf-phone'),
-      email:               g('cf-email'),
-      address:             g('cf-address'),
-      consortium_name:     g('cf-consortium_name'),
-      admin_company:       g('cf-admin_company'),
-      grupo:               g('cf-grupo'),
-      cota:                g('cf-cota'),
-      contrato:            g('cf-contrato'),
-      credit_value:        g('cf-credit_value')       ? Number(g('cf-credit_value'))       : null,
-      commission_pct:      g('cf-commission_pct')     ? Number(g('cf-commission_pct'))     : null,
-      installments:        g('cf-installments')       ? Number(g('cf-installments'))       : null,
-      installment_value:   g('cf-installment_value')  ? Number(g('cf-installment_value'))  : null,
-      parcelas_pagas:      g('cf-parcelas_pagas') !== '' ? Number(g('cf-parcelas_pagas')) : null,
-      admin_profit_pct:    g('cf-admin_profit_pct')   ? Number(g('cf-admin_profit_pct'))   : null,
-      status_atraso:       chk('cf-status_atraso'),
-      status_cancelamento: chk('cf-status_cancelamento'),
-      responsible:         g('cf-responsible'),
-      traffic_source:      g('cf-traffic_source'),
-      general_info:        g('cf-general_info'),
-      notes:               g('cf-notes'),
-      // Comissão & Parceria
-      data_adesao:         g('cf-data_adesao')      || null,
-      empresa:             g('cf-empresa')           || null,
-      comissao_status:     g('cf-comissao_status')   || null,
-      comissao_valor:      g('cf-comissao_valor')    ? Number(g('cf-comissao_valor'))  : null,
-      data_boleto:         g('cf-data_boleto')       || null,
-      data_lance:          g('cf-data_lance')        || null,
-      parceria_pct:        g('cf-parceria_pct')      ? Number(g('cf-parceria_pct'))    : null,
-      parceria_obs:        g('cf-parceria_obs')      || null,
-      nf_emitida:          chk('cf-nf_emitida'),
-      comissao_recebida:   chk('cf-comissao_recebida'),
+      name:          g('cf-name'),
+      phone:         g('cf-phone'),
+      email:         g('cf-email'),
+      cpf_cnpj:      g('cf-cpf_cnpj') || null,
+      address:       g('cf-address'),
+      responsible:   g('cf-responsible'),
+      traffic_source:g('cf-traffic_source'),
+      general_info:  g('cf-general_info'),
+      notes:         g('cf-notes'),
     });
     toast('Cliente salvo!');
     closeModal();
     if (state.page === 'clientes') renderClientes();
     if (state.page === 'dashboard') renderDashboard();
-    // Sync Google Sheets via webhook (se configurado)
     syncClientToSheets(updated).catch(() => {});
   } catch (e) { toast(e.message, 'error'); }
 }
@@ -1430,7 +1305,6 @@ async function uploadClientFile(id, field, input) {
 // ── Exportação de planilhas ───────────────────────────────────────────────────
 function exportClientes(type) {
   const params = new URLSearchParams();
-  if (clientesState.status) params.set('status', clientesState.status);
   if (clientesState.search) params.set('search', clientesState.search);
   window.location.href = `/api/ab-capital/export/${type}?${params}`;
 }
@@ -1451,7 +1325,7 @@ async function syncClientToSheets(cliente) {
 }
 
 async function confirmDeleteCliente(id) {
-  if (!confirm('Excluir este cliente? Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Excluir este cliente e todos os seus contratos? Esta ação não pode ser desfeita.')) return;
   try {
     await api('DELETE', `/clientes/${id}`);
     toast('Cliente excluído');
@@ -1460,8 +1334,18 @@ async function confirmDeleteCliente(id) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
+async function confirmDeleteContrato(contratoId, clienteId) {
+  if (!confirm('Excluir este contrato?')) return;
+  try {
+    await api('DELETE', `/contratos/${contratoId}`);
+    toast('Contrato excluído');
+    // Recarrega a ficha do cliente
+    const updated = await api('GET', `/clientes/${clienteId}`);
+    if (updated) renderClientSheetModal(updated);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
 function openNewCliente() {
-  const admOpts     = ADMINISTRADORAS.map(o => `<option>${o}</option>`).join('');
   const trafficOpts = TRAFFIC_SOURCES.map(o => `<option>${o}</option>`).join('');
   showModal('Novo Cliente', `
     <div class="form-row">
@@ -1469,27 +1353,10 @@ function openNewCliente() {
       <div class="form-field"><label>WhatsApp *</label><input id="m-phone" /></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label>Modalidade</label>
-        <select id="m-consortium"><option value="">Selecionar...</option><option>Automóvel</option><option>Imóvel</option><option>Serviços</option></select>
-      </div>
-      <div class="form-field"><label>Administradora</label>
-        <select id="m-adm"><option value="">Selecionar...</option>${admOpts}</select>
-      </div>
+      <div class="form-field"><label>E-mail</label><input id="m-email" type="email" /></div>
+      <div class="form-field"><label>CPF / CNPJ</label><input id="m-cpf_cnpj" /></div>
     </div>
-    <div class="form-row-3">
-      <div class="form-field"><label>Grupo</label><input id="m-grupo" /></div>
-      <div class="form-field"><label>Cota</label><input id="m-cota" /></div>
-      <div class="form-field"><label>Nº Contrato</label><input id="m-contrato" /></div>
-    </div>
-    <div class="form-row">
-      <div class="form-field"><label>Crédito (R$)</label><input id="m-credit" type="number" step="0.01" /></div>
-      <div class="form-field"><label>% Comissão</label><input id="m-comm" type="number" step="0.5" value="4" /></div>
-    </div>
-    <div class="form-row-3">
-      <div class="form-field"><label>Nº Parcelas</label><input id="m-installments" type="number" /></div>
-      <div class="form-field"><label>Parcelas Pagas</label><input id="m-pagas" type="number" value="0" /></div>
-      <div class="form-field"><label>Valor Parcela (R$)</label><input id="m-installment_value" type="number" step="0.01" /></div>
-    </div>
+    <div class="form-field"><label>Endereço</label><input id="m-address" /></div>
     <div class="form-row">
       <div class="form-field"><label>Responsável</label><input id="m-responsible" /></div>
       <div class="form-field"><label>Fonte de Tráfego</label><select id="m-traffic"><option value="">Selecionar...</option>${trafficOpts}</select></div>
@@ -1498,25 +1365,161 @@ function openNewCliente() {
       const name  = document.getElementById('m-name').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
       if (!name || !phone) throw new Error('Nome e WhatsApp são obrigatórios');
-      await api('POST', '/clientes', {
+      const result = await api('POST', '/clientes', {
         name, phone,
-        consortium_name:  document.getElementById('m-consortium').value,
-        admin_company:    document.getElementById('m-adm').value,
-        grupo:            document.getElementById('m-grupo').value,
-        cota:             document.getElementById('m-cota').value,
-        contrato:         document.getElementById('m-contrato').value,
-        credit_value:     document.getElementById('m-credit').value ? Number(document.getElementById('m-credit').value) : null,
-        commission_pct:   Number(document.getElementById('m-comm').value) || 4,
-        installments:     document.getElementById('m-installments').value ? Number(document.getElementById('m-installments').value) : null,
-        parcelas_pagas:   Number(document.getElementById('m-pagas').value) || 0,
-        installment_value:document.getElementById('m-installment_value').value ? Number(document.getElementById('m-installment_value').value) : null,
-        responsible:      document.getElementById('m-responsible').value,
-        traffic_source:   document.getElementById('m-traffic').value,
+        email:         document.getElementById('m-email').value || null,
+        cpf_cnpj:      document.getElementById('m-cpf_cnpj').value || null,
+        address:       document.getElementById('m-address').value || null,
+        responsible:   document.getElementById('m-responsible').value || null,
+        traffic_source:document.getElementById('m-traffic').value || null,
       });
       toast('Cliente criado!');
+      closeModal();
       renderClientes();
+      if (result?.id) openClientSheet(result.id);
     }
   );
+}
+
+// ── Contrato: criar / editar ──────────────────────────────────────────────────
+function contratoFormHtml(ct = {}) {
+  const admOpts = ADMINISTRADORAS.map(o => `<option value="${o}" ${ct.admin_company===o?'selected':''}>${o}</option>`).join('');
+  return `
+    <div class="form-row">
+      <div class="form-field"><label>Administradora</label>
+        <select id="ct-admin_company"><option value="">Selecionar...</option>${admOpts}</select>
+      </div>
+      <div class="form-field"><label>Nº Contrato</label><input id="ct-contrato" value="${esc(ct.contrato||'')}" /></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Grupo</label><input id="ct-grupo" value="${esc(ct.grupo||'')}" /></div>
+      <div class="form-field"><label>Cota</label><input id="ct-cota" value="${esc(ct.cota||'')}" /></div>
+      <div class="form-field"><label>Empresa</label>
+        <select id="ct-empresa">${['AB','WAB'].map(o=>`<option value="${o}" ${(ct.empresa||'AB')===o?'selected':''}>${o}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Crédito (R$)</label><input id="ct-credit_value" type="number" step="0.01" value="${ct.credit_value||''}" oninput="ctCommCalc()" /></div>
+      <div class="form-field"><label>% Comissão</label><input id="ct-commission_pct" type="number" step="0.5" min="0" max="20" value="${ct.commission_pct||4}" oninput="ctCommCalc()" /></div>
+    </div>
+    <div id="ct-comm-calc" style="font-size:12px;color:var(--success);margin-bottom:8px;font-weight:600"></div>
+    <div class="form-row-3">
+      <div class="form-field"><label>Nº Parcelas</label><input id="ct-installments" type="number" value="${ct.installments||''}" /></div>
+      <div class="form-field"><label>Parcelas Pagas</label><input id="ct-parcelas_pagas" type="number" value="${ct.parcelas_pagas||0}" /></div>
+      <div class="form-field"><label>Valor Parcela (R$)</label><input id="ct-installment_value" type="number" step="0.01" value="${ct.installment_value||''}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Data de Adesão</label><input type="date" id="ct-data_adesao" value="${ct.data_adesao ? ct.data_adesao.split('T')[0] : ''}" /></div>
+      <div class="form-field"><label>Status</label>
+        <select id="ct-status">${['ativo','cancelado','quitado'].map(s=>`<option value="${s}" ${(ct.status||'ativo')===s?'selected':''}>${s}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="toggle-wrap">
+        <label class="toggle toggle-danger">
+          <input type="checkbox" id="ct-status_atraso" ${ct.status_atraso?'checked':''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-size:13px;color:var(--muted)">Em Atraso</span>
+      </div>
+      <div class="toggle-wrap">
+        <label class="toggle toggle-danger">
+          <input type="checkbox" id="ct-status_cancelamento" ${ct.status_cancelamento?'checked':''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-size:13px;color:var(--muted)">Cancelado</span>
+      </div>
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="ct-nf_emitida" ${ct.nf_emitida?'checked':''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-size:13px;color:var(--muted)">NF Emitida</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Status Comissão</label>
+        <select id="ct-comissao_status">
+          ${['pendente','finalizado','atraso'].map(s=>`<option value="${s}" ${(ct.comissao_status||'pendente')===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-field"><label>Valor Comissão (R$)</label><input id="ct-comissao_valor" type="number" step="0.01" value="${ct.comissao_valor||''}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Comissão Recebida (R$)</label><input id="ct-comissao_recebida" type="number" step="0.01" value="${ct.comissao_recebida||0}" /></div>
+      <div class="form-field"><label>Data Boleto</label><input type="date" id="ct-data_boleto" value="${ct.data_boleto ? ct.data_boleto.split('T')[0] : ''}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Data Lance</label><input type="date" id="ct-data_lance" value="${ct.data_lance ? ct.data_lance.split('T')[0] : ''}" /></div>
+      <div class="form-field"><label>% Parceria</label><input id="ct-parceria_pct" type="number" step="0.5" value="${ct.parceria_pct||''}" /></div>
+    </div>
+    <div class="form-field"><label>Obs Parceria</label><input id="ct-parceria_obs" value="${esc(ct.parceria_obs||'')}" /></div>
+    <div class="form-field"><label>Anotações</label><textarea id="ct-notes" rows="2" style="resize:vertical">${esc(ct.notes||'')}</textarea></div>`;
+}
+
+function ctCommCalc() {
+  const credit = parseFloat(document.getElementById('ct-credit_value')?.value) || 0;
+  const pct    = parseFloat(document.getElementById('ct-commission_pct')?.value) || 4;
+  const el     = document.getElementById('ct-comm-calc');
+  if (!el) return;
+  el.textContent = credit > 0 ? `Comissão estimada: R$ ${fmtMoney(credit * pct / 100)}` : '';
+}
+
+function collectContratoBody() {
+  const g = id => document.getElementById(id)?.value ?? '';
+  const chk = id => document.getElementById(id)?.checked ?? false;
+  return {
+    admin_company:      g('ct-admin_company') || null,
+    contrato:           g('ct-contrato') || null,
+    grupo:              g('ct-grupo') || null,
+    cota:               g('ct-cota') || null,
+    empresa:            g('ct-empresa') || 'AB',
+    credit_value:       g('ct-credit_value') ? Number(g('ct-credit_value')) : null,
+    commission_pct:     g('ct-commission_pct') ? Number(g('ct-commission_pct')) : 4,
+    installments:       g('ct-installments') ? Number(g('ct-installments')) : null,
+    parcelas_pagas:     g('ct-parcelas_pagas') !== '' ? Number(g('ct-parcelas_pagas')) : 0,
+    installment_value:  g('ct-installment_value') ? Number(g('ct-installment_value')) : null,
+    data_adesao:        g('ct-data_adesao') || null,
+    status:             g('ct-status') || 'ativo',
+    status_atraso:      chk('ct-status_atraso'),
+    status_cancelamento:chk('ct-status_cancelamento'),
+    nf_emitida:         chk('ct-nf_emitida'),
+    comissao_status:    g('ct-comissao_status') || 'pendente',
+    comissao_valor:     g('ct-comissao_valor') ? Number(g('ct-comissao_valor')) : null,
+    comissao_recebida:  g('ct-comissao_recebida') ? Number(g('ct-comissao_recebida')) : 0,
+    data_boleto:        g('ct-data_boleto') || null,
+    data_lance:         g('ct-data_lance') || null,
+    parceria_pct:       g('ct-parceria_pct') ? Number(g('ct-parceria_pct')) : null,
+    parceria_obs:       g('ct-parceria_obs') || null,
+    notes:              g('ct-notes') || null,
+  };
+}
+
+function openNovoContrato(clienteId) {
+  showModal('Adicionar Contrato', contratoFormHtml(), async () => {
+    const body = collectContratoBody();
+    await api('POST', `/clientes/${clienteId}/contratos`, body);
+    toast('Contrato adicionado!');
+    const updated = await api('GET', `/clientes/${clienteId}`);
+    if (updated) renderClientSheetModal(updated);
+  });
+  setTimeout(ctCommCalc, 50);
+}
+
+async function openContratoEdit(contratoId, clienteId) {
+  try {
+    const contratos = (await api('GET', `/clientes/${clienteId}`))?.contratos || [];
+    const ct = contratos.find(c => c.id === contratoId);
+    if (!ct) { toast('Contrato não encontrado', 'error'); return; }
+    showModal('Editar Contrato', contratoFormHtml(ct), async () => {
+      const body = collectContratoBody();
+      await api('PUT', `/contratos/${contratoId}`, body);
+      toast('Contrato salvo!');
+      const updated = await api('GET', `/clientes/${clienteId}`);
+      if (updated) renderClientSheetModal(updated);
+    });
+    setTimeout(ctCommCalc, 50);
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 // ── Prospects ──────────────────────────────────────────────────────────────────

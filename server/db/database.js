@@ -456,21 +456,8 @@ async function initializeSchema() {
       name TEXT NOT NULL,
       phone TEXT NOT NULL,
       email TEXT,
+      cpf_cnpj TEXT,
       address TEXT,
-      consortium_name TEXT,
-      admin_company TEXT,
-      grupo TEXT,
-      cota TEXT,
-      contrato TEXT,
-      credit_value REAL,
-      commission_pct REAL DEFAULT 4,
-      installments INTEGER,
-      installment_value REAL,
-      parcelas_pagas INTEGER DEFAULT 0,
-      admin_profit_pct REAL,
-      status TEXT DEFAULT 'ativo',
-      status_atraso INTEGER DEFAULT 0,
-      status_cancelamento INTEGER DEFAULT 0,
       photo_path TEXT,
       attachment_path TEXT,
       responsible TEXT,
@@ -550,6 +537,37 @@ async function initializeSchema() {
       message TEXT,
       error TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // ── AB Capital Contratos (separados dos clientes) ─────────────────────────
+    `CREATE TABLE IF NOT EXISTS ab_capital_contratos (
+      id TEXT PRIMARY KEY,
+      cliente_id TEXT NOT NULL,
+      admin_company TEXT,
+      grupo TEXT,
+      cota TEXT,
+      contrato TEXT,
+      credit_value REAL,
+      commission_pct REAL DEFAULT 4,
+      installments INTEGER,
+      installment_value REAL,
+      parcelas_pagas INTEGER DEFAULT 0,
+      status TEXT DEFAULT 'ativo',
+      status_atraso INTEGER DEFAULT 0,
+      status_cancelamento INTEGER DEFAULT 0,
+      data_adesao TEXT,
+      comissao_valor REAL,
+      comissao_recebida REAL DEFAULT 0,
+      comissao_status TEXT DEFAULT 'pendente',
+      empresa TEXT DEFAULT 'AB',
+      nf_emitida INTEGER DEFAULT 0,
+      data_boleto TEXT,
+      data_lance TEXT,
+      parceria_pct REAL,
+      parceria_obs TEXT,
+      notes TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 
@@ -610,6 +628,9 @@ async function initializeSchema() {
     console.error('[Auth] Erro ao criar master admin:', err.message);
   }
 
+  // Migration: cpf_cnpj em ab_capital_clientes
+  try { await db.run(`ALTER TABLE ab_capital_clientes ADD COLUMN cpf_cnpj TEXT`); } catch {}
+
   // Migrations: novos campos em ab_capital_leads
   const abLeadCols = [
     ['address', 'TEXT'],
@@ -637,6 +658,90 @@ async function initializeSchema() {
   ];
   for (const [col, type] of abLeadCols) {
     try { await db.run(`ALTER TABLE ab_capital_leads ADD COLUMN ${col} ${type}`); } catch {}
+  }
+
+  // Migration: cpf_cnpj em ab_capital_clientes (v3)
+  try { await db.run(`ALTER TABLE ab_capital_clientes ADD COLUMN cpf_cnpj TEXT`); } catch {}
+
+  // Migrations: novos campos em ab_capital_clientes (v2 — integração planilhas)
+  const abClienteCols = [
+    ['data_adesao',      'TEXT'],                       // Data de adesão na administradora
+    ['comissao_status',  "TEXT DEFAULT 'pendente'"],     // pendente | finalizado | atraso
+    ['empresa',          "TEXT DEFAULT 'AB'"],           // AB | WAB
+    ['nf_emitida',       'INTEGER DEFAULT 0'],           // Nota fiscal emitida
+    ['data_boleto',      'TEXT'],                        // Ex: "Todo dia 02"
+    ['data_lance',       'TEXT'],                        // Ex: "Todo dia 05"
+    ['parceria_pct',     'REAL'],                        // % split em parceria
+    ['parceria_obs',     'TEXT'],                        // Ex: "50/50 com parceiro X"
+    ['comissao_valor',   'REAL'],                        // Valor fixo de comissão/parcela
+    ['comissao_recebida','REAL DEFAULT 0'],              // Total já recebido de comissão
+  ];
+  for (const [col, type] of abClienteCols) {
+    try { await db.run(`ALTER TABLE ab_capital_clientes ADD COLUMN ${col} ${type}`); } catch {}
+  }
+
+  // Migration: mover dados de contratos de ab_capital_clientes → ab_capital_contratos
+  try {
+    const contratoCount = await db.get('SELECT COUNT(*) as cnt FROM ab_capital_contratos');
+    const clienteCount  = await db.get('SELECT COUNT(*) as cnt FROM ab_capital_clientes');
+
+    if (contratoCount.cnt === 0 && clienteCount.cnt > 0) {
+      // Verificar se existem colunas de contrato na tabela antiga
+      let hasContractCols = false;
+      if (!db.isPostgres) {
+        const cols = db.sqlite.prepare('PRAGMA table_info(ab_capital_clientes)').all().map(c => c.name);
+        hasContractCols = cols.includes('admin_company') || cols.includes('credit_value');
+      }
+
+      if (hasContractCols) {
+        const { v4: uuidv4 } = await import('uuid');
+        const oldRows = await db.query('SELECT * FROM ab_capital_clientes');
+
+        // Agrupar por telefone para detectar duplicatas
+        const byPhone = {};
+        for (const row of oldRows) {
+          const key = (row.phone || '').trim() || (row.name || '').trim();
+          if (!byPhone[key]) byPhone[key] = [];
+          byPhone[key].push(row);
+        }
+
+        for (const rows of Object.values(byPhone)) {
+          const primary = rows[0];
+
+          // Criar um contrato para cada linha (mesmo duplicatas)
+          for (const row of rows) {
+            await db.run(
+              `INSERT OR IGNORE INTO ab_capital_contratos
+                (id, cliente_id, admin_company, grupo, cota, contrato, credit_value,
+                 commission_pct, installments, installment_value, parcelas_pagas,
+                 status, status_atraso, status_cancelamento, data_adesao,
+                 comissao_valor, comissao_recebida, comissao_status, empresa,
+                 nf_emitida, data_boleto, data_lance, parceria_pct, parceria_obs, notes,
+                 created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                uuidv4(), primary.id,
+                row.admin_company || null, row.grupo || null, row.cota || null, row.contrato || null, row.credit_value || null,
+                row.commission_pct || 4, row.installments || null, row.installment_value || null, row.parcelas_pagas || 0,
+                row.status || 'ativo', row.status_atraso || 0, row.status_cancelamento || 0, row.data_adesao || null,
+                row.comissao_valor || null, row.comissao_recebida || 0, row.comissao_status || 'pendente', row.empresa || 'AB',
+                row.nf_emitida || 0, row.data_boleto || null, row.data_lance || null, row.parceria_pct || null, row.parceria_obs || null, row.notes || null,
+                row.created_at, row.updated_at
+              ]
+            );
+          }
+
+          // Remover linhas duplicadas do cliente (manter só a primeira)
+          for (let i = 1; i < rows.length; i++) {
+            await db.run('DELETE FROM ab_capital_clientes WHERE id = ?', [rows[i].id]);
+          }
+        }
+
+        console.log('[AB Capital] Migração clientes→contratos concluída');
+      }
+    }
+  } catch (err) {
+    console.error('[AB Capital] Erro na migração contratos:', err.message);
   }
 
   // Seed AB Capital users

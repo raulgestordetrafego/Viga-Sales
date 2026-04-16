@@ -391,33 +391,39 @@ router.delete('/leads/:id', abMaster, async (req, res) => {
 
 // ── Clientes ──────────────────────────────────────────────────────────────────
 
+// GET /clientes — lista clientes com contagem de contratos agregada
 router.get('/clientes', abAuth, async (req, res) => {
   try {
-    const { status, search, page = 1, limit = 50 } = req.query;
+    const { search, page = 1, limit = 50 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
     const isUser = req.abSession.role === 'user';
-    let sql = 'SELECT * FROM ab_capital_clientes WHERE 1=1';
+    const clauses = ['1=1'];
     const params = [];
-    if (isUser) { sql += ' AND responsible = ?'; params.push(req.abSession.name); }
-    if (status)  { sql += ' AND status = ?'; params.push(status); }
+    if (isUser) { clauses.push('c.responsible = ?'); params.push(req.abSession.name); }
     if (search) {
-      sql += ' AND (name LIKE ? OR phone LIKE ? OR contrato LIKE ? OR grupo LIKE ?)';
+      clauses.push('(c.name LIKE ? OR c.phone LIKE ? OR c.email LIKE ?)');
       const like = `%${search}%`;
-      params.push(like, like, like, like);
+      params.push(like, like, like);
     }
-    sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    const where = clauses.join(' AND ');
+    const sql = `
+      SELECT c.*,
+        COUNT(ct.id) as total_contratos,
+        COALESCE(SUM(ct.credit_value), 0) as total_credit,
+        COUNT(CASE WHEN ct.status_atraso = 1 THEN 1 END) as contratos_atraso
+      FROM ab_capital_clientes c
+      LEFT JOIN ab_capital_contratos ct ON ct.cliente_id = c.id
+      WHERE ${where}
+      GROUP BY c.id
+      ORDER BY c.created_at DESC
+      LIMIT ? OFFSET ?`;
     params.push(Number(limit), offset);
     const clientes = await query(sql, params);
 
-    let countSql = 'SELECT COUNT(*) as total FROM ab_capital_clientes WHERE 1=1';
-    const countParams = [];
-    if (isUser) { countSql += ' AND responsible = ?'; countParams.push(req.abSession.name); }
-    if (status)  { countSql += ' AND status = ?'; countParams.push(status); }
-    if (search) {
-      countSql += ' AND (name LIKE ? OR phone LIKE ? OR contrato LIKE ? OR grupo LIKE ?)';
-      const like = `%${search}%`;
-      countParams.push(like, like, like, like);
-    }
+    const countParams = clauses.slice(1).length > 0
+      ? params.slice(0, params.length - 2)
+      : [];
+    const countSql = `SELECT COUNT(DISTINCT c.id) as total FROM ab_capital_clientes c WHERE ${where}`;
     const [{ total }] = await query(countSql, countParams);
     res.json({ clientes, total, page: Number(page), limit: Number(limit) });
   } catch (err) {
@@ -425,28 +431,31 @@ router.get('/clientes', abAuth, async (req, res) => {
   }
 });
 
+// GET /clientes/stats — estatísticas usando JOIN com contratos
 router.get('/clientes/stats', abAuth, async (req, res) => {
   try {
     const isUser = req.abSession.role === 'user';
     const { responsible, date_from, date_to } = req.query;
     const clauses = ['1=1'];
     const p = [];
-    if (isUser) { clauses.push('responsible = ?'); p.push(req.abSession.name); }
-    else if (responsible) { clauses.push('responsible = ?'); p.push(responsible); }
-    if (date_from) { clauses.push('date(created_at) >= ?'); p.push(date_from); }
-    if (date_to)   { clauses.push('date(created_at) <= ?'); p.push(date_to); }
+    if (isUser) { clauses.push('c.responsible = ?'); p.push(req.abSession.name); }
+    else if (responsible) { clauses.push('c.responsible = ?'); p.push(responsible); }
+    if (date_from) { clauses.push('date(c.created_at) >= ?'); p.push(date_from); }
+    if (date_to)   { clauses.push('date(c.created_at) <= ?'); p.push(date_to); }
     const where = clauses.join(' AND ');
     const [row] = await query(
       `SELECT
-         COUNT(*) AS total,
-         COUNT(CASE WHEN status = 'ativo'     THEN 1 END) AS ativos,
-         COUNT(CASE WHEN status_atraso = 1    THEN 1 END) AS em_atraso,
-         COUNT(CASE WHEN status = 'cancelado' THEN 1 END) AS cancelados,
-         COUNT(CASE WHEN status = 'quitado'   THEN 1 END) AS quitados,
-         COALESCE(SUM(credit_value), 0) AS total_credit,
-         COALESCE(SUM(credit_value * COALESCE(commission_pct,4) / 100), 0) AS total_commission,
-         COALESCE(SUM(installment_value * (COALESCE(installments,0) - COALESCE(parcelas_pagas,0))), 0) AS remaining_balance
-       FROM ab_capital_clientes WHERE ${where}`, p
+         COUNT(DISTINCT c.id) AS total,
+         COUNT(DISTINCT CASE WHEN ct.status = 'ativo' THEN c.id END) AS ativos,
+         COUNT(DISTINCT CASE WHEN ct.status_atraso = 1 THEN c.id END) AS em_atraso,
+         COUNT(DISTINCT CASE WHEN ct.status = 'cancelado' THEN c.id END) AS cancelados,
+         COUNT(DISTINCT CASE WHEN ct.status = 'quitado' THEN c.id END) AS quitados,
+         COALESCE(SUM(ct.credit_value), 0) AS total_credit,
+         COALESCE(SUM(ct.credit_value * COALESCE(ct.commission_pct,4) / 100), 0) AS total_commission,
+         COALESCE(SUM(ct.installment_value * (COALESCE(ct.installments,0) - COALESCE(ct.parcelas_pagas,0))), 0) AS remaining_balance
+       FROM ab_capital_clientes c
+       LEFT JOIN ab_capital_contratos ct ON ct.cliente_id = c.id
+       WHERE ${where}`, p
     );
     res.json({ ...row, revenue_target: 3_000_000 });
   } catch (err) {
@@ -454,110 +463,184 @@ router.get('/clientes/stats', abAuth, async (req, res) => {
   }
 });
 
+// GET /clientes/:id — retorna cliente com array de contratos
 router.get('/clientes/:id', abAuth, async (req, res) => {
   try {
-    const c = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
-    if (!c) return res.status(404).json({ error: 'Cliente não encontrado' });
-    res.json(c);
+    const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
+    if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
+    const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [req.params.id]);
+    res.json({ ...cliente, contratos });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// POST /clientes — cria somente o cliente (sem contrato)
 router.post('/clientes', abAuth, async (req, res) => {
   try {
     const {
-      name, phone, email, address, consortium_name, admin_company,
-      grupo, cota, contrato, credit_value, commission_pct, installments,
-      installment_value, parcelas_pagas, admin_profit_pct,
-      responsible, traffic_source, general_info, notes, lead_id,
+      name, phone, email, cpf_cnpj, address,
+      responsible, traffic_source, notes, source, lead_id,
     } = req.body;
     if (!name || !phone) return res.status(400).json({ error: 'Nome e telefone obrigatórios' });
     const id = uuidv4();
     const now = new Date().toISOString();
     await run(
       `INSERT INTO ab_capital_clientes
-        (id, lead_id, name, phone, email, address, consortium_name, admin_company,
-         grupo, cota, contrato, credit_value, commission_pct, installments,
-         installment_value, parcelas_pagas, admin_profit_pct,
-         responsible, traffic_source, general_info, notes, source, created_at, updated_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'manual',?,?)`,
-      [id, lead_id||null, name, String(phone).replace(/\D/g,''), email||null, address||null,
-       consortium_name||null, admin_company||null,
-       grupo||null, cota||null, contrato||null,
-       credit_value||null, commission_pct||4, installments||null,
-       installment_value||null, parcelas_pagas||0, admin_profit_pct||null,
-       responsible||null, traffic_source||null, general_info||null, notes||null,
-       now, now]
+        (id, lead_id, name, phone, email, cpf_cnpj, address,
+         responsible, traffic_source, notes, source, created_at, updated_at)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [id, lead_id||null, name.trim(), String(phone).replace(/\D/g,''),
+       email||null, cpf_cnpj||null, address||null,
+       responsible||null, traffic_source||null, notes||null,
+       source||'manual', now, now]
     );
     const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [id]);
-    res.json(cliente);
+    const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [id]);
+    res.json({ ...cliente, contratos });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// PUT /clientes/:id — atualiza apenas campos do cliente
 router.put('/clientes/:id', abAuth, async (req, res) => {
   try {
     const {
-      name, phone, email, address, consortium_name, admin_company,
-      grupo, cota, contrato, credit_value, commission_pct, installments,
-      installment_value, parcelas_pagas, admin_profit_pct,
-      status, status_atraso, status_cancelamento,
+      name, phone, email, cpf_cnpj, address,
       responsible, traffic_source, general_info, notes,
-      // novos campos v2
-      data_adesao, comissao_status, empresa, nf_emitida,
-      data_boleto, data_lance, parceria_pct, parceria_obs,
-      comissao_valor, comissao_recebida,
     } = req.body;
     const now = new Date().toISOString();
     await run(
       `UPDATE ab_capital_clientes SET
-         name=COALESCE(?,name), phone=COALESCE(?,phone), email=?, address=?,
-         consortium_name=?, admin_company=?,
-         grupo=?, cota=?, contrato=?,
-         credit_value=?, commission_pct=COALESCE(?,commission_pct),
-         installments=?, installment_value=?,
-         parcelas_pagas=COALESCE(?,parcelas_pagas),
-         admin_profit_pct=?,
-         status=COALESCE(?,status),
-         status_atraso=COALESCE(?,status_atraso),
-         status_cancelamento=COALESCE(?,status_cancelamento),
+         name=COALESCE(?,name), phone=COALESCE(?,phone),
+         email=?, cpf_cnpj=COALESCE(?,cpf_cnpj), address=?,
          responsible=?, traffic_source=?, general_info=?, notes=?,
-         data_adesao=?, comissao_status=COALESCE(?,comissao_status),
-         empresa=COALESCE(?,empresa), nf_emitida=COALESCE(?,nf_emitida),
-         data_boleto=?, data_lance=?,
-         parceria_pct=?, parceria_obs=?,
-         comissao_valor=?, comissao_recebida=COALESCE(?,comissao_recebida),
          updated_at=?
        WHERE id=?`,
       [
-        name||null, phone ? String(phone).replace(/\D/g,'') : null, email||null, address||null,
-        consortium_name||null, admin_company||null,
-        grupo||null, cota||null, contrato||null,
-        credit_value||null, commission_pct||null,
-        installments||null, installment_value||null,
-        parcelas_pagas != null ? Number(parcelas_pagas) : null,
-        admin_profit_pct||null,
-        status||null,
-        status_atraso != null ? (status_atraso ? 1 : 0) : null,
-        status_cancelamento != null ? (status_cancelamento ? 1 : 0) : null,
+        name||null, phone ? String(phone).replace(/\D/g,'') : null,
+        email||null, cpf_cnpj||null, address||null,
         responsible||null, traffic_source||null, general_info||null, notes||null,
-        data_adesao||null, comissao_status||null,
-        empresa||null, nf_emitida != null ? (nf_emitida ? 1 : 0) : null,
-        data_boleto||null, data_lance||null,
-        parceria_pct||null, parceria_obs||null,
-        comissao_valor||null, comissao_recebida != null ? Number(comissao_recebida) : null,
         now, req.params.id,
       ]
     );
-    const c = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
-    res.json(c);
+    const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
+    if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
+    const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [req.params.id]);
+    res.json({ ...cliente, contratos });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// POST /clientes/:id/contratos — cria novo contrato para um cliente
+router.post('/clientes/:id/contratos', abAuth, async (req, res) => {
+  try {
+    const clienteId = req.params.id;
+    const cliente = await queryOne('SELECT id FROM ab_capital_clientes WHERE id = ?', [clienteId]);
+    if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
+    const {
+      admin_company, grupo, cota, contrato,
+      credit_value, commission_pct, installments, installment_value,
+      parcelas_pagas, status, status_atraso, status_cancelamento,
+      data_adesao, comissao_valor, comissao_recebida, comissao_status,
+      empresa, nf_emitida, data_boleto, data_lance,
+      parceria_pct, parceria_obs, notes,
+    } = req.body;
+    const id = uuidv4();
+    const now = new Date().toISOString();
+    await run(
+      `INSERT INTO ab_capital_contratos
+        (id, cliente_id, admin_company, grupo, cota, contrato,
+         credit_value, commission_pct, installments, installment_value,
+         parcelas_pagas, status, status_atraso, status_cancelamento,
+         data_adesao, comissao_valor, comissao_recebida, comissao_status,
+         empresa, nf_emitida, data_boleto, data_lance,
+         parceria_pct, parceria_obs, notes, created_at, updated_at)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [id, clienteId, admin_company||null, grupo||null, cota||null, contrato||null,
+       credit_value||null, commission_pct||4, installments||null, installment_value||null,
+       parcelas_pagas||0, status||'ativo',
+       status_atraso ? 1 : 0, status_cancelamento ? 1 : 0,
+       data_adesao||null, comissao_valor||null, comissao_recebida||0,
+       comissao_status||'pendente', empresa||'AB', nf_emitida ? 1 : 0,
+       data_boleto||null, data_lance||null,
+       parceria_pct||null, parceria_obs||null, notes||null,
+       now, now]
+    );
+    const ct = await queryOne('SELECT * FROM ab_capital_contratos WHERE id = ?', [id]);
+    res.json(ct);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /contratos/:id — atualiza um contrato
+router.put('/contratos/:id', abAuth, async (req, res) => {
+  try {
+    const {
+      admin_company, grupo, cota, contrato,
+      credit_value, commission_pct, installments, installment_value,
+      parcelas_pagas, status, status_atraso, status_cancelamento,
+      data_adesao, comissao_valor, comissao_recebida, comissao_status,
+      empresa, nf_emitida, data_boleto, data_lance,
+      parceria_pct, parceria_obs, notes,
+    } = req.body;
+    const now = new Date().toISOString();
+    await run(
+      `UPDATE ab_capital_contratos SET
+         admin_company=?, grupo=?, cota=?, contrato=?,
+         credit_value=?, commission_pct=COALESCE(?,commission_pct),
+         installments=?, installment_value=?,
+         parcelas_pagas=COALESCE(?,parcelas_pagas),
+         status=COALESCE(?,status),
+         status_atraso=COALESCE(?,status_atraso),
+         status_cancelamento=COALESCE(?,status_cancelamento),
+         data_adesao=?, comissao_valor=?,
+         comissao_recebida=COALESCE(?,comissao_recebida),
+         comissao_status=COALESCE(?,comissao_status),
+         empresa=COALESCE(?,empresa), nf_emitida=COALESCE(?,nf_emitida),
+         data_boleto=?, data_lance=?,
+         parceria_pct=?, parceria_obs=?, notes=?,
+         updated_at=?
+       WHERE id=?`,
+      [
+        admin_company||null, grupo||null, cota||null, contrato||null,
+        credit_value||null, commission_pct||null,
+        installments||null, installment_value||null,
+        parcelas_pagas != null ? Number(parcelas_pagas) : null,
+        status||null,
+        status_atraso != null ? (status_atraso ? 1 : 0) : null,
+        status_cancelamento != null ? (status_cancelamento ? 1 : 0) : null,
+        data_adesao||null, comissao_valor||null,
+        comissao_recebida != null ? Number(comissao_recebida) : null,
+        comissao_status||null, empresa||null,
+        nf_emitida != null ? (nf_emitida ? 1 : 0) : null,
+        data_boleto||null, data_lance||null,
+        parceria_pct||null, parceria_obs||null, notes||null,
+        now, req.params.id,
+      ]
+    );
+    const ct = await queryOne('SELECT * FROM ab_capital_contratos WHERE id = ?', [req.params.id]);
+    if (!ct) return res.status(404).json({ error: 'Contrato não encontrado' });
+    res.json(ct);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /contratos/:id — deleta um contrato (master only)
+router.delete('/contratos/:id', abMaster, async (req, res) => {
+  try {
+    await run('DELETE FROM ab_capital_contratos WHERE id = ?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /clientes/:id/upload — upload de foto/anexo do cliente
 router.post('/clientes/:id/upload', abAuth, upload.fields([
   { name: 'attachment', maxCount: 1 },
   { name: 'photo',      maxCount: 1 },
@@ -578,8 +661,9 @@ router.post('/clientes/:id/upload', abAuth, upload.fields([
     updates.push('updated_at=?');
     params.push(now, req.params.id);
     await run(`UPDATE ab_capital_clientes SET ${updates.join(',')} WHERE id=?`, params);
-    const c = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
-    res.json(c);
+    const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
+    const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [req.params.id]);
+    res.json({ ...cliente, contratos });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -607,8 +691,12 @@ function fmtMoney(n) {
 // Provisão — formato igual à planilha do contador
 router.get('/export/provisao', abAuth, async (req, res) => {
   try {
-    const clientes = await query(
-      `SELECT * FROM ab_capital_clientes WHERE status != 'cancelado' ORDER BY admin_company, name`, []
+    const rows_data = await query(
+      `SELECT c.name, c.responsible, ct.*
+       FROM ab_capital_contratos ct
+       JOIN ab_capital_clientes c ON c.id = ct.cliente_id
+       WHERE ct.status != 'cancelado'
+       ORDER BY ct.admin_company, c.name`, []
     );
     const header = csvRow([
       'Administradora','Nome','Grupo','Cota','Situação','Valor do Bem','Contrato',
@@ -617,7 +705,7 @@ router.get('/export/provisao', abAuth, async (req, res) => {
       'Valores Restantes a Receber','Empresa','NF Emitida','Data Boleto','Data Lance',
       'Parceria %','Obs Parceria','Responsável',
     ]);
-    const rows = clientes.map(c => {
+    const rows = rows_data.map(c => {
       const parcRestantes = (c.installments||0) - (c.parcelas_pagas||0);
       const comissaoMensal = c.comissao_valor || (c.credit_value && c.commission_pct ? c.credit_value * c.commission_pct / 100 : null);
       const totalRestante  = comissaoMensal && parcRestantes ? comissaoMensal * parcRestantes : null;
@@ -627,7 +715,7 @@ router.get('/export/provisao', abAuth, async (req, res) => {
         fmtMoney(c.credit_value), c.contrato||'',
         fmtDate(c.data_adesao||c.created_at), c.installments||'',
         c.parcelas_pagas||0, parcRestantes,
-        c.commission_pct ? (c.commission_pct * 100).toFixed(4)+'%' : '',
+        c.commission_pct ? c.commission_pct.toFixed(4)+'%' : '',
         fmtMoney(comissaoMensal),
         c.comissao_status||'pendente',
         fmtMoney(c.comissao_recebida||0),
@@ -638,8 +726,7 @@ router.get('/export/provisao', abAuth, async (req, res) => {
       ]);
     });
     // Linha de totais
-    const totCredit = clientes.reduce((s,c)=>s+(c.credit_value||0),0);
-    const totRecebida = clientes.reduce((s,c)=>s+(c.comissao_recebida||0),0);
+    const totCredit = rows_data.reduce((s,c)=>s+(c.credit_value||0),0);
     rows.push(csvRow(['TOTAL','','','','','','','','','','','','','','',fmtMoney(totCredit),'','','','','','','']));
 
     const bom = '\uFEFF'; // BOM para Excel reconhecer UTF-8
@@ -657,11 +744,15 @@ router.get('/export/relatorio', abAuth, async (req, res) => {
     const { responsible, date_from, date_to } = req.query;
     const clauses = ['1=1'];
     const p = [];
-    if (responsible) { clauses.push('responsible = ?'); p.push(responsible); }
-    if (date_from)   { clauses.push('date(created_at) >= ?'); p.push(date_from); }
-    if (date_to)     { clauses.push('date(created_at) <= ?'); p.push(date_to); }
-    const clientes = await query(
-      `SELECT * FROM ab_capital_clientes WHERE ${clauses.join(' AND ')} ORDER BY created_at DESC`, p
+    if (responsible) { clauses.push('c.responsible = ?'); p.push(responsible); }
+    if (date_from)   { clauses.push('date(ct.created_at) >= ?'); p.push(date_from); }
+    if (date_to)     { clauses.push('date(ct.created_at) <= ?'); p.push(date_to); }
+    const rows_data = await query(
+      `SELECT c.name, c.responsible, c.traffic_source, ct.*
+       FROM ab_capital_contratos ct
+       JOIN ab_capital_clientes c ON c.id = ct.cliente_id
+       WHERE ${clauses.join(' AND ')}
+       ORDER BY ct.created_at DESC`, p
     );
     const header = csvRow([
       'Mês Venda','Administradora','Nº Contrato','Cliente','Valor Venda','Data Venda',
@@ -671,7 +762,7 @@ router.get('/export/relatorio', abAuth, async (req, res) => {
       'Comissão Recebida','A Receber','Responsável','Parceria','Obs Parceria',
     ]);
     const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const rows = clientes.map(c => {
+    const rows = rows_data.map(c => {
       const dt = c.data_adesao ? new Date(c.data_adesao) : new Date(c.created_at);
       const mes = isNaN(dt) ? '' : MESES[dt.getMonth()]+'/'+dt.getFullYear();
       const comissaoTotal  = c.credit_value && c.commission_pct ? c.credit_value * c.commission_pct / 100 : null;
@@ -681,7 +772,7 @@ router.get('/export/relatorio', abAuth, async (req, res) => {
       return csvRow([
         mes, c.admin_company||'', c.contrato||'', c.name,
         fmtMoney(c.credit_value), fmtDate(c.data_adesao||c.created_at),
-        c.commission_pct ? (c.commission_pct*100).toFixed(2)+'%' : '',
+        c.commission_pct ? c.commission_pct.toFixed(2)+'%' : '',
         c.installments||'', fmtMoney(comissaoTotal), fmtMoney(comissaoMensal),
         c.comissao_status||'pendente', c.nf_emitida?'Sim':'Não',
         c.empresa||'AB', c.traffic_source||'', fmtDate(c.data_adesao),
@@ -701,8 +792,10 @@ router.get('/export/relatorio', abAuth, async (req, res) => {
   }
 });
 
+// DELETE /clientes/:id — deleta cliente e todos seus contratos (master only)
 router.delete('/clientes/:id', abMaster, async (req, res) => {
   try {
+    await run('DELETE FROM ab_capital_contratos WHERE cliente_id = ?', [req.params.id]);
     await run('DELETE FROM ab_capital_clientes WHERE id = ?', [req.params.id]);
     res.json({ ok: true });
   } catch (err) {
@@ -710,7 +803,7 @@ router.delete('/clientes/:id', abMaster, async (req, res) => {
   }
 });
 
-// Converte lead em cliente (idempotente)
+// Converte lead em cliente (idempotente) — cria apenas o registro de pessoa
 router.post('/leads/:id/convert', abAuth, async (req, res) => {
   try {
     const lead = await queryOne('SELECT * FROM ab_capital_leads WHERE id = ?', [req.params.id]);
@@ -719,21 +812,23 @@ router.post('/leads/:id/convert', abAuth, async (req, res) => {
     // Se já foi convertido, retorna o cliente existente
     if (lead.converted_to_client_id) {
       const existing = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [lead.converted_to_client_id]);
-      if (existing) return res.json({ cliente: existing, already_existed: true });
+      if (existing) {
+        const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [existing.id]);
+        return res.json({ cliente: { ...existing, contratos }, already_existed: true });
+      }
     }
 
     const id = uuidv4();
     const now = new Date().toISOString();
     await run(
       `INSERT INTO ab_capital_clientes
-        (id, lead_id, name, phone, email, address, consortium_name, admin_company,
-         credit_value, responsible, traffic_source, general_info, notes,
+        (id, lead_id, name, phone, email, address,
+         responsible, traffic_source, general_info, notes,
          source, created_at, updated_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'conversao',?,?)`,
+       VALUES (?,?,?,?,?,?,?,?,?,?,'conversao',?,?)`,
       [id, lead.id, lead.name, lead.phone, lead.email||null, lead.address||null,
-       lead.consortium_name||null, lead.admin_company||null,
-       lead.credit_value||null, lead.responsible||null,
-       lead.traffic_source||null, lead.general_info||null, lead.notes||null,
+       lead.responsible||null, lead.traffic_source||null,
+       lead.general_info||null, lead.notes||null,
        now, now]
     );
 
@@ -742,7 +837,8 @@ router.post('/leads/:id/convert', abAuth, async (req, res) => {
       [id, now, now, lead.id]);
 
     const cliente = await queryOne('SELECT * FROM ab_capital_clientes WHERE id = ?', [id]);
-    res.json({ cliente, already_existed: false });
+    const contratos = await query('SELECT * FROM ab_capital_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [id]);
+    res.json({ cliente: { ...cliente, contratos }, already_existed: false });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
