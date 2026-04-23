@@ -171,33 +171,18 @@ router.post('/leads/public', leadSubmitLimiter, async (req, res) => {
     console.log(`[AB Capital] Novo lead: ${name} | ${cleanPhone}`);
     res.json({ ok: true, id });
 
-    // Automações em background (não bloqueiam a resposta)
+    // Notificação em background ao grupo interno
     setImmediate(async () => {
-      const firstName = name.trim().split(' ')[0];
-
-      // 1. Primeira mensagem para o lead (falha silenciosa se número não existe)
-      try {
-        await evolutionApi.sendTextMessageFromInstance(
-          AB_CAPITAL_INSTANCE,
-          cleanPhone,
-          `Olá, ${firstName}! 👋\n\nAqui é da *AB Capital*. Recebemos seu contato e ficamos felizes com seu interesse!\n\nEm breve um de nossos consultores entrará em contato para entender melhor como podemos te ajudar. 😊`
-        );
-        console.log(`[AB Capital] Mensagem enviada para lead ${cleanPhone} via instância ${AB_CAPITAL_INSTANCE}`);
-      } catch (err) {
-        console.warn(`[AB Capital] Não foi possível enviar mensagem para ${cleanPhone}:`, err.message);
-      }
-
-      // 2. Notificação no grupo (sempre envia, independente do item acima)
       try {
         const objectiveText = objective ? `\n🎯 Objetivo: ${objective}` : '';
         await evolutionApi.sendTextMessageFromInstance(
-          AB_CAPITAL_INSTANCE,
+          AB_CAPITAL_NOTIFY_INSTANCE,
           AB_CAPITAL_GROUP_ID,
           `🔔 *Novo lead via landing page!*\n\n👤 Nome: ${name.trim()}\n📱 Telefone: +55 ${cleanPhone}${objectiveText}`
         );
-        console.log(`[AB Capital] Notificação enviada ao grupo via instância ${AB_CAPITAL_INSTANCE}`);
+        console.log(`[AB Capital] Notificação enviada ao grupo via instância ${AB_CAPITAL_NOTIFY_INSTANCE}`);
       } catch (err) {
-        console.error('[AB Capital] Erro ao notificar grupo:', err.message, '| Instância:', AB_CAPITAL_INSTANCE);
+        console.error('[AB Capital] Erro ao notificar grupo:', err.message);
       }
     });
   } catch (err) {
