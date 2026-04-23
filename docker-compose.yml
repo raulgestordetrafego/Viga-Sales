@@ -41,6 +41,7 @@ services:
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
     volumes:
       - viga-sales-db:/app/db
+      - ./public/audio:/app/public/audio:ro
     networks:
       - default
       - n8n_traefik
@@ -85,7 +86,8 @@ services:
       - PORT=3001
       - EVOLUTION_API_URL=${EVOLUTION_API_URL}
       - EVOLUTION_API_KEY=${EVOLUTION_API_KEY}
-      - AB_CAPITAL_EVOLUTION_INSTANCE=${AB_CAPITAL_EVOLUTION_INSTANCE:-Raul}
+      - AB_CAPITAL_EVOLUTION_INSTANCE=${AB_CAPITAL_EVOLUTION_INSTANCE:-Adila_pessoal}
+      - AB_CAPITAL_NOTIFY_INSTANCE=${AB_CAPITAL_NOTIFY_INSTANCE:-Adila_pessoal}
       - AB_CAPITAL_SHEETS_WEBHOOK=${AB_CAPITAL_SHEETS_WEBHOOK:-}
       # Usa o mesmo volume do viga-sales até migração ser feita
       - DB_PATH=/app/db/crm.sqlite

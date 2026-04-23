@@ -13,7 +13,9 @@ import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
 
 const AB_CAPITAL_GROUP_ID = '120363426868095162@g.us';
-const AB_CAPITAL_INSTANCE = process.env.AB_CAPITAL_EVOLUTION_INSTANCE || 'Raul';
+const AB_CAPITAL_INSTANCE = process.env.AB_CAPITAL_EVOLUTION_INSTANCE || 'Adila_pessoal';
+// Notificações ao grupo (tarefas, follow-ups) via instância AB Capital
+const AB_CAPITAL_NOTIFY_INSTANCE = process.env.AB_CAPITAL_NOTIFY_INSTANCE || process.env.AB_CAPITAL_EVOLUTION_INSTANCE || 'Adila_pessoal';
 
 const leadSubmitLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
@@ -84,6 +86,11 @@ setInterval(() => {
     }
   }
 }, 15 * 60 * 1000);
+
+// ── Arquivos estáticos públicos ───────────────────────────────────────────────
+router.get('/logo',        (req, res) => res.sendFile(path.join('/app', 'public', 'abcapital', 'logo.png')));
+router.get('/favicon.ico', (req, res) => res.sendFile(path.join('/app', 'public', 'abcapital', 'favicon.ico')));
+router.get('/favicon-192.png', (req, res) => res.sendFile(path.join('/app', 'public', 'abcapital', 'favicon-192.png')));
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -1135,7 +1142,7 @@ setInterval(async () => {
         const noteText = f.note ? `\n📝 ${f.note}` : '';
         const msg = `🔔 *Follow-up AB Capital*\n\n📌 Falar com *${f.cliente_name}* hoje!\n👤 Agendado por: ${f.created_by || '—'}${noteText}`;
         await evolutionApi.sendTextMessageFromInstance(
-          AB_CAPITAL_INSTANCE,
+          AB_CAPITAL_NOTIFY_INSTANCE,
           AB_CAPITAL_GROUP_FOLLOWUP,
           msg
         );
@@ -1150,6 +1157,143 @@ setInterval(async () => {
     }
   } catch (err) {
     console.error('[Follow-up] Scheduler error:', err.message);
+  }
+}, 60 * 1000);
+
+// ══════════════════════════════════════════════════════════════════
+// TAREFAS
+// ══════════════════════════════════════════════════════════════════
+
+// Lista tarefas (filtro por usuário para role=user)
+router.get('/tasks', abAuth, async (req, res) => {
+  try {
+    const session = getAbSession(req);
+    const { status, priority, lead_id } = req.query;
+    let sql = `SELECT * FROM ab_capital_tasks WHERE 1=1`;
+    const params = [];
+    if (session.role === 'user') { sql += ` AND (assigned_to = ? OR created_by = ?)`; params.push(session.name, session.name); }
+    if (status)   { sql += ` AND status = ?`;   params.push(status); }
+    if (priority) { sql += ` AND priority = ?`; params.push(priority); }
+    if (lead_id)  { sql += ` AND lead_id = ?`;  params.push(lead_id); }
+    sql += ` ORDER BY due_date ASC, created_at DESC`;
+    const tasks = await query(sql, params);
+    res.json(tasks);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Cria tarefa
+router.post('/tasks', abAuth, async (req, res) => {
+  try {
+    const session = getAbSession(req);
+    const { lead_id, lead_name, title, description, due_date, due_time, priority, assigned_to } = req.body;
+    if (!title) return res.status(400).json({ error: 'Título obrigatório' });
+    const id = uuidv4();
+    const now = new Date().toISOString();
+    await run(
+      `INSERT INTO ab_capital_tasks (id, lead_id, lead_name, title, description, due_date, due_time, priority, status, assigned_to, created_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendente', ?, ?, ?, ?)`,
+      [id, lead_id || null, lead_name || null, title, description || null, due_date || null,
+       due_time || null, priority || 'media', assigned_to || session.name, session.name, now, now]
+    );
+    const task = await queryOne('SELECT * FROM ab_capital_tasks WHERE id = ?', [id]);
+    res.status(201).json(task);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Atualiza tarefa (status, campos)
+router.put('/tasks/:id', abAuth, async (req, res) => {
+  try {
+    const { title, description, due_date, due_time, priority, status, assigned_to } = req.body;
+    const now = new Date().toISOString();
+    await run(
+      `UPDATE ab_capital_tasks SET
+        title = COALESCE(?, title),
+        description = COALESCE(?, description),
+        due_date = COALESCE(?, due_date),
+        due_time = COALESCE(?, due_time),
+        priority = COALESCE(?, priority),
+        status = COALESCE(?, status),
+        assigned_to = COALESCE(?, assigned_to),
+        updated_at = ?
+       WHERE id = ?`,
+      [title || null, description || null, due_date || null, due_time || null,
+       priority || null, status || null, assigned_to || null, now, req.params.id]
+    );
+    const task = await queryOne('SELECT * FROM ab_capital_tasks WHERE id = ?', [req.params.id]);
+    res.json(task);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Deleta tarefa
+router.delete('/tasks/:id', abAuth, async (req, res) => {
+  try {
+    await run('DELETE FROM ab_capital_tasks WHERE id = ?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── Scheduler de tarefas: envia lista diária no grupo ─────────────────────────
+let taskDigestLastSent = '';
+
+async function sendTaskDigest(forceDate) {
+  const now = new Date();
+  const today = forceDate || now.toISOString().split('T')[0];
+
+  const tasks = await query(
+    `SELECT * FROM ab_capital_tasks
+     WHERE due_date = ? AND status NOT IN ('concluida', 'cancelada')
+     ORDER BY CASE priority WHEN 'alta' THEN 1 WHEN 'media' THEN 2 ELSE 3 END, title ASC`,
+    [today]
+  );
+
+  if (!tasks || tasks.length === 0) return { sent: false, reason: 'Nenhuma tarefa para hoje' };
+
+  const PRIORITY_ICON = { alta: '🔴', media: '🟡', baixa: '🟢' };
+  const dateFormatted = now.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+
+  let msg;
+  if (tasks.length === 1) {
+    const t = tasks[0];
+    const icon = PRIORITY_ICON[t.priority] || '🟡';
+    const timeInfo = t.due_time ? `\n⏰ Horário: ${t.due_time}` : '';
+    const leadInfo = t.lead_name ? `\n🎯 Lead: ${t.lead_name}` : '';
+    const respInfo = t.assigned_to ? `\n👤 Responsável: ${t.assigned_to}` : '';
+    msg = `📋 *Tarefa para hoje — ${dateFormatted}*\n\n${icon} *${t.title}*${timeInfo}${leadInfo}${respInfo}`;
+  } else {
+    const lista = tasks.map((t, i) => {
+      const icon = PRIORITY_ICON[t.priority] || '🟡';
+      const time = t.due_time ? ` ⏰${t.due_time}` : '';
+      const resp = t.assigned_to ? ` (${t.assigned_to})` : '';
+      const lead = t.lead_name ? ` — ${t.lead_name}` : '';
+      return `${i + 1}. ${icon} *${t.title}*${time}${lead}${resp}`;
+    }).join('\n');
+    msg = `📋 *Tarefas para hoje — ${dateFormatted}*\n\n${lista}\n\n_${tasks.length} tarefas pendentes_`;
+  }
+
+  await evolutionApi.sendTextMessageFromInstance(AB_CAPITAL_NOTIFY_INSTANCE, AB_CAPITAL_GROUP_ID, msg);
+  console.log(`[Tasks] Digest enviado — ${tasks.length} tarefa(s)`);
+  return { sent: true, tasks: tasks.length, msg };
+}
+
+// Rota de teste (só master/admin)
+router.post('/tasks/test-notify', abAuth, abMaster, async (req, res) => {
+  try {
+    const result = await sendTaskDigest(req.body.date || null);
+    res.json(result);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Disparo automático diário às 08:00
+setInterval(async () => {
+  try {
+    const now = new Date();
+    if (now.getHours() !== 8 || now.getMinutes() !== 0) return;
+    const today = now.toISOString().split('T')[0];
+    if (taskDigestLastSent === today) return;
+    await sendTaskDigest(today);
+    taskDigestLastSent = today;
+  } catch (err) {
+    console.error('[Tasks] Scheduler error:', err.message);
   }
 }, 60 * 1000);
 
