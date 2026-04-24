@@ -46,59 +46,6 @@ services:
       - default
       - n8n_traefik
 
-  # ── Container 2: AB Capital CRM ──────────────────────────────────────────────
-  abcapital-crm:
-    build:
-      context: .
-      dockerfile: apps/abcapital-crm/Dockerfile
-    restart: always
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=n8n_default
-
-      # CRM — app.abcapital.com.br → serve SPA + API direto (sem prefixo)
-      - traefik.http.routers.abcapital-crm.rule=Host(`app.abcapital.com.br`)
-      - traefik.http.routers.abcapital-crm.tls=true
-      - traefik.http.routers.abcapital-crm.entrypoints=web,websecure
-      - traefik.http.routers.abcapital-crm.tls.certresolver=mytlschallenge
-      - traefik.http.services.abcapital-crm.loadbalancer.server.port=3001
-
-      # Landing API — abcapital.com.br/api/* → abcapital-crm direto (prioridade alta)
-      - traefik.http.routers.abcapital-landing-api.rule=(Host(`abcapital.com.br`) || Host(`www.abcapital.com.br`)) && PathPrefix(`/api/`)
-      - traefik.http.routers.abcapital-landing-api.tls=true
-      - traefik.http.routers.abcapital-landing-api.entrypoints=web,websecure
-      - traefik.http.routers.abcapital-landing-api.tls.certresolver=mytlschallenge
-      - traefik.http.routers.abcapital-landing-api.service=abcapital-crm
-      - traefik.http.routers.abcapital-landing-api.priority=20
-
-      # Landing — abcapital.com.br (resto) → reescreve para /landing (prioridade baixa)
-      - traefik.http.routers.abcapital-landing.rule=Host(`abcapital.com.br`) || Host(`www.abcapital.com.br`)
-      - traefik.http.routers.abcapital-landing.tls=true
-      - traefik.http.routers.abcapital-landing.entrypoints=web,websecure
-      - traefik.http.routers.abcapital-landing.tls.certresolver=mytlschallenge
-      - traefik.http.routers.abcapital-landing.service=abcapital-crm
-      - traefik.http.routers.abcapital-landing.middlewares=abcapital-landing-rewrite
-      - traefik.http.routers.abcapital-landing.priority=10
-      - traefik.http.middlewares.abcapital-landing-rewrite.replacepathregex.regex=^/(.*)
-      - traefik.http.middlewares.abcapital-landing-rewrite.replacepathregex.replacement=/landing
-    environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - EVOLUTION_API_URL=${EVOLUTION_API_URL}
-      - EVOLUTION_API_KEY=${EVOLUTION_API_KEY}
-      - AB_CAPITAL_EVOLUTION_INSTANCE=Adila_pessoal
-      - AB_CAPITAL_NOTIFY_INSTANCE=Adila_pessoal
-      - AB_CAPITAL_SHEETS_WEBHOOK=${AB_CAPITAL_SHEETS_WEBHOOK:-}
-      - DB_PATH=/app/data/crm.sqlite
-    volumes:
-      - viga-sales-db:/app/data
-      - abcapital-uploads:/app/uploads
-      - ./public/abcapital/logo.png:/app/public/abcapital/logo.png:ro
-    networks:
-      - default
-      - n8n_traefik
-
-
 networks:
   n8n_traefik:
     external: true
@@ -106,5 +53,4 @@ networks:
 
 volumes:
   viga-sales-db:
-  abcapital-uploads:
   postgres-agente-data:
