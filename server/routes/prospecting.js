@@ -160,7 +160,7 @@ ${customInstruction}Regras:
 - Sem emojis excessivos (máximo 1)
 - Varie levemente o estilo a cada geração para não parecer robô`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -193,6 +193,45 @@ async function resetDailyCountIfNeeded(campaignId) {
 }
 
 // ── Campaigns ─────────────────────────────────────────────────────────────────
+
+// GET /api/prospects/default-campaign — retorna ou cria a campanha padrão da Viga Sales
+router.get('/default-campaign', async (req, res) => {
+  try {
+    let campaign = await queryOne(
+      "SELECT * FROM prospecting_campaigns WHERE status = 'active' ORDER BY created_at ASC LIMIT 1"
+    );
+    if (!campaign) {
+      const id = uuidv4();
+      const today = new Date().toISOString().split('T')[0];
+      await run(
+        `INSERT INTO prospecting_campaigns (id, name, segment, city, daily_limit, message_template, use_ai, status, last_reset_date)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          id,
+          'Viga Sales Principal',
+          'construção civil',
+          'Brasília, DF',
+          40,
+          `Abordagem para engenheiros, arquitetos, construtores e empreiteiros.
+Apresente-se como Raul da Viga Sales.
+Proposta de valor: ajudamos profissionais da construção civil a receber pedidos de orçamento de clientes qualificados pelo WhatsApp, sem depender só de indicação.
+Tom: casual e humano, como WhatsApp mesmo. Direto ao ponto.
+Mencione o nome da empresa se disponível.
+Não prometa resultados específicos nem use linguagem de vendedor.
+Máximo 3-4 frases.`,
+          1,
+          'active',
+          today,
+        ]
+      );
+      campaign = await queryOne('SELECT * FROM prospecting_campaigns WHERE id = ?', [id]);
+      console.log('[default-campaign] Campanha "Viga Sales Principal" criada:', id);
+    }
+    res.json(campaign);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // GET /api/prospects/campaigns
 router.get('/campaigns', async (req, res) => {
