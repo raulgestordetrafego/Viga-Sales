@@ -89,10 +89,9 @@ services:
       - AB_CAPITAL_EVOLUTION_INSTANCE=Adila_pessoal
       - AB_CAPITAL_NOTIFY_INSTANCE=Adila_pessoal
       - AB_CAPITAL_SHEETS_WEBHOOK=${AB_CAPITAL_SHEETS_WEBHOOK:-}
-      # Usa o mesmo volume do viga-sales até migração ser feita
-      - DB_PATH=/app/db/crm.sqlite
+      - DB_PATH=/app/data/crm.sqlite
     volumes:
-      - viga-sales-db:/app/db
+      - viga-sales-db:/app/data
       - abcapital-uploads:/app/uploads
       - ./public/abcapital/logo.png:/app/public/abcapital/logo.png:ro
     networks:
