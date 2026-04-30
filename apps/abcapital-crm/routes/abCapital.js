@@ -963,6 +963,79 @@ router.delete('/prospects/:id', abMaster, async (req, res) => {
   }
 });
 
+// ── Prospecção Ativa — Auth interna (n8n) ─────────────────────────────────────
+
+const INTERNAL_KEY = process.env.AB_CAPITAL_INTERNAL_KEY || '7bf56493ef8c33b477094266723532549a7ae39bfb76f5b6';
+
+function internalAuth(req, res, next) {
+  if (req.headers['x-internal-key'] !== INTERNAL_KEY) return res.status(401).json({ error: 'Não autorizado' });
+  next();
+}
+
+// Migração automática — adiciona sender_instance se não existir
+(async () => {
+  try { await run('ALTER TABLE ab_capital_prospects ADD COLUMN sender_instance TEXT'); } catch (_) {}
+})();
+
+// Fila de leads novos para disparo
+router.get('/prospects/queue', internalAuth, async (req, res) => {
+  try {
+    const { campaign_id, limit = 2 } = req.query;
+    if (!campaign_id) return res.status(400).json({ error: 'campaign_id obrigatório' });
+    const prospects = await query(
+      `SELECT * FROM ab_capital_prospects WHERE status = 'novo' AND campaign_id = ? ORDER BY created_at ASC LIMIT ?`,
+      [campaign_id, parseInt(limit)]
+    );
+    res.json({ prospects });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Atualizar status do prospect (usado pelo n8n após envio)
+router.patch('/prospects/:id/status', internalAuth, async (req, res) => {
+  try {
+    const { status, campaign_id, sender_instance } = req.body;
+    const now = new Date().toISOString();
+    const fields = ['status = ?', 'updated_at = ?'];
+    const params = [status, now];
+    if (sender_instance !== undefined) { fields.push('sender_instance = ?'); params.push(sender_instance); }
+    if (status === 'aguardando_resposta') { fields.push('sent_at = ?'); params.push(now); }
+    params.push(req.params.id);
+    await run(`UPDATE ab_capital_prospects SET ${fields.join(', ')} WHERE id = ?`, params);
+    const p = await queryOne('SELECT * FROM ab_capital_prospects WHERE id = ?', [req.params.id]);
+    res.json(p);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Leads aguardando áudio (enviou texto mas não recebeu áudio ainda)
+router.get('/prospects/audio-pending', internalAuth, async (req, res) => {
+  try {
+    const { campaign_id, minutes = 30, instance } = req.query;
+    if (!campaign_id) return res.status(400).json({ error: 'campaign_id obrigatório' });
+    const cutoff = new Date(Date.now() - parseInt(minutes) * 60 * 1000).toISOString();
+    const conds = [`status = 'aguardando_resposta'`, `campaign_id = ?`, `sent_at < ?`];
+    const params = [campaign_id, cutoff];
+    if (instance) { conds.push('sender_instance = ?'); params.push(instance); }
+    const prospects = await query(
+      `SELECT * FROM ab_capital_prospects WHERE ${conds.join(' AND ')} ORDER BY sent_at ASC LIMIT 10`,
+      params
+    );
+    res.json({ prospects, count: prospects.length });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Marcar áudio como enviado
+router.post('/prospects/:id/send-audio', internalAuth, async (req, res) => {
+  try {
+    const now = new Date().toISOString();
+    await run(
+      `UPDATE ab_capital_prospects SET status = 'enviado', updated_at = ? WHERE id = ?`,
+      [now, req.params.id]
+    );
+    const p = await queryOne('SELECT * FROM ab_capital_prospects WHERE id = ?', [req.params.id]);
+    res.json(p);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ── Campanhas ─────────────────────────────────────────────────────────────────
 
 router.get('/campaigns', abAuth, async (req, res) => {
