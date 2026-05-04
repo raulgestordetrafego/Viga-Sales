@@ -461,6 +461,7 @@ async function initializeSchema() {
 
   // Migrações incrementais
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN notes TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN audio_batch_sent INTEGER DEFAULT 0`); } catch {}
   // Corrigir campaign_id dos prospects importados antes da criação da campanha
   try {
     await db.run(

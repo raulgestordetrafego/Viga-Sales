@@ -171,7 +171,48 @@ async function handleIncomingMessage(msg, io) {
       console.log(`Message with WhatsApp ID ${msg.messageId} already exists, skipping save.`);
     }
 
-    // 4) Emitir via socket para o front-end em tempo real
+    // 4) Se mensagem inbound, verificar se é de um prospect e atualizar status
+    if (direction === 'inbound') {
+      try {
+        // Buscar prospect pelo telefone (exact ou últimos 11 dígitos)
+        const phoneVariants = [
+          cleanPhone,
+          cleanPhone.replace(/^55/, ''),           // sem DDI
+          '55' + cleanPhone.replace(/^55/, ''),     // com DDI
+        ];
+        // Adicionar variante com/sem 9º dígito
+        const phoneBase = cleanPhone.replace(/^55/, '');
+        if (phoneBase.length === 11) {
+          // tem 9º dígito → adicionar sem
+          phoneVariants.push('55' + phoneBase.slice(0, 2) + phoneBase.slice(3));
+        } else if (phoneBase.length === 10) {
+          // sem 9º dígito → adicionar com
+          phoneVariants.push('55' + phoneBase.slice(0, 2) + '9' + phoneBase.slice(2));
+        }
+
+        const placeholders = phoneVariants.map(() => '?').join(', ');
+        const prospect = await queryOne(
+          `SELECT id, status, notes FROM prospects WHERE phone IN (${placeholders}) AND status = 'enviado' LIMIT 1`,
+          phoneVariants
+        );
+
+        if (prospect) {
+          const resposta = (msg.content || '').substring(0, 500);
+          const novaNote = `[Respondeu ${new Date().toLocaleDateString('pt-BR')}]: ${resposta}`;
+          const notesAtual = prospect.notes ? prospect.notes + '\n' + novaNote : novaNote;
+
+          await run(
+            `UPDATE prospects SET status = 'respondeu', notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+            [notesAtual, prospect.id]
+          );
+          console.log(`[Webhook] Prospect ${prospect.id} atualizado para 'respondeu'. Resposta: "${resposta.substring(0, 60)}"`);
+        }
+      } catch (err) {
+        console.error('[Webhook] Erro ao atualizar status do prospect:', err.message);
+      }
+    }
+
+    // 5) Emitir via socket para o front-end em tempo real
     if (io) {
       const fullContact = { ...contact, tags: JSON.parse(typeof contact.tags === 'string' ? contact.tags : '[]') };
       const updatedConv = await queryOne(`

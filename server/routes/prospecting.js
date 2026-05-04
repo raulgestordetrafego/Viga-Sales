@@ -1,6 +1,7 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { query, queryOne, run, getDb } from '../db/database.js';
+import * as evolutionApi from '../services/evolutionApi.js';
 
 // Cria contato + conversa no CRM quando um prospect é marcado como enviado
 async function syncProspectToConversation(prospect, message) {
@@ -547,6 +548,141 @@ router.get('/stats/summary', async (req, res) => {
       sent_today: parseInt(todayLogs?.n || 0),
     });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Autenticação interna para n8n / automações ───────────────────────────────
+function internalAuth(req, res, next) {
+  const token = req.headers['x-internal-key'] || req.query.internal_key;
+  const expected = process.env.VIGA_INTERNAL_TOKEN || process.env.N8N_AUTH_TOKEN;
+  if (!expected) return res.status(503).json({ error: 'VIGA_INTERNAL_TOKEN não configurado' });
+  if (token !== expected) return res.status(401).json({ error: 'Token interno inválido' });
+  next();
+}
+
+// GET /api/prospects/check-audio — verifica se um telefone é prospect com áudio enviado
+// Usado pelo agente de entrada para rotear para agendamento
+router.get('/check-audio', internalAuth, async (req, res) => {
+  try {
+    const rawPhone = (req.query.phone || '').replace(/\D/g, '');
+    if (!rawPhone) return res.status(400).json({ error: 'phone obrigatório' });
+
+    // Normalizar: extrair últimos 11 dígitos (DDD + número) e variantes com/sem DDI
+    const base = rawPhone.replace(/^55/, '');
+    const phoneVariants = [
+      rawPhone,
+      '55' + base,
+      base,
+    ];
+    // variante com/sem 9º dígito
+    if (base.length === 11) phoneVariants.push('55' + base.slice(0, 2) + base.slice(3), base.slice(0, 2) + base.slice(3));
+    if (base.length === 10) phoneVariants.push('55' + base.slice(0, 2) + '9' + base.slice(2), base.slice(0, 2) + '9' + base.slice(2));
+
+    const placeholders = phoneVariants.map(() => '?').join(', ');
+    const prospect = await queryOne(
+      `SELECT id, phone, name, status, audio_batch_sent, campaign_id FROM prospects
+       WHERE phone IN (${placeholders})
+         AND audio_batch_sent = 1
+       LIMIT 1`,
+      phoneVariants
+    );
+
+    res.json({
+      is_prospect: !!prospect,
+      audio_sent: !!prospect,
+      status: prospect?.status || null,
+      prospect_id: prospect?.id || null,
+      campaign_id: prospect?.campaign_id || null,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/prospects/audio-pending — prospects que receberam texto mas ainda não receberam áudio
+// Query params: minutes (default 5), campaign_id, limit (default 10)
+router.get('/audio-pending', internalAuth, async (req, res) => {
+  try {
+    const minutes = parseInt(req.query.minutes || 5);
+    const campaign_id = req.query.campaign_id || null;
+    const limit = Math.min(parseInt(req.query.limit || 10), 50);
+
+    const db = getDb();
+    let sql;
+    const params = [];
+
+    if (db.isPostgres) {
+      sql = `SELECT * FROM prospects
+             WHERE status = 'enviado'
+               AND (audio_batch_sent IS NULL OR audio_batch_sent = 0 OR audio_batch_sent = false)
+               AND sent_at IS NOT NULL
+               AND COALESCE(sent_at::timestamp, updated_at::timestamp) <= NOW() - INTERVAL '${minutes} minutes'`;
+      if (campaign_id) { sql += ' AND campaign_id = $1'; params.push(campaign_id); }
+      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
+    } else {
+      sql = `SELECT * FROM prospects
+             WHERE status = 'enviado'
+               AND (audio_batch_sent IS NULL OR audio_batch_sent = 0)
+               AND sent_at IS NOT NULL
+               AND datetime(replace(COALESCE(sent_at, updated_at),'T',' ')) <= datetime('now', '-${minutes} minutes')`;
+      if (campaign_id) { sql += ' AND campaign_id = ?'; params.push(campaign_id); }
+      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
+    }
+
+    const prospects = await query(sql, params);
+    res.json({ prospects: prospects.map(parseProspect), count: prospects.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/prospects/:id/send-audio — claim atômico + envia áudio aleatório
+router.post('/:id/send-audio', internalAuth, async (req, res) => {
+  const prospectId = req.params.id;
+  let claimed = false;
+  try {
+    // Claim atômico — marca audio_batch_sent=1 apenas se ainda está sem áudio
+    const result = await run(
+      `UPDATE prospects SET audio_batch_sent = 1, updated_at = CURRENT_TIMESTAMP
+       WHERE id = ? AND status = 'enviado' AND (audio_batch_sent IS NULL OR audio_batch_sent = 0)`,
+      [prospectId]
+    );
+
+    if (!result.changes) {
+      return res.json({ ok: false, reason: 'already_claimed_or_invalid_status' });
+    }
+    claimed = true;
+
+    const prospect = await queryOne('SELECT * FROM prospects WHERE id = ?', [prospectId]);
+    if (!prospect) return res.status(404).json({ error: 'Prospect não encontrado' });
+
+    // Áudios disponíveis — servidos pelo próprio servidor
+    const audioFiles = ['raul_audio_01.mp3', 'raul_audio_02.mp3', 'raul_audio_03.mp3'];
+    const appUrl = (process.env.APP_URL || 'https://vigasales.shop').replace(/\/$/, '');
+    const audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
+    const audioUrl = `${appUrl}/audio/${audioFile}`;
+
+    // Enviar via Evolution API
+    await evolutionApi.sendAudioMessage(prospect.phone, audioUrl);
+
+    // Log da ação
+    await run(
+      'INSERT INTO prospecting_logs (id, prospect_id, campaign_id, action, message) VALUES (?, ?, ?, ?, ?)',
+      [uuidv4(), prospect.id, prospect.campaign_id || null, 'audio_enviado', audioUrl]
+    );
+
+    console.log(`[Audio] Áudio enviado para ${prospect.phone} (${prospect.name || prospect.company}): ${audioFile}`);
+    res.json({ ok: true, audio_url: audioUrl, audio_file: audioFile, prospect_id: prospect.id });
+  } catch (err) {
+    // Reverter claim se o envio falhou
+    if (claimed) {
+      await run(
+        `UPDATE prospects SET audio_batch_sent = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        [prospectId]
+      ).catch(() => {});
+    }
+    console.error(`[Audio] Erro ao enviar áudio para prospect ${prospectId}:`, err.message);
     res.status(500).json({ error: err.message });
   }
 });

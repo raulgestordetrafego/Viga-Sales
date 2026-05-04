@@ -39,6 +39,7 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - SENDER_NAME=${SENDER_NAME:-Raul}
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
+      - VIGA_INTERNAL_TOKEN=${VIGA_INTERNAL_TOKEN}
     volumes:
       - viga-sales-db:/app/db
       - ./public/audio:/app/public/audio:ro
