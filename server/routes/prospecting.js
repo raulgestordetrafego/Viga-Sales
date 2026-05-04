@@ -352,6 +352,76 @@ router.get('/queue', async (req, res) => {
   }
 });
 
+// ── Autenticação interna para n8n / automações ───────────────────────────────
+function internalAuth(req, res, next) {
+  const token = req.headers['x-internal-key'] || req.query.internal_key;
+  const expected = process.env.VIGA_INTERNAL_TOKEN || process.env.N8N_AUTH_TOKEN;
+  if (!expected) return res.status(503).json({ error: 'VIGA_INTERNAL_TOKEN não configurado' });
+  if (token !== expected) return res.status(401).json({ error: 'Token interno inválido' });
+  next();
+}
+
+// GET /api/prospects/check-audio — verifica se um telefone é prospect com áudio enviado
+router.get('/check-audio', internalAuth, async (req, res) => {
+  try {
+    const rawPhone = (req.query.phone || '').replace(/\D/g, '');
+    if (!rawPhone) return res.status(400).json({ error: 'phone obrigatório' });
+
+    const base = rawPhone.replace(/^55/, '');
+    const phoneVariants = [rawPhone, '55' + base, base];
+    if (base.length === 11) phoneVariants.push('55' + base.slice(0, 2) + base.slice(3), base.slice(0, 2) + base.slice(3));
+    if (base.length === 10) phoneVariants.push('55' + base.slice(0, 2) + '9' + base.slice(2), base.slice(0, 2) + '9' + base.slice(2));
+
+    const placeholders = phoneVariants.map(() => '?').join(', ');
+    const prospect = await queryOne(
+      `SELECT id, phone, name, status, audio_batch_sent, campaign_id FROM prospects
+       WHERE phone IN (${placeholders}) AND audio_batch_sent = 1 LIMIT 1`,
+      phoneVariants
+    );
+
+    res.json({
+      is_prospect: !!prospect,
+      audio_sent: !!prospect,
+      status: prospect?.status || null,
+      prospect_id: prospect?.id || null,
+      campaign_id: prospect?.campaign_id || null,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/prospects/audio-pending — prospects sem áudio há mais de X minutos
+router.get('/audio-pending', internalAuth, async (req, res) => {
+  try {
+    const minutes = parseInt(req.query.minutes || 5);
+    const campaign_id = req.query.campaign_id || null;
+    const limit = Math.min(parseInt(req.query.limit || 10), 50);
+    const db = getDb();
+    let sql;
+    const params = [];
+    if (db.isPostgres) {
+      sql = `SELECT * FROM prospects WHERE status = 'enviado'
+             AND (audio_batch_sent IS NULL OR audio_batch_sent = 0 OR audio_batch_sent = false)
+             AND sent_at IS NOT NULL
+             AND COALESCE(sent_at::timestamp, updated_at::timestamp) <= NOW() - INTERVAL '${minutes} minutes'`;
+      if (campaign_id) { sql += ' AND campaign_id = $1'; params.push(campaign_id); }
+      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
+    } else {
+      sql = `SELECT * FROM prospects WHERE status = 'enviado'
+             AND (audio_batch_sent IS NULL OR audio_batch_sent = 0)
+             AND sent_at IS NOT NULL
+             AND datetime(replace(COALESCE(sent_at, updated_at),'T',' ')) <= datetime('now', '-${minutes} minutes')`;
+      if (campaign_id) { sql += ' AND campaign_id = ?'; params.push(campaign_id); }
+      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
+    }
+    const prospects = await query(sql, params);
+    res.json({ prospects: prospects.map(parseProspect), count: prospects.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/prospects/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -547,91 +617,6 @@ router.get('/stats/summary', async (req, res) => {
       follow_up: parseInt(follow_up?.n || 0),
       sent_today: parseInt(todayLogs?.n || 0),
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ── Autenticação interna para n8n / automações ───────────────────────────────
-function internalAuth(req, res, next) {
-  const token = req.headers['x-internal-key'] || req.query.internal_key;
-  const expected = process.env.VIGA_INTERNAL_TOKEN || process.env.N8N_AUTH_TOKEN;
-  if (!expected) return res.status(503).json({ error: 'VIGA_INTERNAL_TOKEN não configurado' });
-  if (token !== expected) return res.status(401).json({ error: 'Token interno inválido' });
-  next();
-}
-
-// GET /api/prospects/check-audio — verifica se um telefone é prospect com áudio enviado
-// Usado pelo agente de entrada para rotear para agendamento
-router.get('/check-audio', internalAuth, async (req, res) => {
-  try {
-    const rawPhone = (req.query.phone || '').replace(/\D/g, '');
-    if (!rawPhone) return res.status(400).json({ error: 'phone obrigatório' });
-
-    // Normalizar: extrair últimos 11 dígitos (DDD + número) e variantes com/sem DDI
-    const base = rawPhone.replace(/^55/, '');
-    const phoneVariants = [
-      rawPhone,
-      '55' + base,
-      base,
-    ];
-    // variante com/sem 9º dígito
-    if (base.length === 11) phoneVariants.push('55' + base.slice(0, 2) + base.slice(3), base.slice(0, 2) + base.slice(3));
-    if (base.length === 10) phoneVariants.push('55' + base.slice(0, 2) + '9' + base.slice(2), base.slice(0, 2) + '9' + base.slice(2));
-
-    const placeholders = phoneVariants.map(() => '?').join(', ');
-    const prospect = await queryOne(
-      `SELECT id, phone, name, status, audio_batch_sent, campaign_id FROM prospects
-       WHERE phone IN (${placeholders})
-         AND audio_batch_sent = 1
-       LIMIT 1`,
-      phoneVariants
-    );
-
-    res.json({
-      is_prospect: !!prospect,
-      audio_sent: !!prospect,
-      status: prospect?.status || null,
-      prospect_id: prospect?.id || null,
-      campaign_id: prospect?.campaign_id || null,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET /api/prospects/audio-pending — prospects que receberam texto mas ainda não receberam áudio
-// Query params: minutes (default 5), campaign_id, limit (default 10)
-router.get('/audio-pending', internalAuth, async (req, res) => {
-  try {
-    const minutes = parseInt(req.query.minutes || 5);
-    const campaign_id = req.query.campaign_id || null;
-    const limit = Math.min(parseInt(req.query.limit || 10), 50);
-
-    const db = getDb();
-    let sql;
-    const params = [];
-
-    if (db.isPostgres) {
-      sql = `SELECT * FROM prospects
-             WHERE status = 'enviado'
-               AND (audio_batch_sent IS NULL OR audio_batch_sent = 0 OR audio_batch_sent = false)
-               AND sent_at IS NOT NULL
-               AND COALESCE(sent_at::timestamp, updated_at::timestamp) <= NOW() - INTERVAL '${minutes} minutes'`;
-      if (campaign_id) { sql += ' AND campaign_id = $1'; params.push(campaign_id); }
-      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
-    } else {
-      sql = `SELECT * FROM prospects
-             WHERE status = 'enviado'
-               AND (audio_batch_sent IS NULL OR audio_batch_sent = 0)
-               AND sent_at IS NOT NULL
-               AND datetime(replace(COALESCE(sent_at, updated_at),'T',' ')) <= datetime('now', '-${minutes} minutes')`;
-      if (campaign_id) { sql += ' AND campaign_id = ?'; params.push(campaign_id); }
-      sql += ` ORDER BY RANDOM() LIMIT ${limit}`;
-    }
-
-    const prospects = await query(sql, params);
-    res.json({ prospects: prospects.map(parseProspect), count: prospects.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
