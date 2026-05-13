@@ -1251,16 +1251,26 @@
 
     const data = Object.fromEntries(new FormData(e.target));
 
+    let ok = false;
     try {
-      await fetch('https://vigasales.shop/api/landing/lead', {
+      const res = await fetch('https://vigasales.shop/api/landing/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data, origem: 'landing-vigasales' })
       });
-    } catch (_) {}
+      ok = res.ok;
+    } catch (err) {
+      console.error('[Form] fetch error:', err);
+    }
 
-    document.getElementById('modalForm').classList.add('hide');
-    document.getElementById('modalSuccess').classList.add('show');
+    if (ok) {
+      document.getElementById('modalForm').classList.add('hide');
+      document.getElementById('modalSuccess').classList.add('show');
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Escalar minha empresa agora';
+      alert('Erro ao enviar. Verifique sua conexão e tente novamente.');
+    }
   }
 
   // ── SCROLL REVEAL ──
