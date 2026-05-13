@@ -437,19 +437,43 @@
       padding: 30px;
       position: relative;
       overflow: hidden;
-      transition: border-color .2s, transform .2s;
+      transition: transform .3s, border-color .3s;
     }
+    /* Rotating conic gradient — the spinning orange border */
     .service__card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--orange), transparent);
+      top: 50%; left: 50%;
+      width: 250%; aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      background: conic-gradient(from 0deg, transparent 0%, transparent 65%, rgba(249,115,22,0.9) 75%, #F97316 80%, rgba(249,115,22,0.9) 85%, transparent 95%);
       opacity: 0;
-      transition: opacity .2s;
+      transition: opacity .35s;
+      z-index: 0;
     }
-    .service__card:hover { border-color: rgba(249,115,22,0.25); transform: translateY(-4px); }
-    .service__card:hover::before { opacity: 1; }
+    /* Inner fill — masks the gradient except at the border */
+    .service__card::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--navy2);
+      border-radius: 14px;
+      z-index: 1;
+    }
+    /* All direct card children sit above the fill */
+    .service__card > * { position: relative; z-index: 2; }
+    .service__card:hover {
+      transform: translateY(-4px);
+      border-color: transparent;
+    }
+    .service__card:hover::before {
+      opacity: 1;
+      animation: spin-border 2.2s linear infinite;
+    }
+    @keyframes spin-border {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
     .service__icon {
       width: 46px; height: 46px;
       background: rgba(249,115,22,0.08);
