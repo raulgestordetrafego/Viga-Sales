@@ -32,7 +32,7 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-    ? ['https://vigasales.shop', 'https://www.vigasales.shop']
+    ? ['https://vigasales.shop', 'https://www.vigasales.shop', 'https://vigasales.com.br', 'https://www.vigasales.com.br']
     : ['http://localhost:3000', 'http://localhost:5173'];
 
   const io = new Server(server, {
@@ -492,6 +492,56 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     console.error("CRITICAL: Database initialization failed:", err.message);
   }
 
+  // ── Landing Lead ─────────────────────────────────────────────────────────
+  app.post("/api/landing/lead", async (req, res) => {
+    try {
+      const { nome, empresa, cargo, whatsapp, faturamento, origem } = req.body;
+      if (!nome || !whatsapp) return res.status(400).json({ error: 'nome e whatsapp são obrigatórios' });
+
+      let phone = String(whatsapp).replace(/\D/g, '');
+      if (phone.length === 11 && !phone.startsWith('55')) phone = '55' + phone;
+      else if (phone.length === 10 && !phone.startsWith('55')) phone = '55' + phone;
+
+      const notes = [
+        cargo ? `Cargo: ${cargo}` : '',
+        faturamento ? `Faturamento: ${faturamento}` : '',
+        origem ? `Origem: ${origem}` : '',
+      ].filter(Boolean).join(' | ');
+
+      let contact = await queryOne('SELECT * FROM contacts WHERE phone = ?', [phone]);
+      if (!contact) {
+        const id = uuidv4();
+        await run(
+          `INSERT INTO contacts (id, name, phone, company, notes, status, pipeline_stage, last_interaction)
+           VALUES (?, ?, ?, ?, ?, 'active', 'stage_lead', CURRENT_TIMESTAMP)`,
+          [id, nome, phone, empresa || null, notes]
+        );
+        contact = await queryOne('SELECT * FROM contacts WHERE id = ?', [id]);
+      } else {
+        await run(
+          `UPDATE contacts SET name = ?, company = ?, notes = ?, last_interaction = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+          [nome, empresa || contact.company, notes, contact.id]
+        );
+      }
+
+      // Notifica via n8n webhook (configurar N8N_LEAD_WEBHOOK_URL no .env)
+      const webhookUrl = process.env.N8N_LEAD_WEBHOOK_URL;
+      if (webhookUrl) {
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, empresa, cargo, whatsapp: phone, faturamento, origem, contactId: contact.id }),
+        }).catch(e => console.error('[Landing Lead] n8n webhook error:', e.message));
+      }
+
+      console.log(`[Landing Lead] ${nome} (${phone}) | ${empresa || '-'} | ${faturamento || '-'}`);
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error('[Landing Lead] Error:', err.message);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // n8n Integration Endpoint
   app.get("/api/n8n/message", (req, res) => {
     res.json({ status: "online", message: "Endpoint pronto para receber POST do n8n" });
@@ -612,6 +662,11 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
   app.use('/uploads', express.static(uploadsDir));
   app.use('/api/uploads', express.static(uploadsDir));
+
+  // Áudios de prospecção — servidos em /api/audio para a Evolution API baixar e enviar como PTT
+  const audioDir = path.join(__dirname, 'public', 'audio');
+  if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
+  app.use('/api/audio', express.static(audioDir));
 
   // API Routes
   app.use("/api/contacts", contactRoutes);
@@ -866,9 +921,10 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     console.log(`Expected Webhook URL for Evolution API: ${appUrl}/webhook/evolution`);
 
     // Auto-register webhook with Evolution API on every startup
+    // Uses EVOLUTION_WEBHOOK_URL if set (e.g. n8n), otherwise falls back to local CRM endpoint
     if (process.env.APP_URL) {
       try {
-        const webhookUrl = `${process.env.APP_URL}/webhook/evolution`;
+        const webhookUrl = process.env.EVOLUTION_WEBHOOK_URL || `${process.env.APP_URL}/webhook/evolution`;
         console.log(`[Startup] Auto-registering webhook: ${webhookUrl}`);
         const result = await evolutionApi.configureWebhook(webhookUrl);
         console.log(`[Startup] Webhook registered successfully:`, JSON.stringify(result));

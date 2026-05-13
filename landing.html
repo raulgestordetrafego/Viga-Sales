@@ -1138,7 +1138,7 @@
     <div class="section-label">Pronto para Escalar?</div>
     <h2 class="cta-section__title">Construa sua <span>Engenharia<br/>de Vendas</span> agora.</h2>
     <p class="cta-section__sub">Agende uma sessão estratégica gratuita com Raul Santos e descubra exatamente o que falta para escalar sua operação.</p>
-    <a href="https://wa.me/5500000000000?text=Quero+agendar+minha+sess%C3%A3o+estrat%C3%A9gica+com+a+Viga+Sales" class="btn btn--orange" style="font-size:14px;padding:18px 40px;">
+    <a href="#" onclick="openModal();return false;" class="btn btn--orange" style="font-size:14px;padding:18px 40px;">
       📅 Agendar Minha Sessão Estratégica →
     </a>
     <p class="cta-section__note">Sessão 100% gratuita · Sem compromisso · Resposta em até 24h</p>
@@ -1252,7 +1252,7 @@
     const data = Object.fromEntries(new FormData(e.target));
 
     try {
-      await fetch('/api/landing/lead', {
+      await fetch('https://vigasales.shop/api/landing/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data, origem: 'landing-vigasales' })
