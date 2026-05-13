@@ -40,6 +40,7 @@ services:
       - SENDER_NAME=${SENDER_NAME:-Raul}
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
       - VIGA_INTERNAL_TOKEN=${VIGA_INTERNAL_TOKEN}
+      - N8N_LEAD_WEBHOOK_URL=${N8N_LEAD_WEBHOOK_URL}
     volumes:
       - viga-sales-db:/app/db
       - ./public/audio:/app/public/audio:ro
