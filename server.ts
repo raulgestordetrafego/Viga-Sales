@@ -663,6 +663,9 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   app.use('/uploads', express.static(uploadsDir));
   app.use('/api/uploads', express.static(uploadsDir));
 
+  // Imagens e assets públicos — acessíveis via /public
+  app.use('/public', express.static(path.join(__dirname, 'public')));
+
   // Áudios de prospecção — servidos em /api/audio para a Evolution API baixar e enviar como PTT
   const audioDir = path.join(__dirname, 'public', 'audio');
   if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
