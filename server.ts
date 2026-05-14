@@ -301,6 +301,22 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  app.post("/api/users/create", async (req: any, res) => {
+    const session = getSession(req);
+    if (!session || !['master','admin'].includes(session.role)) return res.status(403).json({ error: 'Sem permissão' });
+    const { name, email, password, role = 'user' } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios' });
+    if (password.length < 6) return res.status(400).json({ error: 'Senha deve ter no mínimo 6 caracteres' });
+    const existing = await queryOne('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing) return res.status(409).json({ error: 'E-mail já cadastrado' });
+    const hash = await bcrypt.hash(password, 12);
+    await run(
+      `INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, ?, 'active')`,
+      [uuidv4(), name.trim(), email.trim().toLowerCase(), hash, role]
+    );
+    res.json({ ok: true });
+  });
+
   // ── Audit Log (somente master) ────────────────────────────────────────────
   app.get("/api/audit-log", async (req: any, res) => {
     const session = getSession(req);

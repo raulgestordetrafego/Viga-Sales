@@ -748,36 +748,51 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
         if (existing) { skipped++; continue; }
 
         const cnpj       = col(row, 'CNPJ', 'cnpj');
-        const razaoSocial= col(row, 'Razão Social', 'razao social', 'razão social', 'empresa', 'company');
+        // Razão Social (CNPJ) ou Nome da Empresa (Google Maps)
+        const razaoSocial= col(row, 'Razão Social', 'razao social', 'razão social', 'Nome da Empresa', 'nome da empresa', 'empresa', 'company');
         const nomeFant   = col(row, 'Nome Fantasia', 'nome fantasia', 'nome_fantasia', 'trade_name');
         const email      = col(row, 'E-mail', 'email', 'e-mail');
         const phone2     = normalizePhone(col(row, 'Telefone Secundário', 'telefone secundário', 'telefone2', 'phone2') || '') || null;
         const cidade     = col(row, 'Cidade', 'cidade', 'city', 'municipio', 'município');
         const estado     = col(row, 'Estado', 'estado', 'uf', 'state');
-        const logradouro = col(row, 'Logradouro', 'logradouro', 'rua', 'endereco', 'endereço');
+        // Endereço: campo direto (Google Maps) ou partes separadas (CNPJ)
+        const enderecoDir= col(row, 'Endereço', 'endereco', 'endereço');
+        const logradouro = col(row, 'Logradouro', 'logradouro', 'rua');
         const numero     = col(row, 'Número', 'numero', 'número', 'number');
         const complemento= col(row, 'Complemento', 'complemento');
         const bairro     = col(row, 'Bairro', 'bairro', 'neighborhood');
         const cep        = col(row, 'CEP', 'cep', 'zip', 'zip_code');
-        const atividade  = col(row, 'Atividade Principal', 'atividade principal', 'atividade', 'segment', 'segmento');
+        // Segmento: Atividade Principal (CNPJ) ou Segmento da Empresa (Google Maps)
+        const atividade  = col(row, 'Atividade Principal', 'atividade principal', 'Segmento da Empresa', 'segmento da empresa', 'atividade', 'segment', 'segmento');
         const atividadeCod = col(row, 'Atividade Principal Código', 'atividade principal código', 'atividade_codigo');
         const porte      = col(row, 'Porte', 'porte', 'company_size');
         const capital    = col(row, 'Capital Social', 'capital social', 'capital_social');
         const natJur     = col(row, 'Natureza Jurídica', 'natureza jurídica', 'natureza juridica', 'legal_nature');
         const dtAbertura = col(row, 'Data de Abertura', 'data de abertura', 'data_abertura', 'opening_date');
         const sitCadastral= col(row, 'Situação Cadastral', 'situação cadastral', 'situacao cadastral', 'cnpj_status');
+        const website    = col(row, 'Site', 'site', 'website', 'url');
+        const instagram  = col(row, 'Instagram', 'instagram');
+        const decisor    = col(row, 'Decisor', 'decisor', 'decision_maker');
+        const horario    = col(row, 'Horário', 'horario', 'horário', 'hours');
 
-        const addressParts = [logradouro, numero, complemento].filter(Boolean);
+        const addressParts = enderecoDir
+          ? [enderecoDir]
+          : [logradouro, numero, complemento].filter(Boolean);
         const address = addressParts.length ? addressParts.join(', ') : null;
         const cityFull = [cidade, estado].filter(Boolean).join(' - ') || null;
+        const extraNotes = [
+          decisor && `Decisor: ${decisor}`,
+          horario && `Horário: ${horario}`,
+        ].filter(Boolean).join(' | ') || null;
 
         await run(
           `INSERT INTO prospects
             (id, name, phone, phone2, email, company, trade_name, cnpj,
              segment, main_activity_code, city, state, address, neighborhood, zip_code,
              company_size, capital_social, legal_nature, opening_date, cnpj_status,
+             website, instagram, notes,
              source, campaign_id, raw_data, status)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'novo')`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'novo')`,
           [
             uuidv4(),
             nomeFant || razaoSocial,
@@ -799,6 +814,9 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
             natJur,
             dtAbertura,
             sitCadastral,
+            website,
+            instagram,
+            extraNotes,
             'csv_import',
             campaign_id,
             JSON.stringify(row),

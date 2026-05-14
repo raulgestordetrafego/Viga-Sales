@@ -2057,10 +2057,60 @@ function ChangePasswordModal({ userId, onClose }) {
   );
 }
 
+function CreateUserModal({ onClose, onDone }) {
+  const [form, setForm] = useState({ name:'', email:'', password:'', role:'user' });
+  const [saving, setSaving] = useState(false);
+  const token = () => localStorage.getItem('crm_token');
+
+  const submit = async () => {
+    if (!form.name || !form.email || !form.password) return toast.error('Preencha todos os campos');
+    setSaving(true);
+    try {
+      const r = await fetch('/api/users/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify(form),
+      });
+      const d = await r.json();
+      if (!r.ok) { toast.error(d.error || 'Erro ao criar usuário'); return; }
+      toast.success('Usuário criado com sucesso!');
+      onDone();
+    } catch { toast.error('Erro ao criar usuário'); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000}}>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:400,boxShadow:'0 24px 80px #000a'}}>
+        <h3 style={{margin:'0 0 24px',fontSize:17,fontWeight:700,color:C.text}}>Criar novo usuário</h3>
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <FocusInput label="Nome" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Nome completo" />
+          <FocusInput label="E-mail" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="email@exemplo.com" />
+          <FocusInput label="Senha" type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Mínimo 6 caracteres" />
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>Função</label>
+            <select value={form.role} onChange={e=>setForm({...form,role:e.target.value})}
+              style={{width:'100%',padding:'11px 14px',background:C.bg,border:`1px solid ${C.border}`,borderRadius:10,color:C.text,fontSize:13,outline:'none'}}>
+              <option value="user">Usuário</option>
+              <option value="admin">Admin</option>
+              <option value="master">Master</option>
+            </select>
+          </div>
+        </div>
+        <div style={{display:'flex',gap:10,marginTop:24,justifyContent:'flex-end'}}>
+          <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
+          <Btn onClick={submit} disabled={saving}>{saving ? 'Criando...' : 'Criar usuário'}</Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [changePwdUserId, setChangePwdUserId] = useState(null);
+  const [showCreate, setShowCreate] = useState(false);
   const currentUser = (() => { try { return JSON.parse(localStorage.getItem('crm_user') || 'null'); } catch { return null; } })();
   const isMaster = currentUser?.role === 'master';
 
@@ -2098,6 +2148,7 @@ function UserManagement() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      {showCreate && <CreateUserModal onClose={()=>setShowCreate(false)} onDone={()=>{ load(); setShowCreate(false); }} />}
       {pending.length > 0 && (
         <Card title={`⏳ Aprovações Pendentes (${pending.length})`} style={{borderTop:`3px solid ${C.warning}`}}>
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
@@ -2118,16 +2169,17 @@ function UserManagement() {
         </Card>
       )}
 
-      {isMaster && (
-        <div style={{display:'flex',justifyContent:'flex-end'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+        <Btn size="sm" onClick={()=>setShowCreate(true)}>+ Criar Usuário</Btn>
+        {isMaster && (
           <Btn variant="danger" size="sm" onClick={async()=>{
             if(!window.confirm('Deslogar TODOS os usuários de todos os dispositivos?')) return;
             const token=localStorage.getItem('crm_token');
             await fetch('/api/auth/logout-all',{method:'POST',headers:{Authorization:`Bearer ${token}`}});
             toast.success('Todos os usuários foram deslogados!');
           }}>Deslogar todos os dispositivos</Btn>
-        </div>
-      )}
+        )}
+      </div>
 
       <Card title="👥 Todos os Usuários">
         <div style={{display:'flex',flexDirection:'column',gap:8}}>
