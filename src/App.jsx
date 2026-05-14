@@ -1602,6 +1602,7 @@ function Conversations({ initialContact }) {
         onEdit={(c)=>{ setEditContact(c); setEditForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',notes:c.notes||''}); setEditTags(parseTags(c.tags)); setEditTagInput(''); }}
         onDelete={()=>setContactDrawerId(null)}
         onRefreshList={()=>{}}
+        onOpenConversation={(c)=>{ setContactDrawerId(null); window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}})); }}
       />
     )}
     {editContact && (
