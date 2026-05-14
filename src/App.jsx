@@ -1645,93 +1645,132 @@ function Conversations({ initialContact }) {
 // ─── Pipeline Kanban ─────────────────────────────────────────────────────────
 
 function Pipeline() {
-  const [stages, setStages] = useState([]);
+  const [funnels, setFunnels]   = useState([]);
+  const [activeFunnel, setActiveFunnel] = useState(null);
+  const [stages, setStages]     = useState([]);
   const [contacts, setContacts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]   = useState(true);
   const [dragging, setDragging] = useState(null);
   const [dragOver, setDragOver] = useState(null);
 
-  const load = useCallback(async ()=>{
+  const loadFunnels = useCallback(async () => {
     try {
-      const [s,c]=await Promise.all([pipelineApi.stages(),contactsApi.list()]);
-      setStages(s); setContacts(Array.isArray(c.contacts)?c.contacts:[]);
+      const fs = await pipelineApi.funnels();
+      setFunnels(fs);
+      if (fs.length > 0 && !activeFunnel) setActiveFunnel(fs[0].id);
+    } catch { toast.error('Erro ao carregar funis'); }
+  }, []);
+
+  const loadStages = useCallback(async (funnelId) => {
+    if (!funnelId) return;
+    setLoading(true);
+    try {
+      const [s, c] = await Promise.all([pipelineApi.stages(funnelId), contactsApi.list()]);
+      setStages(s);
+      setContacts(Array.isArray(c.contacts) ? c.contacts : []);
     } catch { toast.error('Erro ao carregar pipeline'); }
     setLoading(false);
-  },[]);
+  }, []);
 
-  useEffect(()=>{ load(); },[load]);
+  useEffect(() => { loadFunnels(); }, [loadFunnels]);
+  useEffect(() => { if (activeFunnel) loadStages(activeFunnel); }, [activeFunnel, loadStages]);
 
-  const handleDrop=async(e,targetStageId)=>{
+  const handleDrop = async (e, targetStageId) => {
     e.preventDefault();
-    if(!dragging||dragging.stage===targetStageId){ setDragging(null); setDragOver(null); return; }
-    setContacts(prev=>prev.map(c=>c.id===dragging.id?{...c,pipeline_stage:targetStageId}:c));
-    try { await contactsApi.setStage(dragging.id,targetStageId); toast.success('Contato movido!'); }
-    catch { setContacts(prev=>prev.map(c=>c.id===dragging.id?{...c,pipeline_stage:dragging.stage}:c)); toast.error('Erro ao mover'); }
+    if (!dragging || dragging.stage === targetStageId) { setDragging(null); setDragOver(null); return; }
+    setContacts(prev => prev.map(c => c.id === dragging.id ? { ...c, pipeline_stage: targetStageId } : c));
+    try { await contactsApi.setStage(dragging.id, targetStageId); toast.success('Contato movido!'); }
+    catch { setContacts(prev => prev.map(c => c.id === dragging.id ? { ...c, pipeline_stage: dragging.stage } : c)); toast.error('Erro ao mover'); }
     setDragging(null); setDragOver(null);
   };
 
-  if(loading) return <div style={{color:C.dim,padding:20}}>Carregando pipeline...</div>;
+  const stageIds = new Set(stages.map(s => s.id));
+  const visibleContacts = contacts.filter(c => stageIds.has(c.pipeline_stage));
+  const totalValue = visibleContacts.reduce((a, c) => a + (Number(c.pipeline_value) || 0), 0);
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:24}}>
-      <div>
-        <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Pipeline Kanban</h2>
-        <p style={{color:C.dim,fontSize:14}}>Arraste os cartões entre colunas para mover leads no funil.</p>
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',flexWrap:'wrap',gap:12}}>
+        <div>
+          <h2 style={{fontSize:28,fontWeight:800,color:C.text,marginBottom:4}}>Pipeline Kanban</h2>
+          <p style={{color:C.dim,fontSize:14}}>Arraste os cartões entre colunas para mover leads no funil.</p>
+        </div>
+        {totalValue > 0 && (
+          <div style={{background:`${C.success}15`,border:`1px solid ${C.success}30`,borderRadius:12,padding:'8px 16px',fontSize:13,fontWeight:700,color:C.success}}>
+            💰 {fmt(totalValue)}
+          </div>
+        )}
       </div>
-      <div style={{overflowX:'auto',paddingBottom:20}}>
-        <div style={{display:'flex',gap:20,minWidth:stages.length*288}}>
-          {stages.map(s=>{
-            const sc=contacts.filter(c=>c.pipeline_stage===s.id);
-            const sv=sc.reduce((a,c)=>a+(Number(c.pipeline_value)||0),0);
-            const color=s.color||STAGE_COLORS[s.id]||C.primary;
-            const isDrag=dragOver===s.id;
-            return (
-              <div key={s.id} style={{width:280,flexShrink:0}}
-                onDragOver={e=>{ e.preventDefault(); setDragOver(s.id); }}
-                onDragLeave={e=>{ if(!e.currentTarget.contains(e.relatedTarget)) setDragOver(null); }}
-                onDrop={e=>handleDrop(e,s.id)}>
-                <div style={{background:C.card,borderRadius:18,padding:16,border:`1px solid ${isDrag?color:C.border}`,transition:'border-color 0.2s,box-shadow 0.2s',boxShadow:isDrag?`0 0 24px ${color}30`:'none'}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
-                    <div style={{display:'flex',alignItems:'center',gap:8}}>
-                      <div style={{width:10,height:10,borderRadius:'50%',background:color,boxShadow:`0 0 6px ${color}`}} />
-                      <span style={{fontSize:13,fontWeight:700,color:C.text}}>{s.name}</span>
+
+      {/* Seletor de funil */}
+      {funnels.length > 1 && (
+        <div style={{display:'flex',gap:4,background:C.surface,borderRadius:14,padding:4,border:`1px solid ${C.border}`,width:'fit-content'}}>
+          {funnels.map(f => (
+            <button key={f.id} onClick={() => setActiveFunnel(f.id)} style={{
+              padding:'8px 20px',borderRadius:10,border:'none',cursor:'pointer',fontSize:13,fontWeight:700,
+              background: activeFunnel === f.id ? `linear-gradient(135deg,${C.primary},${C.purple})` : 'transparent',
+              color: activeFunnel === f.id ? '#fff' : C.muted, transition:'all 0.18s',
+            }}>{f.name}</button>
+          ))}
+        </div>
+      )}
+
+      {loading ? <div style={{color:C.dim,padding:20}}>Carregando pipeline...</div> : (
+        <div style={{overflowX:'auto',paddingBottom:20}}>
+          <div style={{display:'flex',gap:20,minWidth:stages.length*288}}>
+            {stages.map(s => {
+              const sc = contacts.filter(c => c.pipeline_stage === s.id);
+              const sv = sc.reduce((a, c) => a + (Number(c.pipeline_value) || 0), 0);
+              const color = s.color || STAGE_COLORS[s.id] || C.primary;
+              const isDrag = dragOver === s.id;
+              return (
+                <div key={s.id} style={{width:280,flexShrink:0}}
+                  onDragOver={e=>{ e.preventDefault(); setDragOver(s.id); }}
+                  onDragLeave={e=>{ if(!e.currentTarget.contains(e.relatedTarget)) setDragOver(null); }}
+                  onDrop={e=>handleDrop(e,s.id)}>
+                  <div style={{background:C.card,borderRadius:18,padding:16,border:`1px solid ${isDrag?color:C.border}`,transition:'border-color 0.2s,box-shadow 0.2s',boxShadow:isDrag?`0 0 24px ${color}30`:'none'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
+                      <div style={{display:'flex',alignItems:'center',gap:8}}>
+                        <div style={{width:10,height:10,borderRadius:'50%',background:color,boxShadow:`0 0 6px ${color}`}} />
+                        <span style={{fontSize:13,fontWeight:700,color:C.text}}>{s.name}</span>
+                      </div>
+                      <div style={{textAlign:'right'}}>
+                        <div style={{background:`${color}20`,color,fontSize:11,fontWeight:700,padding:'2px 9px',borderRadius:10}}>{sc.length}</div>
+                        {sv>0&&<div style={{fontSize:10,color:C.success,fontWeight:700,marginTop:2}}>{fmt(sv)}</div>}
+                      </div>
                     </div>
-                    <div style={{textAlign:'right'}}>
-                      <div style={{background:`${color}20`,color,fontSize:11,fontWeight:700,padding:'2px 9px',borderRadius:10}}>{sc.length}</div>
-                      {sv>0&&<div style={{fontSize:10,color:C.success,fontWeight:700,marginTop:2}}>{fmt(sv)}</div>}
-                    </div>
-                  </div>
-                  <div style={{display:'flex',flexDirection:'column',gap:10,minHeight:80}}>
-                    {sc.map(c=>(
-                      <div key={c.id} draggable
-                        onDragStart={e=>{ setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
-                        onDragEnd={()=>{ setDragging(null); setDragOver(null); }}
-                        style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'grab',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
-                        onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
-                        onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
-                        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
-                          <Avatar name={c.name} size={30} />
-                          <div style={{flex:1,minWidth:0}}>
-                            <div style={{fontWeight:600,fontSize:13,color:C.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.name}</div>
-                            <div style={{color:C.dim,fontSize:11}}>{c.phone}</div>
+                    <div style={{display:'flex',flexDirection:'column',gap:10,minHeight:80}}>
+                      {sc.map(c=>(
+                        <div key={c.id} draggable
+                          onDragStart={e=>{ setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
+                          onDragEnd={()=>{ setDragging(null); setDragOver(null); }}
+                          style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'grab',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
+                          onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
+                          onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
+                          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
+                            <Avatar name={c.name} size={30} />
+                            <div style={{flex:1,minWidth:0}}>
+                              <div style={{fontWeight:600,fontSize:13,color:C.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.name}</div>
+                              <div style={{color:C.dim,fontSize:11}}>{c.phone}</div>
+                            </div>
                           </div>
+                          {c.pipeline_value>0&&<div style={{fontSize:12,color:C.success,fontWeight:700}}>{fmt(c.pipeline_value)}</div>}
+                          {c.company&&<div style={{fontSize:11,color:C.dim,marginTop:4}}>🏢 {c.company}</div>}
                         </div>
-                        {c.pipeline_value>0&&<div style={{fontSize:12,color:C.success,fontWeight:700}}>{fmt(c.pipeline_value)}</div>}
-                        {c.company&&<div style={{fontSize:11,color:C.dim,marginTop:4}}>🏢 {c.company}</div>}
-                      </div>
-                    ))}
-                    {sc.length===0&&(
-                      <div style={{border:`2px dashed ${isDrag?color:C.border}`,borderRadius:12,padding:'24px 16px',textAlign:'center',color:isDrag?color:C.dim,fontSize:12,transition:'all 0.2s'}}>
-                        {isDrag?'↓ Soltar aqui':'Vazio'}
-                      </div>
-                    )}
+                      ))}
+                      {sc.length===0&&(
+                        <div style={{border:`2px dashed ${isDrag?color:C.border}`,borderRadius:12,padding:'24px 16px',textAlign:'center',color:isDrag?color:C.dim,fontSize:12,transition:'all 0.2s'}}>
+                          {isDrag?'↓ Soltar aqui':'Vazio'}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -1924,8 +1963,12 @@ function Settings() {
       </div>
 
       {/* Abas */}
-      <div style={{display:'flex',gap:4,marginBottom:24,background:C.surface,borderRadius:14,padding:4,border:`1px solid ${C.border}`,width:'fit-content'}}>
-        {[{id:'whatsapp',label:'⚙️ WhatsApp'}, ...(isAdmin?[{id:'users',label:'👥 Usuários'}]:[])].map(t=>(
+      <div style={{display:'flex',gap:4,marginBottom:24,background:C.surface,borderRadius:14,padding:4,border:`1px solid ${C.border}`,width:'fit-content',flexWrap:'wrap'}}>
+        {[
+          {id:'whatsapp', label:'⚙️ WhatsApp'},
+          {id:'funnels',  label:'🎯 Funis'},
+          ...(isAdmin ? [{id:'users', label:'👥 Usuários'}] : []),
+        ].map(t=>(
           <button key={t.id} onClick={()=>setTab(t.id)} style={{
             padding:'8px 18px',borderRadius:10,border:'none',cursor:'pointer',fontSize:13,fontWeight:700,
             background:tab===t.id?`linear-gradient(135deg,${C.primary},${C.purple})`:'transparent',
@@ -1934,6 +1977,7 @@ function Settings() {
         ))}
       </div>
 
+      {tab === 'funnels' && <FunnelManagement />}
       {tab === 'users' && isAdmin && <UserManagement />}
 
       {tab === 'whatsapp' && <><Section title="Integração Evolution API" icon="🔗">
@@ -2008,6 +2052,226 @@ function Settings() {
         </div>
       </div>
     </>}
+    </div>
+  );
+}
+
+// ─── Funnel Management ────────────────────────────────────────────────────────
+
+function FunnelManagement() {
+  const [funnels, setFunnels]           = useState([]);
+  const [selectedFunnel, setSelectedFunnel] = useState(null);
+  const [stages, setStages]             = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [newFunnelName, setNewFunnelName] = useState('');
+  const [editingFunnel, setEditingFunnel] = useState(null);
+  const [showNewStage, setShowNewStage] = useState(false);
+  const [newStage, setNewStage]         = useState({ name: '', color: '#6366f1' });
+  const [editingStage, setEditingStage] = useState(null);
+
+  const loadFunnels = async () => {
+    try {
+      const fs = await pipelineApi.funnels();
+      setFunnels(fs);
+      if (!selectedFunnel && fs.length > 0) setSelectedFunnel(fs[0].id);
+    } catch { toast.error('Erro ao carregar funis'); }
+    setLoading(false);
+  };
+
+  const loadStages = async (funnelId) => {
+    if (!funnelId) return;
+    try {
+      const s = await pipelineApi.stages(funnelId);
+      setStages(s);
+    } catch { toast.error('Erro ao carregar etapas'); }
+  };
+
+  useEffect(() => { loadFunnels(); }, []);
+  useEffect(() => { if (selectedFunnel) loadStages(selectedFunnel); }, [selectedFunnel]);
+
+  const handleCreateFunnel = async () => {
+    if (!newFunnelName.trim()) return;
+    try {
+      const f = await pipelineApi.createFunnel({ name: newFunnelName });
+      toast.success('Funil criado!');
+      setNewFunnelName('');
+      setFunnels(prev => [...prev, f]);
+      setSelectedFunnel(f.id);
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro ao criar funil'); }
+  };
+
+  const handleRenameFunnel = async (id) => {
+    if (!editingFunnel?.name?.trim()) return;
+    try {
+      await pipelineApi.updateFunnel(id, { name: editingFunnel.name });
+      setFunnels(prev => prev.map(f => f.id === id ? { ...f, name: editingFunnel.name } : f));
+      setEditingFunnel(null);
+      toast.success('Funil renomeado!');
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro'); }
+  };
+
+  const handleDeleteFunnel = async (id, name) => {
+    if (!confirm(`Excluir o funil "${name}"?\n\nTodas as etapas sem contatos serão removidas.`)) return;
+    try {
+      await pipelineApi.deleteFunnel(id);
+      const remaining = funnels.filter(f => f.id !== id);
+      setFunnels(remaining);
+      if (selectedFunnel === id) setSelectedFunnel(remaining[0]?.id || null);
+      toast.success('Funil excluído!');
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro ao excluir'); }
+  };
+
+  const handleCreateStage = async () => {
+    if (!newStage.name.trim()) return;
+    try {
+      const s = await pipelineApi.createStage({ ...newStage, funnel_id: selectedFunnel });
+      setStages(prev => [...prev, s]);
+      setNewStage({ name: '', color: '#6366f1' });
+      setShowNewStage(false);
+      toast.success('Etapa criada!');
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro ao criar etapa'); }
+  };
+
+  const handleUpdateStage = async (id) => {
+    if (!editingStage?.name?.trim()) return;
+    try {
+      await pipelineApi.updateStage(id, { name: editingStage.name, color: editingStage.color });
+      setStages(prev => prev.map(s => s.id === id ? { ...s, ...editingStage } : s));
+      setEditingStage(null);
+      toast.success('Etapa atualizada!');
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro'); }
+  };
+
+  const handleDeleteStage = async (id, name) => {
+    if (!confirm(`Excluir a etapa "${name}"?`)) return;
+    try {
+      await pipelineApi.deleteStage(id);
+      setStages(prev => prev.filter(s => s.id !== id));
+      toast.success('Etapa excluída!');
+    } catch (err) { toast.error(err.response?.data?.error || 'Erro ao excluir'); }
+  };
+
+  if (loading) return <div style={{color:C.dim,padding:20}}>Carregando...</div>;
+
+  const COLORS = ['#64748b','#3b82f6','#2E6DA4','#8b5cf6','#6366f1','#f59e0b','#E67E22','#14b8a6','#22c55e','#ef4444','#ec4899','#1A365D'];
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:24}}>
+      {/* Lista de funis */}
+      <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:18,overflow:'hidden'}}>
+        <div style={{padding:'16px 24px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Funis</h3>
+        </div>
+        <div style={{padding:20,display:'flex',flexDirection:'column',gap:10}}>
+          {funnels.map(f => (
+            <div key={f.id} onClick={() => setSelectedFunnel(f.id)}
+              style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px',borderRadius:12,cursor:'pointer',
+                border:`1px solid ${selectedFunnel===f.id?C.primary:C.border}`,
+                background:selectedFunnel===f.id?`${C.primary}10`:C.bg,transition:'all 0.15s'}}>
+              {editingFunnel?.id === f.id ? (
+                <input autoFocus value={editingFunnel.name}
+                  onChange={e=>setEditingFunnel({...editingFunnel,name:e.target.value})}
+                  onKeyDown={e=>{ if(e.key==='Enter') handleRenameFunnel(f.id); if(e.key==='Escape') setEditingFunnel(null); }}
+                  onClick={e=>e.stopPropagation()}
+                  style={{flex:1,background:'transparent',border:'none',color:C.text,fontSize:14,fontWeight:700,outline:'none'}} />
+              ) : (
+                <span style={{flex:1,fontSize:14,fontWeight:700,color:selectedFunnel===f.id?C.primary:C.text}}>{f.name}</span>
+              )}
+              <div style={{display:'flex',gap:6}} onClick={e=>e.stopPropagation()}>
+                {editingFunnel?.id === f.id ? (
+                  <>
+                    <Btn size="sm" onClick={()=>handleRenameFunnel(f.id)}>✓</Btn>
+                    <Btn size="sm" variant="outline" onClick={()=>setEditingFunnel(null)}>✕</Btn>
+                  </>
+                ) : (
+                  <>
+                    <Btn size="sm" variant="outline" onClick={()=>setEditingFunnel({id:f.id,name:f.name})}>✏️</Btn>
+                    <Btn size="sm" variant="danger" onClick={()=>handleDeleteFunnel(f.id,f.name)}>🗑️</Btn>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+          {/* Criar novo funil */}
+          <div style={{display:'flex',gap:8,marginTop:4}}>
+            <input placeholder="Nome do novo funil..." value={newFunnelName}
+              onChange={e=>setNewFunnelName(e.target.value)}
+              onKeyDown={e=>e.key==='Enter'&&handleCreateFunnel()}
+              style={{flex:1,background:C.bg,border:`1px solid ${C.border}`,borderRadius:10,padding:'10px 14px',color:C.text,fontSize:13,outline:'none'}} />
+            <Btn onClick={handleCreateFunnel} disabled={!newFunnelName.trim()}>+ Criar Funil</Btn>
+          </div>
+        </div>
+      </div>
+
+      {/* Etapas do funil selecionado */}
+      {selectedFunnel && (
+        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:18,overflow:'hidden'}}>
+          <div style={{padding:'16px 24px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>
+              Etapas — {funnels.find(f=>f.id===selectedFunnel)?.name}
+            </h3>
+            <Btn size="sm" onClick={()=>setShowNewStage(true)}>+ Nova Etapa</Btn>
+          </div>
+          <div style={{padding:20,display:'flex',flexDirection:'column',gap:8}}>
+            {stages.map((s, i) => (
+              <div key={s.id} style={{display:'flex',alignItems:'center',gap:12,padding:'10px 14px',borderRadius:12,border:`1px solid ${C.border}`,background:C.bg}}>
+                <div style={{width:12,height:12,borderRadius:'50%',background:s.color,flexShrink:0,boxShadow:`0 0 6px ${s.color}`}} />
+                <span style={{fontSize:12,color:C.dim,fontWeight:700,minWidth:20}}>{i+1}</span>
+                {editingStage?.id === s.id ? (
+                  <div style={{flex:1,display:'flex',gap:8,alignItems:'center'}}>
+                    <input autoFocus value={editingStage.name}
+                      onChange={e=>setEditingStage({...editingStage,name:e.target.value})}
+                      onKeyDown={e=>e.key==='Enter'&&handleUpdateStage(s.id)}
+                      style={{flex:1,background:'transparent',border:`1px solid ${C.border}`,borderRadius:8,padding:'6px 10px',color:C.text,fontSize:13,outline:'none'}} />
+                    <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                      {COLORS.map(col=>(
+                        <div key={col} onClick={()=>setEditingStage({...editingStage,color:col})}
+                          style={{width:18,height:18,borderRadius:'50%',background:col,cursor:'pointer',
+                            border:editingStage.color===col?'2px solid #fff':'2px solid transparent',transition:'border 0.1s'}} />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <span style={{flex:1,fontSize:13,fontWeight:600,color:C.text}}>{s.name}</span>
+                )}
+                <div style={{display:'flex',gap:6}}>
+                  {editingStage?.id === s.id ? (
+                    <>
+                      <Btn size="sm" onClick={()=>handleUpdateStage(s.id)}>✓</Btn>
+                      <Btn size="sm" variant="outline" onClick={()=>setEditingStage(null)}>✕</Btn>
+                    </>
+                  ) : (
+                    <>
+                      <Btn size="sm" variant="outline" onClick={()=>setEditingStage({id:s.id,name:s.name,color:s.color})}>✏️</Btn>
+                      <Btn size="sm" variant="danger" onClick={()=>handleDeleteStage(s.id,s.name)}>🗑️</Btn>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            {stages.length === 0 && <p style={{color:C.dim,fontSize:13,textAlign:'center',padding:'20px 0'}}>Nenhuma etapa ainda. Clique em "+ Nova Etapa".</p>}
+
+            {showNewStage && (
+              <div style={{display:'flex',gap:8,alignItems:'center',padding:'10px 14px',borderRadius:12,border:`1px dashed ${C.primary}`,background:`${C.primary}08`,marginTop:4}}>
+                <div style={{width:12,height:12,borderRadius:'50%',background:newStage.color,flexShrink:0}} />
+                <input autoFocus placeholder="Nome da etapa..." value={newStage.name}
+                  onChange={e=>setNewStage({...newStage,name:e.target.value})}
+                  onKeyDown={e=>e.key==='Enter'&&handleCreateStage()}
+                  style={{flex:1,background:'transparent',border:`1px solid ${C.border}`,borderRadius:8,padding:'6px 10px',color:C.text,fontSize:13,outline:'none'}} />
+                <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                  {COLORS.map(col=>(
+                    <div key={col} onClick={()=>setNewStage({...newStage,color:col})}
+                      style={{width:18,height:18,borderRadius:'50%',background:col,cursor:'pointer',
+                        border:newStage.color===col?'2px solid #fff':'2px solid transparent',transition:'border 0.1s'}} />
+                  ))}
+                </div>
+                <Btn size="sm" onClick={handleCreateStage} disabled={!newStage.name.trim()}>✓</Btn>
+                <Btn size="sm" variant="outline" onClick={()=>{ setShowNewStage(false); setNewStage({name:'',color:'#6366f1'}); }}>✕</Btn>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

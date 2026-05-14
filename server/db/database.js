@@ -324,11 +324,18 @@ async function initializeSchema() {
       timestamp TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS funnels (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      position INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS pipeline_stages (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       color TEXT DEFAULT '#6366f1',
       position INTEGER NOT NULL,
+      funnel_id TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS broadcasts (
@@ -474,6 +481,7 @@ async function initializeSchema() {
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN opening_date TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN cnpj_status TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN main_activity_code TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE pipeline_stages ADD COLUMN funnel_id TEXT`); } catch {}
   // Corrigir campaign_id dos prospects importados antes da criação da campanha
   try {
     await db.run(
@@ -481,26 +489,64 @@ async function initializeSchema() {
     );
   } catch {}
 
-  // Seed default stages
-  const stages = [
-    ['stage_lead',       'Lead',          '#64748b', 1],
-    ['stage_contact',    'Contato Feito', '#3b82f6', 2],
-    ['stage_proposal',   'Proposta',      '#f59e0b', 3],
-    ['stage_negotiation','Negociação',    '#8b5cf6', 4],
-    ['stage_won',        'Ganho',         '#22c55e', 5],
-    ['stage_lost',       'Perdido',       '#ef4444', 6]
+  // Seed funnels
+  const funnels = [
+    ['funnel_default',  'Funil Padrão',   1],
+    ['funnel_outbound', 'Funil Outbound',  2],
   ];
-
-  for (const [id, name, color, pos] of stages) {
+  for (const [id, name, pos] of funnels) {
     try {
       if (db.isPostgres) {
-        await db.run(`INSERT INTO pipeline_stages (id, name, color, position) VALUES (?, ?, ?, ?) ON CONFLICT (id) DO NOTHING`, [id, name, color, pos]);
+        await db.run(`INSERT INTO funnels (id, name, position) VALUES (?, ?, ?) ON CONFLICT (id) DO NOTHING`, [id, name, pos]);
       } else {
-        await db.run(`INSERT OR IGNORE INTO pipeline_stages (id, name, color, position) VALUES (?, ?, ?, ?)`, [id, name, color, pos]);
+        await db.run(`INSERT OR IGNORE INTO funnels (id, name, position) VALUES (?, ?, ?)`, [id, name, pos]);
       }
-    } catch (err) {
-      // Ignore errors during seeding
-    }
+    } catch {}
+  }
+
+  // Seed default stages (Funil Padrão)
+  const stages = [
+    ['stage_lead',       'Lead',          '#64748b', 1, 'funnel_default'],
+    ['stage_contact',    'Contato Feito', '#3b82f6', 2, 'funnel_default'],
+    ['stage_proposal',   'Proposta',      '#f59e0b', 3, 'funnel_default'],
+    ['stage_negotiation','Negociação',    '#8b5cf6', 4, 'funnel_default'],
+    ['stage_won',        'Ganho',         '#22c55e', 5, 'funnel_default'],
+    ['stage_lost',       'Perdido',       '#ef4444', 6, 'funnel_default'],
+  ];
+
+  for (const [id, name, color, pos, fid] of stages) {
+    try {
+      if (db.isPostgres) {
+        await db.run(`INSERT INTO pipeline_stages (id, name, color, position, funnel_id) VALUES (?, ?, ?, ?, ?) ON CONFLICT (id) DO NOTHING`, [id, name, color, pos, fid]);
+      } else {
+        await db.run(`INSERT OR IGNORE INTO pipeline_stages (id, name, color, position, funnel_id) VALUES (?, ?, ?, ?, ?)`, [id, name, color, pos, fid]);
+      }
+      // Ensure existing stages get their funnel_id set
+      await db.run(`UPDATE pipeline_stages SET funnel_id = ? WHERE id = ? AND (funnel_id IS NULL OR funnel_id = '')`, [fid, id]);
+    } catch {}
+  }
+
+  // Seed Funil Outbound stages
+  const outboundStages = [
+    ['stage_ob_entrada',    'Entrada de Prospects', '#64748b', 1],
+    ['stage_ob_tentando',   'Tentando Contato',     '#3b82f6', 2],
+    ['stage_ob_contato',    'Contato Realizado',    '#2E6DA4', 3],
+    ['stage_ob_reuniao_ag', 'Reunião Agendada',     '#8b5cf6', 4],
+    ['stage_ob_reuniao_re', 'Reunião Realizada',    '#6366f1', 5],
+    ['stage_ob_proposta',   'Proposta Agendada',    '#f59e0b', 6],
+    ['stage_ob_negociacao', 'Negociação',           '#E67E22', 7],
+    ['stage_ob_contrato',   'Contrato',             '#14b8a6', 8],
+    ['stage_ob_venda',      'Venda',                '#22c55e', 9],
+  ];
+
+  for (const [id, name, color, pos] of outboundStages) {
+    try {
+      if (db.isPostgres) {
+        await db.run(`INSERT INTO pipeline_stages (id, name, color, position, funnel_id) VALUES (?, ?, ?, ?, 'funnel_outbound') ON CONFLICT (id) DO NOTHING`, [id, name, color, pos]);
+      } else {
+        await db.run(`INSERT OR IGNORE INTO pipeline_stages (id, name, color, position, funnel_id) VALUES (?, ?, ?, ?, 'funnel_outbound')`, [id, name, color, pos]);
+      }
+    } catch {}
   }
 
   // Seed master admin

@@ -61,8 +61,15 @@ export const statsRecent  = () => api.get('/stats/recent-contacts').then(r => r.
 export const globalSearch = (q) => api.get('/search', { params: { q } }).then(r => r.data);
 export const wpStatus= () => api.get('/whatsapp/status').then(r => r.data);
 export const wpQR    = () => api.get('/whatsapp/qrcode').then(r => r.data);
-export const pipeline= {
-  stages: () => api.get('/pipeline/stages').then(r => r.data),
+export const pipeline = {
+  stages:        (funnel_id) => api.get('/pipeline/stages', { params: funnel_id ? { funnel_id } : {} }).then(r => r.data),
+  funnels:       ()          => api.get('/funnels').then(r => r.data),
+  createFunnel:  (data)      => api.post('/funnels', data).then(r => r.data),
+  updateFunnel:  (id, data)  => api.put(`/funnels/${id}`, data).then(r => r.data),
+  deleteFunnel:  (id)        => api.delete(`/funnels/${id}`).then(r => r.data),
+  createStage:   (data)      => api.post('/pipeline/stages', data).then(r => r.data),
+  updateStage:   (id, data)  => api.put(`/pipeline/stages/${id}`, data).then(r => r.data),
+  deleteStage:   (id)        => api.delete(`/pipeline/stages/${id}`).then(r => r.data),
 };
 
 export default api;

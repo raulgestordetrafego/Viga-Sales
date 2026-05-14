@@ -806,8 +806,108 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
 
   app.get("/api/pipeline/stages", async (req, res) => {
     try {
-      const stages = await query("SELECT * FROM pipeline_stages ORDER BY position");
+      const { funnel_id } = req.query;
+      const stages = funnel_id
+        ? await query("SELECT * FROM pipeline_stages WHERE funnel_id = ? ORDER BY position", [funnel_id])
+        : await query("SELECT * FROM pipeline_stages ORDER BY funnel_id, position");
       res.json(stages);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ─── Funnels CRUD ────────────────────────────────────────────────────────────
+
+  app.get("/api/funnels", async (req, res) => {
+    try {
+      const funnels = await query("SELECT * FROM funnels ORDER BY position");
+      res.json(funnels);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/funnels", async (req, res) => {
+    try {
+      const { name } = req.body;
+      if (!name?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
+      const { v4: uuidv4 } = await import('uuid');
+      const id = `funnel_${uuidv4().replace(/-/g,'').slice(0,12)}`;
+      const maxPos: any = await query("SELECT COALESCE(MAX(position),0)+1 as pos FROM funnels");
+      const pos = maxPos[0]?.pos || 1;
+      await query("INSERT INTO funnels (id, name, position) VALUES (?, ?, ?)", [id, name.trim(), pos]);
+      res.json({ id, name: name.trim(), position: pos });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/funnels/:id", async (req, res) => {
+    try {
+      const { name } = req.body;
+      if (!name?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
+      await query("UPDATE funnels SET name = ? WHERE id = ?", [name.trim(), req.params.id]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/funnels/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const stagesInUse: any = await query(
+        "SELECT COUNT(*) as c FROM contacts WHERE pipeline_stage IN (SELECT id FROM pipeline_stages WHERE funnel_id = ?)", [id]
+      );
+      if (stagesInUse[0]?.c > 0) {
+        return res.status(400).json({ error: `Existem ${stagesInUse[0].c} contatos neste funil. Mova-os antes de excluir.` });
+      }
+      await query("DELETE FROM pipeline_stages WHERE funnel_id = ?", [id]);
+      await query("DELETE FROM funnels WHERE id = ?", [id]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ─── Pipeline Stages CRUD ────────────────────────────────────────────────────
+
+  app.post("/api/pipeline/stages", async (req, res) => {
+    try {
+      const { name, color, funnel_id } = req.body;
+      if (!name?.trim() || !funnel_id) return res.status(400).json({ error: 'Nome e funil são obrigatórios' });
+      const { v4: uuidv4 } = await import('uuid');
+      const id = `stage_${uuidv4().replace(/-/g,'').slice(0,12)}`;
+      const maxPos: any = await query("SELECT COALESCE(MAX(position),0)+1 as pos FROM pipeline_stages WHERE funnel_id = ?", [funnel_id]);
+      const pos = maxPos[0]?.pos || 1;
+      await query("INSERT INTO pipeline_stages (id, name, color, position, funnel_id) VALUES (?, ?, ?, ?, ?)",
+        [id, name.trim(), color || '#6366f1', pos, funnel_id]);
+      res.json({ id, name: name.trim(), color: color || '#6366f1', position: pos, funnel_id });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/pipeline/stages/:id", async (req, res) => {
+    try {
+      const { name, color } = req.body;
+      await query("UPDATE pipeline_stages SET name = ?, color = ? WHERE id = ?",
+        [name?.trim(), color, req.params.id]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/pipeline/stages/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const inUse: any = await query("SELECT COUNT(*) as c FROM contacts WHERE pipeline_stage = ?", [id]);
+      if (inUse[0]?.c > 0) {
+        return res.status(400).json({ error: `${inUse[0].c} contato(s) nesta etapa. Mova-os antes de excluir.` });
+      }
+      await query("DELETE FROM pipeline_stages WHERE id = ?", [id]);
+      res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
