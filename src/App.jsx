@@ -2169,6 +2169,84 @@ function UserManagement() {
 
 // ─── Prospecting ──────────────────────────────────────────────────────────────
 
+function CsvImportModal({ onClose, onDone }) {
+  const [file, setFile]         = useState(null);
+  const [importing, setImport]  = useState(false);
+  const [result, setResult]     = useState(null);
+  const tok = () => localStorage.getItem('crm_token');
+
+  const doImport = async () => {
+    if (!file) return;
+    setImport(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const r = await fetch('/api/prospects/import-csv', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${tok()}` },
+        body: fd,
+      });
+      const d = await r.json();
+      if (!r.ok) { toast.error(d.error || 'Erro ao importar'); return; }
+      setResult(d);
+      onDone();
+    } catch { toast.error('Erro ao importar CSV'); }
+    finally { setImport(false); }
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:480,boxShadow:'0 24px 80px #000a'}}>
+        <h3 style={{margin:'0 0 8px',fontSize:18,fontWeight:700,color:C.text}}>Importar lista CSV</h3>
+        <p style={{margin:'0 0 24px',fontSize:13,color:C.dim}}>
+          Suporta planilhas CNPJ (Estabelecimentos). Colunas reconhecidas: CNPJ, Razão Social, Nome Fantasia, Telefone Principal, Telefone Secundário, E-mail, Cidade, Estado, Bairro, CEP, Logradouro, Número, Complemento, Atividade Principal, Porte, Capital Social, Natureza Jurídica, Data de Abertura, Situação Cadastral.
+        </p>
+
+        {!result ? (
+          <>
+            <label style={{display:'flex',flexDirection:'column',gap:8,cursor:'pointer',border:`2px dashed ${file?C.primary:C.border}`,borderRadius:14,padding:'28px 20px',alignItems:'center',background:file?`${C.primary}08`:C.bg,transition:'all 0.2s'}}>
+              <span style={{fontSize:32}}>{file ? '📄' : '📂'}</span>
+              <span style={{fontSize:13,fontWeight:600,color:file?C.primary:C.muted}}>{file ? file.name : 'Clique para selecionar o arquivo .csv'}</span>
+              {file && <span style={{fontSize:11,color:C.dim}}>{(file.size/1024).toFixed(0)} KB</span>}
+              <input type="file" accept=".csv,text/csv" style={{display:'none'}} onChange={e=>setFile(e.target.files[0]||null)} />
+            </label>
+            <div style={{display:'flex',gap:10,marginTop:20,justifyContent:'flex-end'}}>
+              <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
+              <Btn onClick={doImport} disabled={!file||importing}>
+                {importing ? 'Importando...' : 'Importar'}
+              </Btn>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
+              {[
+                { label:'Importados',  value:result.inserted, color:C.success  },
+                { label:'Duplicatas',  value:result.skipped,  color:C.warning  },
+                { label:'Sem telefone',value:result.invalid,  color:C.danger   },
+                { label:'Total no CSV',value:result.total,    color:C.primary  },
+              ].map(s=>(
+                <div key={s.label} style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 20px'}}>
+                  <div style={{fontSize:26,fontWeight:700,color:s.color}}>{s.value}</div>
+                  <div style={{fontSize:11,color:C.dim,marginTop:2}}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+            {result.errors?.length > 0 && (
+              <div style={{background:`${C.danger}10`,border:`1px solid ${C.danger}30`,borderRadius:10,padding:12,fontSize:12,color:C.danger,marginBottom:16}}>
+                {result.errors.length} linha(s) com erro — verifique o CSV
+              </div>
+            )}
+            <div style={{display:'flex',justifyContent:'flex-end'}}>
+              <Btn onClick={onClose}>Fechar</Btn>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Prospecting() {
   const [prospects, setProspects]       = useState([]);
   const [stats, setStats]               = useState(null);
@@ -2181,6 +2259,7 @@ function Prospecting() {
   const [tab, setTab]                   = useState('leads'); // 'leads' | 'falhas'
   const [failures, setFailures]         = useState([]);
   const [loadingFail, setLoadingFail]   = useState(false);
+  const [showImport, setShowImport]     = useState(false);
 
   const tok = () => localStorage.getItem('crm_token');
 
@@ -2294,21 +2373,26 @@ function Prospecting() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      {showImport && <CsvImportModal onClose={()=>setShowImport(false)} onDone={()=>{ load(); setShowImport(false); toast.success('Lista importada com sucesso!'); }} />}
+
       {/* Header */}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:12}}>
         <div>
           <h2 style={{margin:0,fontSize:22,fontWeight:700,color:C.text}}>Prospecção</h2>
-          <p style={{margin:'4px 0 0',fontSize:13,color:C.dim}}>Leads captados via Google Maps / n8n</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:C.dim}}>Leads captados via Google Maps / n8n / CSV</p>
         </div>
-        {/* Tabs */}
-        <div style={{display:'flex',gap:4,background:C.surface,borderRadius:10,padding:4,border:`1px solid ${C.border}`}}>
-          {[{id:'leads',label:'Leads'},{id:'falhas',label:'⚠ Falhas'}].map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{
-              padding:'6px 18px',borderRadius:7,border:'none',cursor:'pointer',fontSize:13,fontWeight:600,transition:'all 0.15s',
-              background: tab===t.id ? C.primary : 'transparent',
-              color: tab===t.id ? '#fff' : C.dim,
-            }}>{t.label}</button>
-          ))}
+        <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+          <Btn size="sm" variant="outline" onClick={()=>setShowImport(true)}>📥 Importar CSV</Btn>
+          {/* Tabs */}
+          <div style={{display:'flex',gap:4,background:C.surface,borderRadius:10,padding:4,border:`1px solid ${C.border}`}}>
+            {[{id:'leads',label:'Leads'},{id:'falhas',label:'⚠ Falhas'}].map(t=>(
+              <button key={t.id} onClick={()=>setTab(t.id)} style={{
+                padding:'6px 18px',borderRadius:7,border:'none',cursor:'pointer',fontSize:13,fontWeight:600,transition:'all 0.15s',
+                background: tab===t.id ? C.primary : 'transparent',
+                color: tab===t.id ? '#fff' : C.dim,
+              }}>{t.label}</button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -2501,20 +2585,33 @@ function Prospecting() {
               <button onClick={()=>setSelected(null)} style={{background:'none',border:'none',cursor:'pointer',color:C.dim,fontSize:24,lineHeight:1}}>×</button>
             </div>
 
-            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
               {[
-                {label:'Telefone',   value:selected.phone},
-                {label:'Cidade',     value:selected.city},
-                {label:'Segmento',   value:selected.segment},
-                {label:'E-mail',     value:selected.email},
-                {label:'Site',       value:selected.website},
-                {label:'Instagram',  value:selected.instagram},
-                {label:'Endereço',   value:selected.address},
-                {label:'Avaliação',  value:selected.rating?`${selected.rating}/5 (${selected.reviews_count||0} avaliações)`:null},
-                {label:'Fonte',      value:selected.source},
+                {label:'Telefone',        value:selected.phone},
+                {label:'Tel. Secundário', value:selected.phone2},
+                {label:'E-mail',          value:selected.email},
+                {label:'CNPJ',            value:selected.cnpj},
+                {label:'Razão Social',    value:selected.company},
+                {label:'Nome Fantasia',   value:selected.trade_name},
+                {label:'Atividade',       value:selected.segment},
+                {label:'Cód. Atividade',  value:selected.main_activity_code},
+                {label:'Cidade',          value:selected.city},
+                {label:'Estado',          value:selected.state},
+                {label:'Bairro',          value:selected.neighborhood},
+                {label:'Endereço',        value:selected.address},
+                {label:'CEP',             value:selected.zip_code},
+                {label:'Porte',           value:selected.company_size},
+                {label:'Capital Social',  value:selected.capital_social},
+                {label:'Nat. Jurídica',   value:selected.legal_nature},
+                {label:'Abertura',        value:selected.opening_date},
+                {label:'Situação CNPJ',   value:selected.cnpj_status},
+                {label:'Site',            value:selected.website},
+                {label:'Instagram',       value:selected.instagram},
+                {label:'Avaliação',       value:selected.rating?`${selected.rating}/5 (${selected.reviews_count||0} avaliações)`:null},
+                {label:'Fonte',           value:selected.source},
               ].filter(f=>f.value).map(f=>(
                 <div key={f.label} style={{display:'flex',gap:8,alignItems:'flex-start'}}>
-                  <span style={{fontSize:11,color:C.dim,minWidth:80,fontWeight:600,paddingTop:2}}>{f.label}</span>
+                  <span style={{fontSize:11,color:C.dim,minWidth:110,fontWeight:600,paddingTop:2,flexShrink:0}}>{f.label}</span>
                   <span style={{fontSize:13,color:C.text,wordBreak:'break-all'}}>{f.value}</span>
                 </div>
               ))}

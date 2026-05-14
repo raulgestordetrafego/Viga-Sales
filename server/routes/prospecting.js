@@ -2,6 +2,10 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { query, queryOne, run, getDb } from '../db/database.js';
 import * as evolutionApi from '../services/evolutionApi.js';
+import multer from 'multer';
+import Papa from 'papaparse';
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
 // Cria contato + conversa no CRM quando um prospect é marcado como enviado
 async function syncProspectToConversation(prospect, message) {
@@ -642,11 +646,11 @@ router.post('/:id/send-audio', internalAuth, async (req, res) => {
     const prospect = await queryOne('SELECT * FROM prospects WHERE id = ?', [prospectId]);
     if (!prospect) return res.status(404).json({ error: 'Prospect não encontrado' });
 
-    // Áudios disponíveis — servidos pelo próprio servidor
+    // Áudios disponíveis — servidos pelo próprio servidor em /api/audio/
     const audioFiles = ['raul_audio_01.mp3', 'raul_audio_02.mp3', 'raul_audio_03.mp3'];
     const appUrl = (process.env.APP_URL || 'https://vigasales.shop').replace(/\/$/, '');
     const audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
-    const audioUrl = `${appUrl}/audio/${audioFile}`;
+    const audioUrl = `${appUrl}/api/audio/${audioFile}`;
 
     // Enviar via Evolution API
     await evolutionApi.sendAudioMessage(prospect.phone, audioUrl);
@@ -700,6 +704,113 @@ router.get('/logs/failures', async (req, res) => {
       [Number(limit)]
     );
     res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/prospects/import-csv — importar lista via arquivo CSV
+router.post('/import-csv', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+
+    const csv = req.file.buffer.toString('utf-8');
+    const { data, errors: parseErrors } = Papa.parse(csv, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: h => h.trim(),
+    });
+
+    if (!data.length) return res.status(400).json({ error: 'CSV vazio ou sem dados válidos' });
+
+    const campaign_id = req.body.campaign_id || null;
+
+    // Mapeamento flexível: aceita nomes exatos da planilha CNPJ ou variações
+    const col = (row, ...keys) => {
+      for (const k of keys) {
+        const found = Object.keys(row).find(h => h.toLowerCase().trim() === k.toLowerCase());
+        if (found && row[found] !== undefined && row[found] !== '') return String(row[found]).trim();
+      }
+      return null;
+    };
+
+    let inserted = 0, skipped = 0, invalid = 0;
+    const errors = [];
+
+    for (const row of data) {
+      try {
+        const phone = normalizePhone(
+          col(row, 'Telefone Principal', 'telefone principal', 'telefone', 'phone', 'celular', 'whatsapp') || ''
+        );
+        if (!phone || phone.length < 8) { invalid++; continue; }
+
+        const existing = await queryOne('SELECT id FROM prospects WHERE phone = ?', [phone]);
+        if (existing) { skipped++; continue; }
+
+        const cnpj       = col(row, 'CNPJ', 'cnpj');
+        const razaoSocial= col(row, 'Razão Social', 'razao social', 'razão social', 'empresa', 'company');
+        const nomeFant   = col(row, 'Nome Fantasia', 'nome fantasia', 'nome_fantasia', 'trade_name');
+        const email      = col(row, 'E-mail', 'email', 'e-mail');
+        const phone2     = normalizePhone(col(row, 'Telefone Secundário', 'telefone secundário', 'telefone2', 'phone2') || '') || null;
+        const cidade     = col(row, 'Cidade', 'cidade', 'city', 'municipio', 'município');
+        const estado     = col(row, 'Estado', 'estado', 'uf', 'state');
+        const logradouro = col(row, 'Logradouro', 'logradouro', 'rua', 'endereco', 'endereço');
+        const numero     = col(row, 'Número', 'numero', 'número', 'number');
+        const complemento= col(row, 'Complemento', 'complemento');
+        const bairro     = col(row, 'Bairro', 'bairro', 'neighborhood');
+        const cep        = col(row, 'CEP', 'cep', 'zip', 'zip_code');
+        const atividade  = col(row, 'Atividade Principal', 'atividade principal', 'atividade', 'segment', 'segmento');
+        const atividadeCod = col(row, 'Atividade Principal Código', 'atividade principal código', 'atividade_codigo');
+        const porte      = col(row, 'Porte', 'porte', 'company_size');
+        const capital    = col(row, 'Capital Social', 'capital social', 'capital_social');
+        const natJur     = col(row, 'Natureza Jurídica', 'natureza jurídica', 'natureza juridica', 'legal_nature');
+        const dtAbertura = col(row, 'Data de Abertura', 'data de abertura', 'data_abertura', 'opening_date');
+        const sitCadastral= col(row, 'Situação Cadastral', 'situação cadastral', 'situacao cadastral', 'cnpj_status');
+
+        const addressParts = [logradouro, numero, complemento].filter(Boolean);
+        const address = addressParts.length ? addressParts.join(', ') : null;
+        const cityFull = [cidade, estado].filter(Boolean).join(' - ') || null;
+
+        await run(
+          `INSERT INTO prospects
+            (id, name, phone, phone2, email, company, trade_name, cnpj,
+             segment, main_activity_code, city, state, address, neighborhood, zip_code,
+             company_size, capital_social, legal_nature, opening_date, cnpj_status,
+             source, campaign_id, raw_data, status)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'novo')`,
+          [
+            uuidv4(),
+            nomeFant || razaoSocial,
+            phone,
+            phone2,
+            email,
+            razaoSocial,
+            nomeFant,
+            cnpj,
+            atividade,
+            atividadeCod,
+            cityFull,
+            estado,
+            address,
+            bairro,
+            cep,
+            porte,
+            capital,
+            natJur,
+            dtAbertura,
+            sitCadastral,
+            'csv_import',
+            campaign_id,
+            JSON.stringify(row),
+          ]
+        );
+        inserted++;
+      } catch (e) {
+        errors.push({ row: data.indexOf(row) + 2, error: e.message });
+      }
+    }
+
+    res.json({ inserted, skipped, invalid, errors, total: data.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

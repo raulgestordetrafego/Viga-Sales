@@ -462,6 +462,18 @@ async function initializeSchema() {
   // Migrações incrementais
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN notes TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN audio_batch_sent INTEGER DEFAULT 0`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN cnpj TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN trade_name TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN phone2 TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN state TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN neighborhood TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN zip_code TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN company_size TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN capital_social TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN legal_nature TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN opening_date TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN cnpj_status TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE prospects ADD COLUMN main_activity_code TEXT`); } catch {}
   // Corrigir campaign_id dos prospects importados antes da criação da campanha
   try {
     await db.run(
