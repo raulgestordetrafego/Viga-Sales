@@ -1649,6 +1649,7 @@ function Pipeline() {
   const [loading, setLoading]   = useState(true);
   const [dragging, setDragging] = useState(null);
   const [dragOver, setDragOver] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const loadFunnels = useCallback(async () => {
     try {
@@ -1741,7 +1742,8 @@ function Pipeline() {
                         <div key={c.id} draggable
                           onDragStart={e=>{ setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
                           onDragEnd={()=>{ setDragging(null); setDragOver(null); }}
-                          style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'grab',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
+                          onClick={e=>{ if(!dragging) setSelectedContact(c.id); }}
+                          style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'pointer',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
                           onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
                           onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
                           <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
@@ -1767,6 +1769,17 @@ function Pipeline() {
             })}
           </div>
         </div>
+      )}
+
+      {selectedContact && (
+        <ContactDrawer
+          contactId={selectedContact}
+          onClose={() => setSelectedContact(null)}
+          onEdit={() => { setSelectedContact(null); loadStages(activeFunnel); }}
+          onDelete={() => { setSelectedContact(null); loadStages(activeFunnel); }}
+          onOpenConversation={() => setSelectedContact(null)}
+          onRefreshList={() => loadStages(activeFunnel)}
+        />
       )}
     </div>
   );
