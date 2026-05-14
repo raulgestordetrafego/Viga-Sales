@@ -2483,10 +2483,27 @@ function UserManagement() {
 // ─── Prospecting ──────────────────────────────────────────────────────────────
 
 function CsvImportModal({ onClose, onDone }) {
-  const [file, setFile]         = useState(null);
-  const [importing, setImport]  = useState(false);
-  const [result, setResult]     = useState(null);
+  const [file, setFile]             = useState(null);
+  const [importing, setImport]      = useState(false);
+  const [result, setResult]         = useState(null);
+  const [funnels, setFunnels]       = useState([]);
+  const [stages, setStages]         = useState([]);
+  const [selectedFunnel, setSelectedFunnel] = useState('');
+  const [selectedStage, setSelectedStage]   = useState('');
   const tok = () => localStorage.getItem('crm_token');
+
+  useEffect(() => {
+    fetch('/api/funnels', { headers: { Authorization: `Bearer ${tok()}` } })
+      .then(r => r.json()).then(fs => { setFunnels(Array.isArray(fs) ? fs : []); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!selectedFunnel) { setStages([]); setSelectedStage(''); return; }
+    fetch(`/api/pipeline/stages?funnel_id=${selectedFunnel}`, { headers: { Authorization: `Bearer ${tok()}` } })
+      .then(r => r.json()).then(ss => { setStages(Array.isArray(ss) ? ss : []); setSelectedStage(''); })
+      .catch(() => {});
+  }, [selectedFunnel]);
 
   const doImport = async () => {
     if (!file) return;
@@ -2494,6 +2511,7 @@ function CsvImportModal({ onClose, onDone }) {
     try {
       const fd = new FormData();
       fd.append('file', file);
+      if (selectedStage) fd.append('pipeline_stage', selectedStage);
       const r = await fetch('/api/prospects/import-csv', {
         method: 'POST',
         headers: { Authorization: `Bearer ${tok()}` },
@@ -2507,25 +2525,60 @@ function CsvImportModal({ onClose, onDone }) {
     finally { setImport(false); }
   };
 
+  const selStyle = { width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 14px', color:C.text, fontSize:13, outline:'none', cursor:'pointer' };
+
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:480,boxShadow:'0 24px 80px #000a'}}>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:500,boxShadow:'0 24px 80px #000a',maxHeight:'90vh',overflowY:'auto'}}>
         <h3 style={{margin:'0 0 8px',fontSize:18,fontWeight:700,color:C.text}}>Importar lista CSV</h3>
-        <p style={{margin:'0 0 24px',fontSize:13,color:C.dim}}>
-          Suporta planilhas CNPJ (Estabelecimentos). Colunas reconhecidas: CNPJ, Razão Social, Nome Fantasia, Telefone Principal, Telefone Secundário, E-mail, Cidade, Estado, Bairro, CEP, Logradouro, Número, Complemento, Atividade Principal, Porte, Capital Social, Natureza Jurídica, Data de Abertura, Situação Cadastral.
+        <p style={{margin:'0 0 20px',fontSize:13,color:C.dim}}>
+          Suporta planilhas CNPJ e Google Maps. Colunas: Razão Social, Telefone, E-mail, Cidade, CNPJ, etc.
         </p>
 
         {!result ? (
           <>
-            <label style={{display:'flex',flexDirection:'column',gap:8,cursor:'pointer',border:`2px dashed ${file?C.primary:C.border}`,borderRadius:14,padding:'28px 20px',alignItems:'center',background:file?`${C.primary}08`:C.bg,transition:'all 0.2s'}}>
+            <label style={{display:'flex',flexDirection:'column',gap:8,cursor:'pointer',border:`2px dashed ${file?C.primary:C.border}`,borderRadius:14,padding:'24px 20px',alignItems:'center',background:file?`${C.primary}08`:C.bg,transition:'all 0.2s',marginBottom:20}}>
               <span style={{fontSize:32}}>{file ? '📄' : '📂'}</span>
               <span style={{fontSize:13,fontWeight:600,color:file?C.primary:C.muted}}>{file ? file.name : 'Clique para selecionar o arquivo .csv'}</span>
               {file && <span style={{fontSize:11,color:C.dim}}>{(file.size/1024).toFixed(0)} KB</span>}
               <input type="file" accept=".csv,text/csv" style={{display:'none'}} onChange={e=>setFile(e.target.files[0]||null)} />
             </label>
-            <div style={{display:'flex',gap:10,marginTop:20,justifyContent:'flex-end'}}>
+
+            {/* Seletor de funil/etapa */}
+            <div style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:14,padding:16,marginBottom:20}}>
+              <div style={{fontSize:12,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:12}}>
+                📌 Enviar para o Pipeline (opcional)
+              </div>
+              <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                <div>
+                  <label style={{display:'block',fontSize:11,color:C.dim,marginBottom:5}}>Funil</label>
+                  <select value={selectedFunnel} onChange={e=>setSelectedFunnel(e.target.value)} style={selStyle}>
+                    <option value="">— Não enviar para o pipeline —</option>
+                    {funnels.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                  </select>
+                </div>
+                {selectedFunnel && (
+                  <div>
+                    <label style={{display:'block',fontSize:11,color:C.dim,marginBottom:5}}>Etapa do Kanban</label>
+                    <select value={selectedStage} onChange={e=>setSelectedStage(e.target.value)} style={selStyle}>
+                      <option value="">— Selecione a etapa —</option>
+                      {stages.map((s,i) => (
+                        <option key={s.id} value={s.id}>{i+1}. {s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {selectedStage && (
+                  <div style={{fontSize:12,color:C.success,display:'flex',alignItems:'center',gap:6}}>
+                    ✅ Leads serão importados como <b>Contatos</b> na etapa <b>{stages.find(s=>s.id===selectedStage)?.name}</b>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
               <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
-              <Btn onClick={doImport} disabled={!file||importing}>
+              <Btn onClick={doImport} disabled={!file||importing||(!!selectedFunnel&&!selectedStage)}>
                 {importing ? 'Importando...' : 'Importar'}
               </Btn>
             </div>
@@ -2534,10 +2587,11 @@ function CsvImportModal({ onClose, onDone }) {
           <>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
               {[
-                { label:'Importados',  value:result.inserted, color:C.success  },
-                { label:'Duplicatas',  value:result.skipped,  color:C.warning  },
-                { label:'Sem telefone',value:result.invalid,  color:C.danger   },
-                { label:'Total no CSV',value:result.total,    color:C.primary  },
+                { label:'Importados',   value:result.inserted,         color:C.success  },
+                { label:'Duplicatas',   value:result.skipped,          color:C.warning  },
+                { label:'Sem telefone', value:result.invalid,          color:C.danger   },
+                { label:'Total no CSV', value:result.total,            color:C.primary  },
+                ...(result.addedToPipeline > 0 ? [{ label:'No Pipeline', value:result.addedToPipeline, color:C.teal }] : []),
               ].map(s=>(
                 <div key={s.label} style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 20px'}}>
                   <div style={{fontSize:26,fontWeight:700,color:s.color}}>{s.value}</div>

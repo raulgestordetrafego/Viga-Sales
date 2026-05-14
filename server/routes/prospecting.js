@@ -723,7 +723,8 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
 
     if (!data.length) return res.status(400).json({ error: 'CSV vazio ou sem dados válidos' });
 
-    const campaign_id = req.body.campaign_id || null;
+    const campaign_id    = req.body.campaign_id || null;
+    const pipeline_stage = req.body.pipeline_stage || null;
 
     // Mapeamento flexível: aceita nomes exatos da planilha CNPJ ou variações
     const col = (row, ...keys) => {
@@ -734,7 +735,7 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
       return null;
     };
 
-    let inserted = 0, skipped = 0, invalid = 0;
+    let inserted = 0, skipped = 0, invalid = 0, addedToPipeline = 0;
     const errors = [];
 
     for (const row of data) {
@@ -785,6 +786,7 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
           horario && `Horário: ${horario}`,
         ].filter(Boolean).join(' | ') || null;
 
+        const prospectId = uuidv4();
         await run(
           `INSERT INTO prospects
             (id, name, phone, phone2, email, company, trade_name, cnpj,
@@ -794,7 +796,7 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
              source, campaign_id, raw_data, status)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'novo')`,
           [
-            uuidv4(),
+            prospectId,
             nomeFant || razaoSocial,
             phone,
             phone2,
@@ -822,13 +824,32 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
             JSON.stringify(row),
           ]
         );
+
+        // Se uma etapa do pipeline foi escolhida, cria/atualiza o contato no CRM
+        if (pipeline_stage) {
+          const existingContact = await queryOne('SELECT id FROM contacts WHERE phone = ?', [phone]);
+          if (!existingContact) {
+            await run(
+              `INSERT INTO contacts (id, name, phone, email, company, city, address, website, pipeline_stage, status, tags, last_interaction)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', '[]', datetime('now'))`,
+              [uuidv4(), nomeFant || razaoSocial || phone, phone, email, razaoSocial, cityFull, address, website, pipeline_stage]
+            );
+          } else {
+            await run(
+              `UPDATE contacts SET pipeline_stage = ?, last_interaction = datetime('now') WHERE id = ?`,
+              [pipeline_stage, existingContact.id]
+            );
+          }
+          addedToPipeline++;
+        }
+
         inserted++;
       } catch (e) {
         errors.push({ row: data.indexOf(row) + 2, error: e.message });
       }
     }
 
-    res.json({ inserted, skipped, invalid, errors, total: data.length });
+    res.json({ inserted, skipped, invalid, addedToPipeline, errors, total: data.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
