@@ -662,38 +662,32 @@
        CTA FINAL
     ══════════════════════════════ */
     .cta-section {
-      padding: 100px 0;
+      padding: 120px 0;
       position: relative;
       overflow: hidden;
+      background-image: url('https://vigasales.shop/public/sessao-cta-desktop.jpg');
+      background-size: cover;
+      background-position: center;
     }
     .cta-section::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(249,115,22,0.07) 0%, transparent 70%);
+      background: linear-gradient(to right, rgba(8,17,31,0.92) 0%, rgba(8,17,31,0.75) 55%, rgba(8,17,31,0.30) 100%);
       pointer-events: none;
     }
-    .cta-section__inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
-    }
-    .cta-section__content { position: relative; }
+    .cta-section__content { position: relative; max-width: 560px; }
     .cta-section__title { font-size: clamp(28px, 3.5vw, 48px); font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
     .cta-section__title span { color: var(--orange); }
     .cta-section__sub { font-size: 16px; color: var(--muted); max-width: 460px; margin-bottom: 36px; line-height: 1.7; }
     .cta-section__note { margin-top: 16px; font-size: 12px; color: var(--muted2); }
-    .cta-section__image { position: relative; border-radius: 20px; overflow: hidden; }
-    .cta-section__image img {
-      width: 100%; height: auto; display: block;
-      border-radius: 20px;
-    }
-    .cta-section__image img.mobile-only { display: none; }
-    @media (max-width: 860px) {
-      .cta-section__inner { grid-template-columns: 1fr; gap: 40px; }
-      .cta-section__image img.desktop-only { display: none; }
-      .cta-section__image img.mobile-only { display: block; }
-      .cta-section__sub { max-width: 100%; }
+    @media (max-width: 768px) {
+      .cta-section {
+        background-image: url('https://vigasales.shop/public/sessao-cta-mobile.jpg');
+        background-position: top center;
+      }
+      .cta-section::before {
+        background: linear-gradient(to bottom, rgba(8,17,31,0.85) 0%, rgba(8,17,31,0.70) 100%);
+      }
     }
 
     /* ══════════════════════════════
@@ -1181,20 +1175,14 @@
 <!-- ══ CTA FINAL ══════════════════════════════════════════════════════════ -->
 <section class="cta-section" id="sessao">
   <div class="container">
-    <div class="cta-section__inner">
-      <div class="cta-section__content">
-        <div class="section-label">Pronto para Escalar?</div>
-        <h2 class="cta-section__title">Construa sua <span>Engenharia<br/>de Vendas</span> agora.</h2>
-        <p class="cta-section__sub">Agende uma sessão estratégica gratuita com Raul Santos e descubra exatamente o que falta para escalar sua operação.</p>
-        <a href="#" onclick="openModal();return false;" class="btn btn--orange" style="font-size:14px;padding:18px 40px;">
-          📅 Agendar Minha Sessão Estratégica →
-        </a>
-        <p class="cta-section__note">Sessão 100% gratuita · Sem compromisso · Resposta em até 24h</p>
-      </div>
-      <div class="cta-section__image">
-        <img src="https://vigasales.shop/public/sessao-cta-desktop.jpg" alt="Sessão Estratégica Viga Sales" class="desktop-only" />
-        <img src="https://vigasales.shop/public/sessao-cta-mobile.jpg" alt="Sessão Estratégica Viga Sales" class="mobile-only" />
-      </div>
+    <div class="cta-section__content">
+      <div class="section-label">Pronto para Escalar?</div>
+      <h2 class="cta-section__title">Construa sua <span>Engenharia<br/>de Vendas</span> agora.</h2>
+      <p class="cta-section__sub">Agende uma sessão estratégica gratuita com Raul Santos e descubra exatamente o que falta para escalar sua operação.</p>
+      <a href="#" onclick="openModal();return false;" class="btn btn--orange" style="font-size:14px;padding:18px 40px;">
+        📅 Agendar Minha Sessão Estratégica →
+      </a>
+      <p class="cta-section__note">Sessão 100% gratuita · Sem compromisso · Resposta em até 24h</p>
     </div>
   </div>
 </section>
