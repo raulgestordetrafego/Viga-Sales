@@ -830,9 +830,9 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
           const existingContact = await queryOne('SELECT id FROM contacts WHERE phone = ?', [phone]);
           if (!existingContact) {
             await run(
-              `INSERT INTO contacts (id, name, phone, email, company, city, address, website, pipeline_stage, status, tags, last_interaction)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', '[]', datetime('now'))`,
-              [uuidv4(), nomeFant || razaoSocial || phone, phone, email, razaoSocial, cityFull, address, website, pipeline_stage]
+              `INSERT INTO contacts (id, name, phone, email, company, pipeline_stage, status, tags, notes, last_interaction)
+               VALUES (?, ?, ?, ?, ?, ?, 'active', '[]', ?, datetime('now'))`,
+              [uuidv4(), nomeFant || razaoSocial || phone, phone, email || null, razaoSocial || null, pipeline_stage, [cityFull, address, website].filter(Boolean).join(' | ') || null]
             );
           } else {
             await run(
