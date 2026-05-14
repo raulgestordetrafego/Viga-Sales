@@ -691,14 +691,20 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   // ── Stats extras ────────────────────────────────────────────────────────────
   app.get("/api/stats/daily", async (req: any, res) => {
     try {
+      const rows: any[] = await query(
+        `SELECT substr(timestamp,1,10) as date, COUNT(*) as count
+         FROM messages
+         WHERE timestamp >= date('now','-6 days')
+         GROUP BY substr(timestamp,1,10)`
+      ).catch(() => []);
+      const map: Record<string, number> = {};
+      rows.forEach(r => { map[r.date] = parseInt(r.count); });
       const days = [];
       for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
+        const d = new Date(); d.setDate(d.getDate() - i);
         const dateStr = d.toISOString().split('T')[0];
         const label = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.','');
-        const row = await queryOne("SELECT COUNT(*) as count FROM messages WHERE timestamp LIKE ?", [`${dateStr}%`]).catch(() => ({ count: 0 }));
-        days.push({ date: dateStr, label, count: parseInt((row as any)?.count || 0) });
+        days.push({ date: dateStr, label, count: map[dateStr] || 0 });
       }
       res.json(days);
     } catch (err) { res.status(500).json({ error: 'Erro' }); }
@@ -707,16 +713,63 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   app.get("/api/stats/recent-contacts", async (req: any, res) => {
     try {
       const rows = await query(`
-        SELECT c.id, c.name, c.phone, c.pipeline_stage, MAX(m.timestamp) as last_msg
+        SELECT c.id, c.name, c.phone, c.pipeline_stage, cv.last_message_at as last_msg
         FROM contacts c
         LEFT JOIN conversations cv ON cv.contact_id = c.id
-        LEFT JOIN messages m ON m.conversation_id = cv.id
-        GROUP BY c.id
-        ORDER BY CASE WHEN MAX(m.timestamp) IS NULL THEN 1 ELSE 0 END, MAX(m.timestamp) DESC
+        ORDER BY CASE WHEN cv.last_message_at IS NULL THEN 1 ELSE 0 END, cv.last_message_at DESC
         LIMIT 6
       `);
       res.json(rows);
     } catch (err) { res.status(500).json({ error: 'Erro' }); }
+  });
+
+  // Dashboard unificado — uma requisição carrega tudo
+  let dashCache: any = null;
+  let dashCacheAt = 0;
+  app.get("/api/dashboard", async (req, res) => {
+    try {
+      const now = Date.now();
+      if (dashCache && now - dashCacheAt < 30_000) return res.json(dashCache);
+
+      const today = new Date().toISOString().split('T')[0];
+      const [statsRow, convsRow, todayRow, totalMsgRow, recentContacts, dailyRows, pipelineStages, pipelineCounts] = await Promise.all([
+        queryOne("SELECT COUNT(*) as count FROM contacts"),
+        queryOne("SELECT COUNT(*) as count FROM conversations WHERE status='open'"),
+        queryOne("SELECT COUNT(*) as count FROM messages WHERE timestamp LIKE ?", [`${today}%`]),
+        queryOne("SELECT COUNT(*) as count FROM messages"),
+        query(`SELECT c.id, c.name, c.phone, c.pipeline_stage, cv.last_message_at as last_msg
+               FROM contacts c LEFT JOIN conversations cv ON cv.contact_id = c.id
+               ORDER BY CASE WHEN cv.last_message_at IS NULL THEN 1 ELSE 0 END, cv.last_message_at DESC LIMIT 6`),
+        query(`SELECT substr(timestamp,1,10) as date, COUNT(*) as count FROM messages
+               WHERE timestamp >= date('now','-6 days') GROUP BY substr(timestamp,1,10)`).catch(()=>[]),
+        query("SELECT * FROM pipeline_stages ORDER BY funnel_id, position"),
+        query("SELECT pipeline_stage, COUNT(*) as count, SUM(pipeline_value) as value FROM contacts GROUP BY pipeline_stage"),
+      ]);
+
+      const dailyMap: Record<string, number> = {};
+      (dailyRows as any[]).forEach(r => { dailyMap[r.date] = parseInt(r.count); });
+      const daily = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        daily.push({ date: dateStr, label: d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.',''), count: dailyMap[dateStr]||0 });
+      }
+
+      const countMap: Record<string, any> = {};
+      (pipelineCounts as any[]).forEach((r: any) => { countMap[r.pipeline_stage] = { count: parseInt(r.count||0), value: parseFloat(r.value||0) }; });
+      const pipeline = (pipelineStages as any[]).map((s: any) => ({ ...s, count: countMap[s.id]?.count||0, value: countMap[s.id]?.value||0 }));
+
+      dashCache = {
+        stats: { totalContacts: parseInt((statsRow as any)?.count||0), openConvs: parseInt((convsRow as any)?.count||0), todayMessages: parseInt((todayRow as any)?.count||0), totalMessages: parseInt((totalMsgRow as any)?.count||0) },
+        recentContacts,
+        daily,
+        pipeline,
+      };
+      dashCacheAt = now;
+      res.json(dashCache);
+    } catch (err) {
+      res.status(500).json({ error: (err as any).message });
+    }
   });
 
   app.get("/api/search", async (req: any, res) => {

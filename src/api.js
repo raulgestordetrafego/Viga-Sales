@@ -58,6 +58,7 @@ export const broadcasts = {
 export const stats        = () => api.get('/stats').then(r => r.data);
 export const statsDaily   = () => api.get('/stats/daily').then(r => r.data);
 export const statsRecent  = () => api.get('/stats/recent-contacts').then(r => r.data);
+export const dashboardAll = () => api.get('/dashboard').then(r => r.data);
 export const globalSearch = (q) => api.get('/search', { params: { q } }).then(r => r.data);
 export const wpStatus= () => api.get('/whatsapp/status').then(r => r.data);
 export const wpQR    = () => api.get('/whatsapp/qrcode').then(r => r.data);

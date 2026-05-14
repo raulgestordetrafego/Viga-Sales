@@ -170,11 +170,12 @@ router.post('/:id/activities', async (req, res) => {
 router.get('/stats/pipeline', async (req, res) => {
   try {
     const stages = await query('SELECT * FROM pipeline_stages ORDER BY position');
-    const stats = await Promise.all(stages.map(async stage => {
-      const data = await queryOne('SELECT COUNT(*) as count, SUM(pipeline_value) as value FROM contacts WHERE pipeline_stage = ?', [stage.id]);
-      return { ...stage, count: parseInt(data?.count || 0), value: parseFloat(data?.value || 0) };
-    }));
-    res.json(stats);
+    const counts = await query(
+      'SELECT pipeline_stage, COUNT(*) as count, SUM(pipeline_value) as value FROM contacts GROUP BY pipeline_stage'
+    );
+    const countMap = {};
+    counts.forEach(r => { countMap[r.pipeline_stage] = { count: parseInt(r.count||0), value: parseFloat(r.value||0) }; });
+    res.json(stages.map(s => ({ ...s, count: countMap[s.id]?.count||0, value: countMap[s.id]?.value||0 })));
   } catch (err) {
     console.error('GET /contacts/stats/pipeline error:', err);
     res.status(500).json({ error: err.message });
