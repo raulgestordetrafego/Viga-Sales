@@ -756,8 +756,25 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
         );
         if (!phone || phone.length < 8) { invalid++; continue; }
 
-        const existing = await queryOne('SELECT id FROM prospects WHERE phone = ?', [phone]);
-        if (existing) { skipped++; continue; }
+        const existing = await queryOne('SELECT id, name, email, company FROM prospects WHERE phone = ?', [phone]);
+        if (existing) {
+          skipped++;
+          // Mesmo sendo duplicata, envia para o pipeline se foi solicitado
+          if (pipeline_stage) {
+            const existingContact = await queryOne('SELECT id FROM contacts WHERE phone = ?', [phone]);
+            if (existingContact) {
+              await run(`UPDATE contacts SET pipeline_stage = ?, last_interaction = datetime('now'), updated_at = datetime('now') WHERE id = ?`, [pipeline_stage, existingContact.id]);
+            } else {
+              await run(
+                `INSERT INTO contacts (id, name, phone, email, company, pipeline_stage, status, tags, notes, last_interaction)
+                 VALUES (?, ?, ?, ?, ?, ?, 'active', '[]', NULL, datetime('now'))`,
+                [uuidv4(), existing.name || phone, phone, existing.email || null, existing.company || null, pipeline_stage]
+              );
+            }
+            addedToPipeline++;
+          }
+          continue;
+        }
 
         const cnpj       = get(row, 'cnpj', 'CNPJ', 'cnpj');
         const razaoSocial= get(row, 'company', 'Razão Social', 'razao social', 'razão social', 'Nome da Empresa', 'nome da empresa', 'empresa', 'company');
