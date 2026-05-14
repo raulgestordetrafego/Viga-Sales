@@ -725,6 +725,8 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
 
     const campaign_id    = req.body.campaign_id || null;
     const pipeline_stage = req.body.pipeline_stage || null;
+    let fieldMapping = {};
+    try { fieldMapping = req.body.mapping ? JSON.parse(req.body.mapping) : {}; } catch {}
 
     // Mapeamento flexível: aceita nomes exatos da planilha CNPJ ou variações
     const col = (row, ...keys) => {
@@ -735,44 +737,50 @@ router.post('/import-csv', upload.single('file'), async (req, res) => {
       return null;
     };
 
+    // get: usa mapeamento explícito do usuário se disponível, senão fuzzy matching
+    const get = (row, crmField, ...fallbackKeys) => {
+      if (fieldMapping[crmField]) {
+        const v = row[fieldMapping[crmField]];
+        if (v !== undefined && v !== '') return String(v).trim();
+      }
+      return col(row, ...fallbackKeys);
+    };
+
     let inserted = 0, skipped = 0, invalid = 0, addedToPipeline = 0;
     const errors = [];
 
     for (const row of data) {
       try {
         const phone = normalizePhone(
-          col(row, 'Telefone Principal', 'telefone principal', 'telefone', 'phone', 'celular', 'whatsapp') || ''
+          get(row, 'phone', 'Telefone Principal', 'telefone principal', 'telefone', 'phone', 'celular', 'whatsapp') || ''
         );
         if (!phone || phone.length < 8) { invalid++; continue; }
 
         const existing = await queryOne('SELECT id FROM prospects WHERE phone = ?', [phone]);
         if (existing) { skipped++; continue; }
 
-        const cnpj       = col(row, 'CNPJ', 'cnpj');
-        // Razão Social (CNPJ) ou Nome da Empresa (Google Maps)
-        const razaoSocial= col(row, 'Razão Social', 'razao social', 'razão social', 'Nome da Empresa', 'nome da empresa', 'empresa', 'company');
-        const nomeFant   = col(row, 'Nome Fantasia', 'nome fantasia', 'nome_fantasia', 'trade_name');
-        const email      = col(row, 'E-mail', 'email', 'e-mail');
-        const phone2     = normalizePhone(col(row, 'Telefone Secundário', 'telefone secundário', 'telefone2', 'phone2') || '') || null;
-        const cidade     = col(row, 'Cidade', 'cidade', 'city', 'municipio', 'município');
-        const estado     = col(row, 'Estado', 'estado', 'uf', 'state');
-        // Endereço: campo direto (Google Maps) ou partes separadas (CNPJ)
-        const enderecoDir= col(row, 'Endereço', 'endereco', 'endereço');
+        const cnpj       = get(row, 'cnpj', 'CNPJ', 'cnpj');
+        const razaoSocial= get(row, 'company', 'Razão Social', 'razao social', 'razão social', 'Nome da Empresa', 'nome da empresa', 'empresa', 'company');
+        const nomeFant   = get(row, 'trade_name', 'Nome Fantasia', 'nome fantasia', 'nome_fantasia', 'trade_name');
+        const email      = get(row, 'email', 'E-mail', 'email', 'e-mail');
+        const phone2     = normalizePhone(get(row, 'phone2', 'Telefone Secundário', 'telefone secundário', 'telefone2', 'phone2') || '') || null;
+        const cidade     = get(row, 'city', 'Cidade', 'cidade', 'city', 'municipio', 'município');
+        const estado     = get(row, 'state', 'Estado', 'estado', 'uf', 'state');
+        const enderecoDir= get(row, 'address', 'Endereço', 'endereco', 'endereço');
         const logradouro = col(row, 'Logradouro', 'logradouro', 'rua');
         const numero     = col(row, 'Número', 'numero', 'número', 'number');
         const complemento= col(row, 'Complemento', 'complemento');
-        const bairro     = col(row, 'Bairro', 'bairro', 'neighborhood');
-        const cep        = col(row, 'CEP', 'cep', 'zip', 'zip_code');
-        // Segmento: Atividade Principal (CNPJ) ou Segmento da Empresa (Google Maps)
-        const atividade  = col(row, 'Atividade Principal', 'atividade principal', 'Segmento da Empresa', 'segmento da empresa', 'atividade', 'segment', 'segmento');
+        const bairro     = get(row, 'neighborhood', 'Bairro', 'bairro', 'neighborhood');
+        const cep        = get(row, 'zip_code', 'CEP', 'cep', 'zip', 'zip_code');
+        const atividade  = get(row, 'segment', 'Atividade Principal', 'atividade principal', 'Segmento da Empresa', 'segmento da empresa', 'atividade', 'segment', 'segmento');
         const atividadeCod = col(row, 'Atividade Principal Código', 'atividade principal código', 'atividade_codigo');
         const porte      = col(row, 'Porte', 'porte', 'company_size');
         const capital    = col(row, 'Capital Social', 'capital social', 'capital_social');
         const natJur     = col(row, 'Natureza Jurídica', 'natureza jurídica', 'natureza juridica', 'legal_nature');
         const dtAbertura = col(row, 'Data de Abertura', 'data de abertura', 'data_abertura', 'opening_date');
         const sitCadastral= col(row, 'Situação Cadastral', 'situação cadastral', 'situacao cadastral', 'cnpj_status');
-        const website    = col(row, 'Site', 'site', 'website', 'url');
-        const instagram  = col(row, 'Instagram', 'instagram');
+        const website    = get(row, 'website', 'Site', 'site', 'website', 'url');
+        const instagram  = get(row, 'instagram', 'Instagram', 'instagram');
         const decisor    = col(row, 'Decisor', 'decisor', 'decision_maker');
         const horario    = col(row, 'Horário', 'horario', 'horário', 'hours');
 

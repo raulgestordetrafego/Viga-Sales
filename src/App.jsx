@@ -1964,6 +1964,7 @@ function Settings() {
         {[
           {id:'whatsapp', label:'⚙️ WhatsApp'},
           {id:'funnels',  label:'🎯 Funis'},
+          {id:'fields',   label:'🗂️ Campos'},
           ...(isAdmin ? [{id:'users', label:'👥 Usuários'}] : []),
         ].map(t=>(
           <button key={t.id} onClick={()=>setTab(t.id)} style={{
@@ -1975,6 +1976,7 @@ function Settings() {
       </div>
 
       {tab === 'funnels' && <FunnelManagement />}
+      {tab === 'fields'  && <CustomFieldsManagement />}
       {tab === 'users' && isAdmin && <UserManagement />}
 
       {tab === 'whatsapp' && <><Section title="Integração Evolution API" icon="🔗">
@@ -2050,6 +2052,142 @@ function Settings() {
       </div>
     </>}
     </div>
+  );
+}
+
+// ─── Custom Fields Management ─────────────────────────────────────────────────
+
+function CustomFieldModal({ field, onClose, onDone }) {
+  const [name, setName]       = useState(field?.name || '');
+  const [fieldKey, setFieldKey] = useState(field?.field_key || '');
+  const [type, setType]       = useState(field?.type || 'text');
+  const [options, setOptions] = useState(() => {
+    try { return field?.options ? JSON.parse(field.options).join('\n') : ''; } catch { return ''; }
+  });
+  const [saving, setSaving]   = useState(false);
+  const tok = () => localStorage.getItem('crm_token');
+
+  const autoKey = n => n.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+
+  const onNameChange = v => {
+    setName(v);
+    if (!field) setFieldKey(autoKey(v));
+  };
+
+  const save = async () => {
+    if (!name.trim()) return toast.error('Nome obrigatório');
+    const key = fieldKey || autoKey(name);
+    const optArr = type === 'select' ? options.split('\n').map(o=>o.trim()).filter(Boolean) : undefined;
+    const body = { name: name.trim(), field_key: key, type, options: optArr };
+    setSaving(true);
+    try {
+      const url = field ? `/api/custom-fields/${field.id}` : '/api/custom-fields';
+      const method = field ? 'PUT' : 'POST';
+      const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` }, body: JSON.stringify(body) });
+      const d = await r.json();
+      if (!r.ok) { toast.error(d.error || 'Erro ao salvar'); return; }
+      toast.success(field ? 'Campo atualizado' : 'Campo criado');
+      onDone();
+    } finally { setSaving(false); }
+  };
+
+  const selStyle = { width:'100%', background:'var(--bg,#0f0f0f)', border:'1px solid #2a2a2a', borderRadius:8, padding:'10px 12px', color:'#e2e8f0', fontSize:13, outline:'none' };
+
+  return (
+    <Modal open onClose={onClose} title={field ? 'Editar campo' : 'Novo campo personalizado'} maxWidth={480}>
+      <div style={{display:'flex',flexDirection:'column',gap:16}}>
+        <FocusInput label="Nome do campo" placeholder="ex: Tipo de Veículo" value={name} onChange={e=>onNameChange(e.target.value)} autoFocus />
+        <div>
+          <label style={{display:'block',fontSize:11,fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:6}}>Chave interna</label>
+          <input value={fieldKey} onChange={e=>setFieldKey(autoKey(e.target.value))} placeholder="tipo_veiculo" style={{...selStyle,fontFamily:'monospace',fontSize:12}} />
+          <p style={{fontSize:11,color:'#64748b',marginTop:4}}>Identificador usado no mapeamento CSV. Gerado automaticamente.</p>
+        </div>
+        <div>
+          <label style={{display:'block',fontSize:11,fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:6}}>Tipo</label>
+          <select value={type} onChange={e=>setType(e.target.value)} style={selStyle}>
+            <option value="text">Texto</option>
+            <option value="number">Número</option>
+            <option value="date">Data</option>
+            <option value="select">Lista de opções</option>
+          </select>
+        </div>
+        {type === 'select' && (
+          <div>
+            <label style={{display:'block',fontSize:11,fontWeight:700,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:6}}>Opções (uma por linha)</label>
+            <textarea value={options} onChange={e=>setOptions(e.target.value)} rows={4} placeholder={"Opção 1\nOpção 2\nOpção 3"} style={{...selStyle,resize:'vertical',fontFamily:'inherit'}} />
+          </div>
+        )}
+        <div style={{display:'flex',gap:10,justifyContent:'flex-end',marginTop:4}}>
+          <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
+          <Btn onClick={save} disabled={saving}>{saving?'Salvando...':'Salvar'}</Btn>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function CustomFieldsManagement() {
+  const [fields, setFields]   = useState([]);
+  const [modal, setModal]     = useState(null); // null | 'create' | fieldObj
+  const tok = () => localStorage.getItem('crm_token');
+
+  const load = () => {
+    fetch('/api/custom-fields', { headers: { Authorization: `Bearer ${tok()}` } })
+      .then(r => r.json()).then(fs => setFields(Array.isArray(fs) ? fs : [])).catch(() => {});
+  };
+  useEffect(load, []);
+
+  const deleteField = async id => {
+    if (!window.confirm('Excluir campo? Os dados salvos nos contatos também serão apagados.')) return;
+    await fetch(`/api/custom-fields/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${tok()}` } });
+    toast.success('Campo excluído');
+    load();
+  };
+
+  const typeLabel = t => ({ text:'Texto', number:'Número', date:'Data', select:'Lista' }[t] || t);
+
+  return (
+    <>
+      {modal && (
+        <CustomFieldModal
+          field={modal === 'create' ? null : modal}
+          onClose={() => setModal(null)}
+          onDone={() => { setModal(null); load(); }}
+        />
+      )}
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+        <div>
+          <p style={{fontSize:13,color:'#94a3b8',margin:0}}>
+            Campos extras que aparecem nos contatos e no mapeamento de CSV.
+          </p>
+        </div>
+        <Btn size="sm" onClick={() => setModal('create')}>+ Novo campo</Btn>
+      </div>
+
+      {fields.length === 0 ? (
+        <div style={{background:'#111',border:'1px solid #2a2a2a',borderRadius:14,padding:'32px',textAlign:'center',color:'#64748b',fontSize:13}}>
+          Nenhum campo personalizado criado ainda.<br/>
+          <span style={{fontSize:11}}>Ex: "Tipo de Veículo", "Região de Atuação", "Tamanho da Frota"</span>
+        </div>
+      ) : (
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          {fields.map(f => {
+            let opts = [];
+            try { opts = f.options ? JSON.parse(f.options) : []; } catch {}
+            return (
+              <div key={f.id} style={{display:'flex',alignItems:'center',gap:12,background:'#111',border:'1px solid #2a2a2a',borderRadius:12,padding:'12px 16px'}}>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14,fontWeight:600,color:'#e2e8f0'}}>{f.name}</div>
+                  <div style={{fontSize:11,color:'#64748b',marginTop:2,fontFamily:'monospace'}}>{f.field_key} · {typeLabel(f.type)}{opts.length?` · ${opts.length} opções`:''}</div>
+                </div>
+                <Btn size="sm" variant="secondary" onClick={() => setModal(f)}>Editar</Btn>
+                <Btn size="sm" variant="danger" onClick={() => deleteField(f.id)}>Excluir</Btn>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -2482,20 +2620,86 @@ function UserManagement() {
 
 // ─── Prospecting ──────────────────────────────────────────────────────────────
 
+const CSV_CRM_FIELDS = [
+  { key: 'phone',        label: 'Telefone *' },
+  { key: 'name',         label: 'Nome' },
+  { key: 'company',      label: 'Empresa / Razão Social' },
+  { key: 'trade_name',   label: 'Nome Fantasia' },
+  { key: 'email',        label: 'E-mail' },
+  { key: 'phone2',       label: 'Telefone Secundário' },
+  { key: 'city',         label: 'Cidade' },
+  { key: 'state',        label: 'Estado' },
+  { key: 'address',      label: 'Endereço' },
+  { key: 'neighborhood', label: 'Bairro' },
+  { key: 'zip_code',     label: 'CEP' },
+  { key: 'segment',      label: 'Segmento / Atividade' },
+  { key: 'website',      label: 'Site' },
+  { key: 'instagram',    label: 'Instagram' },
+  { key: 'cnpj',         label: 'CNPJ' },
+  { key: 'notes',        label: 'Observações' },
+];
+
+function autoDetectCrmField(header) {
+  const h = header.toLowerCase().trim();
+  if (/telefone principal|fone principal/.test(h)) return 'phone';
+  if (/telefone secund|fone secund|phone2|tel\.? ?2/.test(h)) return 'phone2';
+  if (/telefone|phone|celular|whatsapp|fone/.test(h)) return 'phone';
+  if (/nome fantasia|trade/.test(h)) return 'trade_name';
+  if (/razão social|razao social|raz.o social/.test(h)) return 'company';
+  if (/nome da empresa|nome empresa/.test(h)) return 'company';
+  if (/empresa|company/.test(h)) return 'company';
+  if (/nome|name/.test(h)) return 'name';
+  if (/e-?mail|email/.test(h)) return 'email';
+  if (/cidade|city|municipio|munic/.test(h)) return 'city';
+  if (/\bestado\b|\buf\b|\bstate\b/.test(h)) return 'state';
+  if (/endere|address|logradouro/.test(h)) return 'address';
+  if (/bairro|neighborhood/.test(h)) return 'neighborhood';
+  if (/\bcep\b|zip/.test(h)) return 'zip_code';
+  if (/segmento|atividade|segment/.test(h)) return 'segment';
+  if (/\bsite\b|website/.test(h)) return 'website';
+  if (/instagram/.test(h)) return 'instagram';
+  if (/cnpj/.test(h)) return 'cnpj';
+  if (/observ|notes/.test(h)) return 'notes';
+  return '';
+}
+
+function parseCsvHeaders(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const text = e.target.result;
+      const firstLine = text.split(/\r?\n/)[0] || '';
+      const sep = firstLine.includes(';') ? ';' : ',';
+      const headers = firstLine.split(sep).map(h => h.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+      resolve(headers);
+    };
+    reader.readAsText(file, 'utf-8');
+  });
+}
+
 function CsvImportModal({ onClose, onDone }) {
+  const [step, setStep]             = useState('file'); // 'file' | 'mapping' | 'pipeline'
   const [file, setFile]             = useState(null);
+  const [csvHeaders, setCsvHeaders] = useState([]);
+  const [mapping, setMapping]       = useState({}); // { crmField: csvColumn }
   const [importing, setImport]      = useState(false);
   const [result, setResult]         = useState(null);
   const [funnels, setFunnels]       = useState([]);
   const [stages, setStages]         = useState([]);
+  const [customFields, setCustomFields] = useState([]);
   const [selectedFunnel, setSelectedFunnel] = useState('');
   const [selectedStage, setSelectedStage]   = useState('');
   const tok = () => localStorage.getItem('crm_token');
 
   useEffect(() => {
-    fetch('/api/funnels', { headers: { Authorization: `Bearer ${tok()}` } })
-      .then(r => r.json()).then(fs => { setFunnels(Array.isArray(fs) ? fs : []); })
-      .catch(() => {});
+    const h = { Authorization: `Bearer ${tok()}` };
+    Promise.all([
+      fetch('/api/funnels', { headers: h }).then(r => r.json()).catch(() => []),
+      fetch('/api/custom-fields', { headers: h }).then(r => r.json()).catch(() => []),
+    ]).then(([fs, cfs]) => {
+      setFunnels(Array.isArray(fs) ? fs : []);
+      setCustomFields(Array.isArray(cfs) ? cfs : []);
+    });
   }, []);
 
   useEffect(() => {
@@ -2505,6 +2709,21 @@ function CsvImportModal({ onClose, onDone }) {
       .catch(() => {});
   }, [selectedFunnel]);
 
+  const onFileSelect = async f => {
+    if (!f) return;
+    setFile(f);
+    const headers = await parseCsvHeaders(f);
+    setCsvHeaders(headers);
+    // Auto-detect: first match per CRM field wins
+    const auto = {};
+    for (const h of headers) {
+      const field = autoDetectCrmField(h);
+      if (field && !auto[field]) auto[field] = h;
+    }
+    setMapping(auto);
+    setStep('mapping');
+  };
+
   const doImport = async () => {
     if (!file) return;
     setImport(true);
@@ -2512,6 +2731,7 @@ function CsvImportModal({ onClose, onDone }) {
       const fd = new FormData();
       fd.append('file', file);
       if (selectedStage) fd.append('pipeline_stage', selectedStage);
+      fd.append('mapping', JSON.stringify(mapping));
       const r = await fetch('/api/prospects/import-csv', {
         method: 'POST',
         headers: { Authorization: `Bearer ${tok()}` },
@@ -2527,24 +2747,119 @@ function CsvImportModal({ onClose, onDone }) {
 
   const selStyle = { width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 14px', color:C.text, fontSize:13, outline:'none', cursor:'pointer' };
 
+  const allCrmFields = [
+    ...CSV_CRM_FIELDS,
+    ...customFields.map(cf => ({ key: `custom_${cf.id}`, label: cf.name })),
+  ];
+
+  const steps = ['file','mapping','pipeline'];
+  const stepIdx = steps.indexOf(step);
+
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:500,boxShadow:'0 24px 80px #000a',maxHeight:'90vh',overflowY:'auto'}}>
-        <h3 style={{margin:'0 0 8px',fontSize:18,fontWeight:700,color:C.text}}>Importar lista CSV</h3>
-        <p style={{margin:'0 0 20px',fontSize:13,color:C.dim}}>
-          Suporta planilhas CNPJ e Google Maps. Colunas: Razão Social, Telefone, E-mail, Cidade, CNPJ, etc.
-        </p>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:20,padding:32,width:'100%',maxWidth:result?500:620,boxShadow:'0 24px 80px #000a',maxHeight:'90vh',overflowY:'auto'}}>
 
-        {!result ? (
+        {/* Header */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20}}>
+          <div>
+            <h3 style={{margin:'0 0 4px',fontSize:18,fontWeight:700,color:C.text}}>Importar lista CSV</h3>
+            {!result && (
+              <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                {['Arquivo','Mapeamento','Pipeline'].map((s,i)=>(
+                  <React.Fragment key={s}>
+                    <span style={{fontSize:12,fontWeight:600,color:i<=stepIdx?C.primary:C.dim,transition:'color 0.2s'}}>{i+1}. {s}</span>
+                    {i<2 && <span style={{color:C.border,fontSize:12}}>›</span>}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+          </div>
+          <button onClick={onClose} style={{background:'none',border:'none',color:C.dim,cursor:'pointer',fontSize:20,lineHeight:1,padding:4}}>✕</button>
+        </div>
+
+        {/* Step 1 — Arquivo */}
+        {step==='file' && !result && (
           <>
-            <label style={{display:'flex',flexDirection:'column',gap:8,cursor:'pointer',border:`2px dashed ${file?C.primary:C.border}`,borderRadius:14,padding:'24px 20px',alignItems:'center',background:file?`${C.primary}08`:C.bg,transition:'all 0.2s',marginBottom:20}}>
-              <span style={{fontSize:32}}>{file ? '📄' : '📂'}</span>
-              <span style={{fontSize:13,fontWeight:600,color:file?C.primary:C.muted}}>{file ? file.name : 'Clique para selecionar o arquivo .csv'}</span>
-              {file && <span style={{fontSize:11,color:C.dim}}>{(file.size/1024).toFixed(0)} KB</span>}
-              <input type="file" accept=".csv,text/csv" style={{display:'none'}} onChange={e=>setFile(e.target.files[0]||null)} />
+            <p style={{margin:'0 0 20px',fontSize:13,color:C.dim}}>
+              Suporta planilhas CNPJ e Google Maps. Colunas serão mapeadas no próximo passo.
+            </p>
+            <label style={{display:'flex',flexDirection:'column',gap:8,cursor:'pointer',border:`2px dashed ${C.border}`,borderRadius:14,padding:'32px 20px',alignItems:'center',background:C.bg,transition:'all 0.2s',marginBottom:20}}>
+              <span style={{fontSize:36}}>📂</span>
+              <span style={{fontSize:13,fontWeight:600,color:C.muted}}>Clique para selecionar o arquivo .csv</span>
+              <span style={{fontSize:11,color:C.dim}}>ou arraste aqui</span>
+              <input type="file" accept=".csv,text/csv" style={{display:'none'}} onChange={e=>onFileSelect(e.target.files[0]||null)} />
             </label>
+            <div style={{display:'flex',justifyContent:'flex-end'}}>
+              <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
+            </div>
+          </>
+        )}
 
-            {/* Seletor de funil/etapa */}
+        {/* Step 2 — Mapeamento de colunas */}
+        {step==='mapping' && !result && (
+          <>
+            <p style={{margin:'0 0 16px',fontSize:13,color:C.dim}}>
+              Arquivo: <b style={{color:C.text}}>{file?.name}</b> — {csvHeaders.length} colunas detectadas.
+              Diga ao CRM o que é cada coluna. Colunas sem mapeamento serão ignoradas.
+            </p>
+            <div style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:14,overflow:'hidden',marginBottom:20}}>
+              {/* Header */}
+              <div style={{display:'grid',gridTemplateColumns:'1fr 24px 1fr',gap:12,padding:'10px 16px',borderBottom:`1px solid ${C.border}`,background:C.surface}}>
+                <span style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:'0.06em'}}>Coluna no CSV</span>
+                <span/>
+                <span style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:'0.06em'}}>Campo no CRM</span>
+              </div>
+              <div style={{maxHeight:340,overflowY:'auto'}}>
+                {csvHeaders.map(header => {
+                  // Find which CRM field this header is currently mapped to
+                  const mappedTo = Object.entries(mapping).find(([_k,v])=>v===header)?.[0] || '';
+                  return (
+                    <div key={header} style={{display:'grid',gridTemplateColumns:'1fr 24px 1fr',gap:12,padding:'8px 16px',borderBottom:`1px solid ${C.border}`,alignItems:'center'}}>
+                      <div style={{fontSize:13,color:C.text,fontFamily:'monospace',background:C.surface,borderRadius:6,padding:'4px 8px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}} title={header}>{header}</div>
+                      <span style={{color:C.dim,textAlign:'center',fontSize:14}}>→</span>
+                      <select
+                        value={mappedTo}
+                        onChange={e => {
+                          const newField = e.target.value;
+                          setMapping(prev => {
+                            const next = { ...prev };
+                            // Remove any existing mapping pointing to this header
+                            Object.keys(next).forEach(k => { if (next[k] === header) delete next[k]; });
+                            if (newField) next[newField] = header;
+                            return next;
+                          });
+                        }}
+                        style={selStyle}
+                      >
+                        <option value="">— Ignorar esta coluna —</option>
+                        {allCrmFields.map(f => (
+                          <option key={f.key} value={f.key}>{f.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Aviso se telefone não mapeado */}
+            {!mapping['phone'] && (
+              <div style={{background:`${C.warning}15`,border:`1px solid ${C.warning}40`,borderRadius:10,padding:'10px 14px',fontSize:12,color:C.warning,marginBottom:16,display:'flex',gap:8,alignItems:'center'}}>
+                ⚠️ Nenhuma coluna mapeada para <b>Telefone</b>. O CRM tentará detectar automaticamente.
+              </div>
+            )}
+            <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
+              <Btn variant="outline" onClick={()=>setStep('file')}>← Voltar</Btn>
+              <Btn onClick={()=>setStep('pipeline')}>Próximo →</Btn>
+            </div>
+          </>
+        )}
+
+        {/* Step 3 — Pipeline */}
+        {step==='pipeline' && !result && (
+          <>
+            <p style={{margin:'0 0 16px',fontSize:13,color:C.dim}}>
+              Pronto para importar <b style={{color:C.text}}>{file?.name}</b>. Selecione onde colocar os leads no Kanban (opcional).
+            </p>
             <div style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:14,padding:16,marginBottom:20}}>
               <div style={{fontSize:12,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:12}}>
                 📌 Enviar para o Pipeline (opcional)
@@ -2570,20 +2885,22 @@ function CsvImportModal({ onClose, onDone }) {
                 )}
                 {selectedStage && (
                   <div style={{fontSize:12,color:C.success,display:'flex',alignItems:'center',gap:6}}>
-                    ✅ Leads serão importados como <b>Contatos</b> na etapa <b>{stages.find(s=>s.id===selectedStage)?.name}</b>
+                    ✅ Leads serão importados na etapa <b>{stages.find(s=>s.id===selectedStage)?.name}</b>
                   </div>
                 )}
               </div>
             </div>
-
             <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
-              <Btn variant="outline" onClick={onClose}>Cancelar</Btn>
-              <Btn onClick={doImport} disabled={!file||importing||(!!selectedFunnel&&!selectedStage)}>
-                {importing ? 'Importando...' : 'Importar'}
+              <Btn variant="outline" onClick={()=>setStep('mapping')}>← Voltar</Btn>
+              <Btn onClick={doImport} disabled={importing||(!!selectedFunnel&&!selectedStage)}>
+                {importing ? 'Importando...' : '🚀 Importar'}
               </Btn>
             </div>
           </>
-        ) : (
+        )}
+
+        {/* Resultado */}
+        {result && (
           <>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
               {[

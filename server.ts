@@ -499,6 +499,68 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     }
   });
 
+  // ── Custom Fields ────────────────────────────────────────────────────────────
+  app.get("/api/custom-fields", async (_req, res) => {
+    try {
+      const fields = await query('SELECT * FROM custom_fields ORDER BY position, created_at');
+      res.json(fields);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.post("/api/custom-fields", async (req: any, res) => {
+    try {
+      const { name, field_key, type = 'text', options, position = 0 } = req.body;
+      if (!name || !field_key) return res.status(400).json({ error: 'name e field_key obrigatórios' });
+      const id = uuidv4();
+      await run('INSERT INTO custom_fields (id, name, field_key, type, options, position) VALUES (?, ?, ?, ?, ?, ?)',
+        [id, name, field_key, type, options ? JSON.stringify(options) : null, position]);
+      const field = await queryOne('SELECT * FROM custom_fields WHERE id = ?', [id]);
+      res.json(field);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.put("/api/custom-fields/:id", async (req: any, res) => {
+    try {
+      const { name, field_key, type, options, position } = req.body;
+      await run('UPDATE custom_fields SET name=?, field_key=?, type=?, options=?, position=? WHERE id=?',
+        [name, field_key, type || 'text', options ? JSON.stringify(options) : null, position ?? 0, req.params.id]);
+      const field = await queryOne('SELECT * FROM custom_fields WHERE id = ?', [req.params.id]);
+      res.json(field);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.delete("/api/custom-fields/:id", async (req: any, res) => {
+    try {
+      await run('DELETE FROM contact_custom_values WHERE field_id = ?', [req.params.id]);
+      await run('DELETE FROM custom_fields WHERE id = ?', [req.params.id]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Contact custom values
+  app.get("/api/contacts/:id/custom-values", async (req, res) => {
+    try {
+      const rows = await query('SELECT field_id, value FROM contact_custom_values WHERE contact_id = ?', [req.params.id]);
+      const result: any = {};
+      (rows as any[]).forEach((r: any) => { result[r.field_id] = r.value; });
+      res.json(result);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.put("/api/contacts/:id/custom-values", async (req: any, res) => {
+    try {
+      const { values } = req.body;
+      for (const [field_id, value] of Object.entries(values as Record<string, any>)) {
+        await run('DELETE FROM contact_custom_values WHERE contact_id = ? AND field_id = ?', [req.params.id, field_id]);
+        if (value !== null && value !== undefined && value !== '') {
+          await run('INSERT INTO contact_custom_values (contact_id, field_id, value) VALUES (?, ?, ?)',
+            [req.params.id, field_id, String(value)]);
+        }
+      }
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
   // Initialize DB before starting to listen
   try {
     console.log("Starting database initialization...");

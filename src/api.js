@@ -73,4 +73,14 @@ export const pipeline = {
   deleteStage:   (id)        => api.delete(`/pipeline/stages/${id}`).then(r => r.data),
 };
 
+// ─── Custom Fields ────────────────────────────────────────────────────────────
+export const customFields = {
+  list:       ()              => api.get('/custom-fields').then(r => r.data),
+  create:     (data)          => api.post('/custom-fields', data).then(r => r.data),
+  update:     (id, data)      => api.put(`/custom-fields/${id}`, data).then(r => r.data),
+  delete:     (id)            => api.delete(`/custom-fields/${id}`).then(r => r.data),
+  getValues:  (contactId)     => api.get(`/contacts/${contactId}/custom-values`).then(r => r.data),
+  saveValues: (contactId, v)  => api.put(`/contacts/${contactId}/custom-values`, { values: v }).then(r => r.data),
+};
+
 export default api;

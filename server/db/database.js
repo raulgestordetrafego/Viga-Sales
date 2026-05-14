@@ -455,6 +455,21 @@ async function initializeSchema() {
       error TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS custom_fields (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      field_key TEXT UNIQUE NOT NULL,
+      type TEXT DEFAULT 'text',
+      options TEXT,
+      position INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS contact_custom_values (
+      contact_id TEXT NOT NULL,
+      field_id TEXT NOT NULL,
+      value TEXT,
+      PRIMARY KEY (contact_id, field_id)
+    )`,
 
   ];
 
