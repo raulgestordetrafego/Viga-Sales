@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from "bcrypt";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import jwt from "jsonwebtoken";
 
 // Routes
 import contactRoutes from "./server/routes/contacts.js";
@@ -116,40 +117,33 @@ async function startServer() {
     next();
   });
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
-  const SESSION_TTL_MS      = 8 * 60 * 60 * 1000;  // 8 horas
-  const INACTIVITY_TTL_MS   = 30 * 60 * 1000;       // 30 min sem atividade
+  // ── Auth (JWT — sobrevive a reinicializações do container) ───────────────
+  const JWT_SECRET = process.env.JWT_SECRET || 'viga-sales-jwt-secret-2024-change-in-prod';
+  const JWT_TTL    = '8h';
 
   interface SessionData {
     userId: string; name: string; email: string; role: string;
-    expiresAt: number;   // timestamp absoluto (8h)
-    lastActivity: number; // timestamp da última requisição
   }
-  const sessions = new Map<string, SessionData>();
+
+  // Para logout-all: armazena timestamp mínimo de emissão válida por usuário
+  const revokedBefore = new Map<string, number>(); // userId -> timestamp ms
 
   const getToken = (req: any) => (req.headers.authorization || '').replace('Bearer ', '');
   const getSession = (req: any): SessionData | undefined => {
     const token = getToken(req);
-    const s = sessions.get(token);
-    if (!s) return undefined;
-    const now = Date.now();
-    if (now > s.expiresAt || now - s.lastActivity > INACTIVITY_TTL_MS) {
-      sessions.delete(token);
+    if (!token) return undefined;
+    try {
+      const payload = jwt.verify(token, JWT_SECRET) as any;
+      // Checa se token foi emitido antes de um logout-all global ou individual
+      const globalRevoke = revokedBefore.get('*');
+      const userRevoke   = revokedBefore.get(payload.userId);
+      const minIat = Math.max(globalRevoke || 0, userRevoke || 0);
+      if (minIat && payload.iat * 1000 < minIat) return undefined;
+      return { userId: payload.userId, name: payload.name, email: payload.email, role: payload.role };
+    } catch {
       return undefined;
     }
-    s.lastActivity = now; // renova atividade
-    return s;
   };
-
-  // Limpeza periódica de sessões expiradas (a cada 15 min)
-  setInterval(() => {
-    const now = Date.now();
-    for (const [token, s] of sessions.entries()) {
-      if (now > s.expiresAt || now - s.lastActivity > INACTIVITY_TTL_MS) {
-        sessions.delete(token);
-      }
-    }
-  }, 15 * 60 * 1000);
 
   // ── Audit Log ─────────────────────────────────────────────────────────────
   async function auditLog(action: string, userId: string | null, req: any, meta: object = {}) {
@@ -199,9 +193,11 @@ async function startServer() {
       if (user.status === 'pending')   return res.status(403).json({ error: 'pending',    message: 'Sua conta aguarda aprovação do administrador' });
       if (user.status === 'suspended') return res.status(403).json({ error: 'suspended',  message: 'Sua conta foi suspensa. Contate o administrador.' });
 
-      const token = uuidv4();
-      const now = Date.now();
-      sessions.set(token, { userId: user.id, name: user.name, email: user.email, role: user.role, expiresAt: now + SESSION_TTL_MS, lastActivity: now });
+      const token = jwt.sign(
+        { userId: user.id, name: user.name, email: user.email, role: user.role },
+        JWT_SECRET,
+        { expiresIn: JWT_TTL }
+      );
       await auditLog('login', user.id, req, { email });
       res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
     } catch (err: any) {
@@ -227,11 +223,10 @@ async function startServer() {
     }
   });
 
-  // Logout
+  // Logout (JWT é stateless — só precisamos avisar o frontend)
   app.post("/api/auth/logout", (req: any, res) => {
     const s = getSession(req);
     if (s) auditLog('logout', s.userId, req, {});
-    sessions.delete(getToken(req));
     res.json({ ok: true });
   });
 
@@ -239,7 +234,8 @@ async function startServer() {
   app.post("/api/auth/logout-all", (req: any, res) => {
     const session = getSession(req);
     if (!session || session.role !== 'master') return res.status(403).json({ error: 'Sem permissão' });
-    sessions.clear();
+    // Invalida todos os tokens emitidos antes de agora para todos os usuários
+    revokedBefore.set('*', Date.now());
     io.emit('force_logout');
     auditLog('logout_all', session.userId, req, {});
     res.json({ ok: true });
