@@ -117,7 +117,14 @@ async function handleIncomingMessage(msg, io) {
       }
     }
 
-    // 2) Encontrar ou criar conversa
+    // 2) Resolver instância pelo nome do payload
+    let instanceId = 'instance_default';
+    if (msg.instance) {
+      const inst = await queryOne('SELECT id FROM whatsapp_instances WHERE instance_name = ?', [msg.instance]);
+      if (inst) instanceId = inst.id;
+    }
+
+    // 3) Encontrar ou criar conversa
     let conv = await queryOne('SELECT * FROM conversations WHERE whatsapp_chat_id = ?', [msg.chatId]);
     if (!conv) {
       conv = await queryOne('SELECT * FROM conversations WHERE contact_id = ? ORDER BY updated_at DESC LIMIT 1', [contact.id]);
@@ -127,9 +134,9 @@ async function handleIncomingMessage(msg, io) {
       console.log(`Conversation not found for contact ${contact.id}, creating new conversation...`);
       const id = uuidv4();
       await run(`
-        INSERT INTO conversations (id, contact_id, whatsapp_chat_id, status, last_message, last_message_at, created_at, updated_at)
-        VALUES (?, ?, ?, 'open', ?, ?, ?, ?)
-      `, [id, contact.id, msg.chatId, msg.content, now, now, now]);
+        INSERT INTO conversations (id, contact_id, whatsapp_chat_id, instance_id, status, last_message, last_message_at, created_at, updated_at)
+        VALUES (?, ?, ?, ?, 'open', ?, ?, ?, ?)
+      `, [id, contact.id, msg.chatId, instanceId, msg.content, now, now, now]);
       conv = await queryOne('SELECT * FROM conversations WHERE id = ?', [id]);
       console.log(`New conversation created: ${conv.id}`);
     } else {

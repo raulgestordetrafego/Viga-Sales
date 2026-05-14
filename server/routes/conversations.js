@@ -32,6 +32,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { status, assigned_to } = req.query;
+    const user = req.user;
 
     let sql = `
       SELECT c.*, ct.name as contact_name, ct.phone as contact_phone, ct.avatar as contact_avatar
@@ -41,13 +42,28 @@ router.get('/', async (req, res) => {
     `;
     const params = [];
 
-    if (status) { 
-      sql += ' AND c.status = ?'; 
-      params.push(status); 
+    // Instance access control: non-master users only see conversations from their permitted instances
+    if (user && user.role !== 'master') {
+      const perms = await query(
+        'SELECT instance_id FROM user_instance_permissions WHERE user_id = ?',
+        [user.userId]
+      );
+      const allowedIds = perms.map(p => p.instance_id);
+      if (allowedIds.length === 0) {
+        // User has no instance permissions — return empty list
+        return res.json([]);
+      }
+      sql += ` AND (c.instance_id IN (${allowedIds.map(() => '?').join(',')}) OR c.instance_id IS NULL)`;
+      params.push(...allowedIds);
     }
-    if (assigned_to) { 
-      sql += ' AND c.assigned_to = ?'; 
-      params.push(assigned_to); 
+
+    if (status) {
+      sql += ' AND c.status = ?';
+      params.push(status);
+    }
+    if (assigned_to) {
+      sql += ' AND c.assigned_to = ?';
+      params.push(assigned_to);
     }
     sql += ' ORDER BY c.last_message_at DESC';
 

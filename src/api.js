@@ -73,6 +73,16 @@ export const pipeline = {
   deleteStage:   (id)        => api.delete(`/pipeline/stages/${id}`).then(r => r.data),
 };
 
+// ─── WhatsApp Instances ───────────────────────────────────────────────────────
+export const wpInstances = {
+  list:         ()              => api.get('/whatsapp/instances').then(r => r.data),
+  create:       (data)          => api.post('/whatsapp/instances', data).then(r => r.data),
+  update:       (id, data)      => api.put(`/whatsapp/instances/${id}`, data).then(r => r.data),
+  delete:       (id)            => api.delete(`/whatsapp/instances/${id}`).then(r => r.data),
+  addUser:      (id, user_id)   => api.post(`/whatsapp/instances/${id}/users`, { user_id }).then(r => r.data),
+  removeUser:   (id, userId)    => api.delete(`/whatsapp/instances/${id}/users/${userId}`).then(r => r.data),
+};
+
 // ─── Custom Fields ────────────────────────────────────────────────────────────
 export const customFields = {
   list:       ()              => api.get('/custom-fields').then(r => r.data),

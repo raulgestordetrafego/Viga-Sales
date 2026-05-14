@@ -281,6 +281,7 @@ export function parseIncomingWebhook(payload) {
 
     return {
       event: 'message',
+      instance: payload.instance || payload.instanceName || data.instanceName || null,
       messageId: msg.key?.id,
       chatId: msg.key?.remoteJid,
       fromMe: fromMe,

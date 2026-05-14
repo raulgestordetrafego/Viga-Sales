@@ -455,6 +455,20 @@ async function initializeSchema() {
       error TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS whatsapp_instances (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      instance_name TEXT NOT NULL,
+      api_url TEXT,
+      api_key TEXT,
+      is_active INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS user_instance_permissions (
+      user_id TEXT NOT NULL,
+      instance_id TEXT NOT NULL,
+      PRIMARY KEY (user_id, instance_id)
+    )`,
     `CREATE TABLE IF NOT EXISTS custom_fields (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -497,6 +511,8 @@ async function initializeSchema() {
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN cnpj_status TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN main_activity_code TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE pipeline_stages ADD COLUMN funnel_id TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE conversations ADD COLUMN instance_id TEXT`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_convs_instance ON conversations(instance_id)`); } catch {}
 
   // Índices de performance
   try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(timestamp)`); } catch {}
@@ -510,6 +526,19 @@ async function initializeSchema() {
     await db.run(
       `UPDATE prospects SET campaign_id = '5f31cd5b-e90f-4dd9-b956-79e0edd40b07' WHERE campaign_id = '3d3d099e-f232-4b22-b93f-5282c5fd95f5'`
     );
+  } catch {}
+
+  // Seed instância padrão do WhatsApp
+  try {
+    const existing = await db.get('SELECT id FROM whatsapp_instances WHERE id = ?', ['instance_default']);
+    if (!existing) {
+      await db.run(
+        `INSERT INTO whatsapp_instances (id, name, instance_name, api_url, api_key, is_active) VALUES (?, ?, ?, ?, ?, 1)`,
+        ['instance_default', 'Principal', process.env.EVOLUTION_INSTANCE || 'Raul', process.env.EVOLUTION_API_URL || '', process.env.EVOLUTION_API_KEY || '']
+      );
+    }
+    // Atribui instância padrão a conversas que ainda não têm
+    await db.run(`UPDATE conversations SET instance_id = 'instance_default' WHERE instance_id IS NULL`);
   } catch {}
 
   // Seed funnels

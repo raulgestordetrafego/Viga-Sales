@@ -249,7 +249,9 @@ async function startServer() {
   });
 
   // Auth middleware (TEMPORARIAMENTE DESATIVADO)
-  app.use('/api', (req: any, res, next) => {
+  // Injeta req.user em todas as rotas /api
+  app.use('/api', (req: any, _res, next) => {
+    req.user = getSession(req) || null;
     next();
   });
 
@@ -493,6 +495,81 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
+  });
+
+  // ── WhatsApp Instances ───────────────────────────────────────────────────────
+  app.get("/api/whatsapp/instances", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (!session) return res.status(401).json({ error: 'Não autenticado' });
+      const instances = await query('SELECT id, name, instance_name, api_url, is_active, created_at FROM whatsapp_instances ORDER BY created_at');
+      // Para cada instância, buscar usuários atribuídos
+      const result = await Promise.all((instances as any[]).map(async (inst: any) => {
+        const users = await query(
+          `SELECT u.id, u.name, u.email, u.role FROM user_instance_permissions p JOIN users u ON p.user_id = u.id WHERE p.instance_id = ?`,
+          [inst.id]
+        );
+        return { ...inst, users };
+      }));
+      res.json(result);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.post("/api/whatsapp/instances", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas master' });
+      const { name, instance_name, api_url, api_key } = req.body;
+      if (!name || !instance_name) return res.status(400).json({ error: 'name e instance_name obrigatórios' });
+      const id = uuidv4();
+      await run('INSERT INTO whatsapp_instances (id, name, instance_name, api_url, api_key, is_active) VALUES (?, ?, ?, ?, ?, 1)',
+        [id, name, instance_name, api_url || '', api_key || '']);
+      const inst = await queryOne('SELECT id, name, instance_name, api_url, is_active FROM whatsapp_instances WHERE id = ?', [id]);
+      res.json({ ...inst, users: [] });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.put("/api/whatsapp/instances/:id", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas master' });
+      const { name, instance_name, api_url, api_key, is_active } = req.body;
+      await run('UPDATE whatsapp_instances SET name=?, instance_name=?, api_url=?, api_key=?, is_active=? WHERE id=?',
+        [name, instance_name, api_url || '', api_key || '', is_active ?? 1, req.params.id]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.delete("/api/whatsapp/instances/:id", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas master' });
+      if (req.params.id === 'instance_default') return res.status(400).json({ error: 'Não é possível remover a instância padrão' });
+      await run('DELETE FROM user_instance_permissions WHERE instance_id = ?', [req.params.id]);
+      await run('DELETE FROM whatsapp_instances WHERE id = ?', [req.params.id]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Atribuir / remover usuário de instância
+  app.post("/api/whatsapp/instances/:id/users", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas master' });
+      const { user_id } = req.body;
+      if (session?.userId === user_id) return res.status(400).json({ error: 'Master sempre tem acesso a tudo' });
+      await run('INSERT OR IGNORE INTO user_instance_permissions (user_id, instance_id) VALUES (?, ?)', [user_id, req.params.id]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  app.delete("/api/whatsapp/instances/:id/users/:userId", async (req: any, res) => {
+    try {
+      const session = getSession(req);
+      if (session?.role !== 'master') return res.status(403).json({ error: 'Apenas master' });
+      await run('DELETE FROM user_instance_permissions WHERE instance_id = ? AND user_id = ?', [req.params.id, req.params.userId]);
+      res.json({ ok: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
   // ── Custom Fields ────────────────────────────────────────────────────────────

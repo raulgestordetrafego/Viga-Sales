@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
-import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi, dashboardAll } from './api';
+import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi, dashboardAll, wpInstances } from './api';
 import TasksModule from './TasksModule';
 import ClientBriefing from './ClientBriefing';
 import {
@@ -1979,6 +1979,7 @@ function Settings() {
           {id:'whatsapp', label:'⚙️ WhatsApp'},
           {id:'funnels',  label:'🎯 Funis'},
           {id:'fields',   label:'🗂️ Campos'},
+          ...(isAdmin ? [{id:'instances', label:'📱 Instâncias'}] : []),
           ...(isAdmin ? [{id:'users', label:'👥 Usuários'}] : []),
         ].map(t=>(
           <button key={t.id} onClick={()=>setTab(t.id)} style={{
@@ -1989,9 +1990,10 @@ function Settings() {
         ))}
       </div>
 
-      {tab === 'funnels' && <FunnelManagement />}
-      {tab === 'fields'  && <CustomFieldsManagement />}
-      {tab === 'users' && isAdmin && <UserManagement />}
+      {tab === 'funnels'    && <FunnelManagement />}
+      {tab === 'fields'     && <CustomFieldsManagement />}
+      {tab === 'instances'  && isAdmin && <InstancesManagement />}
+      {tab === 'users'      && isAdmin && <UserManagement />}
 
       {tab === 'whatsapp' && <><Section title="Integração Evolution API" icon="🔗">
         <div style={{display:'flex',flexDirection:'column',gap:20}}>
@@ -2515,6 +2517,156 @@ function CreateUserModal({ onClose, onDone }) {
           <Btn onClick={submit} disabled={saving}>{saving ? 'Criando...' : 'Criar usuário'}</Btn>
         </div>
       </div>
+    </div>
+  );
+}
+
+function InstancesManagement() {
+  const [instances, setInstances] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editInst, setEditInst] = useState(null);
+  const [form, setForm] = useState({ name: '', instance_name: '', api_url: '', api_key: '' });
+
+  const authHdr = () => ({ Authorization: `Bearer ${localStorage.getItem('crm_token')}`, 'Content-Type': 'application/json' });
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [insts, usrs] = await Promise.all([
+        wpInstances.list(),
+        fetch('/api/users', { headers: authHdr() }).then(r => r.json()),
+      ]);
+      setInstances(insts);
+      setUsers(Array.isArray(usrs) ? usrs : []);
+    } catch { toast.error('Erro ao carregar instâncias'); }
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const openCreate = () => { setEditInst(null); setForm({ name: '', instance_name: '', api_url: '', api_key: '' }); setShowForm(true); };
+  const openEdit = (inst) => { setEditInst(inst); setForm({ name: inst.name, instance_name: inst.instance_name, api_url: inst.api_url || '', api_key: '' }); setShowForm(true); };
+
+  const save = async () => {
+    try {
+      if (editInst) {
+        await wpInstances.update(editInst.id, form);
+        toast.success('Instância atualizada!');
+      } else {
+        await wpInstances.create(form);
+        toast.success('Instância criada!');
+      }
+      setShowForm(false);
+      load();
+    } catch (e) { toast.error(e.message); }
+  };
+
+  const del = async (inst) => {
+    if (!confirm(`Remover instância "${inst.name}"?`)) return;
+    try { await wpInstances.delete(inst.id); toast.success('Removida!'); load(); }
+    catch (e) { toast.error(e.message); }
+  };
+
+  const addUser = async (instId, userId) => {
+    try { await wpInstances.addUser(instId, userId); load(); }
+    catch (e) { toast.error(e.message); }
+  };
+
+  const removeUser = async (instId, userId) => {
+    try { await wpInstances.removeUser(instId, userId); load(); }
+    catch (e) { toast.error(e.message); }
+  };
+
+  if (loading) return <div style={{ color: C.dim, padding: 20 }}>Carregando...</div>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Instâncias WhatsApp</h3>
+          <p style={{ fontSize: 12, color: C.dim, marginTop: 2 }}>Controle quais usuários veem as conversas de cada instância.</p>
+        </div>
+        <Btn size="sm" onClick={openCreate}>+ Nova Instância</Btn>
+      </div>
+
+      {showForm && (
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <h4 style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 4 }}>{editInst ? 'Editar Instância' : 'Nova Instância'}</h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <FocusInput label="Nome exibido" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Ex: Raul Comercial" />
+            <FocusInput label="Nome da Instância (Evolution API)" value={form.instance_name} onChange={e => setForm({ ...form, instance_name: e.target.value })} placeholder="Ex: raul" />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <FocusInput label="API URL (opcional)" value={form.api_url} onChange={e => setForm({ ...form, api_url: e.target.value })} placeholder="https://..." />
+            <FocusInput label="API Key (opcional)" type="password" value={form.api_key} onChange={e => setForm({ ...form, api_key: e.target.value })} placeholder="Chave da instância" />
+          </div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <Btn variant="outline" size="sm" onClick={() => setShowForm(false)}>Cancelar</Btn>
+            <Btn size="sm" onClick={save}>Salvar</Btn>
+          </div>
+        </div>
+      )}
+
+      {instances.length === 0 && (
+        <div style={{ textAlign: 'center', padding: 40, color: C.dim, background: C.card, borderRadius: 16, border: `1px solid ${C.border}` }}>
+          Nenhuma instância cadastrada ainda.
+        </div>
+      )}
+
+      {instances.map(inst => {
+        const assignedIds = (inst.users || []).map(u => u.id);
+        const unassigned = users.filter(u => u.role !== 'master' && !assignedIds.includes(u.id));
+        return (
+          <div key={inst.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 22 }}>📱</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{inst.name}</div>
+                  <div style={{ fontSize: 11, color: C.dim, fontFamily: 'monospace' }}>{inst.instance_name}</div>
+                </div>
+                <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: inst.is_active ? `${C.success}20` : `${C.danger}20`, color: inst.is_active ? C.success : C.danger, fontWeight: 700 }}>
+                  {inst.is_active ? 'Ativa' : 'Inativa'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <Btn size="sm" variant="outline" onClick={() => openEdit(inst)}>✏️</Btn>
+                {inst.id !== 'instance_default' && (
+                  <Btn size="sm" variant="danger" onClick={() => del(inst)}>🗑️</Btn>
+                )}
+              </div>
+            </div>
+            <div style={{ padding: '16px 20px' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Usuários com acesso
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <span style={{ fontSize: 12, padding: '4px 10px', borderRadius: 8, background: `${C.purple}20`, color: C.purple, fontWeight: 700 }}>
+                  👑 Master (sempre)
+                </span>
+                {(inst.users || []).filter(u => u.role !== 'master').map(u => (
+                  <span key={u.id} style={{ fontSize: 12, padding: '4px 10px', borderRadius: 8, background: `${C.primary}15`, color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {u.name}
+                    <button onClick={() => removeUser(inst.id, u.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.danger, fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
+                  </span>
+                ))}
+                {unassigned.length > 0 && (
+                  <select
+                    defaultValue=""
+                    onChange={e => { if (e.target.value) { addUser(inst.id, e.target.value); e.target.value = ''; } }}
+                    style={{ fontSize: 12, padding: '4px 10px', borderRadius: 8, border: `1px dashed ${C.border}`, background: C.bg, color: C.muted, cursor: 'pointer', outline: 'none' }}
+                  >
+                    <option value="">+ Adicionar usuário</option>
+                    {unassigned.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                  </select>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
