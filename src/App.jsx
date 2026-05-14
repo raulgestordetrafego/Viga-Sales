@@ -1650,6 +1650,7 @@ function Pipeline() {
   const [dragging, setDragging] = useState(null);
   const [dragOver, setDragOver] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
+  const wasDragging = useRef(false);
 
   const loadFunnels = useCallback(async () => {
     try {
@@ -1740,9 +1741,9 @@ function Pipeline() {
                     <div style={{display:'flex',flexDirection:'column',gap:10,minHeight:80}}>
                       {sc.map(c=>(
                         <div key={c.id} draggable
-                          onDragStart={e=>{ setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
-                          onDragEnd={()=>{ setDragging(null); setDragOver(null); }}
-                          onClick={e=>{ if(!dragging) setSelectedContact(c.id); }}
+                          onDragStart={e=>{ wasDragging.current=true; setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
+                          onDragEnd={()=>{ setDragging(null); setDragOver(null); setTimeout(()=>{ wasDragging.current=false; },50); }}
+                          onClick={()=>{ if(!wasDragging.current) setSelectedContact(c.id); }}
                           style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'pointer',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
                           onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
                           onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
