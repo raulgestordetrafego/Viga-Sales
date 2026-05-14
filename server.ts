@@ -663,8 +663,11 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   app.use('/uploads', express.static(uploadsDir));
   app.use('/api/uploads', express.static(uploadsDir));
 
-  // Imagens e assets públicos — acessíveis via /public
-  app.use('/public', express.static(path.join(__dirname, 'public')));
+  // Imagens e assets públicos — acessíveis via /public (cross-origin para landing em vigasales.com.br)
+  app.use('/public', (req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  }, express.static(path.join(__dirname, 'public')));
 
   // Áudios de prospecção — servidos em /api/audio para a Evolution API baixar e enviar como PTT
   const audioDir = path.join(__dirname, 'public', 'audio');
