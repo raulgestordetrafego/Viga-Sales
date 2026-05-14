@@ -482,6 +482,14 @@ async function initializeSchema() {
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN cnpj_status TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN main_activity_code TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE pipeline_stages ADD COLUMN funnel_id TEXT`); } catch {}
+
+  // Índices de performance
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(timestamp)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_convs_contact ON conversations(contact_id)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_convs_status ON conversations(status)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_contacts_stage ON contacts(pipeline_stage)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status)`); } catch {}
   // Corrigir campaign_id dos prospects importados antes da criação da campanha
   try {
     await db.run(

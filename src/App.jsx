@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
-import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi } from './api';
+import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi, dashboardAll } from './api';
 import TasksModule from './TasksModule';
 import ClientBriefing from './ClientBriefing';
 import {
@@ -408,16 +408,13 @@ function Dashboard({ onNavigate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      statsApi(),
-      contactsApi.pipelineStats().catch(()=>[]),
-      statsDaily().catch(()=>[]),
-      statsRecent().catch(()=>[]),
-    ]).then(([s,p,d,r])=>{
-      setData(s); setPipe(Array.isArray(p)?p:[]);
-      setDaily(Array.isArray(d)?d:[]); setRecent(Array.isArray(r)?r:[]);
+    dashboardAll().then(d => {
+      setData(d.stats);
+      setPipe(Array.isArray(d.pipeline) ? d.pipeline : []);
+      setDaily(Array.isArray(d.daily) ? d.daily : []);
+      setRecent(Array.isArray(d.recentContacts) ? d.recentContacts : []);
       setLoading(false);
-    }).catch(()=>setLoading(false));
+    }).catch(() => setLoading(false));
   }, []);
 
   if(loading) return (
