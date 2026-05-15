@@ -282,6 +282,16 @@ async function initializeSchema() {
   
   // Create tables one by one for better compatibility
   const tables = [
+    `CREATE TABLE IF NOT EXISTS tenants (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      plan TEXT DEFAULT 'starter',
+      max_users INTEGER DEFAULT 3,
+      status TEXT DEFAULT 'active',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS contacts (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -296,6 +306,7 @@ async function initializeSchema() {
       pipeline_value DECIMAL DEFAULT 0,
       assigned_to TEXT,
       last_interaction TEXT,
+      tenant_id TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
@@ -308,6 +319,7 @@ async function initializeSchema() {
       last_message TEXT,
       last_message_at TEXT,
       assigned_to TEXT,
+      tenant_id TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
@@ -512,6 +524,7 @@ async function initializeSchema() {
   try { await db.exec(`ALTER TABLE prospects ADD COLUMN main_activity_code TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE pipeline_stages ADD COLUMN funnel_id TEXT`); } catch {}
   try { await db.exec(`ALTER TABLE conversations ADD COLUMN instance_id TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE users ADD COLUMN permissions TEXT DEFAULT '{}'`); } catch {}
   try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_convs_instance ON conversations(instance_id)`); } catch {}
 
   // Índices de performance

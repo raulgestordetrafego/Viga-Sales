@@ -193,13 +193,15 @@ async function startServer() {
       if (user.status === 'pending')   return res.status(403).json({ error: 'pending',    message: 'Sua conta aguarda aprovação do administrador' });
       if (user.status === 'suspended') return res.status(403).json({ error: 'suspended',  message: 'Sua conta foi suspensa. Contate o administrador.' });
 
+      const rawPerms = user.permissions || '{}';
+      const permissions = typeof rawPerms === 'string' ? (() => { try { return JSON.parse(rawPerms); } catch { return {}; } })() : rawPerms;
       const token = jwt.sign(
-        { userId: user.id, name: user.name, email: user.email, role: user.role },
+        { userId: user.id, name: user.name, email: user.email, role: user.role, permissions },
         JWT_SECRET,
         { expiresIn: JWT_TTL }
       );
       await auditLog('login', user.id, req, { email });
-      res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+      res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, permissions } });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
@@ -259,8 +261,21 @@ async function startServer() {
   app.get("/api/users", async (req: any, res) => {
     const session = getSession(req);
     if (!session || !['master','admin'].includes(session.role)) return res.status(403).json({ error: 'Sem permissão' });
-    const users = await query('SELECT id, name, email, role, status, created_at FROM users ORDER BY created_at DESC');
-    res.json(users);
+    const users = await query('SELECT id, name, email, role, status, permissions, created_at FROM users ORDER BY created_at DESC');
+    const parsed = (users as any[]).map(u => ({
+      ...u,
+      permissions: (() => { try { return JSON.parse(u.permissions || '{}'); } catch { return {}; } })(),
+    }));
+    res.json(parsed);
+  });
+
+  app.patch("/api/users/:id/permissions", async (req: any, res) => {
+    const session = getSession(req);
+    if (!session || session.role !== 'master') return res.status(403).json({ error: 'Apenas o admin master pode alterar permissões' });
+    const { permissions } = req.body;
+    if (!permissions || typeof permissions !== 'object') return res.status(400).json({ error: 'Permissões inválidas' });
+    await run('UPDATE users SET permissions = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [JSON.stringify(permissions), req.params.id]);
+    res.json({ ok: true });
   });
 
   app.patch("/api/users/:id/status", async (req: any, res) => {

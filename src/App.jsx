@@ -83,6 +83,16 @@ const avatarBg = (n = '') => {
   return p[(n.charCodeAt(0) || 0) % p.length];
 };
 
+// ─── Permissions helper ───────────────────────────────────────────────────────
+function getUserPermissions() {
+  try {
+    const user = JSON.parse(localStorage.getItem('crm_user') || 'null');
+    if (!user) return {};
+    if (user.role === 'master' || user.role === 'admin') return { view_contacts: true, edit_contacts: true, view_pipeline: true, move_cards: true, view_conversations: true, send_messages: true };
+    return user.permissions || {};
+  } catch { return {}; }
+}
+
 // ─── Base components ─────────────────────────────────────────────────────────
 
 function Avatar({ name = '', size = 36 }) {
@@ -538,7 +548,7 @@ function DrawerSection({ title, icon, action, children }) {
   );
 }
 
-function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversation, onRefreshList }) {
+function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversation, onRefreshList, canEdit }) {
   const [contact, setContact]           = useState(null);
   const [loading, setLoading]           = useState(true);
   const [notes, setNotes]               = useState('');
@@ -614,7 +624,7 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
                 </div>
                 <div style={{ display:'flex', gap:6, flexShrink:0 }}>
                   <button onClick={() => onOpenConversation(contact)} title="Conversa WhatsApp" style={{ background:`${C.success}18`, border:`1px solid ${C.success}35`, color:C.success, borderRadius:8, padding:'7px 10px', cursor:'pointer', fontSize:17 }}>💬</button>
-                  <button onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }} title="Editar contato" style={{ background:`${C.primary}18`, border:`1px solid ${C.primary}35`, color:C.primary, borderRadius:8, padding:'7px 10px', cursor:'pointer', fontSize:17 }}>✏️</button>
+                  {canEdit !== false && <button onClick={() => { onClose(); setTimeout(() => onEdit(contact), 50); }} title="Editar contato" style={{ background:`${C.primary}18`, border:`1px solid ${C.primary}35`, color:C.primary, borderRadius:8, padding:'7px 10px', cursor:'pointer', fontSize:17 }}>✏️</button>}
                   <button onClick={onClose} style={{ background:C.border, border:'none', color:C.muted, borderRadius:8, padding:'7px 12px', cursor:'pointer', fontSize:14, fontWeight:700 }}>✕</button>
                 </div>
               </div>
@@ -1265,6 +1275,7 @@ function Contacts() {
 // ─── Conversations ────────────────────────────────────────────────────────────
 
 function Conversations({ initialContact }) {
+  const perms = getUserPermissions();
   const [convs, setConvs] = useState([]);
   const [active, setActive] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -1558,6 +1569,11 @@ function Conversations({ initialContact }) {
               )}
               {/* Barra de digitação */}
               <div style={{padding:'10px 12px',background:'#1f2c34',display:'flex',alignItems:'center',gap:8}}>
+                {!perms.send_messages ? (
+                  <div style={{flex:1,padding:'10px 14px',color:C.dim,fontSize:13,background:'#2a3942',borderRadius:10,display:'flex',alignItems:'center',gap:8}}>
+                    🔒 <span>Sem permissão para enviar mensagens</span>
+                  </div>
+                ) : (<>
                 <input type="file" ref={fileInputRef} accept="image/*" style={{display:'none'}} onChange={handleFileChange} />
                 <button onClick={()=>fileInputRef.current?.click()} disabled={recording}
                   title="Enviar imagem"
@@ -1584,6 +1600,7 @@ function Conversations({ initialContact }) {
                   style={{background:'#00a884',border:'none',borderRadius:10,padding:'9px 14px',cursor:'pointer',color:'#fff',display:'flex',alignItems:'center',opacity:(sending||recording||(!input.trim()&&!mediaPreview))?0.5:1,transition:'opacity 0.15s',flexShrink:0}}>
                   <Send size={18} />
                 </button>
+                </>)}
               </div>
             </>
           ) : (
@@ -1643,6 +1660,7 @@ function Conversations({ initialContact }) {
 // ─── Pipeline Kanban ─────────────────────────────────────────────────────────
 
 function Pipeline() {
+  const perms = getUserPermissions();
   const [funnels, setFunnels]   = useState([]);
   const [activeFunnel, setActiveFunnel] = useState(null);
   const [stages, setStages]     = useState([]);
@@ -1741,11 +1759,11 @@ function Pipeline() {
                     </div>
                     <div style={{display:'flex',flexDirection:'column',gap:10,minHeight:80}}>
                       {sc.map(c=>(
-                        <div key={c.id} draggable
-                          onDragStart={e=>{ wasDragging.current=true; setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
+                        <div key={c.id} draggable={!!perms.move_cards}
+                          onDragStart={e=>{ if(!perms.move_cards) return; wasDragging.current=true; setDragging({id:c.id,stage:c.pipeline_stage}); e.dataTransfer.effectAllowed='move'; }}
                           onDragEnd={()=>{ setDragging(null); setDragOver(null); setTimeout(()=>{ wasDragging.current=false; },50); }}
-                          onClick={()=>{ if(!wasDragging.current) setSelectedContact(c.id); }}
-                          style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor:'pointer',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1}}
+                          onClick={()=>{ if(!wasDragging.current && perms.view_contacts) setSelectedContact(c.id); }}
+                          style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:12,padding:14,cursor: perms.view_contacts ? 'pointer' : 'default',transition:'all 0.15s',opacity:dragging?.id===c.id?0.35:1,position:'relative'}}
                           onMouseOver={e=>{ e.currentTarget.style.borderColor=color; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; }}
                           onMouseOut={e=>{ e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
                           <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
@@ -1754,6 +1772,7 @@ function Pipeline() {
                               <div style={{fontWeight:600,fontSize:13,color:C.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{c.name}</div>
                               <div style={{color:C.dim,fontSize:11}}>{c.phone}</div>
                             </div>
+                            {!perms.view_contacts && <span title="Sem permissão para ver ficha" style={{fontSize:12,color:C.dim}}>🔒</span>}
                           </div>
                           {c.pipeline_value>0&&<div style={{fontSize:12,color:C.success,fontWeight:700}}>{fmt(c.pipeline_value)}</div>}
                           {c.company&&<div style={{fontSize:11,color:C.dim,marginTop:4}}>🏢 {c.company}</div>}
@@ -1779,8 +1798,9 @@ function Pipeline() {
           onClose={() => setSelectedContact(null)}
           onEdit={() => { setSelectedContact(null); loadStages(activeFunnel); }}
           onDelete={() => { setSelectedContact(null); loadStages(activeFunnel); }}
-          onOpenConversation={() => setSelectedContact(null)}
+          onOpenConversation={(c)=>{ setSelectedContact(null); window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}})); }}
           onRefreshList={() => loadStages(activeFunnel)}
+          canEdit={!!perms.edit_contacts}
         />
       )}
     </div>
@@ -2672,6 +2692,60 @@ function InstancesManagement() {
   );
 }
 
+const PERM_LABELS = [
+  { key: 'view_contacts',       label: 'Ver ficha do lead' },
+  { key: 'edit_contacts',       label: 'Editar contatos' },
+  { key: 'view_pipeline',       label: 'Ver pipeline' },
+  { key: 'move_cards',          label: 'Mover cards no pipeline' },
+  { key: 'view_conversations',  label: 'Ver conversas WhatsApp' },
+  { key: 'send_messages',       label: 'Enviar mensagens' },
+];
+
+function UserPermissionsPanel({ user, onUpdate }) {
+  const [expanded, setExpanded] = useState(false);
+  const [perms, setPerms] = useState(user.permissions || {});
+
+  if (user.role === 'master') {
+    return <span style={{fontSize:11,color:C.primary,fontWeight:700,background:`${C.primary}18`,padding:'3px 8px',borderRadius:6}}>Master (acesso total)</span>;
+  }
+
+  const toggle = async (key) => {
+    const newPerms = { ...perms, [key]: !perms[key] };
+    setPerms(newPerms);
+    const token = localStorage.getItem('crm_token');
+    try {
+      await fetch(`/api/users/${user.id}/permissions`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ permissions: newPerms }),
+      });
+      toast.success('Permissão atualizada!');
+      if (onUpdate) onUpdate(user.id, newPerms);
+    } catch {
+      toast.error('Erro ao atualizar permissão');
+      setPerms(perms);
+    }
+  };
+
+  return (
+    <div style={{width:'100%',marginTop:8}}>
+      <button onClick={()=>setExpanded(v=>!v)} style={{background:'none',border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:'4px 10px',cursor:'pointer',fontSize:11,display:'flex',alignItems:'center',gap:6}}>
+        🔐 Permissões {expanded ? '▲' : '▼'}
+      </button>
+      {expanded && (
+        <div style={{marginTop:8,display:'flex',flexWrap:'wrap',gap:8,padding:'12px',background:C.surface,borderRadius:10,border:`1px solid ${C.border}`}}>
+          {PERM_LABELS.map(({ key, label }) => (
+            <label key={key} style={{display:'flex',alignItems:'center',gap:6,cursor:'pointer',fontSize:12,color:C.text,background:C.bg,padding:'5px 10px',borderRadius:8,border:`1px solid ${perms[key] ? C.success + '60' : C.border}`,userSelect:'none'}}>
+              <input type="checkbox" checked={!!perms[key]} onChange={()=>toggle(key)} style={{accentColor:C.success,cursor:'pointer'}} />
+              {label}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -2703,6 +2777,10 @@ function UserManagement() {
     const token = localStorage.getItem('crm_token');
     await fetch(`/api/users/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     toast.success('Usuário removido!'); load();
+  };
+
+  const handlePermUpdate = (userId, newPerms) => {
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, permissions: newPerms } : u));
   };
 
   const roleLabel = (r) => r === 'master' ? '👑 Master' : r === 'admin' ? '🛡️ Admin' : '👤 Usuário';
@@ -2750,32 +2828,37 @@ function UserManagement() {
       <Card title="👥 Todos os Usuários">
         <div style={{display:'flex',flexDirection:'column',gap:8}}>
           {users.map(u => (
-            <div key={u.id} style={{display:'flex',alignItems:'center',gap:12,padding:'14px',background:C.bg,borderRadius:12,border:`1px solid ${C.border}`,flexWrap:'wrap'}}>
-              <Avatar name={u.name} size={38} />
-              <div style={{flex:1,minWidth:120}}>
-                <div style={{fontSize:14,fontWeight:700,color:C.text}}>{u.name}</div>
-                <div style={{fontSize:12,color:C.dim}}>{u.email}</div>
+            <div key={u.id} style={{display:'flex',flexDirection:'column',gap:0,padding:'14px',background:C.bg,borderRadius:12,border:`1px solid ${C.border}`}}>
+              <div style={{display:'flex',alignItems:'center',gap:12,flexWrap:'wrap'}}>
+                <Avatar name={u.name} size={38} />
+                <div style={{flex:1,minWidth:120}}>
+                  <div style={{fontSize:14,fontWeight:700,color:C.text}}>{u.name}</div>
+                  <div style={{fontSize:12,color:C.dim}}>{u.email}</div>
+                </div>
+                <Badge color={statusColor(u.status)}>{statusLabel(u.status)}</Badge>
+                <span style={{fontSize:12,color:C.muted}}>{roleLabel(u.role)}</span>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                  {/* Qualquer um pode trocar sua própria senha; master pode trocar de todos */}
+                  {(isMaster || u.id === currentUser?.id) && (
+                    <Btn size="sm" variant="outline" onClick={() => setChangePwdUserId(u.id)}>🔑 Senha</Btn>
+                  )}
+                  {isMaster && u.role !== 'master' && (
+                    <>
+                      {u.status !== 'active' && <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>Ativar</Btn>}
+                      {u.status === 'active' && <Btn size="sm" variant="outline" onClick={() => updateStatus(u.id, 'suspended')}>Suspender</Btn>}
+                      <select value={u.role} onChange={e => updateRole(u.id, e.target.value)} style={{padding:'5px 10px',borderRadius:8,background:C.surface,border:`1px solid ${C.border}`,color:C.text,fontSize:12,cursor:'pointer'}}>
+                        <option value="user">Usuário</option>
+                        <option value="admin">Admin</option>
+                        <option value="master">Master</option>
+                      </select>
+                      <Btn size="sm" variant="danger" onClick={() => deleteUser(u.id)}>🗑️</Btn>
+                    </>
+                  )}
+                </div>
               </div>
-              <Badge color={statusColor(u.status)}>{statusLabel(u.status)}</Badge>
-              <span style={{fontSize:12,color:C.muted}}>{roleLabel(u.role)}</span>
-              <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                {/* Qualquer um pode trocar sua própria senha; master pode trocar de todos */}
-                {(isMaster || u.id === currentUser?.id) && (
-                  <Btn size="sm" variant="outline" onClick={() => setChangePwdUserId(u.id)}>🔑 Senha</Btn>
-                )}
-                {isMaster && u.role !== 'master' && (
-                  <>
-                    {u.status !== 'active' && <Btn size="sm" variant="success" onClick={() => updateStatus(u.id, 'active')}>Ativar</Btn>}
-                    {u.status === 'active' && <Btn size="sm" variant="outline" onClick={() => updateStatus(u.id, 'suspended')}>Suspender</Btn>}
-                    <select value={u.role} onChange={e => updateRole(u.id, e.target.value)} style={{padding:'5px 10px',borderRadius:8,background:C.surface,border:`1px solid ${C.border}`,color:C.text,fontSize:12,cursor:'pointer'}}>
-                      <option value="user">Usuário</option>
-                      <option value="admin">Admin</option>
-                      <option value="master">Master</option>
-                    </select>
-                    <Btn size="sm" variant="danger" onClick={() => deleteUser(u.id)}>🗑️</Btn>
-                  </>
-                )}
-              </div>
+              {isMaster && (
+                <UserPermissionsPanel user={u} onUpdate={handlePermUpdate} />
+              )}
             </div>
           ))}
         </div>
@@ -3643,6 +3726,8 @@ export default function App() {
   const pagePad = isMobile ? '16px' : '40px 52px';
 
   // ── Sidebar content (shared between mobile overlay and desktop) ──
+  const sidebarPerms = getUserPermissions();
+
   const SidebarContent = ({ compact }) => (
     <>
       {/* Header */}
@@ -3672,7 +3757,7 @@ export default function App() {
 
       {/* Nav */}
       <nav style={{flex:1,padding:'14px 6px',display:'flex',flexDirection:'column',gap:2,overflowY:'auto'}}>
-        {NAV.map(p=>{
+        {NAV.filter(p => p.id !== 'conversations' || sidebarPerms.view_conversations).map(p=>{
           const active=page===p.id;
           return (
             <div key={p.id} onClick={()=>navigate(p.id)} title={compact?p.label:''} style={{
@@ -3856,7 +3941,7 @@ export default function App() {
               display:'flex',alignItems:'center',justifyContent:'space-around',
               flexShrink:0,paddingBottom:'env(safe-area-inset-bottom,0px)',
             }}>
-              {NAV.map(p=>{
+              {NAV.filter(p => p.id !== 'conversations' || sidebarPerms.view_conversations).map(p=>{
                 const active=page===p.id;
                 return (
                   <div key={p.id} onClick={()=>navigate(p.id)} style={{
