@@ -647,7 +647,12 @@ router.post('/:id/send-audio', internalAuth, async (req, res) => {
     if (!prospect) return res.status(404).json({ error: 'Prospect não encontrado' });
 
     // Áudios disponíveis — servidos pelo próprio servidor em /api/audio/
-    const audioFiles = ['raul_audio_01.mp3', 'raul_audio_02.mp3', 'raul_audio_03.mp3'];
+    // 3 originais + 4 variações de cada (pitch/tempo levemente diferentes = hashes únicos)
+    const audioFiles = [
+      'raul_audio_01.mp3', 'raul_audio_01_v1.mp3', 'raul_audio_01_v2.mp3', 'raul_audio_01_v3.mp3', 'raul_audio_01_v4.mp3',
+      'raul_audio_02.mp3', 'raul_audio_02_v1.mp3', 'raul_audio_02_v2.mp3', 'raul_audio_02_v3.mp3', 'raul_audio_02_v4.mp3',
+      'raul_audio_03.mp3', 'raul_audio_03_v1.mp3', 'raul_audio_03_v2.mp3', 'raul_audio_03_v3.mp3', 'raul_audio_03_v4.mp3',
+    ];
     const appUrl = (process.env.APP_URL || 'https://vigasales.shop').replace(/\/$/, '');
     const audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
     const audioUrl = `${appUrl}/api/audio/${audioFile}`;
