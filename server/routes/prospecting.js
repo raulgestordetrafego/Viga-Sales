@@ -131,8 +131,8 @@ function resolveSegment(raw) {
 }
 
 async function generateAIMessage(prospect, campaignTemplate) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY não configurada');
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('OPENAI_API_KEY não configurada');
 
   const segmentLabel = resolveSegment(prospect.segment);
 
@@ -147,10 +147,7 @@ async function generateAIMessage(prospect, campaignTemplate) {
   const senderName = process.env.SENDER_NAME || 'Raul';
 
   const customInstruction = campaignTemplate
-    ? `ABORDAGEM DA CAMPANHA (siga à risca):
-${campaignTemplate}
-
-`
+    ? `ABORDAGEM DA CAMPANHA (siga à risca):\n${campaignTemplate}\n\n`
     : '';
 
   const prompt = `Você é ${senderName}, contatando negócios via WhatsApp no Brasil.
@@ -165,24 +162,27 @@ ${customInstruction}Regras:
 - Sem emojis excessivos (máximo 1)
 - Varie levemente o estilo a cada geração para não parecer robô`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const response = await fetch(url, {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 300 },
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.8,
+      max_tokens: 300,
     }),
   });
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(`Gemini error: ${err.error?.message || response.statusText}`);
+    throw new Error(`OpenAI error: ${err.error?.message || response.statusText}`);
   }
 
   const data = await response.json();
-  return data.candidates[0].content.parts[0].text.trim();
+  return data.choices[0].message.content.trim();
 }
 
 async function resetDailyCountIfNeeded(campaignId) {
