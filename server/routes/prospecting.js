@@ -157,6 +157,7 @@ ${context}
 
 ${customInstruction}Regras:
 - Escreva na primeira pessoa como ${senderName} — nunca use placeholders
+- NUNCA chame o lead pelo nome — dirija-se à empresa ou fale de forma genérica
 - Tom casual e humano, como se fosse uma mensagem no WhatsApp mesmo
 - Máximo 80 palavras
 - Sem emojis excessivos (máximo 1)
