@@ -1447,6 +1447,9 @@ let SESSION_USER = null;
 let selectedExtratoFile = null;
 let searchTimers = {};
 
+let clientesCache = [];
+let contratosCache = [];
+
 /* ════════════════════════════════════════════════════════════════
    UTILITÁRIOS
 ════════════════════════════════════════════════════════════════ */
@@ -1691,6 +1694,7 @@ async function loadClientes() {
   const search = document.getElementById('cliente-search')?.value || '';
   try {
     const { clientes } = await api('GET', `/clientes?search=${encodeURIComponent(search)}&limit=100`);
+    clientesCache = clientes;
     const tbody = document.getElementById('tbody-clientes');
     if (!clientes.length) {
       tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">👥</div><p>Nenhum cliente encontrado.</p></div></td></tr>`;
@@ -1748,21 +1752,38 @@ async function saveCliente(e) {
 }
 
 async function editCliente(id) {
+  const cached = (clientesCache || []).find(x => x.id === id);
+  if (cached) {
+    populateClienteFields(cached);
+    openModal('modal-cliente');
+  }
   try {
     const c = await api('GET', `/clientes/${id}`);
-    document.getElementById('c-id').value         = c.id;
-    document.getElementById('c-nome').value        = c.nome || '';
-    document.getElementById('c-contato').value     = c.nome_contato || '';
-    document.getElementById('c-telefone').value    = c.telefone || '';
-    document.getElementById('c-email').value       = c.email || '';
-    document.getElementById('c-cpf').value         = c.cpf || '';
-    document.getElementById('c-cnpj').value        = c.cnpj || '';
-    document.getElementById('c-endereco').value    = c.endereco || '';
-    document.getElementById('c-responsavel').value = c.responsavel || '';
-    document.getElementById('c-notas').value       = c.notas || '';
-    document.getElementById('modal-cliente-title').textContent = 'Editar Cliente';
-    openModal('modal-cliente');
-  } catch (err) { toast(err.message, 'error'); }
+    if (clientesCache) {
+      const idx = clientesCache.findIndex(x => x.id === id);
+      if (idx !== -1) clientesCache[idx] = c;
+    }
+    if (document.getElementById('c-id').value === id) {
+      populateClienteFields(c);
+    }
+  } catch (err) {
+    if (!cached) toast(err.message, 'error');
+    console.error('Erro ao atualizar dados do cliente em background:', err);
+  }
+}
+
+function populateClienteFields(c) {
+  document.getElementById('c-id').value         = c.id;
+  document.getElementById('c-nome').value        = c.nome || '';
+  document.getElementById('c-contato').value     = c.nome_contato || '';
+  document.getElementById('c-telefone').value    = c.telefone || '';
+  document.getElementById('c-email').value       = c.email || '';
+  document.getElementById('c-cpf').value         = c.cpf || '';
+  document.getElementById('c-cnpj').value        = c.cnpj || '';
+  document.getElementById('c-endereco').value    = c.endereco || '';
+  document.getElementById('c-responsavel').value = c.responsavel || '';
+  document.getElementById('c-notas').value       = c.notas || '';
+  document.getElementById('modal-cliente-title').textContent = 'Editar Cliente';
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1773,10 +1794,12 @@ async function loadContratos() {
     const { clientes } = await api('GET', '/clientes?limit=500');
     const tbody = document.getElementById('tbody-contratos');
     const rows = [];
+    contratosCache = [];
     for (const c of clientes) {
       if (!c.total_contratos) continue;
       const { contratos } = await api('GET', `/clientes/${c.id}`);
       for (const ct of contratos) {
+        contratosCache.push({ ct, c });
         const pct = ct.total_parcelas ? Math.round((ct.parcelas_pagas / ct.total_parcelas) * 100) : 0;
         
         // Formata o tipo de contrato e visualizações
@@ -1879,48 +1902,69 @@ function calcFaturamentoTotal() {
 }
 
 async function editContrato(ctId, clienteId) {
+  const cached = (contratosCache || []).find(x => x.ct.id === ctId);
+  if (cached) {
+    populateContratoFields(cached.ct, cached.c);
+    openModal('modal-contrato');
+  }
   try {
     const c = await api('GET', `/clientes/${clienteId}`);
     const ct = (c.contratos || []).find(x => x.id === ctId);
-    if (!ct) return toast('Contrato não encontrado', 'error');
+    if (!ct) {
+      if (!cached) return toast('Contrato não encontrado', 'error');
+      return;
+    }
+    if (contratosCache) {
+      const idx = contratosCache.findIndex(x => x.ct.id === ctId);
+      if (idx !== -1) {
+        contratosCache[idx] = { ct, c };
+      }
+    }
+    if (document.getElementById('ct-id').value === ctId) {
+      populateContratoFields(ct, c);
+    }
+  } catch (err) {
+    if (!cached) toast(err.message, 'error');
+    console.error('Erro ao atualizar contrato em background:', err);
+  }
+}
 
-    document.getElementById('ct-id').value             = ct.id;
-    document.getElementById('ct-cliente-id').value     = clienteId;
+function populateContratoFields(ct, c) {
+  document.getElementById('ct-id').value             = ct.id;
+  document.getElementById('ct-cliente-id').value     = c.id;
 
-    // Dados do Cliente
-    document.getElementById('ct-cliente-nome').value     = c.nome || '';
-    document.getElementById('ct-cliente-contato').value  = c.nome_contato || '';
-    document.getElementById('ct-cliente-cnpj').value     = c.cnpj || '';
-    document.getElementById('ct-cliente-cpf').value      = c.cpf || '';
-    document.getElementById('ct-cliente-endereco').value = c.endereco || '';
+  // Dados do Cliente
+  document.getElementById('ct-cliente-nome').value     = c.nome || '';
+  document.getElementById('ct-cliente-contato').value  = c.nome_contato || '';
+  document.getElementById('ct-cliente-cnpj').value     = c.cnpj || '';
+  document.getElementById('ct-cliente-cpf').value      = c.cpf || '';
+  document.getElementById('ct-cliente-endereco').value = c.endereco || '';
 
-    // Dados do Contrato
-    document.getElementById('ct-admin').value            = ct.administradora || '';
-    document.getElementById('ct-grupo').value            = ct.grupo || '';
-    document.getElementById('ct-cota').value             = ct.cota || '';
-    document.getElementById('ct-numero').value           = ct.numero_contrato || '';
-    document.getElementById('ct-credito').value          = ct.valor_credito || '';
-    document.getElementById('ct-parcelas').value         = ct.total_parcelas || '';
-    document.getElementById('ct-valor-parcela').value    = ct.valor_parcela || '';
-    document.getElementById('ct-parcelas-pagas').value   = ct.parcelas_pagas || 0;
-    document.getElementById('ct-status').value           = ct.status || 'ativo';
-    document.getElementById('ct-data-adesao').value      = ct.data_adesao ? ct.data_adesao.split('T')[0] : '';
-    document.getElementById('ct-empresa').value          = ct.empresa || 'VS';
-    document.getElementById('ct-comissao-rec').value     = ct.comissao_recebida || 0;
-    document.getElementById('ct-status-comissao').value  = ct.status_comissao || 'pendente';
-    document.getElementById('ct-atraso').value           = ct.em_atraso ? '1' : '0';
-    document.getElementById('ct-nf').value               = ct.nf_emitida ? '1' : '0';
-    document.getElementById('ct-data-boleto').value      = ct.data_boleto ? ct.data_boleto.split('T')[0] : '';
-    document.getElementById('ct-responsavel').value      = ct.responsavel || '';
-    document.getElementById('ct-parceria-pct').value     = ct.parceria_pct || '';
-    document.getElementById('ct-notas').value            = ct.notas || '';
-    document.getElementById('ct-recorrente').value       = ct.recorrente != null ? String(ct.recorrente) : '1';
+  // Dados do Contrato
+  document.getElementById('ct-admin').value            = ct.administradora || '';
+  document.getElementById('ct-grupo').value            = ct.grupo || '';
+  document.getElementById('ct-cota').value             = ct.cota || '';
+  document.getElementById('ct-numero').value           = ct.numero_contrato || '';
+  document.getElementById('ct-credito').value          = ct.valor_credito || '';
+  document.getElementById('ct-parcelas').value         = ct.total_parcelas || '';
+  document.getElementById('ct-valor-parcela').value    = ct.valor_parcela || '';
+  document.getElementById('ct-parcelas-pagas').value   = ct.parcelas_pagas || 0;
+  document.getElementById('ct-status').value           = ct.status || 'ativo';
+  document.getElementById('ct-data-adesao').value      = ct.data_adesao ? ct.data_adesao.split('T')[0] : '';
+  document.getElementById('ct-empresa').value          = ct.empresa || 'VS';
+  document.getElementById('ct-comissao-rec').value     = ct.comissao_recebida || 0;
+  document.getElementById('ct-status-comissao').value  = ct.status_comissao || 'pendente';
+  document.getElementById('ct-atraso').value           = ct.em_atraso ? '1' : '0';
+  document.getElementById('ct-nf').value               = ct.nf_emitida ? '1' : '0';
+  document.getElementById('ct-data-boleto').value      = ct.data_boleto ? ct.data_boleto.split('T')[0] : '';
+  document.getElementById('ct-responsavel').value      = ct.responsavel || '';
+  document.getElementById('ct-parceria-pct').value     = ct.parceria_pct || '';
+  document.getElementById('ct-notas').value            = ct.notas || '';
+  document.getElementById('ct-recorrente').value       = ct.recorrente != null ? String(ct.recorrente) : '1';
 
-    toggleRecorrenciaFields();
-    document.getElementById('modal-contrato-title').textContent = 'Editar Contrato';
-    document.getElementById('btn-excluir-contrato').style.display = 'block';
-    openModal('modal-contrato');
-  } catch (err) { toast(err.message, 'error'); }
+  toggleRecorrenciaFields();
+  document.getElementById('modal-contrato-title').textContent = 'Editar Contrato';
+  document.getElementById('btn-excluir-contrato').style.display = 'block';
 }
 
 async function saveContrato(e) {

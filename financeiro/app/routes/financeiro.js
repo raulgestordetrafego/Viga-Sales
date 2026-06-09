@@ -503,6 +503,25 @@ const uploadExtrato = multer({
 
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
+async function postWithRetry(url, payload, config, maxRetries = 3) {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await axios.post(url, payload, config);
+    } catch (err) {
+      attempt++;
+      const isRateLimit = err.response && err.response.status === 429;
+      if (isRateLimit && attempt < maxRetries) {
+        const delay = attempt * 2000;
+        console.warn(`[Gemini API] Rate limit (429) hit. Retrying attempt ${attempt}/${maxRetries} in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 async function analisarExtratoComGemini(base64Image, mimeType = 'image/jpeg') {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no servidor.');
@@ -560,7 +579,7 @@ Regras importantes:
     },
   };
 
-  const response = await axios.post(
+  const response = await postWithRetry(
     `${GEMINI_URL}?key=${apiKey}`,
     payload,
     { headers: { 'Content-Type': 'application/json' }, timeout: 60000 }
