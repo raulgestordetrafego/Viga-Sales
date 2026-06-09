@@ -1083,6 +1083,65 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
       </div>
     </div>
 
+    <!-- MODAL: Novo/Editar Cliente -->
+    <div class="modal-overlay" id="modal-cliente" style="display:none;" onclick="closeModalOnOverlay(event,'modal-cliente')">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-cliente-title">Novo Cliente</div>
+          <button class="modal-close" onclick="closeModal('modal-cliente')">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-cliente" onsubmit="saveCliente(event)">
+            <input type="hidden" id="c-id">
+            <div class="fg">
+              <label>Nome do Cliente / Razão Social *</label>
+              <input id="c-nome" required placeholder="Nome completo ou Razão Social">
+            </div>
+            <div class="fg">
+              <label>Nome do Contato</label>
+              <input id="c-contato" placeholder="Nome do contato na empresa">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:15px;">
+              <div class="fg">
+                <label>Telefone</label>
+                <input id="c-telefone" placeholder="(00) 00000-0000">
+              </div>
+              <div class="fg">
+                <label>E-mail</label>
+                <input id="c-email" type="email" placeholder="cliente@empresa.com.br">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:15px;">
+              <div class="fg">
+                <label>CPF</label>
+                <input id="c-cpf" placeholder="000.000.000-00">
+              </div>
+              <div class="fg">
+                <label>CNPJ</label>
+                <input id="c-cnpj" placeholder="00.000.000/0000-00">
+              </div>
+            </div>
+            <div class="fg">
+              <label>Endereço</label>
+              <input id="c-endereco" placeholder="Endereço completo">
+            </div>
+            <div class="fg">
+              <label>Gestor / Responsável</label>
+              <input id="c-responsavel" placeholder="Quem atende a conta">
+            </div>
+            <div class="fg" style="margin-bottom:20px;">
+              <label>Notas / Obs</label>
+              <textarea id="c-notas" placeholder="Informações adicionais do cliente..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--border); padding-top:16px;">
+              <button type="button" class="btn btn-ghost" onclick="closeModal('modal-cliente')">Cancelar</button>
+              <button type="submit" class="btn btn-primary">💾 Salvar Cliente</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- MODAL: Novo Contrato -->
     <div class="modal-overlay" id="modal-contrato" style="display:none;" onclick="closeModalOnOverlay(event,'modal-contrato')">
       <div class="modal modal-lg">
