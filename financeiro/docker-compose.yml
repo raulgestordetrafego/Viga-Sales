@@ -1,0 +1,41 @@
+services:
+  financeiro:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: vigasales-financeiro
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/app/db/financeiro.sqlite
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MASTER_PASSWORD=${MASTER_PASSWORD:-Vs@2026*}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-Viga@2026}
+    volumes:
+      - financeiro-db:/app/db
+      - financeiro-uploads:/app/uploads
+    networks:
+      - n8n_traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=n8n_default
+
+      # ── Rota principal: financeiro.vigasales.com.br ───────────────────────
+      - traefik.http.routers.vs-financeiro.rule=Host(`financeiro.vigasales.com.br`)
+      - traefik.http.routers.vs-financeiro.entrypoints=web,websecure
+      - traefik.http.routers.vs-financeiro.tls=true
+      - traefik.http.routers.vs-financeiro.tls.certresolver=mytlschallenge
+
+      # ── Serviço ───────────────────────────────────────────────────────────
+      - traefik.http.services.vs-financeiro-svc.loadbalancer.server.port=3000
+      - traefik.http.routers.vs-financeiro.service=vs-financeiro-svc
+
+networks:
+  n8n_traefik:
+    external: true
+    name: n8n_default
+
+volumes:
+  financeiro-db:
+  financeiro-uploads:
