@@ -8,12 +8,12 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DB_PATH=/app/db/financeiro.sqlite
+      - DB_PATH=/app/data/financeiro.sqlite
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - MASTER_PASSWORD=${MASTER_PASSWORD:-Vs@2026*}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-Viga@2026}
     volumes:
-      - financeiro-db:/app/db
+      - financeiro-db:/app/data
       - financeiro-uploads:/app/uploads
     networks:
       - n8n_traefik
