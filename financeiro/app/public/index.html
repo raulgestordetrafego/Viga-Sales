@@ -1250,7 +1250,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               </div>
               <div class="fg">
                 <label>Tipo de Contrato</label>
-                <select id="ct-recorrente" onchange="toggleRecorrenciaFields()">
+                <select id="ct-recorrente" onchange="toggleRecorrenciaFields(); atualizarValorRecebidoAutomatico('recorrente')">
                   <option value="1">Mensalidade (Recorrente)</option>
                   <option value="0">Pontual (Projeto Único)</option>
                 </select>
@@ -1287,19 +1287,19 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px;">
               <div class="fg">
                 <label>Valor da Mensalidade (R$)</label>
-                <input id="ct-valor-parcela" type="number" step="0.01" placeholder="0,00" oninput="calcFaturamentoTotal()">
+                <input id="ct-valor-parcela" type="number" step="0.01" placeholder="0,00" oninput="calcFaturamentoTotal(); atualizarValorRecebidoAutomatico('mensalidade')">
               </div>
               <div class="fg">
                 <label>Parcelas de Recorrência (meses)</label>
-                <input id="ct-parcelas" type="number" placeholder="Ex: 3, 6, 12" oninput="calcFaturamentoTotal()">
+                <input id="ct-parcelas" type="number" placeholder="Ex: 3, 6, 12" oninput="calcFaturamentoTotal(); atualizarValorRecebidoAutomatico('parcelas')">
               </div>
               <div class="fg">
                 <label>Meses Executados</label>
-                <input id="ct-parcelas-pagas" type="number" value="0" placeholder="0">
+                <input id="ct-parcelas-pagas" type="number" value="0" placeholder="0" oninput="atualizarValorRecebidoAutomatico('pagas')">
               </div>
               <div class="fg">
                 <label>Valor do Contrato (Faturamento Total R$)</label>
-                <input id="ct-credito" type="number" step="0.01" placeholder="0,00">
+                <input id="ct-credito" type="number" step="0.01" placeholder="0,00" oninput="atualizarValorRecebidoAutomatico('credito')">
               </div>
               <div class="fg">
                 <label>Valor Recebido (R$)</label>
@@ -1307,7 +1307,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               </div>
               <div class="fg">
                 <label>Status do Pagamento</label>
-                <select id="ct-status-comissao">
+                <select id="ct-status-comissao" onchange="atualizarValorRecebidoAutomatico('status')">
                   <option value="pendente">Pendente</option>
                   <option value="parcial">Parcial</option>
                   <option value="recebida">Recebido</option>
@@ -1931,6 +1931,53 @@ function calcFaturamentoTotal() {
   const meses       = parseInt(document.getElementById('ct-parcelas').value) || 0;
   if (mensalidade > 0 && meses > 0) {
     document.getElementById('ct-credito').value = (mensalidade * meses).toFixed(2);
+  }
+}
+
+function atualizarValorRecebidoAutomatico(triggerSource) {
+  const rec = document.getElementById('ct-recorrente').value === '1';
+  const statusSelect = document.getElementById('ct-status-comissao');
+  const statusComissao = statusSelect ? statusSelect.value : 'pendente';
+  const comissaoRecInput = document.getElementById('ct-comissao-rec');
+  const parcelasPagasInput = document.getElementById('ct-parcelas-pagas');
+  const totalParcelas = parseInt(document.getElementById('ct-parcelas').value) || 0;
+  const mensalidade = parseFloat(document.getElementById('ct-valor-parcela').value) || 0;
+  const totalCredito = parseFloat(document.getElementById('ct-credito').value) || 0;
+
+  if (rec) {
+    let parcelasPagas = parseInt(parcelasPagasInput.value) || 0;
+    
+    if (triggerSource === 'status' && statusSelect) {
+      if (statusSelect.value === 'recebida' && totalParcelas > 0) {
+        parcelasPagas = totalParcelas;
+        parcelasPagasInput.value = totalParcelas;
+      } else if (statusSelect.value === 'pendente') {
+        parcelasPagas = 0;
+        parcelasPagasInput.value = 0;
+      }
+    }
+    
+    if (mensalidade > 0) {
+      comissaoRecInput.value = (mensalidade * parcelasPagas).toFixed(2);
+    }
+    
+    if (triggerSource !== 'status' && statusSelect) {
+      if (parcelasPagas === 0) {
+        statusSelect.value = 'pendente';
+      } else if (totalParcelas > 0 && parcelasPagas >= totalParcelas) {
+        statusSelect.value = 'recebida';
+      } else {
+        statusSelect.value = 'parcial';
+      }
+    }
+  } else {
+    if (triggerSource === 'status' || triggerSource === 'credito' || triggerSource === 'recorrente') {
+      if (statusComissao === 'recebida') {
+        comissaoRecInput.value = totalCredito.toFixed(2);
+      } else if (statusComissao === 'pendente') {
+        comissaoRecInput.value = '0.00';
+      }
+    }
   }
 }
 
