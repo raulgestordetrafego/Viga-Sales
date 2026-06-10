@@ -1018,10 +1018,10 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               Envie um <strong>print/foto do extrato bancário</strong> e a IA irá extrair automaticamente todas as transações, identificar entradas e saídas, calcular o saldo e gerar um resumo.
             </p>
             <div class="upload-zone" id="upload-zone">
-              <input type="file" id="extrato-file" accept="image/jpeg,image/png,image/webp" onchange="onExtratoFileSelect(event)">
+              <input type="file" id="extrato-file" accept="image/jpeg,image/png,image/webp,application/pdf" onchange="onExtratoFileSelect(event)">
               <div class="upload-icon">📄</div>
               <div class="upload-title">Arraste ou clique para selecionar</div>
-              <div class="upload-sub">JPG, PNG ou WEBP • Até 20MB</div>
+              <div class="upload-sub">JPG, PNG, WEBP ou PDF • Até 20MB</div>
             </div>
             <div id="preview-wrap" style="display:none;margin-top:16px;">
               <img id="preview-img" style="max-width:100%;max-height:300px;border-radius:var(--radius);border:1px solid var(--border);">
@@ -2175,26 +2175,52 @@ function onExtratoFileSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
   selectedExtratoFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    document.getElementById('preview-img').src = ev.target.result;
+
+  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+  if (isPdf) {
+    document.getElementById('preview-img').style.display = 'none';
+    let pdfIndicator = document.getElementById('preview-pdf-indicator');
+    if (!pdfIndicator) {
+      pdfIndicator = document.createElement('div');
+      pdfIndicator.id = 'preview-pdf-indicator';
+      pdfIndicator.style.cssText = 'width:80px;height:80px;font-size:32px;font-weight:bold;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,0.1);border:2px dashed #ef4444;border-radius:var(--radius);margin:10px 0;color:#ef4444;';
+      pdfIndicator.textContent = 'PDF';
+      const img = document.getElementById('preview-img');
+      img.parentNode.insertBefore(pdfIndicator, img.nextSibling);
+    }
+    pdfIndicator.style.display = 'flex';
     document.getElementById('preview-name').textContent = file.name;
     document.getElementById('preview-wrap').style.display = 'block';
     document.getElementById('btn-analisar').disabled = false;
-  };
-  reader.readAsDataURL(file);
+  } else {
+    const pdfIndicator = document.getElementById('preview-pdf-indicator');
+    if (pdfIndicator) pdfIndicator.style.display = 'none';
+    document.getElementById('preview-img').style.display = 'block';
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('preview-name').textContent = file.name;
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('btn-analisar').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function clearExtrato() {
   selectedExtratoFile = null;
   document.getElementById('extrato-file').value = '';
   document.getElementById('preview-wrap').style.display = 'none';
+  const pdfIndicator = document.getElementById('preview-pdf-indicator');
+  if (pdfIndicator) pdfIndicator.style.display = 'none';
   document.getElementById('btn-analisar').disabled = true;
   document.getElementById('ia-resultado').style.display = 'none';
 }
 
 async function analisarExtrato() {
-  if (!selectedExtratoFile) return toast('Selecione uma imagem primeiro.', 'error');
+  if (!selectedExtratoFile) return toast('Selecione um arquivo de extrato primeiro.', 'error');
   showLoading('🤖 IA analisando o extrato...');
 
   try {
@@ -2206,7 +2232,16 @@ async function analisarExtrato() {
       headers: { 'Authorization': `Bearer ${TOKEN}` },
       body: formData,
     });
-    const data = await r.json();
+
+    let data;
+    const contentType = r.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      data = await r.json();
+    } else {
+      const text = await r.text();
+      throw new Error(`Erro no servidor (${r.status}): ${text.substring(0, 100)}`);
+    }
+
     if (!r.ok) throw new Error(data.error || 'Erro na análise');
 
     renderResultadoIA(data.resultado);

@@ -517,10 +517,10 @@ const uploadExtrato = multer({
   storage,
   limits: { fileSize: 20 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
+    const allowed = /jpeg|jpg|png|webp|pdf/;
     const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
     if (allowed.test(ext)) cb(null, true);
-    else cb(new Error('Use JPG, PNG ou WEBP para envio de extratos.'));
+    else cb(new Error('Use JPG, PNG, WEBP ou PDF para envio de extratos.'));
   },
 });
 
@@ -550,7 +550,7 @@ async function analisarExtratoComGemini(base64Image, mimeType = 'image/jpeg') {
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no servidor.');
 
   const prompt = `Você é um especialista em análise de extratos bancários brasileiros.
-Analise cuidadosamente a imagem do extrato bancário e extraia TODAS as informações disponíveis.
+Analise cuidadosamente o extrato bancário (imagem ou documento PDF) e extraia TODAS as informações disponíveis.
 
 Retorne SOMENTE um JSON válido com a seguinte estrutura (sem markdown, sem explicações fora do JSON):
 
@@ -618,7 +618,15 @@ Regras importantes:
 }
 
 // Rota: análise via UPLOAD de arquivo
-router.post('/ia/extrato', auth, uploadExtrato.single('imagem'), async (req, res) => {
+router.post('/ia/extrato', auth, (req, res, next) => {
+  uploadExtrato.single('imagem')(req, res, (err) => {
+    if (err) {
+      console.error('[IA Extrato] Erro no upload:', err.message);
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
     let base64Image, mimeType;
 
