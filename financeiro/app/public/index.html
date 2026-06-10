@@ -2280,12 +2280,61 @@ async function loadExtratos() {
         <td style="color:var(--red-light)">${fmt.money(Math.abs(e.total_saidas))}</td>
         <td style="font-weight:600">${fmt.money(e.saldo_final)}</td>
         <td>
-          <button class="btn btn-ghost btn-sm" onclick="verExtrato('${e.id}')">🔍 Ver</button>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="verExtrato('${e.id}')">🔍 Ver</button>
+            <button class="btn btn-ghost btn-sm text-danger" onclick="excluirExtrato('${e.id}')">🗑️</button>
+          </div>
         </td>
       </tr>
     `).join('') :
     `<tr><td colspan="8"><div class="empty-state"><div class="icon">📑</div><p>Nenhum extrato analisado ainda. <a href="#" onclick="goto('ia-extrato')" style="color:var(--blue-light)">Analisar agora →</a></p></div></td></tr>`;
   } catch (err) { toast('Erro: ' + err.message, 'error'); }
+}
+
+async function excluirExtrato(id) {
+  if (!confirm('Deseja realmente excluir esta análise de extrato? Todas as transações associadas também serão excluídas.')) return;
+  try {
+    showLoading('Excluindo...');
+    await api('DELETE', `/ia/extratos/${id}`);
+    toast('Extrato excluído com sucesso!', 'success');
+    closeModal('modal-extrato');
+    loadExtratos();
+  } catch (err) {
+    toast('Erro ao excluir: ' + err.message, 'error');
+  } finally {
+    hideLoading();
+  }
+}
+
+function importarTransacaoComoCusto(descricao, categoria, valor, data) {
+  document.getElementById('cu-id').value = '';
+  document.getElementById('cu-descricao').value = descricao;
+  
+  // Mapear categoria para as opções do select de custos
+  const catMap = {
+    'transferência': 'operacional',
+    'pix': 'operacional',
+    'ted': 'operacional',
+    'doc': 'operacional',
+    'pagamento': 'operacional',
+    'compra': 'operacional',
+    'saque': 'outros',
+    'tarifa': 'operacional',
+    'salário': 'pessoal',
+    'impostos': 'impostos',
+    'marketing': 'marketing',
+    'infraestrutura': 'infraestrutura'
+  };
+  
+  const cat = catMap[categoria.toLowerCase()] || 'outros';
+  document.getElementById('cu-categoria').value = cat;
+  document.getElementById('cu-tipo').value = 'variavel';
+  document.getElementById('cu-valor').value = valor;
+  document.getElementById('cu-data').value = data;
+  document.getElementById('cu-notas').value = 'Importado do Extrato Bancário';
+  
+  closeModal('modal-extrato');
+  openModal('modal-custo');
 }
 
 async function verExtrato(id) {
@@ -2306,19 +2355,30 @@ async function verExtrato(id) {
         </div>
         ${extrato.resumo_ia ? `<div class="ia-summary" style="margin-bottom:16px;border-radius:var(--radius);border:1px solid var(--border)">${extrato.resumo_ia}</div>` : ''}
         <div class="transacoes-list" style="border:1px solid var(--border);border-radius:var(--radius);max-height:400px;">
-          ${(extrato.transacoes||[]).map(t => `
-            <div class="transacao-row">
-              <div class="transacao-info">
-                <div class="transacao-desc">${t.descricao||'—'}</div>
-                <div class="transacao-meta">${fmt.date(t.data)} · <span class="badge badge-gray" style="font-size:10px">${t.categoria||'outra'}</span></div>
+          ${(extrato.transacoes||[]).map(t => {
+            const isOutflow = t.tipo === 'saida';
+            const importBtn = isOutflow 
+              ? `<button class="btn btn-ghost btn-xs" style="padding:2px 6px;font-size:10px;color:var(--blue-light);border:1px solid rgba(59,130,246,0.2);margin-left:8px;" onclick="importarTransacaoComoCusto(\`${escapeJsString(t.descricao)}\`, \`${t.categoria}\`, ${Math.abs(t.valor)}, \`${t.data}\`)">➕ Importar Custo</button>`
+              : '';
+            return `
+              <div class="transacao-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)">
+                <div class="transacao-info" style="flex:1">
+                  <div class="transacao-desc">${t.descricao||'—'}</div>
+                  <div class="transacao-meta" style="display:flex;gap:10px;align-items:center;margin-top:2px;">
+                    <span>${fmt.date(t.data)}</span> · 
+                    <span class="badge badge-gray" style="font-size:10px">${t.categoria||'outra'}</span>
+                    ${importBtn}
+                  </div>
+                </div>
+                <div class="transacao-valor ${t.tipo}" style="font-weight:600">${t.tipo==='entrada'?'+':''}${fmt.money(t.valor)}</div>
               </div>
-              <div class="transacao-valor ${t.tipo}">${t.tipo==='entrada'?'+':''}${fmt.money(t.valor)}</div>
-            </div>
-          `).join('') || '<div class="empty-state" style="padding:24px"><p>Sem transações.</p></div>'}
+            `;
+          }).join('') || '<div class="empty-state" style="padding:24px"><p>Sem transações.</p></div>'}
         </div>
       </div>
-      <div style="margin-top:16px;display:flex;gap:10px;">
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;">
         <a class="btn btn-ghost btn-sm" href="${API}/export/transacoes?extrato_id=${id}" download>⬇️ Exportar CSV</a>
+        <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="excluirExtrato('${id}')">🗑️ Excluir Análise</button>
       </div>
     `;
   } catch (err) {
@@ -2447,6 +2507,11 @@ async function deleteUser(id, name) {
 
 function escapeHtml(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function escapeJsString(str) {
+  if (!str) return '';
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/`/g, '\\`').replace(/\$/g, '\\$');
 }
 
 /* ════════════════════════════════════════════════════════════════

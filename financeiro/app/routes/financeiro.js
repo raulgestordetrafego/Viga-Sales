@@ -703,7 +703,7 @@ router.get('/ia/extratos/:id', auth, async (req, res) => {
 });
 
 // Rota: deletar extrato
-router.delete('/ia/extratos/:id', isMaster, async (req, res) => {
+router.delete('/ia/extratos/:id', auth, async (req, res) => {
   try {
     await run('DELETE FROM vs_transacoes WHERE extrato_id = ?', [req.params.id]);
     await run('DELETE FROM vs_extratos WHERE id = ?', [req.params.id]);
