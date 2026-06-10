@@ -457,6 +457,26 @@ router.post('/custos', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+router.post('/custos/bulk', auth, async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) return res.status(400).json({ error: 'Items deve ser um array' });
+    
+    const now = new Date().toISOString();
+    for (const item of items) {
+      const { descricao, categoria, valor, data, notas, tipo } = item;
+      if (!descricao || !valor || !data) continue;
+      const id = uuidv4();
+      await run(
+        `INSERT INTO vs_custos (id, descricao, categoria, valor, data, notas, tipo, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, descricao.trim(), categoria || 'outros', Number(valor), data, notas || null, tipo || 'variavel', now]
+      );
+    }
+    res.json({ ok: true, count: items.length });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 router.put('/custos/:id', auth, async (req, res) => {
   try {
     const { descricao, categoria, valor, data, notas, tipo } = req.body;
