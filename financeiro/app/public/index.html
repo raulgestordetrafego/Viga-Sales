@@ -991,6 +991,38 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <div class="stat-lbl">Registros</div>
         </div>
       </div>
+      <!-- FILTROS DE DATA -->
+      <div class="card" style="margin-bottom:20px;padding:14px 20px;">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label style="margin:0;font-size:13.5px;font-weight:500;">Filtrar por Período:</label>
+            <select id="custos-filter-month" onchange="loadCustos()" style="padding:6px 12px;font-size:13px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-main);width:150px;cursor:pointer;">
+              <option value="">-- Todos os Meses --</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+            <select id="custos-filter-year" onchange="loadCustos()" style="padding:6px 12px;font-size:13px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-main);width:130px;cursor:pointer;">
+              <option value="">-- Todos os Anos --</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="limparFiltroCustos()" style="margin-left:auto;color:var(--text-2);">Mostrar Todos</button>
+        </div>
+      </div>
       <div class="card">
         <div class="table-wrap">
           <table>
@@ -2097,11 +2129,48 @@ async function excluirContratoAtual() {
    CUSTOS
 ════════════════════════════════════════════════════════════════ */
 async function loadCustos() {
-  const now = new Date();
+  const monthSelect = document.getElementById('custos-filter-month');
+  const yearSelect = document.getElementById('custos-filter-year');
+  
+  let queryStr = '?limit=200';
+  let m = '';
+  let y = '';
+  
+  if (monthSelect && yearSelect) {
+    m = monthSelect.value;
+    y = yearSelect.value;
+    if (m) queryStr += `&month=${m}`;
+    if (y) queryStr += `&year=${y}`;
+  } else {
+    const now = new Date();
+    m = String(now.getMonth() + 1);
+    y = String(now.getFullYear());
+    queryStr += `&month=${m}&year=${y}`;
+  }
+  
   try {
-    const { custos, total, soma } = await api('GET', `/custos?month=${now.getMonth()+1}&year=${now.getFullYear()}&limit=200`);
+    const { custos, total, soma } = await api('GET', `/custos${queryStr}`);
+    
+    // Atualiza estatísticas no topo
     document.getElementById('custo-mes-val').textContent = fmt.moneyShort(soma);
     document.getElementById('custo-qtd-val').textContent = total;
+    
+    // Atualiza a legenda dinamicamente com base no período visualizado
+    const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    let periodLabel = 'Total do Mês';
+    if (m && y) {
+      periodLabel = `Total de ${monthNames[parseInt(m)-1]} / ${y}`;
+    } else if (y) {
+      periodLabel = `Total de ${y}`;
+    } else if (m) {
+      periodLabel = `Total de ${monthNames[parseInt(m)-1]}`;
+    } else {
+      periodLabel = 'Total (Geral)';
+    }
+    
+    const cardRed = document.querySelector('.stat-card[style*="--accent:var(--red)"] .stat-lbl');
+    if (cardRed) cardRed.textContent = periodLabel;
+
     const tbody = document.getElementById('tbody-custos');
     tbody.innerHTML = custos.length ? custos.map(c => `
       <tr>
@@ -2115,8 +2184,16 @@ async function loadCustos() {
           <button class="btn btn-danger btn-sm" onclick="deleteCusto('${c.id}')">🗑️</button>
         </td>
       </tr>
-    `).join('') : `<tr><td colspan="6"><div class="empty-state"><div class="icon">💸</div><p>Nenhum custo registrado este mês.</p></div></td></tr>`;
+    `).join('') : `<tr><td colspan="6"><div class="empty-state"><div class="icon">💸</div><p>Nenhum custo registrado para este período.</p></div></td></tr>`;
   } catch (err) { toast('Erro: ' + err.message, 'error'); }
+}
+
+function limparFiltroCustos() {
+  const monthSelect = document.getElementById('custos-filter-month');
+  const yearSelect = document.getElementById('custos-filter-year');
+  if (monthSelect) monthSelect.value = '';
+  if (yearSelect) yearSelect.value = '';
+  loadCustos();
 }
 
 async function saveCusto(e) {
@@ -2662,6 +2739,13 @@ function escapeJsString(str) {
   document.querySelectorAll('input[type=date]').forEach(el => {
     if (!el.value) el.value = hoje;
   });
+
+  // Define mês e ano atual nos filtros de custos
+  const now = new Date();
+  const monthSel = document.getElementById('custos-filter-month');
+  const yearSel = document.getElementById('custos-filter-year');
+  if (monthSel) monthSel.value = now.getMonth() + 1;
+  if (yearSel) yearSel.value = now.getFullYear();
 
   if (TOKEN) {
     const user = await checkAuth();

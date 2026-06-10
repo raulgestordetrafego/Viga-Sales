@@ -433,7 +433,16 @@ router.get('/custos', auth, async (req, res) => {
     const offset  = (Number(page) - 1) * Number(limit);
     const clauses = ['1=1'];
     const params  = [];
-    if (month && year) { clauses.push("strftime('%Y-%m', data) = ?"); params.push(`${year}-${String(month).padStart(2,'0')}`); }
+    if (month && year) {
+      clauses.push("strftime('%Y-%m', data) = ?");
+      params.push(`${year}-${String(month).padStart(2,'0')}`);
+    } else if (year) {
+      clauses.push("strftime('%Y', data) = ?");
+      params.push(String(year));
+    } else if (month) {
+      clauses.push("strftime('%m', data) = ?");
+      params.push(String(month).padStart(2,'0'));
+    }
     const where = clauses.join(' AND ');
     const custos = await query(`SELECT * FROM vs_custos WHERE ${where} ORDER BY data DESC LIMIT ? OFFSET ?`,
       [...params, Number(limit), offset]);
