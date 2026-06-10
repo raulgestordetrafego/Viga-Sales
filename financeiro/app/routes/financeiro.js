@@ -45,7 +45,10 @@ router.use('/files', express.static(uploadDir));
 
 // ── Middlewares de sessão ─────────────────────────────────────────────────────
 function getSession(req) {
-  const token = (req.headers.authorization || '').replace('Bearer ', '');
+  let token = (req.headers.authorization || '').replace('Bearer ', '');
+  if (!token && req.query && req.query.token) {
+    token = req.query.token;
+  }
   if (!token) return undefined;
   const s = vsSessions.get(token);
   if (!s) return undefined;

@@ -2257,7 +2257,7 @@ function renderResultadoIA(res) {
       </div>
       <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;">
         <button class="btn btn-ghost btn-sm" onclick="goto('extratos')">Ver no histórico</button>
-        <a class="btn btn-success btn-sm" href="${API}/export/transacoes" download>⬇️ Exportar CSV</a>
+        <a class="btn btn-success btn-sm" href="${API}/export/transacoes?token=${TOKEN}" download>⬇️ Exportar CSV</a>
       </div>
     </div>
   `;
@@ -2377,7 +2377,7 @@ async function verExtrato(id) {
         </div>
       </div>
       <div style="margin-top:16px;display:flex;gap:10px;align-items:center;">
-        <a class="btn btn-ghost btn-sm" href="${API}/export/transacoes?extrato_id=${id}" download>⬇️ Exportar CSV</a>
+        <a class="btn btn-ghost btn-sm" href="${API}/export/transacoes?extrato_id=${id}&token=${TOKEN}" download>⬇️ Exportar CSV</a>
         <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="excluirExtrato('${id}')">🗑️ Excluir Análise</button>
       </div>
     `;
