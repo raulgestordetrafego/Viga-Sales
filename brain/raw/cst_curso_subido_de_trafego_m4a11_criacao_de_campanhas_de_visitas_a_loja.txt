@@ -1,0 +1,86 @@
+--- Página 1 ---
+AULA 11
+Criação de
+campanhas de
+visitas à loja
+1
+
+--- Página 2 ---
+Criação de campanhas de visitas à loja
+Índice
+Introdução ……………………………………………………………………………...………………….……………………………………….……….………………………….…………………………….……………………………………… Pág. 2
+Pré-requisitos obrigatórios……..….………………………….…...………….…...………….…...…………………………………………………………………………………………………………………….. Pág. 3
+Como funciona essa campanha na prática? …………..….…………………………….…...………….…...………….………………….....………….…...……………… Pág. 4
+00’01’’
+Introdução
+As campanhas de visitas à loja local são feitas para levar as pessoas até o seu
+ponto físico. Simples assim. Só que para isso funcionar de verdade, tem alguns
+pré-requisitos que precisam estar em ordem. Se você ignorar esses pontos, a
+campanha não vai performar.
+Bora mergulhar nesse assunto!
+Pág. 2
+
+--- Página 3 ---
+Criação de campanhas de visitas à loja
+00’04’’
+Pré-requisitos obrigatórios
+1. Google Business Profile configurado
+O Google Business Profile (ou Google Meu Negócio, em português) precisa
+estar:
+● Associado à sua conta do Google Ads;
+● Bem configurado, com boas fotos, informações atualizadas,
+categorias corretas e avaliações.
+Dica: aqui no curso Subido, você já tem aulas mostrando passo a passo como
+fazer essa configuração da forma certa.
+🤖
+2. Saber criar campanhas de Performance Max
+Sim, a campanha de visitas à loja local roda dentro do tipo PMAX. Então, você
+precisa dominar:
+● Como montar um bom indicador de público-alvo;
+● Como estruturar um grupo de recursos completo.
+Esses dois elementos são a base para sua campanha performar.
+Pág. 3
+
+--- Página 4 ---
+Criação de campanhas de visitas à loja
+00’46’’
+Como funciona essa
+campanha na prática?
+A criação prática está explicada no próximo conteúdo. Mas já quero te adiantar
+um ponto importante:
+Se o seu Google Business Profile estiver mal configurado,
+a campanha não vai funcionar bem.
+🧭
+A lógica da conversão
+Quando você cria essa campanha, o Google vai começar com duas metas de
+conversão: contato e ver rota.
+O que você deve fazer:
+● Selecionar a meta de "Ver rota";
+● Rodar a campanha normalmente;
+● A cada 2 ou 3 dias, voltar lá e clicar em “Editar” (a campanha).
+Com o tempo, o Google vai identificar, baseado nos dados de GPS/Google
+Maps, quem realmente visitou sua loja. Quando isso acontecer, vai surgir uma
+nova opção de conversão:
+● Visitas à loja 👣
+Quando essa nova meta aparecer,
+faça essas duas coisas:
+Pág. 4
+
+--- Página 5 ---
+Criação de campanhas de visitas à loja
+1. Edite sua campanha;
+2. Troque a meta de conversão para "Visitas à loja".
+Essa mudança aumenta muito a performance da campanha — estamos
+falando de 5 a 10 vezes mais resultados!
+Muita gente desiste antes dessa etapa. A campanha começa tímida, dá um ou
+outro resultado, e a pessoa já pausa. Aí perde justamente a fase em que ela ia
+começar a entregar de verdade.
+📌
+Para fixar:
+● Configure bem seu Google Meu Negócio;
+● Crie uma campanha PMax com foco em "Ver rota";
+● Aguarde a opção "Visitas à loja" aparecer;
+● Troque a meta de conversão assim que ela estiver disponível;
+🙌
+Tamo junto!
+Pág. 5

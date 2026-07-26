@@ -1,0 +1,216 @@
+--- Página 1 ---
+AULA 07
+Quando unir e
+separar conjuntos
+de anúncios e
+campanhas
+
+--- Página 2 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….………… Pág. 2
+O que é estrutura de campanha?………………………………………………………..………………………………………………………………………………………………………………….. Pág. 3
+Quando separar os públicos em diferentes conjuntos de anúncio?…………………………………………………………….. Pág. 4
+Quando unir segmentações no mesmo conjunto de anúncio?…………………………………………………………………………….. Pág. 7
+Quando não colocamos segmentações e quando usamos segmentações
+automáticas……………………………………………………………………………………………….……………………………………………………………………………………………………………………………………………… Pág. 9
+Quando separar ou unir as campanhas?………………………………………………………………………………………………………………………………………………… Pág. 10
+00’02’’
+Introdução
+Esse conteúdo aqui é um grande complemento à que tivemos sobre
+otimização de estruturas de campanha.
+Pois é! O tráfego pago estratégico
+vai muito além de apertar
+botões. Envolve decisões que
+afetam diretamente seus
+resultados. Então, sim, essa aula é
+mais um ponto de contato — um
+reforço — do que falamos lá na
+aula de otimização de estruturas.
+Pág. 2
+
+--- Página 3 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+00’32’’
+O que é estrutura
+de campanha?
+Muita gente se confunde com esse termo. Estrutura de campanha é,
+basicamente, a forma como você organiza seus públicos e anúncios em uma
+ou mais campanhas, e em um ou mais conjuntos de anúncios.
+Vamos fazer um exemplo prático. Imagina que você tem cinco públicos
+quentes. Você pode:
+● Colocar todos esses cinco públicos dentro de um único conjunto de
+anúncio e anunciar para eles juntos.
+● Pode separar cada público em um conjunto de anúncio diferente.
+Beleza. Mas quando é melhor separar? Quando é melhor juntar? Ou até mesmo,
+quando vale dividir entre campanhas diferentes?
+Imagina que você tem cinco públicos. Você decide:
+● Colocar dois públicos juntos em um conjunto de anúncio;
+● Colocar os três restantes em seus respectivos conjuntos.
+Pág. 3
+
+--- Página 4 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+Resultado: Quatro conjuntos de anúncio. Agora, você pode pegar esses quatro
+conjuntos e dividir entre duas campanhas diferentes — dois em cada. Isso
+tudo são variações de estrutura.
+01’57’’
+Quando separar os
+públicos em diferentes
+conjuntos de anúncio?
+1. Posicionamentos diferentes com criativos diferentes
+Se você tem um anúncio feito especificamente para stories, reels ou outro
+formato, isole esse posicionamento. Exemplo: Se o seu vídeo diz “Você está
+cansado de rolar os Reels do Instagram e não achar nada que te ajude a
+crescer?”, esse anúncio precisa rodar no reels - e só no reels.
+Nada de deixar a Meta distribuir para o feed ou para o Audience Network, por
+exemplo. Na Meta, isso é ainda mais comum, porque geralmente usamos:
+anúncios verticais (para stories e reels) e anúncios quadrados ou horizontais
+(para feed). Além disso, só nos stories você consegue usar recursos extras,
+como enquetes dentro do anúncio.
+Pág. 4
+
+--- Página 5 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+2. Quando você quer garantir que um público gaste verba
+Isso acontece muito com públicos super quentes. Exemplo:
+● Quem visitou o checkout
+● Quem adicionou produto no carrinho
+● Quem acessou a página de vendas
+Você não vai misturar esse público com, por exemplo, quem se envolveu com
+seu perfil nos últimos 7 dias — por mais que também seja um público quente.
+Por quê? Porque você quer garantir que os melhores públicos recebam uma
+verba específica.
+3. Quando você quer analisar isoladamente um público
+Se você quer saber como um público específico performa, você precisa isolá-lo
+em um conjunto de anúncio.
+4. Públicos com níveis de aquecimento diferentes
+Não misture público quente com frio no mesmo conjunto. Exemplo:
+● Um mesmo conjunto com quem se envolveu no Instagram nos últimos
+365 dias
+● Um lookalike dos seus compradores
+São dois públicos completamente diferentes. Um é quente, outro é frio.
+Misturar vai atrapalhar sua análise. Pode testar isso? Pode. Mas não é o
+primeiro teste que você deve fazer. Existe uma ordem de priorização nos testes.
+Pág. 5
+
+--- Página 6 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+5. Criativos específicos para públicos específicos
+Exemplo: Você faz um anúncio no TikTok falando:
+“Se você me segue aqui no TikTok, provavelmente curte tráfego pago.
+Mas talvez não saiba que na próxima semana vou fazer um evento
+ao vivo…”
+Esse anúncio foi feito para os seus seguidores no TikTok. Então, esse público
+precisa estar isolado num conjunto próprio.
+Esse tipo de criativo funciona muito bem, especialmente para públicos
+quentes — como quem quase converteu (ex: adicionou produto no carrinho,
+mas não comprou).
+Nesses casos, você pode trabalhar criativos focados nas possíveis objeções:
+● Frete caro?
+● Faltou o tamanho certo?
+● Faltou um incentivo, como desconto ou brinde?
+Faça o anúncio conversar com a dor ou desejo daquela audiência.
+Pág. 6
+
+--- Página 7 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+07’32’’
+Quando unir segmentações no
+mesmo conjunto de anúncio?
+Agora, vamos ver quando vale a pena juntar públicos no mesmo conjunto.
+1. Quando sua verba é muito pequena
+Se você tem pouco dinheiro, lembre-se:
+● Mínimo por conjunto de anúncio é cerca de 1 dólar por dia.
+Porque campanhas, conjuntos e
+anúncios guardam inteligência — e
+essa inteligência vem com o gasto.
+Se você divide demais, dissipa a
+inteligência da conta.
+2. Quando sua segmentação é muito pequena
+Se o público é muito pequeno, a plataforma pode nem conseguir gastar sua
+verba. Nesse caso, vale unir públicos parecidos para aumentar o alcance e
+permitir que o algoritmo funcione melhor.
+3. Quando os públicos são muito parecidos
+Se as ações dos públicos são diferentes, mas o comportamento é parecido,
+vale mais a pena juntar tudo. Exemplo:
+● Quem compartilhou seus vídeos do YouTube nos últimos 30 dias
+● Quem visitou seu perfil do YouTube nos últimos 30 dias
+Pág. 7
+
+--- Página 8 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+Outro exemplo:
+● Envolvimento no Instagram vs envolvimento no Facebook
+● Curtidas, comentários, mensagens — tudo junto dá um bom público de
+envolvimento
+A própria Meta te dá essa opção de público com qualquer envolvimento. Claro
+que você pode testar públicos ultra segmentados (como só quem te mandou
+mensagem), mas isso entra no campo dos testes — e deve ser tratado como
+tal.
+4. Quando os conjuntos de anúncio não gastam verba
+Se tem conjunto parado, que não está gastando, é sinal de que:
+● A segmentação está pequena;
+● O lance está ruim;
+● Simplesmente não há oportunidades ali.
+Se ele está “morto”, você pode testar “engordar” a segmentação juntando com
+outros públicos. Já que ele não está performando, não tem risco de prejudicar
+nada.
+5. Limites de anúncios por página (Meta)
+A Meta impõe limites de anúncios ativos por página. Exemplo:
+Você tem cinco conjuntos. Em cada um, seis anúncios. Total: 30 anúncios.
+O que fazer se a Meta diz que “Você atingiu o limite”? Nesse caso, você pode:
+● Reduzir o número de conjuntos (juntando dois com dois, por exemplo);
+● Pausar anúncios antigos que não funcionam;
+Pág. 8
+
+--- Página 9 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+● Criar páginas novas só para anúncios (sim, você pode ter várias com o
+mesmo nome).
+13’32’’
+Quando não colocamos
+segmentações e quando
+usamos segmentações
+automáticas
+Existem situações em que você não segmenta — deixa livre ou usa as opções
+automáticas da plataforma. Se o orçamento é alto, dá para abrir a
+segmentação, principalmente em regiões pequenas. Quando fiz campanhas
+para Portugal, um país pequeno, o público já era “reduzido” por natureza, ou
+seja: A segmentação aberta funcionou melhor do
+que tentar filtrar demais.
+Quando você quer testar segmentação aberta:
+Segmentação aberta é um teste que vale a pena
+fazer. Muita gente nem testa porque “acha que
+não funciona”, mas com o avanço da inteligência
+das plataformas, às vezes os algoritmos
+conseguem achar seu público melhor do que
+você.
+Quando você tem um pixel com muitos dados: Se o seu pixel está alimentado
+com muitos dados, ele vira o cérebro da sua conta. Quanto mais eventos ele
+tem, mais inteligente fica. Nesse caso, dá para fazer:
+Pág. 9
+
+--- Página 10 ---
+Quando unir e separar conjuntos de anúncios e campanhas
+● Campanhas com segmentações abertas;
+● Automatizar mais a entrega;
+● Deixar a ferramenta achar seu público.
+Mas atenção: Leis de proteção de dados (como a LGPD no Brasil e GDPR na
+Europa) reduzem um pouco essa inteligência, o que torna o acesso à
+informação mais restritivo. Mas, mesmo assim, vale a pena testar.
+17’07’’
+Quando separar ou
+unir as campanhas?
+Você deve unir campanhas quando tem pouca verba disponível. Isso permite
+que o algoritmo concentre os dados, acumule inteligência mais rapidamente e
+otimize seus resultados. Menos campanhas = mais aprendizado concentrado.
+Se seus anúncios são criados pensando em formatos específicos (Stories, Reels,
+YouTube Shorts, Feed, etc.), faz sentido separar campanhas para cada um. Isso
+ajuda na organização, na leitura dos dados e, muitas vezes, na performance.
+Esse não é um conteúdo que você precisa decorar palavra por palavra. Na
+prática, sua cabeça não funciona assim — e nem deveria. O mais importante é
+você ter contato com o conceito e, aos poucos, fortalecer esses conhecimentos
+no campo de batalha, ou seja, na execução real.
+Tamo junto!
+Pág. 10

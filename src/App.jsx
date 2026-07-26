@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
-import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi, dashboardAll, wpInstances } from './api';
+import { contacts as contactsApi, conversations as convsApi, broadcasts as broadcastsApi, stats as statsApi, statsDaily, statsRecent, globalSearch, pipeline as pipelineApi, dashboardAll, prospectingStats, wpInstances } from './api';
 import TasksModule from './TasksModule';
 import ClientBriefing from './ClientBriefing';
+import EmailModule from './EmailModule';
+import EquipeModule from './EquipeModule';
 import {
   LayoutDashboard, Users, MessageSquare, TrendingUp,
   Repeat2, Megaphone, CheckSquare, Settings as SettingsIcon,
-  Search, LogOut, Paperclip, Mic, MicOff, X, Send, Target,
+  Search, LogOut, Paperclip, Mic, MicOff, X, Send, Target, Mail, Bot,
 } from 'lucide-react';
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
@@ -35,7 +37,12 @@ class ErrorBoundary extends Component {
 }
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
-const socket = io(window.location.origin);
+const socket = io(window.location.origin, {
+  auth: { token: localStorage.getItem('crm_token') },
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 2000,
+});
 
 // ─── Design tokens — Viga Identity ───────────────────────────────────────────
 const C = {
@@ -47,6 +54,7 @@ const C = {
   muted:   '#7a90b0',          // Texto secundário
   dim:     '#3a5270',          // Texto apagado
   primary: '#E67E22',          // Laranja Industrial — CTAs / destaques
+  accent:  '#F97316',          // Laranja Viga — destaque do dia atual
   navy:    '#1A365D',          // Azul Marinho — identidade de marca
   purple:  '#2E6DA4',          // Azul médio (substitui purple)
   success: '#10b981',
@@ -220,6 +228,16 @@ function StatCard({ label, value, icon, color, sub }) {
   );
 }
 
+function MiniStat({ label, value, sub, color }) {
+  return (
+    <div style={{background:C.card,padding:'14px 16px',borderRadius:14,border:`1px solid ${C.border}`,borderLeft:`3px solid ${color}`}}>
+      <div style={{fontSize:10,fontWeight:700,color:C.dim,textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:4}}>{label}</div>
+      <div style={{fontSize:28,fontWeight:800,color:C.text,lineHeight:1}}>{value}</div>
+      {sub&&<div style={{fontSize:10,color:C.dim,marginTop:4}}>{sub}</div>}
+    </div>
+  );
+}
+
 // ─── Auth Pages ───────────────────────────────────────────────────────────────
 
 function AuthInput({ label, hint, type='text', placeholder, value, onChange, icon, rightEl, autoFocus, required }) {
@@ -307,10 +325,21 @@ function LoginPage({ onLogin }) {
 
           {/* Header */}
           <div style={{textAlign:'center',marginBottom:36}}>
-            <div style={{width:72,height:72,borderRadius:22,background:`linear-gradient(135deg,${C.primary},${C.purple})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 18px',boxShadow:`0 8px 32px ${C.primary}50`}}>
-              {view==='login' ? '🔒' : '✍️'}
+            <div style={{
+              width:80,height:80,margin:'0 auto 16px',display:'flex',alignItems:'center',justifyContent:'center',
+              filter:'drop-shadow(0 0 20px rgba(249,115,22,0.6)) drop-shadow(0 0 40px rgba(249,115,22,0.3))'
+            }}>
+              <svg width="34" height="80" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+                <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+                <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+                <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+                <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+                <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+                <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+                <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
+              </svg>
             </div>
-            <div style={{fontSize:26,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
             <div style={{fontSize:11,fontWeight:700,color:C.dim,letterSpacing:'0.12em',textTransform:'uppercase',marginTop:4}}>
               {view==='login' ? 'Área Restrita' : 'Solicitar Cadastro'}
             </div>
@@ -417,6 +446,10 @@ function Dashboard({ onNavigate }) {
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Prospecting
+  const [prospecting, setProspecting] = useState(null);
+  const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
+
   useEffect(() => {
     dashboardAll().then(d => {
       setData(d.stats);
@@ -426,6 +459,10 @@ function Dashboard({ onNavigate }) {
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    prospectingStats(filterDate).then(setProspecting).catch(() => {});
+  }, [filterDate]);
 
   if(loading) return (
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
@@ -457,6 +494,49 @@ function Dashboard({ onNavigate }) {
         <StatCard label="Mensagens Hoje" value={todayMsgs} icon="📩" color={C.warning} sub={`${weekMsgs} esta semana`} />
         <StatCard label="Total de Mensagens" value={data?.totalMessages??0} icon="📊" color={C.purple} sub="histórico completo" />
       </div>
+
+      {/* ── Prospecção: Email + Meta WhatsApp ────────────────────────── */}
+      <Card title="📬 Prospecção Ativa" subtitle={
+        <span style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
+          <span style={{color:C.dim,fontSize:13}}>Filtro:</span>
+          <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)}
+            style={{background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,color:C.text,padding:'4px 10px',fontSize:13}} />
+          {prospecting && <span style={{fontSize:12,color:C.muted}}>{prospecting.totalSentEver} envios totais</span>}
+        </span>
+      }>
+        {prospecting ? (
+          <div style={{display:'flex',flexDirection:'column',gap:16}}>
+            {/* KPI row: Email + Meta */}
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:12}}>
+              <MiniStat label="Email Enviados" value={prospecting.email.sent} sub={`${prospecting.email.openRate}% abertura`} color={C.primary} />
+              <MiniStat label="Email Abertos" value={prospecting.email.opened} sub={`${prospecting.email.replyRate}% resposta`} color={C.success} />
+              <MiniStat label="WhatsApp Enviados" value={prospecting.meta.sent} sub={`${prospecting.meta.responseRate}% resposta`} color={C.warning} />
+              <MiniStat label="WhatsApp Respostas" value={prospecting.meta.responses} sub="prospects engajados" color={C.purple} />
+            </div>
+            {/* Template progress bars */}
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:C.dim,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.06em'}}>Modelos de Template ({prospecting.templates.length})</div>
+              <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                {prospecting.templates.map(t => (
+                  <div key={t.id} style={{display:'flex',alignItems:'center',gap:10}}>
+                    <span style={{fontSize:12,color:t.paused?C.muted:C.text,minWidth:160,textDecoration:t.paused?'line-through':'none'}}>
+                      {t.name}
+                    </span>
+                    <div style={{flex:1,height:8,background:C.bg,borderRadius:4,overflow:'hidden'}}>
+                      <div style={{width:`${t.progress}%`,height:'100%',background:t.paused?C.muted:t.progress>=100?C.success:C.primary,borderRadius:4,transition:'width 0.3s'}} />
+                    </div>
+                    <span style={{fontSize:11,color:C.dim,minWidth:70,textAlign:'right'}}>
+                      {t.sentCount}/{t.maxSends} {t.paused ? '⏸' : t.progress>=100 ? '✓' : ''}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{textAlign:'center',color:C.dim,padding:20,fontSize:13}}>Carregando dados de prospecção...</div>
+        )}
+      </Card>
 
       {/* Chart + Recent */}
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
@@ -1328,13 +1408,20 @@ function Conversations({ initialContact }) {
   },[initialContact,loadConvs]);
 
   useEffect(()=>{
-    if(active?.id) convsApi.messages(active.id).then(msgs=>{ setMessages(msgs); setTimeout(()=>scrollToBottom(true),50); }).catch(()=>{});
+    if(active?.id) convsApi.messages(active.id).then(msgs=>{ 
+      setMessages(msgs.sort((a,b)=>new Date(a.timestamp||a.created_at)-new Date(b.timestamp||b.created_at))); 
+      setTimeout(()=>scrollToBottom(true),50); 
+    }).catch(()=>{});
   },[active?.id]);
 
   useEffect(()=>{
     const handle=(data)=>{
       if(active&&data.conversation?.id===active.id){
-        setMessages(prev=>prev.some(m=>m.id===data.message.id)?prev:[...prev,data.message]);
+        setMessages(prev=>{
+          if(prev.some(m=>m.id===data.message.id)) return prev;
+          const next = [...prev, data.message];
+          return next.sort((a,b)=>new Date(a.timestamp||a.created_at)-new Date(b.timestamp||b.created_at));
+        });
         setTimeout(scrollToBottom,100);
       }
       if(data.conversation){
@@ -1935,6 +2022,266 @@ function Broadcasts() {
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
+// ─── Template Manager (Meta WhatsApp) ──────────────────────────────────────
+function TemplateManager() {
+  const [localTemplates, setLocalTemplates] = useState([]);
+  const [metaTemplates, setMetaTemplates] = useState([]);
+  const [loadingLocal, setLoadingLocal] = useState(true);
+  const [loadingMeta, setLoadingMeta] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [deliveryStats, setDeliveryStats] = useState(null);
+  const [form, setForm] = useState({ name: '', vars: '["primeiro_nome", "empresa"]', body: '', segment: 'geral', max_sends: 50 });
+  const tok = () => localStorage.getItem('crm_token');
+  const auth = () => ({ Authorization: `Bearer ${tok()}` });
+
+  const loadDeliveryStats = async () => {
+    try {
+      const r = await fetch('/api/whatsapp/delivery-stats', { headers: auth() });
+      setDeliveryStats(await r.json());
+    } catch {}
+  };
+
+  const loadLocal = async () => {
+    setLoadingLocal(true);
+    try {
+      const r = await fetch('/api/whatsapp/templates', { headers: auth() });
+      const d = await r.json();
+      setLocalTemplates(Array.isArray(d) ? d : []);
+    } catch { setLocalTemplates([]); }
+    setLoadingLocal(false);
+  };
+
+  const syncFromMeta = async () => {
+    setSyncing(true);
+    try {
+      const r = await fetch('/api/whatsapp/templates/sync', { method: 'POST', headers: auth() });
+      const d = await r.json();
+      if (d.error) { toast.error(d.error); return; }
+      toast.success(d.message || 'Templates sincronizados!');
+      loadLocal();
+    } catch { toast.error('Erro ao sincronizar com Meta'); }
+    setSyncing(false);
+  };
+
+  const loadMeta = async () => {
+    setLoadingMeta(true);
+    try {
+      const r = await fetch('/api/whatsapp/templates/meta', { headers: auth() });
+      const d = await r.json();
+      setMetaTemplates(Array.isArray(d) ? d : []);
+    } catch { setMetaTemplates([]); }
+    setLoadingMeta(false);
+  };
+
+  useEffect(() => { loadLocal(); loadDeliveryStats(); const i = setInterval(loadDeliveryStats, 60000); return () => clearInterval(i); }, []);
+
+  const save = async () => {
+    if (!form.name.trim() || !form.body.trim()) { toast.error('Nome e corpo são obrigatórios'); return; }
+    let varsArray = [];
+    try { varsArray = JSON.parse(form.vars || '[]'); } catch { toast.error('Vars deve ser um array JSON válido'); return; }
+    const body = { name: form.name.trim(), vars: varsArray, body: form.body.trim(), segment: form.segment, max_sends: parseInt(form.max_sends) || 50 };
+    const url = editId ? `/api/whatsapp/templates/${editId}` : '/api/whatsapp/templates';
+    const method = editId ? 'PUT' : 'POST';
+    const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json', ...auth() }, body: JSON.stringify(body) });
+    if (!r.ok) { const d = await r.json(); toast.error(d.error || 'Erro ao salvar'); return; }
+    toast.success(editId ? 'Template atualizado!' : 'Template criado!');
+    setShowForm(false); setEditId(null);
+    setForm({ name: '', vars: '["primeiro_nome", "empresa"]', body: '', segment: 'geral', max_sends: 50 });
+    loadLocal();
+  };
+
+  const remove = async (id) => {
+    if (!confirm('Excluir este template?')) return;
+    await fetch(`/api/whatsapp/templates/${id}`, { method: 'DELETE', headers: auth() });
+    toast.success('Template removido');
+    loadLocal();
+  };
+
+  const edit = (t) => {
+    setForm({ name: t.name, vars: JSON.stringify(typeof t.vars === 'string' ? JSON.parse(t.vars) : t.vars), body: t.body, segment: t.segment || 'geral', max_sends: t.max_sends || 50 });
+    setEditId(t.id);
+    setShowForm(true);
+  };
+
+  const togglePause = async (t) => {
+    await fetch(`/api/whatsapp/templates/${t.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...auth() },
+      body: JSON.stringify({ paused: t.paused ? 0 : 1 }),
+    });
+    toast.success(t.paused ? 'Template reativado' : 'Template pausado');
+    loadLocal();
+  };
+
+  const Section = ({ title, icon, children }) => (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, overflow: 'hidden', marginBottom: 20 }}>
+      <div style={{ padding: '18px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 20 }}>{icon}</span>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{title}</h3>
+      </div>
+      <div style={{ padding: 24 }}>{children}</div>
+    </div>
+  );
+
+  const FocusInput = ({ label, value, onChange, placeholder, type }) => (
+    <div>
+      {label && <label style={{ display: 'block', color: C.muted, fontSize: 11, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</label>}
+      <input type={type || 'text'} value={value} onChange={onChange} placeholder={placeholder}
+        style={{ width: '100%', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 9, padding: '10px 14px', color: C.text, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+    </div>
+  );
+
+  const Btn = ({ children, onClick, variant, size, style, disabled }) => (
+    <button onClick={onClick} disabled={disabled} style={{
+      padding: (size === 'sm' ? '6px 14px' : '10px 20px'), borderRadius: 9, border: 'none', cursor: disabled ? 'not-allowed' : 'pointer',
+      fontSize: (size === 'sm' ? 12 : 13), fontWeight: 700, opacity: disabled ? 0.5 : 1,
+      background: variant === 'secondary' ? C.bg : variant === 'outline' ? 'transparent' : `linear-gradient(135deg,${C.primary},${C.purple})`,
+      color: variant === 'outline' ? C.primary : '#fff',
+      border: variant === 'outline' ? `1px solid ${C.primary}40` : 'none',
+      ...style,
+    }}>{children}</button>
+  );
+
+  return (
+    <div>
+      <Section title="Templates de Mensagem" icon="📋">
+        <p style={{ fontSize: 13, color: C.dim, marginBottom: 16, lineHeight: 1.6 }}>
+          Crie seus templates no <b style={{ color: C.primary }}>WhatsApp Business Manager (Meta)</b> e depois clique em sincronizar.
+          O sistema importa automaticamente nome, corpo e variáveis.
+        </p>
+
+        <div style={{ marginBottom: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <Btn onClick={syncFromMeta} disabled={syncing}>
+            {syncing ? '⏳ Sincronizando...' : '🔄 Sincronizar com Meta'}
+          </Btn>
+          <button onClick={loadMeta} disabled={loadingMeta} style={{
+            padding: '8px 16px', borderRadius: 9, border: `1px solid ${C.border}`, cursor: 'pointer',
+            fontSize: 13, fontWeight: 700, background: C.bg, color: C.primary,
+          }}>{loadingMeta ? 'Buscando...' : '👁 Ver na Meta'}</button>
+          <button onClick={() => { setShowForm(true); setEditId(null); setForm({ name: '', vars: '["primeiro_nome", "empresa"]', body: '', segment: 'geral', max_sends: 50 }); }} style={{
+            padding: '8px 16px', borderRadius: 9, border: `1px solid ${C.border}`, cursor: 'pointer',
+            fontSize: 13, fontWeight: 700, background: 'transparent', color: C.muted,
+          }}>+ Manual</button>
+        </div>
+
+        {deliveryStats && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 10, marginBottom: 16 }}>
+            <MiniStat label="Hoje" value={deliveryStats.today?.total || 0} color={C.primary} />
+            <MiniStat label="Entregues" value={`${deliveryStats.today?.delivered || 0}`} color="#22c55e" />
+            <MiniStat label="Lidos" value={`${deliveryStats.today?.read || 0}`} color="#3b82f6" />
+            <MiniStat label="Mês" value={deliveryStats.month?.total || 0} color={C.text} />
+            <MiniStat label="Custo est." value={`R$${deliveryStats.cost?.month_estimated_brl || 0}`} color={C.warning} subtitle={`~R$${deliveryStats.cost?.per_delivered_brl}/msg`} />
+          </div>
+        )}
+
+        {showForm && (
+          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 16 }}>{editId ? 'Editar Template' : 'Novo Template'}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <FocusInput label="Nome (exato como no Meta)" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="ex: proposta_engenharia_v1" />
+              <FocusInput label="Variáveis (JSON)" value={form.vars} onChange={e => setForm({ ...form, vars: e.target.value })} placeholder='["primeiro_nome", "empresa"]' />
+              <div>
+                <label style={{ display: 'block', color: C.muted, fontSize: 11, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Corpo do Template</label>
+                <textarea value={form.body} onChange={e => setForm({ ...form, body: e.target.value })} placeholder="Olá {{1}}, somos a Viga Sales..."
+                  rows={3} style={{ width: '100%', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 9, padding: '10px 14px', color: C.text, fontSize: 13, outline: 'none', fontFamily: 'inherit', resize: 'vertical' }} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <FocusInput label="Segmento" value={form.segment} onChange={e => setForm({ ...form, segment: e.target.value })} placeholder="geral" />
+                <FocusInput label="Máximo de envios" type="number" value={String(form.max_sends)} onChange={e => setForm({ ...form, max_sends: parseInt(e.target.value) || 50 })} />
+              </div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                <button onClick={() => { setShowForm(false); setEditId(null); }} style={{
+                  padding: '8px 16px', borderRadius: 9, border: `1px solid ${C.border}`, cursor: 'pointer',
+                  fontSize: 13, background: 'transparent', color: C.muted,
+                }}>Cancelar</button>
+                <Btn onClick={save}>{editId ? 'Atualizar' : 'Criar'}</Btn>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {loadingLocal ? (
+          <div style={{ textAlign: 'center', color: C.dim, padding: 20 }}>Carregando...</div>
+        ) : localTemplates.length === 0 ? (
+          <div style={{ textAlign: 'center', color: C.dim, padding: 32, fontSize: 13 }}>
+            Nenhum template registrado ainda.<br />
+            Clique em <b style={{ color: C.primary }}>Sincronizar com Meta</b> para importar automaticamente.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {localTemplates.map(t => {
+              let vars = [];
+              try { vars = typeof t.vars === 'string' ? JSON.parse(t.vars) : t.vars; } catch {}
+              const paused = t.paused === 1 || t.paused === '1' || t.paused === true;
+              return (
+                <div key={t.id} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 16px',
+                  opacity: paused ? 0.5 : 1,
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: paused ? C.muted : C.text, textDecoration: paused ? 'line-through' : 'none' }}>{t.name}</span>
+                      {paused && <span style={{ fontSize: 10, background: `${C.warning}20`, color: C.warning, padding: '2px 8px', borderRadius: 6, fontWeight: 600 }}>PAUSADO</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.dim }}>
+                      {t.body?.substring(0, 100)}{t.body?.length > 100 ? '...' : ''}
+                    </div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>
+                      Vars: {Array.isArray(vars) ? vars.join(', ') : '-'} | {t.sent_count}/{t.max_sends} envios | {t.segment}
+                    </div>
+                    {deliveryStats?.templates && (() => {
+                      const ds = deliveryStats.templates.find(d => d.name === t.name);
+                      return ds ? (
+                        <div style={{ fontSize: 10, color: C.muted, marginTop: 1, display: 'flex', gap: 12 }}>
+                          <span style={{color:'#22c55e'}}>✓{ds.delivered} entregues</span>
+                          <span style={{color:'#3b82f6'}}>👁{ds.read} lidos</span>
+                          {ds.failed > 0 && <span style={{color:C.danger}}>✗{ds.failed} falhas</span>}
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                  <div style={{ display: 'flex', gap: 4, flexShrink: 0, marginLeft: 12 }}>
+                    <button onClick={() => togglePause(t)} style={{ padding: '6px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 11, background: `${C.warning}15`, color: C.warning }}>{paused ? '▶ Ativar' : '⏸ Pausar'}</button>
+                    <button onClick={() => edit(t)} style={{ padding: '6px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 11, background: `${C.primary}15`, color: C.primary }}>Editar</button>
+                    <button onClick={() => remove(t.id)} style={{ padding: '6px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 11, background: `${C.danger}15`, color: C.danger }}>Excluir</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Meta Templates preview */}
+        {metaTemplates.length > 0 && (
+          <div style={{ marginTop: 24 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 12 }}>Encontrados na Meta ({metaTemplates.length})</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 260, overflow: 'auto' }}>
+              {metaTemplates.map(t => (
+                <div key={t.name} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: '10px 14px',
+                }}>
+                  <div style={{ fontSize: 13 }}>
+                    <span style={{ fontWeight: 700, color: C.text }}>{t.name}</span>
+                    <span style={{ fontSize: 11, color: C.dim, marginLeft: 8 }}>
+                      {t.status === 'APPROVED' ? '✅' : t.status === 'REJECTED' ? '❌' : '⏳'} {t.status}
+                      {t.quality ? ` · Q:${t.quality}` : ''}
+                      {t.body ? ` · "${t.body.substring(0, 60)}..."` : ''}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </Section>
+    </div>
+  );
+}
+
 function Settings() {
   const [tab, setTab] = useState('whatsapp');
   const [config, setConfig] = useState(null);
@@ -1997,6 +2344,7 @@ function Settings() {
       {/* Abas */}
       <div style={{display:'flex',gap:4,marginBottom:24,background:C.surface,borderRadius:14,padding:4,border:`1px solid ${C.border}`,width:'fit-content',flexWrap:'wrap'}}>
         {[
+          {id:'templates', label:'📋 Templates'},
           {id:'whatsapp', label:'⚙️ WhatsApp'},
           {id:'funnels',  label:'🎯 Funis'},
           {id:'fields',   label:'🗂️ Campos'},
@@ -2016,6 +2364,7 @@ function Settings() {
       {tab === 'instances'  && isAdmin && <InstancesManagement />}
       {tab === 'users'      && isAdmin && <UserManagement />}
 
+      {tab === 'templates'   && <TemplateManager />}
       {tab === 'whatsapp' && <><Section title="Integração Evolution API" icon="🔗">
         <div style={{display:'flex',flexDirection:'column',gap:20}}>
           <div>
@@ -3605,8 +3954,10 @@ const NAV = [
   { id:'conversations', label:'Conversas',      Icon: MessageSquare   },
   { id:'pipeline',      label:'Pipeline',       Icon: TrendingUp      },
   { id:'followups',     label:'Follow-ups',     Icon: Repeat2         },
+  { id:'equipe',        label:'Equipe',         Icon: Bot             },
   { id:'prospecting',   label:'Prospecção',     Icon: Target          },
   { id:'broadcasts',    label:'Disparos',       Icon: Megaphone       },
+  { id:'email',         label:'Email',          Icon: Mail            },
   { id:'tasks',         label:'Tarefas',        Icon: CheckSquare     },
   { id:'settings',      label:'Configurações',  Icon: SettingsIcon    },
 ];
@@ -3730,9 +4081,8 @@ export default function App() {
 
   const SidebarContent = ({ compact }) => (
     <>
-      {/* Header */}
-      <div style={{padding: compact ? '18px 10px' : '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: compact ? 'center' : 'space-between'}}>
-        <div onClick={()=>!isMobile&&setSidebarCollapsed(v=>!v)} style={{display:'flex',alignItems:'center',gap:compact?0:12,cursor:isMobile?'default':'pointer'}} title={isMobile?'':compact?'Expandir menu':'Recolher menu'}>
+      <div style={{padding: '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: 'center'}}>
+        <div onClick={()=>!isMobile&&setSidebarCollapsed(v=>!v)} style={{display:'flex',alignItems:'center',justifyContent:'center',cursor:isMobile?'default':'pointer',filter:'drop-shadow(0 0 16px rgba(249,115,22,0.5)) drop-shadow(0 0 32px rgba(249,115,22,0.25))'}} title={isMobile?'':compact?'Expandir menu':'Recolher menu'}>
           <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
             <svg width="22" height="44" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* ── Cubo flutuando (dot do i) ── */}
@@ -3748,10 +4098,6 @@ export default function App() {
               <polygon points="38,49 24,56 24,98 38,91" fill="#0E2448"/>
             </svg>
           </div>
-          {!compact && <div>
-            <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:'-0.02em'}}>Viga Sales</div>
-            <div style={{fontSize:11,color:C.dim}}>WhatsApp CRM</div>
-          </div>}
         </div>
       </div>
 
@@ -3901,8 +4247,11 @@ export default function App() {
               <button onClick={()=>setSidebarOpen(true)} style={{background:'transparent',border:'none',color:C.text,cursor:'pointer',display:'flex',alignItems:'center',padding:4}}>
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="5" width="18" height="1.8" rx="1" fill="currentColor"/><rect x="2" y="10.1" width="18" height="1.8" rx="1" fill="currentColor"/><rect x="2" y="15.2" width="18" height="1.8" rx="1" fill="currentColor"/></svg>
               </button>
-              <div style={{display:'flex',alignItems:'center',gap:8}}>
-                <svg width="18" height="36" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+              <div style={{
+                display:'flex',alignItems:'center',gap:8,
+                filter:'drop-shadow(0 0 10px rgba(249,115,22,0.6))'
+              }}>
+                <svg width="13" height="26" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
                   <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
                   <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
                   <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
@@ -3912,7 +4261,6 @@ export default function App() {
                   <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
                   <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
                 </svg>
-                <span style={{fontSize:16,fontWeight:800,color:C.text,fontFamily:"'Archivo',sans-serif"}}>Viga Sales</span>
               </div>
               <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:6}}>
                 <div style={{width:7,height:7,borderRadius:'50%',background:wpColor,boxShadow:`0 0 6px ${wpColor}`}} />
@@ -3930,7 +4278,9 @@ export default function App() {
             {page==='followups'     &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><FollowUps /></div>}
             {page==='prospecting'   &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><ErrorBoundary><Prospecting /></ErrorBoundary></div>}
             {page==='broadcasts'    &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Broadcasts /></div>}
+            {page==='email'         &&<div style={{flex:1,overflowY:'auto'}}><EmailModule /></div>}
             {page==='tasks'         &&<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}><TasksModule currentUser={currentUser} /></div>}
+            {page==='equipe'        &&<div style={{flex:1,overflow:'hidden'}}><EquipeModule /></div>}
             {page==='settings'      &&<div style={{flex:1,overflowY:'auto',padding:pagePad}}><Settings /></div>}
           </div>
 

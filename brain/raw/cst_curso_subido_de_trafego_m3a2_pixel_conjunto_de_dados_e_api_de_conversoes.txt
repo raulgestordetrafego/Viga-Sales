@@ -1,0 +1,72 @@
+--- Página 1 ---
+AULA 2
+Pixel (conjunto
+de dados) e API de
+Conversões
+
+--- Página 2 ---
+Pixel (conjunto de dados) e API de Conversões
+Índice
+Introdução …………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 2
+Eventos: o que são e para que servem? …………………………………………………………………………………………………………….………………………………………… Pág. 3
+00’02’’
+Introdução
+PIXEL (CONJUNTO DE DADOS) E API DE CONVERSÕES
+Se você estudou direitinho o módulo anterior, você, com certeza, já tem noção
+do que é um Pixel — se não, aconselho voltar algumas casinhas, beleza?
+E sabendo que as funções do Pixel são: transporte de dados para a Meta, ser o
+cérebro da conta de anúncios e ajudar na criação de públicos/segmentações,
+podemos nos perguntar, agora, o que seria um evento?
+Calma, meu jovem padawan! Eu sei que esse é um termo novo, mas vamos
+com calma, tranquilo?
+Pág. 2
+
+--- Página 3 ---
+Pixel (conjunto de dados) e API de Conversões
+01’27’’
+Eventos: o que
+são e para que servem?
+Basicamente, os eventos são ações que o usuário realiza dentro do seu site, mas
+para que servem?
+Os eventos servem, principalmente, para duas coisas: criação de públicos e
+otimização de campanhas com base nos eventos (ações).
+Com base nisso, existem 3 tipos de criação de eventos:
+1. 2. 3.
+Eventos padrão: Eventos Conversões
+personalizados: personalizadas:
+eventos criados a
+criados a partir da eventos criados a
+partir da edição do
+edição do código do partir de uma URL
+código do Pixel, ou
+(você consegue criar
+Pixel, mas, neste caso,
+seja, manualmente
+públicos baseados
+você define o seu
+inserir eventos neste em quem utilizou
+nome e edita-o no
+código (ou por determinada URL).
+código.
+ferramentas que você,
+porventura, utilizar).
+Com essas informações em mãos, agora é só criar o seu Pixel, identificar o ID
+dele e inserir, em seu código, estes 3 tipos de eventos (conforme a sua
+necessidade e estratégia, é claro!).
+Pág. 3
+
+--- Página 4 ---
+Pixel (conjunto de dados) e API de Conversões
+Em algum momento da minha trajetória, o Pixel já foi, eu confesso, um “bicho de
+sete-cabeças”, o qual não acreditava conseguir dominar, mas, cá estou, então,
+não se desespere, respire fundo e vá construindo seu contato com esse novo
+mundo:
+● Acesse a base de conhecimento.
+● Converse com a Aila (nossa IA).
+● Implemente o tutorial.
+● Consuma o conteúdo do Google Tag Manager.
+● Implemente sozinho.
+● E não deixe de acessar as Especificações para eventos padrão do
+Pixel da Meta!
+Fechou? Tamo junto!
+Pág. 4

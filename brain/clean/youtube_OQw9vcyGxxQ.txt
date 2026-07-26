@@ -1,0 +1,664 @@
+A Meta lançou a sua CLI e o seu MCP. O
+que que isso quer dizer? O que que são
+essas siglas? O que que isso aqui muda
+na sua vida? Como é que você vai subir
+os seus anúncios com inteligência
+artificial? Como é que você vai usar o
+Cloud para subir os seus anúncios? Você
+deveria estar subindo os seus anúncios
+com inteligência artificial? Será que
+você está ficando para trás? O
+gerenciador de anúncios morreu? O gestor
+de tráfego pago, ele vai deixar de
+existir por causa disso? Vamos responder
+todas essas perguntas nos próximos 22
+minutos. E a primeira coisa que a gente
+tem que entender para mergulhar mais
+nesse universo e responder a todas essas
+perguntas é diferenciar o que que são
+esses três termos que vão cada vez
+aparecer mais na sua vida, que são CLI,
+CLI,
+GUI,
+GUI, e MCP, que é o Model Context
+Protocol. Quando eu escuto esses termos,
+me dá um certo desespero. Meu Deus, eu
+vou ter que entender uma coisa meio
+grega, uma coisa meio programação,
+coisas extremamente complexas. Não, você
+só tem que entender o que que são cada
+uma dessas coisas. E isso, por mais que
+seja confuso no início, por mais que
+você não saiba reproduzir esse
+conhecimento logo depois de ver esse
+vídeo, acredite em mim, isso vai ficar
+cada vez mais claro e mais simples para
+você, tá? Então, o que que é a CLI, a
+CLI? CLI e a GUI, eu vou explicar as
+duas ao mesmo tempo porque vai ficar
+mais fácil, elas são basicamente
+maneiras de você pedir coisas para o seu
+computador. Então, eu posso pedir coisas
+para o meu computador e agora, para a
+inteligência artificial, via CLI, que é
+Command Line Interface. Então, eu vou
+pedir coisas para o meu computador
+através de comandos no meu terminal. O
+terminal, qualquer computador tem um
+terminal, você consegue acessar ele e
+você consegue pedir coisas para a
+inteligência artificial via terminal,
+que é essa tela preta, essa tela, você
+pode colocar ela no modo claro, né? O
+meu está no modo escuro, mas normalmente
+as pessoas vão se referir ao terminal
+como uma tela preta assustadora. É
+difícil de você utilizar ela no começo,
+ela não é user friendly, ela não é
+amigável para o usuário, ela é
+completamente assustadora e para a
+maioria das pessoas, para a grande
+maioria das pessoas,
+completamente ineficiente.
+Tá, mas ao mesmo tempo que eu posso
+pedir coisas para a inteligência
+artificial, ao mesmo tempo que eu posso
+pedir coisas para o meu computador para
+command line interface, CLI, C L I, eu
+também posso pedir coisas para o meu
+computador, eu também posso me comunicar
+com o meu computador, com a inteligência
+artificial via GUI, G U I. O que que que
+é a GUI? A GUI é a graphic user
+interface. Então, é quando
+eu vou ter uma visualização mais gráfica
+para eu conseguir pedir as coisas para a
+inteligência artificial, para o meu
+computador. Então, o chat do Claude,
+quando você entra nele no seu navegador
+ou no aplicativo do Claude, é uma GUI.
+Quando você entra no gerenciador de
+anúncios e você vai criar uma campanha e
+você aperta no botão verde de criar e
+você seleciona o objetivo de campanha,
+isso daqui também é uma GUI.
+Então, é uma
+interface gráfica. Então, você tem a
+parte gráfica, você tem os botões, você
+tem tudo de maneira mais intuitiva, mais
+amigável para você utilizar. Pedro, o
+que que é melhor e pior? Olha, não tem
+aquilo que que é melhor e pior, mas eu
+recomendaria para alguém que tá
+começando, ah, eu vou começar subir os
+meus anúncios via inteligência
+artificial, eu vou migrar direto de
+subir do gerenciador de anúncios para
+CLI,
+para o terminal. Não, eu não faria isso,
+eu faria uma progressão. Vamos primeiro
+nos acostumarmos a subir anúncios, a
+conversar com o chat que vai subir os
+nossos anúncios antes de você migrar
+para um terminal, para uma tela preta,
+porque lá você vai ter um recurso ou
+outro a mais e assim você nem vai ter
+tantos recursos a mais lá do que você
+teria subindo os seus anúncios aqui via
+chat com a inteligência artificial. Tá
+Pedro e o MCP o que que é o model model
+né modelo é o protocolo do contexto do
+modelo
+que loucura é essa? O MCP é basicamente
+uma maneira de você conectar a sua
+inteligência artificial de estimação
+pode ser qualquer uma diretamente às
+plataformas de anúncio e você pedir as
+coisas por lá. Então a meta ela é uma
+sempre foi uma plataforma muito
+centralizadora que que isso quer dizer?
+Elas nunca a meta nunca liberou
+você conseguir subir os anúncios na meta
+por outra plataforma que não fosse o
+gerenciador de anúncios. E isso porque o
+gerenciador de anúncios ele é uma
+ferramenta absolutamente incrível e eu
+já respondo uma pergunta aqui não você
+poder subir os seus anúncios via chat
+você poder subir os seus anúncios via
+terminal isso daqui não vai matar o uso
+do gerenciador de anúncios o gerenciador
+de anúncios ele é uma interface gráfica
+incrível muitas vezes é muito mais
+rápido você subir um anúncio por aqui do
+que você abrir um chat e fazer a
+solicitação das coisas que você precisa
+subir no seu anúncio aqui pelo chat aqui
+pela conversa. Então muitas vezes por
+praticidade você vai acabar utilizando o
+gerenciador de anúncios mas a meta é
+essa plataforma muito centralizadora e
+aí eles
+começam a enxergar um movimento do mundo
+um movimento de que as plataformas dos
+aplicativos eles começam a liberar os
+seus MCPs para que eu consiga conectar
+esses aplicativos às minhas
+inteligências artificiais. A meta
+entendeu que não tinha para onde correr
+eu acho que eles não estavam com vontade
+de fazer isso mas eles foram obrigados
+pela situação tecnológica do mundo.
+Então o mundo começa a pedir para as
+plataformas e ferramentas olha não tem
+como você não ter um MCP, não tem como
+você não deixar o subir os anúncios
+via uma inteligência artificial. Tá,
+Pedro, como é que eu faço isso na
+prática então? Seguinte, você vai entrar
+aqui na sua inteligência artificial, eu
+vou usar o Cloud como exemplo, você
+precisa ter uma conta paga aqui no
+Cloud, eu vou clicar aqui no meu
+nomezinho aqui no canto inferior
+esquerdo, vou apertar em configurações,
+aqui em configurações eu vou abrir os
+conectores e aqui nos conectores eu vou
+ter aqui esses conectores de MCPs. Então
+é aqui que eu vou conectar outros
+aplicativos à minha inteligência
+artificial. Quando eu conecto um
+aplicativo aqui, a minha inteligência
+artificial ela passa a ter acesso àquele
+aplicativo. Então repara que eu não
+tenho o meu Gmail conectado aqui, mas se
+eu conectasse o meu Gmail aqui via MCP
+do Gmail, eu consigo agora fazer com que
+o meu Cloud acesse o meu Gmail. Mesma
+coisa é aqui com a Meta MCP, o meu já
+está configurado aqui. Então o que que
+eu vou fazer? Eu vou desconectar ele,
+tá? Então vou fazer essa desconexão da
+Meta MCP aqui para que eu possa fazer,
+vou atualizar minha tela aqui, para que
+eu possa conectá-lo de novo. Então, ó,
+vou apertar aqui em conectar, ó, apertei
+em conectar e aí o que que ele vai
+fazer? Ele vai me perguntar se eu quero
+fazer uma reconexão
+Cloud ao Ads MCP Server. Aí eu vou
+apertar em continuar e aí muito
+importante, ó, você precisa estar logado
+na sua conta da Meta, tá? Então já fica
+com o seu
+com o seu login feito lá dentro do
+Facebook para fazer essa conexão. Então
+você vai fazer uma conexão com o perfil
+e o perfil é que tem acesso às contas de
+anúncio. Beleza, ele tá conectado. No
+seu caso, você vai apertar em adicionar
+um um conector customizado, porque não
+vai tá aparecendo isso daqui, você vai
+colar este link aqui que é o
+mcp.facebook.com/ads,
+vou deixar na descrição e aí você vai
+colocar um nome aqui, por exemplo, Meta
+Ads MCP.
+E aí você vai fazer essa adição. Vou
+apertar aqui, ele não vai deixar eu
+fazer, ó, porque ele disse que a já tem
+uma conexão feita com a Meta. Beleza.
+Que que acontece agora? Agora quando eu
+for conversar com o Claude, deixa eu
+abrir aqui uma interface de chat, eu
+posso apertar aqui nesse botãozinho de
+mais e aqui eu tenho os connectors. E aí
+repara que o Meta MCP, ele está
+conectado aqui, tá? Eu posso desativar
+ele e deixar ele ativo. Eu vou deixar
+ele ativo e vou falar agora para ele o
+seguinte. Eu vou eu vou falar
+literalmente porque vai ser mais fácil.
+Claude,
+via Meta MCP, liste para mim todas as
+contas de anúncios que estão disponíveis
+para que eu possa subir, editar e
+otimizar campanhas e anúncios através
+delas.
+Vou mandar o texto aqui.
+Ah, detalhe, essa ferramenta, eu sei que
+muita gente vai perguntar, essa
+ferramenta que eu tô utilizando é uma
+ferramenta que chama Whisper.
+Whisper. Eu vou deixar o link na
+descrição também, que é essa ferramenta
+que faz as transcrições. Então, eu
+aperto um comando aqui no meu teclado e
+aí eu simplesmente falo. Então, como eu
+tenho muito mais habilidade de
+comunicação falada do que de comunicação
+escrita, eu falo o dia inteiro, você tá
+vendo eu fazendo isso agora, como eu
+tenho muito [roncando] mais habilidade
+de fazer isso,
+eu prefiro muito mais ficar falando com
+a inteligência artificial, por mais que
+ela tenha a funçãozinha do da
+transcrição, do microfone nativamente,
+eu prefiro muito mais ficar falando via
+eh aplicações especializadas em
+transcrição do que pelo botãozinho da
+inteligência artificial. E se eu tô
+subindo anúncios, se eu tô conversando
+com o terminal, aqui eu não tenho um um
+recurso de microfone, então eu uso essa
+ferramenta e eu consigo falar qualquer
+coisa que eu quiser e tudo aquilo que eu
+falar vai ser ser aqui na ferramenta.
+Então, ó, consigo falar qualquer coisa
+que eu quiser e tudo aquilo que eu falar
+vai ser escrito aqui na Aí cortou a
+ferramenta porque eu apertei pause
+antes. Mas isso daqui é extremamente
+útil, eu vou deixar o link na descrição.
+Beleza, o que que aconteceu aqui? Ele
+vai pedir se eu libero, né, o uso aqui
+do Meta MCP. Se a gente vai apertar que
+a gente libera ele e aí ele vai puxar as
+contas de anúncio. Nós temos algumas
+limitações ainda via MCP, que é o
+seguinte, esse MCP da Meta ele foi
+liberado em beta teste. Que que isso
+quer dizer? Quer dizer que eles estão
+consertando
+o avião com avião voando, tá? Então eles
+liberaram, mas eles não liberaram ainda
+você ter acesso a todas as contas de
+anúncio que você utiliza. Eles não
+fizeram uma liberação 360. Então, ó, ele
+vai falar aqui, ó, "Puxei tudo, você tem
+57 contas de anúncios acessíveis no
+total, mas o problema que você já
+conhece se confirma. Só oito contas
+estão habilitadas para uso via MCP". Tá?
+Então eu tenho oito contas. No passado
+eu nem tinha oito contas, tá, liberadas.
+Eu tinha duas contas liberadas. Isso
+daqui anteontem ele tava só com duas
+contas liberadas. E aí ele vai me trazer
+aqui os IDs das minhas contas de
+anúncio, tá? Eu vou selecionar o ID de
+uma conta de anúncio aqui e aí eu vou
+colocar aqui, ó, que eu quero
+subir uma campanha para conta de anúncio
+e eu vou colocar aqui o ID dela.
+Ah, Pedro, e as outras contas de anúncio
+que ainda não estão disponíveis? Para
+essas outras contas de anúncio não tem o
+que a gente fazer. Tudo o que a gente
+tem que fazer
+esperar.
+>> [roncando][risadas]
+>> Não tem como forçar a ativação delas ali
+dentro da ferramenta. A gente precisa
+ter paciência mesmo, esperar,
+eventualmente elas vão ser liberadas. A
+gente não pode olhar para o trabalho que
+a gente tá tendo a primeira vez com uma
+ferramenta e julgar que vai ser sempre
+assim. Então, ah, eu fui lá, eu
+conectei, eu mandei o número, aí ela
+carrega, aí ela confirma,
+aí ela vai me pedir detalhes aqui. E aí,
+olha só que interessante, quando
+eu vou subir uma campanha, ele vai me
+fazer diversas perguntas,
+que é:
+Qual é o nome da campanha?
+Qual que é o seu objetivo?
+CBO ou ABO?
+Qual que é a estratégia de lance?
+Qual que é a categoria especial de
+anúncio? Qual que é a data de início e a
+data de fim? Perceba o seguinte, essas
+perguntas que o chat está me fazendo são
+perguntas que a interface gráfica, a GUI
+da Meta me faz.
+Então, se eu for subir uma campanha aqui
+para mesma conta de anúncio que eu vou
+subir aqui, eu vou ter que apertar em
+criar
+e aí a Meta vai me perguntar: Olha,
+qual que é o tipo de compra? Aqui ele
+nem me fez essa pergunta, mas tudo bem,
+porque normalmente é uma opção que a
+gente pula. Normalmente a gente usa
+leilão 99,9%
+das vezes. Mas escolha um objetivo de
+campanha, alguém tem que escolher.
+Alguém tem que saber, putz,
+para eu ter uma campanha de WhatsApp,
+por exemplo, eu tenho que selecionar o
+objetivo de engajamento.
+Se eu quero uma campanha de formulário
+nativo, eu vou selecionar uma opção de
+leads.
+Então, eu tenho que fazer essa definição
+aqui e eu tenho que fazer essa definição
+aqui.
+Percebe que, ah, a inteligência
+artificial matou o gestor de tráfego? É,
+mas alguém que não entende de tráfego
+pago
+chega aqui e fala assim: Tá,
+CBO ou ABO?
+Qual que é a diferença de eu utilizar o
+orçamento, budget, ele usou inglês aqui,
+né? O orçamento a nível de campanha ou
+orçamento a nível de grupo de anúncio? E
+nem dá para saber que CBO é orçamento a
+nível de campanha aqui.
+A pessoa nem sabe o que que é CBO, nem
+sabe o que que é ABO. Tudo bem, mas ela
+pode vir aqui e perguntar o que que é
+CBO e o que que é ABO. Aí aí, tá fazendo
+um estudo de tráfego pago com a
+ferramenta. Mas entenda que
+para fazer essa definição eu tenho que
+saber o que que são essas coisas. Aí eu
+tenho que definir se o orçamento é
+diário ou vitalício. Quando que eu uso o
+orçamento diário? Quando que eu uso o
+orçamento vitalício? Será que a pessoa
+vai saber que ela usa o orçamento
+vitalício se ela tem uma programação de
+anúncios?
+E será que se eu falar para ele aqui, ó,
+nome da campanha, bota campanha de
+teste.
+Aí número dois, meu objetivo é leads.
+Aí eu quero uma campanha de
+CBO vitalício. Será que ele vai me
+perguntar se eu quero ativar a
+programação dos anúncios?
+A estratégia de lance, eu vou utilizar a
+default, né? A estratégia padrão. Qual
+que é a categoria especial de anúncio?
+Nenhuma.
+Só data
+de início.
+Beleza, vou responder isso daqui para
+campanha. Que que será que ela vai me
+devolver aqui? Concorda comigo, eu tive
+que digitar, eu tive que parar, eu tive
+que ponderar, eu tive que responder cada
+uma daquelas perguntas. Mas quando eu tô
+criando um anúncio pela interface da
+Meta, é tudo mais intuitivo. Então a
+inteligência artificial, ela vai me
+devolver a pergunta. Ah, qual que é o
+valor? Quanto que a campanha vai gastar
+no total? Ah, campanha vai gastar 50
+reais por dia. Qual que é a data de
+início? Hoje.
+Qual que é a data de fim? Ó, budget
+vitalício exige uma data de fim. Beleza.
+Então budget vitalício, daqui a uma
+semana.
+Vou responder para ele.
+Ele vai entender as informações aqui e
+vai dar o próximo passo. Então ele vai
+sempre ficar fazendo esse ping-pong
+comigo.
+Quando que isso daqui vai ser
+extremamente útil? Quando eu já tenho as
+coisas mais pré-configuradas.
+Quando eu já tenho as ações que eu tenho
+que tomar no dia a dia, os tipos de
+campanha que eu sempre tenho o subir.
+Vamos dizer que eu atendo 50 escritórios
+de advocacia.
+E aí toda vez que eu fecho um novo
+escritório de advocacia, eu começo com
+aquele mesmo padrão de campanhas, os
+mesmos testes.
+Se eu tenho uma tarefa que é repetitiva,
+isso daqui é incrível. Porque eu vou ter
+que responder todas essas perguntas uma
+única vez. E aí eu vou estruturar um
+prompt. O que que é um prompt? Prompt
+nada mais é do que um pedido.
+E esse meu pedido que eu vou fazer para
+a inteligência artificial, ele vai ser
+sempre o mesmo. Então eu vou estruturar
+um super pedido. Eu não vou ficar
+fazendo esse ping pongzinho que eu tô
+fazendo aqui no chat.
+Eu vou simplesmente solicitar tudo de
+uma vez. Ele vai me solicitar
+confirmação e aí com umas poucas
+mensagens, eu vou criar três, quatro,
+cinco, 10 campanhas aqui dentro de uma
+única conta de anúncios.
+Então, ó, ele tá, me deu o resumo da
+campanha e ele vai subir essa campanha
+agora aqui. Então, ó, vou permitir.
+E ele vai carregar.
+Agora, ele não tá criando os conjuntos
+de anúncio.
+Porque quando eu for criar o conjunto de
+anúncio, eu também vou ter que responder
+uma série de perguntas. Ó, ele criou a
+campanha aqui, ó. Me deu o link para eu
+abrir direto no gerenciador.
+Ó, próximos passos para ela rodar, falta
+subir a estrutura de baixo. Então, o
+conjunto de anúncio, o anúncio, onde que
+vai capturar o lead, o público, o
+posicionamento, o nome do conjunto de
+anúncio. Ah, mas eu tô achando bem
+intuitivo. Ele tá me perguntando tudo no
+passo a passo. Sim, assim como é você
+clicar no botão aqui, ó, e ir subindo a
+sua campanha aqui. Selecionei leads, vai
+carregar, vou definir o nome da minha
+campanha. Ele vai me perguntar o
+orçamento, se é CBO ou se é ABO. Se for
+o orçamento CBO, se ele é diário, se ele
+é vitalício. Como eu selecionei o
+orçamento vitalício ou o orçamento
+total.
+Lá no conjunto de anúncio, ele vai me
+perguntar data de término. Eu selecionei
+o orçamento vitalício aqui. O chat GPT
+não me perguntou, mas se eu quero
+vincular uma programação, eu vou ter que
+selecionar essa opção aqui de mais
+configurações, programação do conjunto
+de anúncio, definir uma programação para
+os anúncios. Então, se eu não entendo de
+Meta Ads,
+eu não entendo de subir campanha no Meta
+Ads via inteligência artificial.
+Pedro, você tá dizendo então que nunca
+vamos abandonar o gerenciador? Não, eu
+tô dizendo que isso aqui é um baita novo
+recurso para todo gestor de tráfego
+pago.
+Só que isso aqui é um baita novo recurso
+se você tem noção do que você tá
+fazendo.
+Se você não tem noção nenhuma do que
+você tá fazendo, você vai passar mais
+trabalho subindo campanha via chat do
+que subindo campanha via gerenciador.
+Mas a partir do momento que você entende
+de gerenciador, que você entende de
+tráfego,
+você começa a visualizar, tá, tá bom.
+Então, se eu consigo pedir para a IA
+subir as campanhas para mim e eu sempre
+subo as as mesmas campanhas, eu posso
+ter um mesmo prompt que eu peço para
+para criar as campanhas aqui. Ah, Pedro,
+mas você pode ter uma skill, você pode
+ter uma série de agentes que fazem isso
+daqui para você. Tudo bem, isso aqui é
+assunto para um outro vídeo quando a
+gente vai botar o pezinho um pouquinho
+de maneira mais profunda na água. Mas
+por hora, o que que eu quero ressaltar
+aqui para você? Isso aqui tá disponível
+para todo mundo. O que que eu faria se
+eu fosse você? Eu subiria uma campanha.
+Eu conversaria com a inteligência
+artificial. Você tem que ser um
+interessado, você tem que ser curioso.
+Não é um curso que vai te ensinar isso
+daqui. Tudo bem, um curso pode te
+ajudar, uma aula como essa pode te
+ajudar, um vídeo como esse pode te
+ajudar. Mas a questão é, você tem que
+ser um curioso. Aí você vai clicar aqui,
+ó, "Ah, eu quero ver a campanha".
+Abrir direto no gerenciador. Vou abrir
+aqui para ver o que que vai aparecer.
+subiu a minha campanha aqui, ó. Eu subi
+essa campanha via Cloud.
+Então, a campanha ela veio para cá,
+mas ó, eu já não posso mexer na
+programação do meu conjunto de anúncio.
+Então, putz, eu vou ter que voltar lá e
+falar assim: "Olha, deu errado". Por
+quê? Porque eu preciso mexer na
+programação do conjunto de anúncio. Eu
+preciso anunciar somente horários e dias
+específicos.
+Então, eu tenho que ter o entendimento
+dos dois lados. Eu tenho que entender da
+inteligência artificial, mas não adianta
+nada. Você pega uma pessoa que só
+entende de IA e pede para ele subir um
+anúncio, vai vai sair um anúncio merda.
+Ele não vai saber o que configurar, ele
+não vai saber o que escolher, ele não
+vai saber quais opções ele seleciona.
+Agora, você pega alguém que entende de
+Meta, assim, entende de tráfego pago, e
+você equipa essa pessoa com a
+inteligência artificial, e ela não é um
+lunático do: "Meu Deus, tudo é
+inteligência artificial, tudo é
+inteligência artificial, tudo é
+inteligência artificial".
+Essa pessoa
+que não é um lunático, que tem
+discernimento de: "Olha, aqui eu uso IA.
+Aqui eu vou usar o chat para subir. Aqui
+eu vou usar o próprio gerenciador,
+porque é muito mais rápido".
+E aí, com o passar do tempo no seu
+desenvolvimento, você vai começando a
+adquirir outras habilidades. Mas, mais
+uma vez,
+a gente deixa para falar dessas outras
+habilidades, de como que a gente vai
+usar skills, de como que a gente vai
+usar agentes para nos ajudar nesse
+processo, num próximo passo. Mas, esse
+aqui é o primeiro.
+Entender o que que é cada uma das
+coisas. Entender que é possível. É
+possível vir aqui e perguntar sobre
+dados, eu perguntar sobre números, eu
+perguntar sobre métricas. "Ah, mas isso
+vai me ajudar muito". É, mas o que que
+você vai analisar?
+Qual dado, qual métrica você vai
+analisar? O que que aquele dado, o que
+que aquela métrica quer te dizer?
+Qual métrica que avalia o sucesso da
+campanha? Qual métrica secundária? Ainda
+assim, você tem que ter um entendimento.
+Não dá para confiar cegamente na
+inteligência artificial. Você tem que
+saber até mesmo o que pedir. Você é um
+excelente gestor de tráfego em 2026, no
+mundo de inteligência artificial, não
+quando você usa IA para subir e fazer
+todas as coisas, mas quando você sabe
+quando você usa inteligência artificial
+e quando você sabe,
+quando você usa o gerenciador,
+mais ferramentas estão começando a se
+tornar disponíveis para você. Seu
+trabalho agora é ser um explorador
+dessas ferramentas.
+Não o lunático, meu Deus, tudo eu faço
+com inteligência artificial porque eu
+acho melhor.
+Não, um desesperado apocalíptico, não, o
+tráfego acabou, tá bom? Pede para alguém
+que não sabe nada de tráfego pago subir
+uma campanha, você vai ver a merda que
+vai acontecer.
+Ah, Pedro, mas isso aqui não tem risco
+de bloqueio nenhum.
+Porque é uma ferramenta oficial. Então a
+Meta está oficializando que isso aqui é
+possível e a gente tem que ficar de
+olho, entender quais são os recursos
+disponíveis e adaptar isso daqui para
+situações do nosso dia a dia.
+Ah, eu vou subir uma única campanha uma
+única vez.
+Cara, eu não vou abrir o chat do Claude
+para fazer isso, eu vou abrir o
+gerenciador, em cinco minutos eu faço
+isso aqui.
+Ah, é é uma campanha repetitiva, é algo
+que eu sempre faço. Tudo bem, vale a
+pena estruturar um prompt, um pedido que
+se repete várias vezes para utilizar ele
+aqui.
+Tá? Então, acredito que com isso daqui
+você entendeu um pouquinho mais sobre as
+funcionalidades, sobre como que utiliza
+e agora é você ser um explorador, um
+cientista maluco aqui. Crie uma
+campanha, solicita dados, pede para
+analisar uns anúncios, vê o que que ele
+te fala e
+usa a sua cabeça de maneira inteligente.
+Não cai no, nossa, eu nunca teria tido
+esse insight aqui olhando para o
+gerenciador.
+Que um anúncio está mais caro do que
+outro? Será que você precisa que a IA te
+conte isso? Será que não é melhor você
+abrir o gerenciador e aqui nas próprias
+colunas você perceber que, nossa, aqui
+eu estou pagando cinco reais por lead,
+aqui eu estou pagando quatro. É, esse
+daqui está melhor do que esse. Será que
+eu preciso que a IA me conte isso?
+Preciso pedir, preciso esperar ela me
+devolver a resposta, sendo que eu posso
+analisar aqui? Em algumas situações sim,
+em algumas situações não. Mas, enfim,
+fica aqui esse conteúdo para você e só
+te lembrando, não sei quando você está
+assistindo esse vídeo, mas lá no dia 18,
+próxima segunda-feira, no momento que eu
+tô gravando isso daqui, nós vamos fazer
+o nosso evento a nova gestão de tráfego.
+Lá a gente vai trazer muito essa visão
+sobre o que que é a gestão de tráfego
+nos dias de hoje, o que que você deveria
+se preocupar, o que que você não deveria
+estar se preocupando sobre esse novo
+grande universo dos anúncios online e
+como que você vai ganhar dinheiro com
+ele, tá? Para se cadastrar, o link tá
+aqui na descrição, fechou? Tamo junto e
+a gente se vê no próximo vídeo.

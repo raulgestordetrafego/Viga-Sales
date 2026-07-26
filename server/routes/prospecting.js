@@ -5,7 +5,14 @@ import * as evolutionApi from '../services/evolutionApi.js';
 import multer from 'multer';
 import Papa from 'papaparse';
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    cb(null, allowed.includes(file.mimetype));
+  },
+});
 
 // Cria contato + conversa no CRM quando um prospect é marcado como enviado
 async function syncProspectToConversation(prospect, message) {
@@ -541,6 +548,16 @@ router.patch('/:id/status', async (req, res) => {
     const allowed = ['novo', 'enviado', 'respondeu', 'follow-up', 'convertido', 'descartado'];
     if (!allowed.includes(status)) {
       return res.status(400).json({ error: `Status inválido. Use: ${allowed.join(', ')}` });
+    }
+
+    if (status === 'novo') {
+      const todaySent = await queryOne(
+        "SELECT COUNT(*) as cnt FROM prospecting_logs WHERE prospect_id = ? AND action IN ('enviado','enviado_meta') AND date(created_at) = date('now')",
+        [req.params.id]
+      );
+      if (todaySent && todaySent.cnt > 0) {
+        return res.status(409).json({ error: 'Lead já foi enviado hoje. Não é permitido resetar para novo no mesmo dia.' });
+      }
     }
 
     const extra = [];

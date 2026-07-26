@@ -1,0 +1,666 @@
+[0.0s] A Meta lançou a sua CLI e o seu MCP. O
+[4.8s] que que isso quer dizer? O que que são
+[6.0s] essas siglas? O que que isso aqui muda
+[7.6s] na sua vida? Como é que você vai subir
+[9.4s] os seus anúncios com inteligência
+[11.4s] artificial? Como é que você vai usar o
+[12.6s] Cloud para subir os seus anúncios? Você
+[15.3s] deveria estar subindo os seus anúncios
+[16.8s] com inteligência artificial? Será que
+[18.1s] você está ficando para trás? O
+[19.6s] gerenciador de anúncios morreu? O gestor
+[22.0s] de tráfego pago, ele vai deixar de
+[23.7s] existir por causa disso? Vamos responder
+[25.6s] todas essas perguntas nos próximos 22
+[27.8s] minutos. E a primeira coisa que a gente
+[29.5s] tem que entender para mergulhar mais
+[31.0s] nesse universo e responder a todas essas
+[32.9s] perguntas é diferenciar o que que são
+[34.8s] esses três termos que vão cada vez
+[36.8s] aparecer mais na sua vida, que são CLI,
+[40.8s] CLI,
+[42.2s] GUI,
+[43.7s] GUI, e MCP, que é o Model Context
+[48.9s] Protocol. Quando eu escuto esses termos,
+[50.8s] me dá um certo desespero. Meu Deus, eu
+[52.9s] vou ter que entender uma coisa meio
+[54.0s] grega, uma coisa meio programação,
+[56.2s] coisas extremamente complexas. Não, você
+[58.9s] só tem que entender o que que são cada
+[60.4s] uma dessas coisas. E isso, por mais que
+[62.5s] seja confuso no início, por mais que
+[64.3s] você não saiba reproduzir esse
+[65.6s] conhecimento logo depois de ver esse
+[67.6s] vídeo, acredite em mim, isso vai ficar
+[69.8s] cada vez mais claro e mais simples para
+[72.2s] você, tá? Então, o que que é a CLI, a
+[75.0s] CLI? CLI e a GUI, eu vou explicar as
+[77.8s] duas ao mesmo tempo porque vai ficar
+[79.0s] mais fácil, elas são basicamente
+[81.0s] maneiras de você pedir coisas para o seu
+[83.0s] computador. Então, eu posso pedir coisas
+[85.0s] para o meu computador e agora, para a
+[86.5s] inteligência artificial, via CLI, que é
+[90.0s] Command Line Interface. Então, eu vou
+[93.1s] pedir coisas para o meu computador
+[95.2s] através de comandos no meu terminal. O
+[99.5s] terminal, qualquer computador tem um
+[101.3s] terminal, você consegue acessar ele e
+[103.4s] você consegue pedir coisas para a
+[105.8s] inteligência artificial via terminal,
+[108.2s] que é essa tela preta, essa tela, você
+[110.2s] pode colocar ela no modo claro, né? O
+[111.6s] meu está no modo escuro, mas normalmente
+[113.2s] as pessoas vão se referir ao terminal
+[114.8s] como uma tela preta assustadora. É
+[117.6s] difícil de você utilizar ela no começo,
+[120.1s] ela não é user friendly, ela não é
+[123.1s] amigável para o usuário, ela é
+[125.0s] completamente assustadora e para a
+[127.0s] maioria das pessoas, para a grande
+[128.6s] maioria das pessoas,
+[130.2s] completamente ineficiente.
+[133.2s] Tá, mas ao mesmo tempo que eu posso
+[135.6s] pedir coisas para a inteligência
+[136.8s] artificial, ao mesmo tempo que eu posso
+[138.7s] pedir coisas para o meu computador para
+[141.4s] command line interface, CLI, C L I, eu
+[145.4s] também posso pedir coisas para o meu
+[147.0s] computador, eu também posso me comunicar
+[148.6s] com o meu computador, com a inteligência
+[150.0s] artificial via GUI, G U I. O que que que
+[153.7s] é a GUI? A GUI é a graphic user
+[156.6s] interface. Então, é quando
+[161.3s] eu vou ter uma visualização mais gráfica
+[165.7s] para eu conseguir pedir as coisas para a
+[167.7s] inteligência artificial, para o meu
+[168.9s] computador. Então, o chat do Claude,
+[171.9s] quando você entra nele no seu navegador
+[174.1s] ou no aplicativo do Claude, é uma GUI.
+[177.2s] Quando você entra no gerenciador de
+[178.7s] anúncios e você vai criar uma campanha e
+[181.0s] você aperta no botão verde de criar e
+[183.1s] você seleciona o objetivo de campanha,
+[185.5s] isso daqui também é uma GUI.
+[188.0s] Então, é uma
+[190.0s] interface gráfica. Então, você tem a
+[192.9s] parte gráfica, você tem os botões, você
+[195.5s] tem tudo de maneira mais intuitiva, mais
+[198.2s] amigável para você utilizar. Pedro, o
+[200.4s] que que é melhor e pior? Olha, não tem
+[202.1s] aquilo que que é melhor e pior, mas eu
+[203.9s] recomendaria para alguém que tá
+[205.0s] começando, ah, eu vou começar subir os
+[207.2s] meus anúncios via inteligência
+[208.6s] artificial, eu vou migrar direto de
+[211.7s] subir do gerenciador de anúncios para
+[215.0s] CLI,
+[216.3s] para o terminal. Não, eu não faria isso,
+[218.6s] eu faria uma progressão. Vamos primeiro
+[220.8s] nos acostumarmos a subir anúncios, a
+[224.0s] conversar com o chat que vai subir os
+[226.0s] nossos anúncios antes de você migrar
+[228.4s] para um terminal, para uma tela preta,
+[230.5s] porque lá você vai ter um recurso ou
+[232.2s] outro a mais e assim você nem vai ter
+[234.1s] tantos recursos a mais lá do que você
+[235.9s] teria subindo os seus anúncios aqui via
+[238.6s] chat com a inteligência artificial. Tá
+[241.0s] Pedro e o MCP o que que é o model model
+[244.7s] né modelo é o protocolo do contexto do
+[248.2s] modelo
+[249.6s] que loucura é essa? O MCP é basicamente
+[253.7s] uma maneira de você conectar a sua
+[256.7s] inteligência artificial de estimação
+[258.6s] pode ser qualquer uma diretamente às
+[260.9s] plataformas de anúncio e você pedir as
+[263.4s] coisas por lá. Então a meta ela é uma
+[266.4s] sempre foi uma plataforma muito
+[267.7s] centralizadora que que isso quer dizer?
+[270.1s] Elas nunca a meta nunca liberou
+[272.7s] você conseguir subir os anúncios na meta
+[275.2s] por outra plataforma que não fosse o
+[277.4s] gerenciador de anúncios. E isso porque o
+[279.5s] gerenciador de anúncios ele é uma
+[280.6s] ferramenta absolutamente incrível e eu
+[282.8s] já respondo uma pergunta aqui não você
+[285.2s] poder subir os seus anúncios via chat
+[287.6s] você poder subir os seus anúncios via
+[289.9s] terminal isso daqui não vai matar o uso
+[293.3s] do gerenciador de anúncios o gerenciador
+[295.4s] de anúncios ele é uma interface gráfica
+[297.8s] incrível muitas vezes é muito mais
+[299.9s] rápido você subir um anúncio por aqui do
+[302.2s] que você abrir um chat e fazer a
+[303.9s] solicitação das coisas que você precisa
+[306.8s] subir no seu anúncio aqui pelo chat aqui
+[309.2s] pela conversa. Então muitas vezes por
+[311.2s] praticidade você vai acabar utilizando o
+[313.9s] gerenciador de anúncios mas a meta é
+[315.9s] essa plataforma muito centralizadora e
+[318.4s] aí eles
+[319.4s] começam a enxergar um movimento do mundo
+[321.6s] um movimento de que as plataformas dos
+[324.2s] aplicativos eles começam a liberar os
+[327.4s] seus MCPs para que eu consiga conectar
+[330.5s] esses aplicativos às minhas
+[332.1s] inteligências artificiais. A meta
+[334.2s] entendeu que não tinha para onde correr
+[336.3s] eu acho que eles não estavam com vontade
+[337.9s] de fazer isso mas eles foram obrigados
+[340.6s] pela situação tecnológica do mundo.
+[342.8s] Então o mundo começa a pedir para as
+[344.6s] plataformas e ferramentas olha não tem
+[346.8s] como você não ter um MCP, não tem como
+[349.2s] você não deixar o subir os anúncios
+[351.9s] via uma inteligência artificial. Tá,
+[354.2s] Pedro, como é que eu faço isso na
+[355.8s] prática então? Seguinte, você vai entrar
+[358.5s] aqui na sua inteligência artificial, eu
+[359.9s] vou usar o Cloud como exemplo, você
+[361.9s] precisa ter uma conta paga aqui no
+[363.4s] Cloud, eu vou clicar aqui no meu
+[365.3s] nomezinho aqui no canto inferior
+[366.8s] esquerdo, vou apertar em configurações,
+[370.3s] aqui em configurações eu vou abrir os
+[372.4s] conectores e aqui nos conectores eu vou
+[375.5s] ter aqui esses conectores de MCPs. Então
+[379.1s] é aqui que eu vou conectar outros
+[380.7s] aplicativos à minha inteligência
+[382.4s] artificial. Quando eu conecto um
+[384.0s] aplicativo aqui, a minha inteligência
+[385.9s] artificial ela passa a ter acesso àquele
+[388.2s] aplicativo. Então repara que eu não
+[390.2s] tenho o meu Gmail conectado aqui, mas se
+[392.5s] eu conectasse o meu Gmail aqui via MCP
+[395.6s] do Gmail, eu consigo agora fazer com que
+[399.0s] o meu Cloud acesse o meu Gmail. Mesma
+[401.8s] coisa é aqui com a Meta MCP, o meu já
+[404.0s] está configurado aqui. Então o que que
+[406.7s] eu vou fazer? Eu vou desconectar ele,
+[409.0s] tá? Então vou fazer essa desconexão da
+[411.3s] Meta MCP aqui para que eu possa fazer,
+[413.8s] vou atualizar minha tela aqui, para que
+[415.4s] eu possa conectá-lo de novo. Então, ó,
+[417.2s] vou apertar aqui em conectar, ó, apertei
+[419.7s] em conectar e aí o que que ele vai
+[421.1s] fazer? Ele vai me perguntar se eu quero
+[423.0s] fazer uma reconexão
+[425.0s] Cloud ao Ads MCP Server. Aí eu vou
+[427.4s] apertar em continuar e aí muito
+[429.1s] importante, ó, você precisa estar logado
+[432.6s] na sua conta da Meta, tá? Então já fica
+[435.0s] com o seu
+[436.0s] com o seu login feito lá dentro do
+[437.6s] Facebook para fazer essa conexão. Então
+[439.9s] você vai fazer uma conexão com o perfil
+[442.2s] e o perfil é que tem acesso às contas de
+[444.0s] anúncio. Beleza, ele tá conectado. No
+[446.4s] seu caso, você vai apertar em adicionar
+[448.7s] um um conector customizado, porque não
+[451.1s] vai tá aparecendo isso daqui, você vai
+[453.4s] colar este link aqui que é o
+[455.2s] mcp.facebook.com/ads,
+[457.8s] vou deixar na descrição e aí você vai
+[459.5s] colocar um nome aqui, por exemplo, Meta
+[461.3s] Ads MCP.
+[463.5s] E aí você vai fazer essa adição. Vou
+[465.2s] apertar aqui, ele não vai deixar eu
+[466.4s] fazer, ó, porque ele disse que a já tem
+[468.7s] uma conexão feita com a Meta. Beleza.
+[471.6s] Que que acontece agora? Agora quando eu
+[473.4s] for conversar com o Claude, deixa eu
+[475.2s] abrir aqui uma interface de chat, eu
+[477.8s] posso apertar aqui nesse botãozinho de
+[479.5s] mais e aqui eu tenho os connectors. E aí
+[482.2s] repara que o Meta MCP, ele está
+[484.7s] conectado aqui, tá? Eu posso desativar
+[487.2s] ele e deixar ele ativo. Eu vou deixar
+[489.4s] ele ativo e vou falar agora para ele o
+[491.0s] seguinte. Eu vou eu vou falar
+[492.6s] literalmente porque vai ser mais fácil.
+[494.8s] Claude,
+[495.8s] via Meta MCP, liste para mim todas as
+[499.5s] contas de anúncios que estão disponíveis
+[501.5s] para que eu possa subir, editar e
+[504.6s] otimizar campanhas e anúncios através
+[506.7s] delas.
+[509.9s] Vou mandar o texto aqui.
+[512.0s] Ah, detalhe, essa ferramenta, eu sei que
+[514.0s] muita gente vai perguntar, essa
+[515.6s] ferramenta que eu tô utilizando é uma
+[517.3s] ferramenta que chama Whisper.
+[520.3s] Whisper. Eu vou deixar o link na
+[521.9s] descrição também, que é essa ferramenta
+[523.4s] que faz as transcrições. Então, eu
+[525.7s] aperto um comando aqui no meu teclado e
+[528.3s] aí eu simplesmente falo. Então, como eu
+[530.0s] tenho muito mais habilidade de
+[532.3s] comunicação falada do que de comunicação
+[534.4s] escrita, eu falo o dia inteiro, você tá
+[535.8s] vendo eu fazendo isso agora, como eu
+[537.5s] tenho muito [roncando] mais habilidade
+[538.5s] de fazer isso,
+[540.2s] eu prefiro muito mais ficar falando com
+[542.5s] a inteligência artificial, por mais que
+[544.5s] ela tenha a funçãozinha do da
+[547.1s] transcrição, do microfone nativamente,
+[550.4s] eu prefiro muito mais ficar falando via
+[554.2s] eh aplicações especializadas em
+[556.6s] transcrição do que pelo botãozinho da
+[559.1s] inteligência artificial. E se eu tô
+[561.4s] subindo anúncios, se eu tô conversando
+[564.5s] com o terminal, aqui eu não tenho um um
+[568.0s] recurso de microfone, então eu uso essa
+[570.4s] ferramenta e eu consigo falar qualquer
+[573.0s] coisa que eu quiser e tudo aquilo que eu
+[574.4s] falar vai ser ser aqui na ferramenta.
+[578.4s] Então, ó, consigo falar qualquer coisa
+[579.8s] que eu quiser e tudo aquilo que eu falar
+[581.0s] vai ser escrito aqui na Aí cortou a
+[583.0s] ferramenta porque eu apertei pause
+[584.5s] antes. Mas isso daqui é extremamente
+[586.4s] útil, eu vou deixar o link na descrição.
+[588.3s] Beleza, o que que aconteceu aqui? Ele
+[589.7s] vai pedir se eu libero, né, o uso aqui
+[592.0s] do Meta MCP. Se a gente vai apertar que
+[594.0s] a gente libera ele e aí ele vai puxar as
+[597.3s] contas de anúncio. Nós temos algumas
+[599.4s] limitações ainda via MCP, que é o
+[602.5s] seguinte, esse MCP da Meta ele foi
+[604.7s] liberado em beta teste. Que que isso
+[607.3s] quer dizer? Quer dizer que eles estão
+[608.7s] consertando
+[610.3s] o avião com avião voando, tá? Então eles
+[612.8s] liberaram, mas eles não liberaram ainda
+[615.3s] você ter acesso a todas as contas de
+[617.3s] anúncio que você utiliza. Eles não
+[619.6s] fizeram uma liberação 360. Então, ó, ele
+[624.0s] vai falar aqui, ó, "Puxei tudo, você tem
+[625.6s] 57 contas de anúncios acessíveis no
+[628.2s] total, mas o problema que você já
+[630.2s] conhece se confirma. Só oito contas
+[632.9s] estão habilitadas para uso via MCP". Tá?
+[635.9s] Então eu tenho oito contas. No passado
+[638.2s] eu nem tinha oito contas, tá, liberadas.
+[640.6s] Eu tinha duas contas liberadas. Isso
+[642.8s] daqui anteontem ele tava só com duas
+[644.7s] contas liberadas. E aí ele vai me trazer
+[646.9s] aqui os IDs das minhas contas de
+[648.6s] anúncio, tá? Eu vou selecionar o ID de
+[650.1s] uma conta de anúncio aqui e aí eu vou
+[652.0s] colocar aqui, ó, que eu quero
+[656.0s] subir uma campanha para conta de anúncio
+[661.2s] e eu vou colocar aqui o ID dela.
+[664.5s] Ah, Pedro, e as outras contas de anúncio
+[666.4s] que ainda não estão disponíveis? Para
+[668.8s] essas outras contas de anúncio não tem o
+[670.6s] que a gente fazer. Tudo o que a gente
+[671.8s] tem que fazer
+[673.0s] é
+[674.0s] esperar.
+[675.3s] >> [roncando][risadas]
+[675.9s] >> Não tem como forçar a ativação delas ali
+[679.1s] dentro da ferramenta. A gente precisa
+[681.0s] ter paciência mesmo, esperar,
+[682.4s] eventualmente elas vão ser liberadas. A
+[685.0s] gente não pode olhar para o trabalho que
+[686.6s] a gente tá tendo a primeira vez com uma
+[688.0s] ferramenta e julgar que vai ser sempre
+[690.2s] assim. Então, ah, eu fui lá, eu
+[692.2s] conectei, eu mandei o número, aí ela
+[695.2s] carrega, aí ela confirma,
+[698.2s] aí ela vai me pedir detalhes aqui. E aí,
+[701.1s] olha só que interessante, quando
+[703.9s] eu vou subir uma campanha, ele vai me
+[705.9s] fazer diversas perguntas,
+[708.1s] que é:
+[709.1s] Qual é o nome da campanha?
+[711.6s] Qual que é o seu objetivo?
+[713.6s] CBO ou ABO?
+[716.4s] Qual que é a estratégia de lance?
+[718.7s] Qual que é a categoria especial de
+[720.6s] anúncio? Qual que é a data de início e a
+[722.4s] data de fim? Perceba o seguinte, essas
+[725.3s] perguntas que o chat está me fazendo são
+[728.1s] perguntas que a interface gráfica, a GUI
+[732.8s] da Meta me faz.
+[734.5s] Então, se eu for subir uma campanha aqui
+[736.2s] para mesma conta de anúncio que eu vou
+[737.8s] subir aqui, eu vou ter que apertar em
+[739.8s] criar
+[740.9s] e aí a Meta vai me perguntar: Olha,
+[743.4s] qual que é o tipo de compra? Aqui ele
+[745.2s] nem me fez essa pergunta, mas tudo bem,
+[746.9s] porque normalmente é uma opção que a
+[747.9s] gente pula. Normalmente a gente usa
+[749.8s] leilão 99,9%
+[752.4s] das vezes. Mas escolha um objetivo de
+[754.9s] campanha, alguém tem que escolher.
+[757.2s] Alguém tem que saber, putz,
+[759.4s] para eu ter uma campanha de WhatsApp,
+[761.2s] por exemplo, eu tenho que selecionar o
+[763.2s] objetivo de engajamento.
+[765.0s] Se eu quero uma campanha de formulário
+[766.5s] nativo, eu vou selecionar uma opção de
+[768.6s] leads.
+[769.8s] Então, eu tenho que fazer essa definição
+[772.5s] aqui e eu tenho que fazer essa definição
+[774.7s] aqui.
+[775.8s] Percebe que, ah, a inteligência
+[778.0s] artificial matou o gestor de tráfego? É,
+[779.9s] mas alguém que não entende de tráfego
+[781.4s] pago
+[782.7s] chega aqui e fala assim: Tá,
+[784.8s] CBO ou ABO?
+[787.0s] Qual que é a diferença de eu utilizar o
+[789.1s] orçamento, budget, ele usou inglês aqui,
+[791.4s] né? O orçamento a nível de campanha ou
+[794.1s] orçamento a nível de grupo de anúncio? E
+[795.9s] nem dá para saber que CBO é orçamento a
+[798.2s] nível de campanha aqui.
+[799.8s] A pessoa nem sabe o que que é CBO, nem
+[801.3s] sabe o que que é ABO. Tudo bem, mas ela
+[803.0s] pode vir aqui e perguntar o que que é
+[804.2s] CBO e o que que é ABO. Aí aí, tá fazendo
+[806.3s] um estudo de tráfego pago com a
+[807.8s] ferramenta. Mas entenda que
+[810.7s] para fazer essa definição eu tenho que
+[812.1s] saber o que que são essas coisas. Aí eu
+[814.0s] tenho que definir se o orçamento é
+[815.2s] diário ou vitalício. Quando que eu uso o
+[816.8s] orçamento diário? Quando que eu uso o
+[818.3s] orçamento vitalício? Será que a pessoa
+[820.3s] vai saber que ela usa o orçamento
+[822.0s] vitalício se ela tem uma programação de
+[824.1s] anúncios?
+[825.4s] E será que se eu falar para ele aqui, ó,
+[826.9s] nome da campanha, bota campanha de
+[829.7s] teste.
+[831.0s] Aí número dois, meu objetivo é leads.
+[833.8s] Aí eu quero uma campanha de
+[836.6s] CBO vitalício. Será que ele vai me
+[839.5s] perguntar se eu quero ativar a
+[840.9s] programação dos anúncios?
+[843.2s] A estratégia de lance, eu vou utilizar a
+[845.5s] default, né? A estratégia padrão. Qual
+[848.4s] que é a categoria especial de anúncio?
+[850.4s] Nenhuma.
+[851.6s] Só data
+[853.7s] de início.
+[855.4s] Beleza, vou responder isso daqui para
+[857.1s] campanha. Que que será que ela vai me
+[858.6s] devolver aqui? Concorda comigo, eu tive
+[861.4s] que digitar, eu tive que parar, eu tive
+[863.7s] que ponderar, eu tive que responder cada
+[866.0s] uma daquelas perguntas. Mas quando eu tô
+[868.0s] criando um anúncio pela interface da
+[869.8s] Meta, é tudo mais intuitivo. Então a
+[873.1s] inteligência artificial, ela vai me
+[874.4s] devolver a pergunta. Ah, qual que é o
+[876.1s] valor? Quanto que a campanha vai gastar
+[877.8s] no total? Ah, campanha vai gastar 50
+[881.3s] reais por dia. Qual que é a data de
+[883.5s] início? Hoje.
+[885.4s] Qual que é a data de fim? Ó, budget
+[887.7s] vitalício exige uma data de fim. Beleza.
+[891.0s] Então budget vitalício, daqui a uma
+[894.3s] semana.
+[895.6s] Vou responder para ele.
+[897.6s] Ele vai entender as informações aqui e
+[900.5s] vai dar o próximo passo. Então ele vai
+[902.8s] sempre ficar fazendo esse ping-pong
+[905.6s] comigo.
+[906.6s] Quando que isso daqui vai ser
+[908.0s] extremamente útil? Quando eu já tenho as
+[911.0s] coisas mais pré-configuradas.
+[913.8s] Quando eu já tenho as ações que eu tenho
+[916.7s] que tomar no dia a dia, os tipos de
+[919.2s] campanha que eu sempre tenho o subir.
+[921.3s] Vamos dizer que eu atendo 50 escritórios
+[924.0s] de advocacia.
+[925.3s] E aí toda vez que eu fecho um novo
+[926.7s] escritório de advocacia, eu começo com
+[928.8s] aquele mesmo padrão de campanhas, os
+[931.0s] mesmos testes.
+[932.7s] Se eu tenho uma tarefa que é repetitiva,
+[935.5s] isso daqui é incrível. Porque eu vou ter
+[937.5s] que responder todas essas perguntas uma
+[939.4s] única vez. E aí eu vou estruturar um
+[941.8s] prompt. O que que é um prompt? Prompt
+[944.3s] nada mais é do que um pedido.
+[949.0s] E esse meu pedido que eu vou fazer para
+[951.0s] a inteligência artificial, ele vai ser
+[953.0s] sempre o mesmo. Então eu vou estruturar
+[955.0s] um super pedido. Eu não vou ficar
+[956.9s] fazendo esse ping pongzinho que eu tô
+[959.0s] fazendo aqui no chat.
+[961.6s] Eu vou simplesmente solicitar tudo de
+[963.8s] uma vez. Ele vai me solicitar
+[965.4s] confirmação e aí com umas poucas
+[968.2s] mensagens, eu vou criar três, quatro,
+[970.6s] cinco, 10 campanhas aqui dentro de uma
+[972.8s] única conta de anúncios.
+[975.0s] Então, ó, ele tá, me deu o resumo da
+[977.3s] campanha e ele vai subir essa campanha
+[979.8s] agora aqui. Então, ó, vou permitir.
+[983.0s] E ele vai carregar.
+[984.8s] Agora, ele não tá criando os conjuntos
+[986.9s] de anúncio.
+[988.1s] Porque quando eu for criar o conjunto de
+[989.8s] anúncio, eu também vou ter que responder
+[991.9s] uma série de perguntas. Ó, ele criou a
+[993.4s] campanha aqui, ó. Me deu o link para eu
+[995.6s] abrir direto no gerenciador.
+[997.7s] Ó, próximos passos para ela rodar, falta
+[1000.0s] subir a estrutura de baixo. Então, o
+[1002.3s] conjunto de anúncio, o anúncio, onde que
+[1005.8s] vai capturar o lead, o público, o
+[1008.5s] posicionamento, o nome do conjunto de
+[1010.3s] anúncio. Ah, mas eu tô achando bem
+[1011.8s] intuitivo. Ele tá me perguntando tudo no
+[1014.2s] passo a passo. Sim, assim como é você
+[1016.4s] clicar no botão aqui, ó, e ir subindo a
+[1018.8s] sua campanha aqui. Selecionei leads, vai
+[1021.7s] carregar, vou definir o nome da minha
+[1023.8s] campanha. Ele vai me perguntar o
+[1025.6s] orçamento, se é CBO ou se é ABO. Se for
+[1028.7s] o orçamento CBO, se ele é diário, se ele
+[1031.4s] é vitalício. Como eu selecionei o
+[1033.5s] orçamento vitalício ou o orçamento
+[1035.5s] total.
+[1037.0s] Lá no conjunto de anúncio, ele vai me
+[1038.6s] perguntar data de término. Eu selecionei
+[1041.3s] o orçamento vitalício aqui. O chat GPT
+[1043.6s] não me perguntou, mas se eu quero
+[1045.2s] vincular uma programação, eu vou ter que
+[1048.2s] selecionar essa opção aqui de mais
+[1049.8s] configurações, programação do conjunto
+[1051.6s] de anúncio, definir uma programação para
+[1053.8s] os anúncios. Então, se eu não entendo de
+[1056.1s] Meta Ads,
+[1057.9s] eu não entendo de subir campanha no Meta
+[1060.2s] Ads via inteligência artificial.
+[1063.0s] Pedro, você tá dizendo então que nunca
+[1064.6s] vamos abandonar o gerenciador? Não, eu
+[1066.5s] tô dizendo que isso aqui é um baita novo
+[1068.1s] recurso para todo gestor de tráfego
+[1069.8s] pago.
+[1070.8s] Só que isso aqui é um baita novo recurso
+[1072.8s] se você tem noção do que você tá
+[1074.3s] fazendo.
+[1075.4s] Se você não tem noção nenhuma do que
+[1076.8s] você tá fazendo, você vai passar mais
+[1078.5s] trabalho subindo campanha via chat do
+[1081.0s] que subindo campanha via gerenciador.
+[1083.0s] Mas a partir do momento que você entende
+[1085.0s] de gerenciador, que você entende de
+[1086.7s] tráfego,
+[1088.0s] você começa a visualizar, tá, tá bom.
+[1090.2s] Então, se eu consigo pedir para a IA
+[1091.7s] subir as campanhas para mim e eu sempre
+[1093.4s] subo as as mesmas campanhas, eu posso
+[1096.6s] ter um mesmo prompt que eu peço para
+[1099.0s] para criar as campanhas aqui. Ah, Pedro,
+[1101.2s] mas você pode ter uma skill, você pode
+[1103.9s] ter uma série de agentes que fazem isso
+[1106.2s] daqui para você. Tudo bem, isso aqui é
+[1108.4s] assunto para um outro vídeo quando a
+[1109.6s] gente vai botar o pezinho um pouquinho
+[1111.7s] de maneira mais profunda na água. Mas
+[1113.8s] por hora, o que que eu quero ressaltar
+[1115.0s] aqui para você? Isso aqui tá disponível
+[1117.0s] para todo mundo. O que que eu faria se
+[1118.4s] eu fosse você? Eu subiria uma campanha.
+[1121.4s] Eu conversaria com a inteligência
+[1123.2s] artificial. Você tem que ser um
+[1124.9s] interessado, você tem que ser curioso.
+[1127.4s] Não é um curso que vai te ensinar isso
+[1129.0s] daqui. Tudo bem, um curso pode te
+[1130.2s] ajudar, uma aula como essa pode te
+[1131.6s] ajudar, um vídeo como esse pode te
+[1133.2s] ajudar. Mas a questão é, você tem que
+[1134.9s] ser um curioso. Aí você vai clicar aqui,
+[1136.4s] ó, "Ah, eu quero ver a campanha".
+[1138.7s] Abrir direto no gerenciador. Vou abrir
+[1140.8s] aqui para ver o que que vai aparecer.
+[1143.5s] Ó,
+[1144.2s] subiu a minha campanha aqui, ó. Eu subi
+[1146.5s] essa campanha via Cloud.
+[1148.6s] Então, a campanha ela veio para cá,
+[1150.8s] mas ó, eu já não posso mexer na
+[1152.0s] programação do meu conjunto de anúncio.
+[1154.7s] Então, putz, eu vou ter que voltar lá e
+[1156.0s] falar assim: "Olha, deu errado". Por
+[1157.4s] quê? Porque eu preciso mexer na
+[1158.8s] programação do conjunto de anúncio. Eu
+[1160.8s] preciso anunciar somente horários e dias
+[1162.7s] específicos.
+[1164.3s] Então, eu tenho que ter o entendimento
+[1165.9s] dos dois lados. Eu tenho que entender da
+[1167.9s] inteligência artificial, mas não adianta
+[1170.2s] nada. Você pega uma pessoa que só
+[1171.4s] entende de IA e pede para ele subir um
+[1173.3s] anúncio, vai vai sair um anúncio merda.
+[1175.8s] Ele não vai saber o que configurar, ele
+[1177.2s] não vai saber o que escolher, ele não
+[1178.5s] vai saber quais opções ele seleciona.
+[1180.7s] Agora, você pega alguém que entende de
+[1182.5s] Meta, assim, entende de tráfego pago, e
+[1184.9s] você equipa essa pessoa com a
+[1186.3s] inteligência artificial, e ela não é um
+[1188.7s] lunático do: "Meu Deus, tudo é
+[1190.9s] inteligência artificial, tudo é
+[1192.0s] inteligência artificial, tudo é
+[1193.0s] inteligência artificial".
+[1194.8s] Essa pessoa
+[1197.3s] que não é um lunático, que tem
+[1198.8s] discernimento de: "Olha, aqui eu uso IA.
+[1201.6s] Aqui eu vou usar o chat para subir. Aqui
+[1204.1s] eu vou usar o próprio gerenciador,
+[1205.6s] porque é muito mais rápido".
+[1208.0s] E aí, com o passar do tempo no seu
+[1209.5s] desenvolvimento, você vai começando a
+[1211.4s] adquirir outras habilidades. Mas, mais
+[1213.1s] uma vez,
+[1214.4s] a gente deixa para falar dessas outras
+[1215.8s] habilidades, de como que a gente vai
+[1217.5s] usar skills, de como que a gente vai
+[1219.2s] usar agentes para nos ajudar nesse
+[1220.9s] processo, num próximo passo. Mas, esse
+[1223.1s] aqui é o primeiro.
+[1224.4s] Entender o que que é cada uma das
+[1225.7s] coisas. Entender que é possível. É
+[1227.8s] possível vir aqui e perguntar sobre
+[1229.6s] dados, eu perguntar sobre números, eu
+[1231.4s] perguntar sobre métricas. "Ah, mas isso
+[1233.4s] vai me ajudar muito". É, mas o que que
+[1234.8s] você vai analisar?
+[1236.1s] Qual dado, qual métrica você vai
+[1237.4s] analisar? O que que aquele dado, o que
+[1239.2s] que aquela métrica quer te dizer?
+[1241.5s] Qual métrica que avalia o sucesso da
+[1243.2s] campanha? Qual métrica secundária? Ainda
+[1246.0s] assim, você tem que ter um entendimento.
+[1247.8s] Não dá para confiar cegamente na
+[1249.2s] inteligência artificial. Você tem que
+[1251.1s] saber até mesmo o que pedir. Você é um
+[1253.8s] excelente gestor de tráfego em 2026, no
+[1257.4s] mundo de inteligência artificial, não
+[1259.5s] quando você usa IA para subir e fazer
+[1261.4s] todas as coisas, mas quando você sabe
+[1263.8s] quando você usa inteligência artificial
+[1266.7s] e quando você sabe,
+[1268.5s] quando você usa o gerenciador,
+[1270.4s] mais ferramentas estão começando a se
+[1272.4s] tornar disponíveis para você. Seu
+[1274.4s] trabalho agora é ser um explorador
+[1276.0s] dessas ferramentas.
+[1277.9s] Não o lunático, meu Deus, tudo eu faço
+[1280.0s] com inteligência artificial porque eu
+[1281.4s] acho melhor.
+[1282.9s] Não, um desesperado apocalíptico, não, o
+[1285.1s] tráfego acabou, tá bom? Pede para alguém
+[1286.9s] que não sabe nada de tráfego pago subir
+[1288.4s] uma campanha, você vai ver a merda que
+[1289.9s] vai acontecer.
+[1291.5s] Ah, Pedro, mas isso aqui não tem risco
+[1292.8s] de bloqueio nenhum.
+[1295.0s] Porque é uma ferramenta oficial. Então a
+[1297.1s] Meta está oficializando que isso aqui é
+[1298.6s] possível e a gente tem que ficar de
+[1300.3s] olho, entender quais são os recursos
+[1302.1s] disponíveis e adaptar isso daqui para
+[1304.4s] situações do nosso dia a dia.
+[1306.4s] Ah, eu vou subir uma única campanha uma
+[1308.2s] única vez.
+[1310.8s] Cara, eu não vou abrir o chat do Claude
+[1313.0s] para fazer isso, eu vou abrir o
+[1314.0s] gerenciador, em cinco minutos eu faço
+[1315.8s] isso aqui.
+[1317.0s] Ah, é é uma campanha repetitiva, é algo
+[1319.0s] que eu sempre faço. Tudo bem, vale a
+[1320.6s] pena estruturar um prompt, um pedido que
+[1323.0s] se repete várias vezes para utilizar ele
+[1324.9s] aqui.
+[1325.9s] Tá? Então, acredito que com isso daqui
+[1328.0s] você entendeu um pouquinho mais sobre as
+[1329.9s] funcionalidades, sobre como que utiliza
+[1332.6s] e agora é você ser um explorador, um
+[1334.6s] cientista maluco aqui. Crie uma
+[1336.4s] campanha, solicita dados, pede para
+[1338.5s] analisar uns anúncios, vê o que que ele
+[1340.8s] te fala e
+[1342.7s] usa a sua cabeça de maneira inteligente.
+[1345.4s] Não cai no, nossa, eu nunca teria tido
+[1347.2s] esse insight aqui olhando para o
+[1348.5s] gerenciador.
+[1350.0s] Que um anúncio está mais caro do que
+[1351.3s] outro? Será que você precisa que a IA te
+[1353.4s] conte isso? Será que não é melhor você
+[1355.3s] abrir o gerenciador e aqui nas próprias
+[1357.8s] colunas você perceber que, nossa, aqui
+[1359.6s] eu estou pagando cinco reais por lead,
+[1361.7s] aqui eu estou pagando quatro. É, esse
+[1363.8s] daqui está melhor do que esse. Será que
+[1365.3s] eu preciso que a IA me conte isso?
+[1367.1s] Preciso pedir, preciso esperar ela me
+[1368.9s] devolver a resposta, sendo que eu posso
+[1370.7s] analisar aqui? Em algumas situações sim,
+[1372.8s] em algumas situações não. Mas, enfim,
+[1375.9s] fica aqui esse conteúdo para você e só
+[1377.8s] te lembrando, não sei quando você está
+[1379.0s] assistindo esse vídeo, mas lá no dia 18,
+[1381.6s] próxima segunda-feira, no momento que eu
+[1383.6s] tô gravando isso daqui, nós vamos fazer
+[1385.6s] o nosso evento a nova gestão de tráfego.
+[1387.6s] Lá a gente vai trazer muito essa visão
+[1389.0s] sobre o que que é a gestão de tráfego
+[1391.1s] nos dias de hoje, o que que você deveria
+[1392.5s] se preocupar, o que que você não deveria
+[1393.8s] estar se preocupando sobre esse novo
+[1396.2s] grande universo dos anúncios online e
+[1397.8s] como que você vai ganhar dinheiro com
+[1398.8s] ele, tá? Para se cadastrar, o link tá
+[1400.6s] aqui na descrição, fechou? Tamo junto e
+[1402.5s] a gente se vê no próximo vídeo.

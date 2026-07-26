@@ -1,0 +1,133 @@
+--- Página 1 ---
+AULA 7
+Os 4 tipos
+de orçamento
+1
+
+--- Página 2 ---
+Os 4 tipos de orçamento
+Índice
+Introdução ………………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 2
+CBO versus ABO…………………………………………………………………………………………………………….……………………………………………………………………………………………………………………… Pág. 3
+Orçamento diário versus orçamento total……………………………………………….……………………………………………………………………………………………… Pág. 6
+00’02’’
+Introdução
+Uma das primeiras escolhas que precisamos fazer ao criar uma campanha,
+depois de selecionar o objetivo, é definir o tipo de orçamento.
+A Meta oferece, atualmente, 4 tipos de orçamento dentro das campanhas, e
+essas opções são divididas em 2 escolhas: orçamento CBO (Campaign Budget
+Optimization) versus ABO (Ad Set Budget Optimization) e Orçamento Diário
+versus Orçamento Total.
+Continue a leitura e bora aprofundar esse assunto agora!
+Pág. 2
+
+--- Página 3 ---
+Os 4 tipos de orçamento
+00’30’’’
+CBO versus ABO
+Antigamente, só havia a opção de
+orçamento a nível de grupo de anúncio,
+mas, tempos depois, a Meta passou por
+mudanças e permitiu que colocássemos o
+orçamento a nível de campanha.
+O orçamento a nível de campanha, CBO, é o Orçamento Advantage
+atualmente. Neste orçamento, a Meta escolhe para você como gastar em
+cada um dos seus públicos — mesmo que isso signifique não gastar nada em
+algum deles.
+Já o Orçamento ABO é aquele em que você escolhe quanto cada uma das
+segmentações receberá de verba.
+Exemplo:
+● Você tem uma campanha com quatro públicos. Públicos A, B, C, D.
+● Você tem uma opção, que é definir o quanto de dinheiro gastar em
+cada público.
+● Você quer gastar R$50 no primeiro, R$100 no segundo, R$100 no
+terceiro, R$50 no quarto público.
+● No total, R$200.
+● Isso é o orçamento ABO.
+● Você sinaliza à Meta que tem R$ 200 para gastar.
+Pág. 3
+
+--- Página 4 ---
+Os 4 tipos de orçamento
+● A Meta pega esses R$ 200 que você tem para gastar e escolhe como
+você deve gastar nesses quatro públicos.
+● Nisso, ela investe mais dinheiro nos públicos que trarão mais
+resultado e menos dinheiro nos públicos que trarão menos resultado.
+● Mesmo que isso signifique não gastar nada em algum dos públicos.
+● E mesmo que isso signifique gastar todo o seu dinheiro em algum
+desses públicos.
+● Isso é o orçamento CBO.
+No começo, o CBO gerou resistência, mas, aos poucos, o anunciante
+descobriu que ela funciona muito melhor.
+● Acompanhe, abaixo, alguns pontos importantes:
+1. Menos controle sobre os gastos por conjunto de anúncios.
+2. Provavelmente, o CBO trará melhores resultados.
+3. Menos trabalho de otimização.
+4. Ajuste de gastos mínimos para os conjuntos que não estão
+gastando.
+Pág. 4
+
+--- Página 5 ---
+Os 4 tipos de orçamento
+Importante: Quando você for criar a sua campanha, na maioria das vezes,
+você não consegue selecionar o orçamento que não seja o CBO. Por quê?
+Porque quando você está criando a sua campanha, você só tem um
+conjunto de anúncios criado. Então, você precisa criar a sua campanha, criar
+um segundo conjunto de anúncio e, aí sim, ativar a opção de Orçamento ao
+Nível de Conjunto de Anúncio.
+● Acompanhe, abaixo, alguns pontos importantes:
+1. Maior controle sobre gastos por conjunto.
+2. Mais trabalho de otimização.
+3. Provavelmente, você terá resultados um pouco menores.
+Importante: O ABO é muito útil para isolar a variável gasto entre públicos.
+Logo, se você quer comparar o público A com o público B, e garantir que
+esses públicos estão sendo comparados nas mesmas condições de
+temperatura e pressão, é interesse alocar a mesma verba em um e no outro.
+Beleza, mas como garantir que a Meta gastará dinheiro em um conjunto
+(seja porque você ou o seu cliente deseje isso)?
+Bem, sobre isso, não é algo que recomendo, mas que é possível fazer.
+Acompanhe, abaixo, algumas opções:
+Pág. 5
+
+--- Página 6 ---
+Os 4 tipos de orçamento
+1. 2. 3.
+Por meio do CBO, o Utilizar o ABO. Separar conjuntos em
+Orçamento a Nível de campanhas distintas.
+Campanha, utilizar os
+mínimos e os máximos,
+definindo um limite de
+gasto.
+08’06’’’
+Orçamento Diário versus
+Orçamento Total
+Além do ABO e CBO, temos, também, o Orçamento Diário e o Orçamento
+Total (conhecido, no passado, como vitalício).
+O Orçamento Diário é aquele que indica quanto você deseja gastar por
+dia, ou seja, em um período de 24 horas.
+Já no Orçamento Total, indica-se o quanto se tem disponível e em
+quantos dias se quer gastar.
+Isso significa que a Meta distribuirá os seus gastos conforme o tempo —
+você deve estabelecer um limite temporal para a plataforma.
+Dito isso, qual dos dois você deve utilizar?
+Pág. 6
+
+--- Página 7 ---
+Os 4 tipos de orçamento
+Aqui vão algumas dicas e sugestões para decidir o melhor caminho para
+você:
+● Prefira o CBO ao orçamento ABO.
+● Escolha o Orçamento Diário na maioria dos casos, porque ele dará
+mais controle do quanto se está gastando por dia.
+● Utilize o Orçamento Total quando desejar anunciar em dias e
+horários específicos da semana.
+Importante: Normalmente, se você tem um negócio físico, que opera em
+um determinado horário, para a maioria das suas campanhas você
+utilizará o Orçamento Total.
+Fechou?
+Para complementar este material, acesse o conteúdo mais prático, com a
+aplicação dos orçamentos, funções de tela, entre outros fatores.
+E comece a implementar por você mesmo, porque é aí que o seu
+aprendizado se solidificará, beleza?
+Fechou? Tamo junto!
+Pág. 7

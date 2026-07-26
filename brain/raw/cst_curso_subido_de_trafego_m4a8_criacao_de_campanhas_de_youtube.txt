@@ -1,0 +1,254 @@
+--- Página 1 ---
+AULA 8
+Criação de
+campanhas de
+YouTube
+
+--- Página 2 ---
+Criação de campanhas de YouTube
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….………………………………..….….. Pág. 2
+Formatos de anúncio do YouTube……………………………………………………………………….………………………………………………………………………………………….. Pág. 3
+Subtipos de campanha no YouTube……………………….……………………………………………………………………………………………….…………………………………… Pág. 5
+Melhores práticas de segmentação no YouTube……………………….……………………………………………………………………………………….…... Pág. 6
+Estratégias de lance ……………………….……………………………………………………………………………………………….…………………………………….…….………………………………………….. Pág. 9
+Melhores práticas para criar um anúncio no YouTube……………………………………………………………………………………………….….. Pág. 10
+00’01’’
+Introdução
+Criar campanhas no YouTube é bem diferente de anunciar na pesquisa do
+Google ou na rede de display. Aqui, lidamos com muitos formatos de anúncio,
+muitas opções de segmentação e boas práticas específicas.
+E se você quer performar bem com anúncios em vídeo, precisa entender os
+formatos, quando usar cada um e como configurar tudo de forma estratégica.
+🚀
+Vamos nessa?
+Pág. 2
+
+--- Página 3 ---
+Criação de campanhas de YouTube
+00’50’’
+Formatos de
+anúncio do YouTube
+Conheça as especificidades de cada formato a seguir:
+⏩
+1. In-stream pulável
+● Aparece antes de outros vídeos e pode ser pulado após 5 segundos.
+● Ótimo para gerar visualizações baratas (CPV) e ações (CPA).
+● Permite adicionar botão de CTA (Call to Action).
+● Por sua vez, tem engajamento caro (curtidas, comentários, visitas ao
+canal).
+● Ideal para: conversão e inscrição no canal.
+📲
+2. In-feed (ex-Discovery)
+● Aparece nos resultados de busca e na aba de vídeos relacionados.
+● Precisa ser atrativo: capas e títulos fortes são essenciais.
+● CPV e CPA são mais caros, mas a visualização é mais qualificada.
+● Excelente para: engajamento com canal.
+Pág. 3
+
+--- Página 4 ---
+Criação de campanhas de YouTube
+⏰
+3. Bumper Ads
+● Vídeos de 6 segundos, não puláveis.
+● Tem CPM baixo, e é ideal para recados curtos ou reforçar uma ideia.
+● "Hoje às 20h tem aula ao vivo!" — esse é o estilo.
+🍾
+4. YouTube Shorts
+● Formato vertical.
+● Pode ter CPV mais alto, mas CPA barato.
+● Use sempre que puder, especialmente para chamar atenção
+rapidamente.
+📅
+5. In-stream não pulável
+● Vídeos de até 15 segundos, também não puláveis.
+● Tem CPM barato. Ideal para reforçar mensagens com mais impacto.
+Pág. 4
+
+--- Página 5 ---
+Criação de campanhas de YouTube
+06’54’’
+Subtipos de campanha
+no YouTube
+🎯
+Cada tipo de anúncio tem seus subtipos de campanha, dependendo do
+objetivo. Olha só quais são:
+● Exibição de vídeos: quando o foco da campanha é gerar visualizações.
+● Alcance eficiente: quando queremos alcançar o maior número de
+pessoas.
+● Frequência desejada: quando queremos aparecer muitas vezes para
+as mesmas pessoas.
+● In-stream não pulável: aquele que não pode ser pulável até 15
+segundos e é muito bom para captar impressões.
+● Sequência de anúncios: na teoria, é aquele que constrói uma narrativa
+em torno de uma série de anúncios, mas, na prática, não funciona tão bem.
+● Anúncio de áudio: fala por si só, isto é, usa recursos sonoros.
+● Anúncio de engajamentos do YouTube: o melhor quando o objetivo é
+ganhar inscritos no canal.
+● Anúncio de impulsionar conversões: atualmente, é usado por meio da
+campanha de geração de demanda, com o objetivo de fazer o usuário
+realizar alguma ação. Agora, está dentro do tipo Geração de Demanda
+(Demand Gen).
+Pág. 5
+
+--- Página 6 ---
+Criação de campanhas de YouTube
+10’43’’
+Melhores práticas de
+segmentação no YouTube
+Quando a gente fala de segmentação no YouTube, a lógica é a mesma que
+eu sempre falo sobre os públicos: superquente, quente e frio. E é seguindo
+essa ordem que você vai organizar as suas campanhas, beleza?
+COMEÇANDO PELOS PÚBLICOS SUPERQUENTES E QUENTES:
+Quem quase converteu
+Aqui, estamos falando do público superquente, isto é, quem chegou muito
+perto de converter, mas por algum motivo, não finalizou o processo. É quem:
+● Acessou sua landing page, mas não se cadastrou;
+● Chegou na página de vendas, mas não comprou;
+● Adicionou ao carrinho, mas não foi até o checkout.
+Importante: sempre exclui quem já converteu, senão você gasta grana à toa.
+Quem viu seu anúncio
+Esse aqui é ouro. Você pode criar um público com base nas pessoas que
+viram determinados vídeos no YouTube — mais especificamente, os seus
+anúncios.
+Você coloca lá todas as URLs dos seus anúncios no YouTube e anuncia para
+quem viu, mas exclui quem já visitou sua página e quem já converteu.
+Pág. 6
+
+--- Página 7 ---
+Criação de campanhas de YouTube
+Assim, você aparece para quem viu seu anúncio, mas não clicou. Esse
+público costuma funcionar muito bem, porque ele já teve contato com você,
+mas ainda não tomou nenhuma ação.
+Envolvimento de 1 a 30 dias com seu canal
+Aqui entram as pessoas que:
+● Curtiram um vídeo;
+● Compartilharam;
+● Adicionaram o vídeo à playlist;
+● Visitaram seu canal.
+Esse público é quente porque já demonstrou interesse de algum jeito. E o
+Google te dá esse dado nos últimos 30 dias. É uma janela boa para trabalhar
+quem está mais próximo da ação.
+Inscritos do canal (até 540 dias)
+Esse público aqui é um dos meus favoritos. Porque, diferente de redes como
+Instagram e TikTok, no YouTube, é raro alguém se inscrever em dezenas ou
+centenas de canais. Quando alguém se inscreve no seu canal, é porque a
+pessoa está de fato interessada no seu conteúdo. Então, quando você cria
+uma campanha para inscritos dos últimos 540 dias, você está falando com
+gente que realmente quer te ouvir.
+Lista de leads
+Se você tem e-mails ou telefones de pessoas interessadas no seu produto ou
+serviço, coloque tudo isso dentro do Google Ads. Esse público é
+extremamente quente. E, sim, funciona muito bem no YouTube.
+Pág. 7
+
+--- Página 8 ---
+Criação de campanhas de YouTube
+AGORA, ENTRAMOS NOS PÚBLICOS FRIOS:
+Segmentos personalizados
+Essa segmentação aqui é simplesmente absurda. Você consegue criar um
+público com base nas pesquisas que as pessoas fizeram no Google.
+Então pensa só: a pessoa pesquisa algo no Google e depois entra no
+YouTube. O que acontece? Toma-lhe anúncio seu na cara dela. Isso gera
+aquela sensação de “tô sendo observado”. E é esse impacto que a gente
+quer causar.
+O melhor? O custo por impressão no YouTube geralmente é mais baixo do
+que na rede de pesquisa. E você pode aparecer nos dois.
+Lista de canais ou vídeos do YouTube
+Outra segmentação de conteúdo que funciona demais:
+● Junte uma lista de URLs de vídeos ou canais do YouTube consumidos
+pelo seu público-alvo;
+● Crie um público com base nisso;
+● Pronto: você aparece para pessoas que já viram conteúdos
+semelhantes ao seu.
+Segmentação por aplicativos
+Se o seu público usa algum aplicativo específico, você pode incluir isso
+também. Funciona especialmente bem para nichos mais técnicos ou
+profissionais — tipo médico que usa app de prontuário, corretor que usa app
+de imóveis, por aí vai.
+Pág. 8
+
+--- Página 9 ---
+Criação de campanhas de YouTube
+Públicos de mercado
+Esses são os interesses prontos que o Google te dá, como: pessoas
+interessadas em finanças, culinária, viagens, etc. Pode ser um bom ponto de
+partida se você estiver começando do zero.
+Palavras-chave ou canais
+Agora, estamos falando de uma segmentação de conteúdo (todas as outras
+são de público-alvo). É uma tática complementar: aqui, você escolhe
+palavras-chave ou canais específicos e aparece para quem está
+consumindo esse tipo de conteúdo.
+Mas atenção: não dá pra usar segmentação por palavras-chave e canais
+em campanhas de conversão. Essas segmentações são ideais para
+campanhas de exibição de vídeo — aquelas com foco em alcance e
+consideração, e não em conversão direta.
+Essas são algumas das segmentações que eu mais uso nas campanhas de
+YouTube. Não quer dizer que são as únicas. Mas são um ótimo começo.
+Comece com os públicos superquentes, depois vá para
+os quentes e, só então, para os frios.
+Se você aplicar isso aqui na prática, eu te garanto: vai sair na frente de muito
+gestor por aí.
+Pág. 9
+
+--- Página 10 ---
+Criação de campanhas de YouTube
+15’50’’
+Estratégias de lance
+Quando falamos de campanhas de conversão no YouTube, temos duas
+estratégias principais de lance disponíveis:
+🤖
+Maximizar conversões : uma estratégia automática, onde o Google define
+os lances com base nas chances de conversão.
+✋
+CPA desejado (Target CPA) : uma estratégia manual, onde você define o
+valor ideal que está disposto a pagar por uma conversão.
+Na prática, eu recomendo começar com a estratégia manual. Em muitos
+casos, ela entrega resultados melhores do que a opção automática —
+especialmente quando sua conta ainda está em fase de aprendizado.
+Pág. 10
+
+--- Página 11 ---
+Criação de campanhas de YouTube
+16’16’’
+Melhores práticas para criar
+um anúncio no YouTube
+● Faça seu anúncio conversar com a segmentação: se você está
+anunciando para uma pessoa que foi até sua página, diga algo como “Está
+com dúvidas ainda?”.
+● Volume muda o jogo: quanto mais anúncios você tiver, melhor!
+● Pause e ative: tem um novo anúncio que tá funcionando? Pausa e sobe
+um novo! Otimizar campanhas é cortar o que não funciona, testar coisas
+novas e manter o que funciona.
+● Hooks são o 80:20: lembra dos ganchos? Serão a menor parte do seu
+anúncio responsável pelo maior resultado. Faça os primeiros 5 segundos do
+vídeo conversarem com a audiência.
+● Anúncios entre 30 seg e 2 min funcionam melhor: via de regra, esta é a
+média de tempo utilizada pela maior parte dos anunciantes.
+● Analise a taxa de visualização: esta métrica do próprio YouTube mostra
+quantas pessoas realmente pararam para ver seu anúncio em relação ao
+número de pessoas que se depararam com ele. Junto a isso, analise também
+a taxa de conversão do seu anúncio. Se essa taxa estiver alta, mas a de
+conversão for baixa, significa que você tem um bom gancho, mas faltou
+persuadir mais para converter.
+Pág. 11
+
+--- Página 12 ---
+Criação de campanhas de YouTube
+Dica do Subido
+Se você tiver um anúncio de vídeo com taxa
+de visualização alta, mas com conversão
+baixa, misture o início desse vídeo (hook) e
+com outros conteúdos que tiveram uma boa
+taxa de conversão e recicle o conteúdo para
+aumentar a taxa de conversão.
+Taxa de visualização + taxa de conversão
+precisam andar lado a lado!
+● Teste CTAs nos primeiros 30 seg e no final do vídeo: quanto antes você
+chamar o público para a ação, mais cliques seu anúncio terá. Às vezes o CTA
+não se aplica no início do vídeo, mas sempre que der, pense nisso.
+Agora que você tem o mapa da mina, é hora de aplicar o conhecimento. E
+lembra: conhecimento se conquista com múltiplos pontos de contato.
+🚀
+Tamo junto!
+Pág. 12

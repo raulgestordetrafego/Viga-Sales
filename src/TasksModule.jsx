@@ -4,6 +4,7 @@
 // Para migrar para o banco SQLite, basta trocar loadData/saveData por chamadas de API.
 
 import React, { useState, useEffect, useRef } from 'react';
+import api from './api';
 
 // ─── Design tokens (espelha os do App.jsx) ───────────────────────────────────
 const C = {
@@ -669,6 +670,53 @@ function ListView({ project, tasks, onOpenTask, onAddTask }) {
 
 // ─── Task Detail Modal ────────────────────────────────────────────────────────
 function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove }) {
+  // Chief tasks: simplified read-only view
+  if (task._chiefTask) {
+    const prioColor = task.priority === 'Alta' ? C.danger : task.priority === 'Média' ? C.warning : C.success;
+    return (
+      <TModal open onClose={onClose} title="" maxWidth={500}>
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:17, fontWeight:800, color:C.text, marginBottom:10 }}>{task.title}</div>
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center' }}>
+            <StatusPill col={task.column} />
+            <span style={{ background:`${prioColor}18`, color:prioColor, fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, border:`1px solid ${prioColor}35` }}>
+              {task.priority}
+            </span>
+            <span style={{ background:`${C.primary}18`, color:C.muted, fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:20, border:`1px solid ${C.border}` }}>
+              🤖 Chief Agent
+            </span>
+          </div>
+        </div>
+        {task.description && (
+          <div style={{ background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:14, marginBottom:16 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Descrição</div>
+            <div style={{ fontSize:13, color:C.muted, lineHeight:1.6 }}>{task.description}</div>
+          </div>
+        )}
+        <div style={{ display:'flex', gap:12, flexWrap:'wrap', marginBottom:16 }}>
+          {task.due && (
+            <div style={{ background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'8px 12px' }}>
+              <div style={{ fontSize:9, color:C.dim, fontWeight:700, textTransform:'uppercase', marginBottom:2 }}>Prazo</div>
+              <div style={{ fontSize:12, color:C.text }}>{fmtDue(task.due)}</div>
+            </div>
+          )}
+          <div style={{ background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'8px 12px' }}>
+            <div style={{ fontSize:9, color:C.dim, fontWeight:700, textTransform:'uppercase', marginBottom:2 }}>Categoria</div>
+            <div style={{ fontSize:12, color:C.text }}>{(task.tags||[])[0] || 'Geral'}</div>
+          </div>
+        </div>
+        <div style={{ fontSize:10, color:C.dim, lineHeight:1.5, background:`${C.warning}08`, border:`1px solid ${C.warning}20`, borderRadius:8, padding:'10px 12px' }}>
+          💡 Tarefa gerada automaticamente pelo Chief Agent. Arraste para "Concluído" quando finalizar.
+        </div>
+      </TModal>
+    );
+  }
+
+  // Regular task modal (original)
+  const checklist = task.checklist || [];
+  const comments = task.comments || [];
+  const tags = task.tags || [];
+
   const [title, setTitle]         = useState(task.title);
   const [editTitle, setEditTitle] = useState(false);
   const [desc, setDesc]           = useState(task.description || '');
@@ -677,22 +725,22 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
 
   const saveTitle = () => { if (title.trim()) onUpdate(task.id, { title: title.trim() }); setEditTitle(false); };
   const toggleCheck = (i) => {
-    const cl = task.checklist.map((c, j) => j === i ? { ...c, done: !c.done } : c);
+    const cl = checklist.map((c, j) => j === i ? { ...c, done: !c.done } : c);
     onUpdate(task.id, { checklist: cl });
   };
   const addCheck = () => {
     if (!newCheck.trim()) return;
-    onUpdate(task.id, { checklist: [...task.checklist, { text: newCheck.trim(), done: false }] });
+    onUpdate(task.id, { checklist: [...checklist, { text: newCheck.trim(), done: false }] });
     setNewCheck('');
   };
   const addComment = () => {
     if (!newComment.trim()) return;
     const c = { id: genId(), author: 'Raul Santos', text: newComment.trim(), time: new Date().toLocaleString('pt-BR') };
-    onUpdate(task.id, { comments: [...(task.comments || []), c] });
+    onUpdate(task.id, { comments: [...comments, c] });
     setNewComment('');
   };
-  const checkDone = task.checklist.filter(c => c.done).length;
-  const checkPct  = task.checklist.length ? Math.round(checkDone / task.checklist.length * 100) : 0;
+  const checkDone = checklist.filter(c => c.done).length;
+  const checkPct  = checklist.length ? Math.round(checkDone / checklist.length * 100) : 0;
 
   return (
     <TModal open onClose={onClose} title="" maxWidth={740}>
@@ -704,7 +752,7 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
         <div style={{ display:'flex', gap:8, marginTop:10, flexWrap:'wrap', alignItems:'center' }}>
           <StatusPill col={task.column} />
           <PriorityBadge p={task.priority} />
-          {task.tags?.map(t => <Tag key={t}>{t}</Tag>)}
+          {tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
         </div>
       </div>
 
@@ -716,14 +764,14 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
 
           {/* Checklist */}
           <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:10 }}>
-            ☑ Checklist {task.checklist.length > 0 && <span style={{ fontWeight:400, color:C.dim }}>— {checkDone}/{task.checklist.length} ({checkPct}%)</span>}
+            ☑ Checklist {checklist.length > 0 && <span style={{ fontWeight:400, color:C.dim }}>— {checkDone}/{checklist.length} ({checkPct}%)</span>}
           </div>
-          {task.checklist.length > 0 && (
+          {checklist.length > 0 && (
             <div style={{ marginBottom:12 }}>
               <div style={{ height:4, background:C.border, borderRadius:2, overflow:'hidden', marginBottom:10 }}>
                 <div style={{ height:'100%', width:`${checkPct}%`, background:C.primary, borderRadius:2, transition:'width .3s' }} />
               </div>
-              {task.checklist.map((c, i) => (
+              {checklist.map((c, i) => (
                 <div key={i} style={{ display:'flex', alignItems:'center', gap:9, padding:'7px 0', borderBottom:`1px solid ${C.border}` }}>
                   <input type="checkbox" checked={c.done} onChange={() => toggleCheck(i)} style={{ accentColor:C.primary, width:15, height:15, cursor:'pointer' }} />
                   <span style={{ fontSize:13, color: c.done ? C.dim : C.text, textDecoration: c.done ? 'line-through' : 'none', flex:1 }}>{c.text}</span>
@@ -738,7 +786,7 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
 
           {/* Comments */}
           <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginTop:22, marginBottom:10 }}>💬 Comentários</div>
-          {(task.comments || []).map(c => (
+          {(comments || []).map(c => (
             <div key={c.id} style={{ display:'flex', gap:10, padding:'10px 0', borderBottom:`1px solid ${C.border}` }}>
               <div style={{ width:28, height:28, borderRadius:'50%', background:`linear-gradient(135deg,${C.primary}cc,${C.purple}88)`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:700, color:'#fff', flexShrink:0 }}>
                 {c.author.split(' ').map(w => w[0]).join('')}
@@ -766,7 +814,7 @@ function TaskDetailModal({ task, columns, onClose, onUpdate, onDelete, onMove })
           </TSelect>
           <TInput label="Prazo" type="date" value={task.due || ''} onChange={e => onUpdate(task.id, { due: e.target.value })} />
           <TInput label="Responsável" value={task.assignee || ''} onChange={e => onUpdate(task.id, { assignee: e.target.value })} placeholder="Ex: RS" />
-          <TInput label="Tags (vírgula)" value={(task.tags || []).join(', ')} onChange={e => onUpdate(task.id, { tags: e.target.value.split(',').map(x => x.trim()).filter(Boolean) })} placeholder="Bug, Urgente..." />
+          <TInput label="Tags (vírgula)" value={(tags || []).join(', ')} onChange={e => onUpdate(task.id, { tags: e.target.value.split(',').map(x => x.trim()).filter(Boolean) })} placeholder="Bug, Urgente..." />
 
           {/* Recorrência */}
           <TSelect label="🔁 Recorrência" value={task.recurrence || ''} onChange={e => onUpdate(task.id, { recurrence: e.target.value })}>
@@ -948,6 +996,45 @@ export default function TasksModule({ currentUser }) {
 
   useEffect(() => { save(data); }, [data]);
 
+  // ── Integração Chief Agent — carrega tarefas do banco ──
+  useEffect(() => {
+    const loadChiefTasks = async () => {
+      try {
+        const res = await api.get('/equipe/chief/tasks');
+        const chiefTasks = (res.data?.tasks || []).map(t => ({
+          id: t.id,
+          title: t.title,
+          column: t.status === 'concluida' ? 'Concluído' : 'A Fazer',
+          priority: t.priority === 'alta' ? 'Alta' : t.priority === 'media' ? 'Média' : 'Baixa',
+          tags: [t.category || 'Chief'],
+          description: t.description || '',
+          due: t.week_start || '',
+          checklist: [],
+          comments: [],
+          _chiefTask: true,
+        }));
+
+        setData(prev => {
+          const chiefProjectId = '__chief_plan__';
+          const chiefProject = {
+            id: chiefProjectId,
+            name: '📋 Plano do Chefe',
+            color: '#f08030',
+            description: 'Tarefas estratégicas geradas pelo Chief Agent automaticamente. Arraste para marcar progresso.',
+            columns: ['A Fazer', 'Em Andamento', 'Em Revisão', 'Concluído'],
+            tasks: chiefTasks,
+          };
+
+          const otherProjects = prev.projects.filter(p => p.id !== chiefProjectId);
+          return { ...prev, projects: [chiefProject, ...otherProjects] };
+        });
+      } catch {}
+    };
+    loadChiefTasks();
+    const interval = setInterval(loadChiefTasks, 120000); // refresh a cada 2min
+    return () => clearInterval(interval);
+  }, []);
+
   // ── Coaching notifications ──
   useEffect(() => {
     const scheduleNext = () => {
@@ -974,6 +1061,12 @@ export default function TasksModule({ currentUser }) {
 
   const project = data.projects.find(p => p.id === activeId);
 
+  // ── Sync Chief tasks to API ──
+  const syncChiefTask = async (task) => {
+    const apiStatus = task.column === 'Concluído' ? 'concluida' : 'pendente';
+    try { await api.patch(`/equipe/chief/tasks/${task.id}`, { status: apiStatus }); } catch {}
+  };
+
   // ── Mutations ──
   const mut = (fn) => setData(prev => { const next = JSON.parse(JSON.stringify(prev)); fn(next); return next; });
 
@@ -981,16 +1074,18 @@ export default function TasksModule({ currentUser }) {
   const delProject  = (id) => { mut(s => { s.projects = s.projects.filter(p => p.id !== id); }); if (activeId === id) { setActiveId(null); setView('dashboard'); } };
   const addTask     = (col, d) => mut(s => { const p = s.projects.find(x => x.id === activeId); p.tasks.push({ id:genId(), column:col, checklist:[], comments:[], tags:[], recurrence:'', ...d }); });
   const addTaskToProject = (projId, col, d) => mut(s => { const p = s.projects.find(x => x.id === projId); if (p) p.tasks.push({ id:genId(), column:col || p.columns[0] || 'A Fazer', checklist:[], comments:[], tags:[], recurrence:'', ...d }); });
-  const updateTask  = (id, patch) => mut(s => { const p = s.projects.find(x => x.id === activeId); const t = p.tasks.find(x => x.id === id); Object.assign(t, patch); });
+  const updateTask  = (id, patch) => mut(s => { const p = s.projects.find(x => x.id === activeId); const t = p.tasks.find(x => x.id === id); if (!t) return; Object.assign(t, patch); if (t._chiefTask && patch.column) syncChiefTask(t); });
   const deleteTask  = (id) => { mut(s => { const p = s.projects.find(x => x.id === activeId); p.tasks = p.tasks.filter(x => x.id !== id); }); setModal(null); };
   const moveTask    = (id, col) => mut(s => {
     const p = s.projects.find(x => x.id === activeId);
     const t = p.tasks.find(x => x.id === id);
     if (!t) return;
-    const wasNotDone = t.column !== 'Concluído';
+    const wasConcluido = t.column === 'Concluído';
     t.column = col;
+    // Sync Chief task to API
+    if (t._chiefTask && col !== wasConcluido) syncChiefTask(t);
     // Auto-criar próxima ocorrência para tarefas recorrentes
-    if (col === 'Concluído' && wasNotDone && t.recurrence && t.recurrence !== '') {
+    if (col === 'Concluído' && !wasConcluido && t.recurrence && t.recurrence !== '') {
       const nextDue = calcNextDue(t.due, t.recurrence);
       p.tasks.push({
         id: genId(), title: t.title, description: t.description || '',

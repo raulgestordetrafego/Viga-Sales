@@ -2,25 +2,26 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Viga Sales — Controle Financeiro</title>
 <meta name="description" content="Sistema de controle financeiro da Viga Sales — gestão de clientes, contratos, comissões e análise de extratos por IA.">
+<link rel="icon" type="image/png" href="/viga_sales_logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
 :root {
-  --bg:           #060c18;
-  --bg-2:         #0d1525;
-  --bg-3:         #111d35;
-  --surface:      #131f38;
-  --surface-2:    #1a2847;
-  --border:       rgba(99,179,237,0.12);
-  --border-s:     rgba(99,179,237,0.28);
-  --blue:         #3b82f6;
-  --blue-light:   #60a5fa;
-  --blue-dark:    #1d4ed8;
+  --bg:           #08111f;
+  --bg-2:         #0b1929;
+  --bg-3:         #0f2035;
+  --surface:      #152840;
+  --surface-2:    #1e324d;
+  --border:       rgba(255,255,255,0.08);
+  --border-s:     rgba(255,255,255,0.16);
+  --blue:         #F97316;
+  --blue-light:   #FB923C;
+  --blue-dark:    #EA580C;
   --green:        #10b981;
   --green-light:  #34d399;
   --red:          #ef4444;
@@ -28,9 +29,9 @@
   --yellow:       #f59e0b;
   --yellow-light: #fbbf24;
   --purple:       #8b5cf6;
-  --text:         #e2e8f0;
-  --text-2:       #94a3b8;
-  --text-3:       #4b6480;
+  --text:         #f0f4f8;
+  --text-2:       #7a90a4;
+  --text-3:       #4a607a;
   --white:        #ffffff;
   --radius:       10px;
   --radius-lg:    16px;
@@ -55,7 +56,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 30% 40%, rgba(59,130,246,.12) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 30% 40%, rgba(249,115,22,.12) 0%, transparent 60%),
               radial-gradient(ellipse at 80% 80%, rgba(139,92,246,.08) 0%, transparent 60%),
               var(--bg);
   padding: 24px;
@@ -117,7 +118,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 }
 .fg input:focus, .fg select:focus, .fg textarea:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
 }
 .fg input::placeholder, .fg textarea::placeholder { color: var(--text-3); }
 .fg select {
@@ -147,7 +148,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   white-space: nowrap;
 }
 .btn-primary { background: var(--blue); color: #fff; }
-.btn-primary:hover { background: var(--blue-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,.35); }
+.btn-primary:hover { background: var(--blue-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,.35); }
 .btn-success { background: var(--green); color: #fff; }
 .btn-success:hover { background: var(--green-light); transform: translateY(-1px); }
 .btn-danger  { background: var(--red);  color: #fff; }
@@ -210,8 +211,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   transition: var(--transition);
   border-left: 3px solid transparent;
 }
-.nav-item:hover { color: var(--text); background: rgba(59,130,246,.06); }
-.nav-item.active { color: var(--blue-light); background: rgba(59,130,246,.1); border-left-color: var(--blue); }
+.nav-item:hover { color: var(--text); background: rgba(249,115,22,.06); }
+.nav-item.active { color: var(--blue-light); background: rgba(249,115,22,.1); border-left-color: var(--blue); }
 .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
 
 .sidebar-footer {
@@ -254,21 +255,21 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   margin-bottom: 28px;
   gap: 16px;
 }
-.topbar h1 { font-size: 22px; font-weight: 700; color: var(--white); }
+.topbar h1 { font-size: 22px; font-weight: 700; color: var(--white); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
 /* ─── CARDS / STATS ─────────────────────────────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
 }
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 22px 20px;
+  padding: 16px 14px;
   position: relative;
   overflow: hidden;
   transition: var(--transition);
@@ -285,8 +286,44 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   transition: transform .4s;
 }
 .stat-card:hover::after { transform: scaleX(1); }
-.stat-icon { font-size: 26px; margin-bottom: 12px; }
-.stat-val  { font-size: 28px; font-weight: 800; color: var(--white); line-height: 1; margin-bottom: 4px; }
+.stat-icon { font-size: 22px; margin-bottom: 8px; }
+.stat-val  { font-size: 24px; font-weight: 800; color: var(--white); line-height: 1; margin-bottom: 4px; }
+
+/* ─── FINANCE TABS ───────────────────────────────────────── */
+.finance-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 2px solid var(--border);
+}
+.finance-tab {
+  flex: 1;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.finance-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.finance-tab.active {
+  color: var(--white);
+  border-bottom-color: var(--blue);
+  background: rgba(249,115,22,0.05);
+}
+.finance-tab.active.tab-realizado { border-bottom-color: var(--green); }
+.finance-tab.active.tab-projetado { border-bottom-color: var(--blue); }
+.finance-tab-content { display: none; }
+.finance-tab-content.active { display: block; }
 .stat-lbl  { font-size: 12px; color: var(--text-2); font-weight: 500; }
 
 /* ─── TABLE ─────────────────────────────────────────────────────────────── */
@@ -322,13 +359,14 @@ th {
 }
 td {
   padding: 13px 14px;
+  white-space: nowrap;
   border-bottom: 1px solid rgba(99,179,237,.05);
   color: var(--text);
   font-size: 13.5px;
 }
 tr:last-child td { border-bottom: none; }
 tbody tr { transition: background .15s; }
-tbody tr:hover { background: rgba(59,130,246,.04); }
+tbody tr:hover { background: rgba(249,115,22,.04); }
 
 /* ─── BADGES ─────────────────────────────────────────────────────────────── */
 .badge {
@@ -343,7 +381,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 .badge-green  { background: rgba(16,185,129,.15); color: var(--green-light); }
 .badge-red    { background: rgba(239,68,68,.15);  color: var(--red-light); }
 .badge-yellow { background: rgba(245,158,11,.15); color: var(--yellow-light); }
-.badge-blue   { background: rgba(59,130,246,.15); color: var(--blue-light); }
+.badge-blue   { background: rgba(249,115,22,.15); color: var(--blue-light); }
 .badge-gray   { background: rgba(148,163,184,.1); color: var(--text-2); }
 .badge-purple { background: rgba(139,92,246,.15); color: #c4b5fd; }
 
@@ -471,7 +509,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 .transacao-row:hover { background: rgba(59,130,246,.04); }
 .transacao-row:last-child { border-bottom: none; }
 .transacao-info { flex: 1; min-width: 0; }
-.transacao-desc { font-size: 13.5px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.transacao-desc { font-size: 13px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .transacao-meta { font-size: 11.5px; color: var(--text-2); margin-top: 2px; }
 .transacao-valor {
   font-size: 14px;
@@ -488,7 +526,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
   gap: 10px;
   margin-bottom: 18px;
 }
-.search-input-wrap { position: relative; flex: 1; max-width: 320px; }
+.search-input-wrap { position: relative; flex: 1; max-width: 320px; min-width: 200px; }
 .search-input-wrap input {
   width: 100%;
   background: var(--bg-2);
@@ -604,15 +642,162 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 @keyframes spin     { to { transform:rotate(360deg) } }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main-content { margin-left: 0; padding: 20px 16px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  padding: 0 14px;
+  z-index: 110;
+  justify-content: space-between;
 }
+.menu-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--white);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.menu-toggle-btn:hover { background: var(--surface); }
+.mobile-brand-text {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+.mobile-brand-text span { color: var(--blue-light); }
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 105;
+}
+.sidebar-overlay.active { display: block; }
+
+/* ── 900px: layout principal ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Estrutura */
+  .mobile-header { display: flex; }
+  .sidebar { transform: translateX(-100%); z-index: 106; }
+  .sidebar.open { transform: translateX(0); box-shadow: 8px 0 32px rgba(0,0,0,.6); }
+  .main-content { margin-left: 0; padding: 64px 14px 24px; min-height: 100vh; }
+
+  /* Stats */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .stat-val { font-size: 22px; }
+
+  /* Topbar */
+  .topbar { margin-bottom: 18px; flex-wrap: wrap; }
+  .topbar h1 { font-size: 18px; }
+  .topbar-actions { gap: 8px; flex-wrap: wrap; }
+  .topbar-actions .btn { padding: 8px 12px; font-size: 12px; }
+
+  /* Cards / tabelas */
+  .card-header { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+  .card-body { padding: 14px 16px; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  td, th { padding: 10px 12px; font-size: 12.5px; }
+  .stat-card { padding: 16px 14px; }
+
+  /* Modais */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin: 0;
+  }
+  .modal-lg { max-width: 100%; }
+  .modal-header { padding: 16px 18px 14px; }
+  .modal-body { padding: 16px 18px; }
+  .modal-footer { padding: 14px 18px 20px; flex-wrap: wrap; }
+
+  /* Search bar */
+  .search-bar { flex-wrap: wrap; }
+  .search-input-wrap { max-width: 100%; }
+
+  /* Dashboard double panel */
+  .double-panel { grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
+  .finance-panel { padding: 16px; }
+
+  /* Tabs */
+  .tabs { overflow-x: auto; flex-wrap: nowrap; padding: 4px; }
+  .tab { white-space: nowrap; padding: 7px 14px; font-size: 12px; }
+
+  /* Toast */
+  #toast-container { left: 14px; right: 14px; bottom: 16px; }
+  .toast { min-width: unset; max-width: 100%; }
+
+  /* Filtros inline */
+  .filters-row { flex-wrap: wrap; gap: 8px; }
+}
+
+/* ── 600px: mobile pequeno ─────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  .stats-grid { grid-template-columns: 1fr; }
-  .modal { max-width: 100%; margin: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .main-content { padding: 62px 12px 20px; }
+
+  /* Stats 1 coluna */
+  .stats-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Topbar compacta */
+  .topbar h1 { font-size: 16px; }
+  .topbar { margin-bottom: 14px; }
+
+  /* Modais */
+  .modal-overlay { padding: 0; }
+  .modal { border-radius: 18px 18px 0 0; }
+  .modal-header { padding: 14px 16px 12px; }
+  .modal-body { padding: 14px 16px; }
+  .modal-footer { padding: 12px 16px 18px; gap: 8px; }
+  .modal-title { font-size: 15px; }
+
+  /* Botões no footer do modal — stack vertical no mobile */
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-footer .btn { width: 100%; justify-content: center; }
+
+  /* Formulários — 1 coluna */
+  .form-grid-2 { grid-template-columns: 1fr !important; }
+
+  /* Tabela: esconder colunas menos importantes */
+  .col-hide-sm { display: none; }
+
+  /* Botões de ação na tabela */
+  .btn-sm { padding: 5px 8px; font-size: 11px; }
+
+  /* Topbar actions: wrap + full */
+  .topbar-actions { width: 100%; justify-content: flex-start; }
+
+  /* Cards de estatística menores */
+  .stat-card { padding: 14px 12px; }
+  .stat-val { font-size: 20px; }
+  .stat-icon { font-size: 20px; margin-bottom: 8px; }
+
+  /* Login */
+  .login-card { padding: 32px 24px; }
+
+  /* Badge */
+  .badge { font-size: 10px; padding: 2px 7px; }
+
+  /* Custos stats inline */
+  .stats-grid[style*="repeat(2,1fr)"] { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── 400px: mobile extra pequeno ───────────────────────────────────────── */
+@media (max-width: 400px) {
+  .main-content { padding: 60px 10px 16px; }
+  .topbar h1 { font-size: 14px; }
+  .btn { font-size: 11px; padding: 7px 10px; }
+  .modal-title { font-size: 14px; }
 }
 
 /* ─── DOUBLE PANEL DASHBOARD ─────────────────────────────────────────────── */
@@ -622,11 +807,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
   gap: 20px;
   margin-top: 24px;
 }
-@media (max-width: 992px) {
-  .double-panel {
-    grid-template-columns: 1fr;
-  }
-}
+
 .finance-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -687,6 +868,340 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 .finance-value.negative {
   color: var(--red-light);
 }
+
+/* ─── CHAT FINANCEIRO IA ─────────────────────────────────────────── */
+.chat-bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; max-width: 90%;
+  animation: fadeIn 0.2s ease-out;
+}
+.chat-bubble-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--purple) 100%);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+.chat-bubble-assistant {
+  align-self: flex-start;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.chat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border-s);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-card-title {
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chat-card-title.revenue {
+  color: var(--green-light);
+}
+.chat-card-title.cost {
+  color: var(--red-light);
+}
+.chat-card-details {
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.chat-card-details table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.chat-card-details td {
+  padding: 3px 0;
+  vertical-align: top;
+}
+.chat-card-details td:first-child {
+  color: var(--text-3);
+  width: 90px;
+  font-weight: 500;
+}
+.chat-card-btn-undo {
+  align-self: flex-end;
+  background: transparent;
+  border: 1px solid var(--red-light);
+  color: var(--red-light);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.chat-card-btn-undo:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+.chat-card-btn-undo:disabled {
+  border-color: var(--text-3);
+  color: var(--text-3);
+  cursor: not-allowed;
+  background: transparent;
+}
+.chat-typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+}
+.chat-typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background: var(--text-2);
+  border-radius: 50%;
+  animation: typing 1s infinite alternate;
+}
+.chat-typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  from { transform: translateY(0); opacity: 0.4; }
+  to { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── CHAT MOBILE ────────────────────────────────────────────────────────── */
+#page-ia-chat { display: flex; flex-direction: column; height: calc(100vh - 56px); padding: 0 !important; }
+#page-ia-chat .topbar { padding: 16px 16px 12px; margin-bottom: 0; flex-shrink: 0; }
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+#chat-welcome {
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+#chat-welcome h3 {
+  color: var(--white);
+  margin-bottom: 6px;
+  font-size: 15px;
+  word-wrap: break-word;
+}
+#chat-welcome p {
+  font-size: 12px;
+  max-width: 100%;
+  margin: 0 auto;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  word-wrap: break-word;
+}
+#chat-messages > div {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.chat-input-area {
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.chat-input-area input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--white);
+  outline: none;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+.chat-input-area input:focus { border-color: var(--blue); }
+.chat-btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-btn-icon:hover { color: var(--white); background: var(--surface); }
+.chat-btn-send {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+}
+.chat-btn-send:hover { background: var(--blue-light); }
+@media (max-width: 900px) {
+  #page-ia-chat { padding: 0 !important; }
+  #page-ia-chat .topbar { padding: 12px 16px 8px; }
+  #page-ia-chat .topbar h1 { font-size: 17px; }
+  .chat-container { border-radius: 12px; margin: 0 0 8px 0; }
+  #chat-welcome { padding: 14px 14px; }
+  #chat-welcome > div:first-child { font-size: 24px; margin-bottom: 6px; }
+  #chat-welcome h3 { font-size: 14px; }
+  #chat-welcome p { font-size: 11px; }
+  #chat-messages { padding: 12px; gap: 10px; }
+  .chat-input-area { padding: 8px 10px; gap: 6px; }
+  .chat-input-area input { font-size: 16px; padding: 9px 12px; }
+  .chat-btn-icon { font-size: 18px; padding: 6px; }
+  .chat-btn-send { padding: 9px 12px; font-size: 12px; }
+}
+@media (max-width: 600px) {
+  #page-ia-chat .topbar h1 { font-size: 15px; }
+}
+
+
+/* ─── FORM GRID UTILITÁRIO ────────────────────────────────────────────────── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+/* ─── FILTROS ROW ─────────────────────────────────────────────────────────── */
+.filters-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filters-row .fg { margin-bottom: 0; }
+.filters-row select, .filters-row input {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  outline: none;
+}
+/* ─── TABELAS: colunas escondidas no mobile ───────────────────────────────── */
+@media (max-width: 600px) {
+  .form-grid-2 { grid-template-columns: 1fr !important; }
+}
+
+.stats-grid-custos { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 480px) { .stats-grid-custos { grid-template-columns: 1fr; max-width: 100% !important; } }
+
+/* ─── MOBILE OVERRIDES FINAIS ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Garantir que NADA vaza horizontalmente */
+  html, body { overflow-x: hidden; }
+  #app { overflow-x: hidden; }
+  .main-content { overflow-x: hidden; max-width: 100vw; box-sizing: border-box; }
+  .page { overflow-x: hidden; max-width: 100%; }
+
+  /* Cards e tabelas */
+  .card { overflow: hidden; }
+  table { font-size: 12px; }
+
+  /* Chat: bolhas menores no mobile */
+  .chat-bubble { max-width: 85%; font-size: 13px; padding: 10px 14px; }
+  .chat-card { max-width: 100%; }
+
+  /* Formulários inline -> stack vertical */
+  div[style*="display:flex"][style*="gap:10px"][style*="justify-content:flex-end"] {
+    flex-direction: column-reverse !important;
+  }
+  div[style*="display:flex"][style*="gap:10px"][style*="justify-content:flex-end"] .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Stats grid custos sempre 1 col */
+  .stats-grid-custos { grid-template-columns: 1fr !important; }
+
+  /* Chat input nunca zoom no iOS */
+  .chat-input-area input { font-size: 16px !important; }
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Bolhas mais largas no mobile pequeno */
+  .chat-bubble { max-width: 92%; font-size: 13px; }
+}
+
+@media (max-width: 400px) {
+  .chat-bubble { max-width: 95%; font-size: 12px; padding: 8px 12px; }
+  .chat-btn-send { padding: 8px 10px; font-size: 11px; }
+  .topbar-actions .btn { font-size: 11px; padding: 6px 10px; }
+  .stat-card { padding: 12px 10px; }
+  .stat-val { font-size: 18px; }
+}
+
 </style>
 </head>
 <body>
@@ -698,7 +1213,18 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="brand">Viga <span>Sales</span></div>
+      <div style="display:flex;justify-content:center;margin-bottom:16px;filter:drop-shadow(0 0 24px rgba(249,115,22,.6)) drop-shadow(0 0 48px rgba(249,115,22,.3));">
+        <svg width="38" height="88" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+          <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+          <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+          <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+          <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+          <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+          <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+          <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
+        </svg>
+      </div>
       <div class="sub">Controle Financeiro</div>
     </div>
     <form id="login-form" onsubmit="doLogin(event)">
@@ -718,11 +1244,40 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
 <!-- APP -->
 <div id="app">
 
+  <!-- OVERLAY MOBILE -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- HEADER MOBILE -->
+  <header class="mobile-header">
+    <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+    <div style="display:flex;align-items:center;filter:drop-shadow(0 0 12px rgba(249,115,22,.6));">
+      <svg width="13" height="30" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+        <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+        <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+        <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+        <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+        <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+        <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+        <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
+      </svg>
+    </div>
+    <div style="width:38px;"></div>
+  </header>
+
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand">Viga <span>Sales</span></div>
-      <div class="sub">💼 Financeiro</div>
+    <div class="sidebar-brand" style="display:flex;align-items:center;justify-content:center;padding:20px 20px;filter:drop-shadow(0 0 16px rgba(249,115,22,.5)) drop-shadow(0 0 32px rgba(249,115,22,.25));">
+      <svg width="19" height="44" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>
+        <polygon points="10,9 24,16 24,30 10,23"  fill="#C07518"/>
+        <polygon points="38,9 24,16 24,30 38,23"  fill="#904E10"/>
+        <polygon points="24,34 38,41 24,48 10,41" fill="#D98920"/>
+        <polygon points="10,41 24,48 24,56 10,49" fill="#C07518"/>
+        <polygon points="38,41 24,48 24,56 38,49" fill="#904E10"/>
+        <polygon points="10,49 24,56 24,108 10,101" fill="#1C3F70"/>
+        <polygon points="38,49 24,56 24,108 38,101" fill="#0E2448"/>
+      </svg>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">Principal</div>
@@ -740,6 +1295,9 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
         <span class="icon">💸</span> Custos
       </div>
       <div class="nav-section">Inteligência</div>
+      <div class="nav-item" onclick="goto('ia-chat')" id="nav-ia-chat">
+        <span class="icon">💬</span> Chat Financeiro IA
+      </div>
       <div class="nav-item" onclick="goto('ia-extrato')" id="nav-ia-extrato">
         <span class="icon">🤖</span> IA — Extrato Bancário
       </div>
@@ -751,9 +1309,9 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
         <span class="icon">⬇️</span> Exportar Provisão
       </div>
 
-      <div class="nav-section" id="section-admin" style="display:none">Configuração</div>
-      <div class="nav-item" onclick="goto('users')" id="nav-users" style="display:none">
-        <span class="icon">⚙️</span> Usuários / Permissões
+      <div class="nav-section" id="section-admin">Configuração</div>
+      <div class="nav-item" onclick="goto('users')" id="nav-users">
+        <span class="icon">⚙️</span> Configurações & Usuários
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -804,17 +1362,25 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
         </div>
       </div>
 
-      <!-- Dupla Visualização Financeira: Realizado vs Projetado -->
-      <div class="double-panel">
-        
-        <!-- PAINEL 1: DADO REAL (Realizado Histórico) -->
-        <div class="finance-panel" style="border-top: 4px solid var(--green)">
-          <h2>🟢 Fluxo Financeiro Realizado <span style="font-size:11px;font-weight:400;color:var(--text-3);">(Total Acumulado)</span></h2>
+      <!-- Fluxo Financeiro com Tabs -->
+      <div class="finance-panel" style="margin-top: 20px; padding: 0; overflow: hidden;">
+        <div class="finance-tabs">
+          <button class="finance-tab tab-realizado active" onclick="switchFinanceTab('realizado')">
+            🟢 Fluxo Financeiro Realizado
+          </button>
+          <button class="finance-tab tab-projetado" onclick="switchFinanceTab('projetado')">
+            🔵 Fluxo Financeiro Projetado
+          </button>
+        </div>
+
+        <!-- CONTEÚDO: REALIZADO -->
+        <div id="finance-realizado" class="finance-tab-content active" style="padding: 24px;">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">Dados reais do mês atual</div>
           
           <div class="finance-item">
             <div class="finance-label">
               <span>Receita Recebida Real</span>
-              <span class="finance-desc">Total efetivamente recebido dos contratos</span>
+              <span class="finance-desc">Total recebido de contratos no mês</span>
             </div>
             <div class="finance-value positive" id="dash-recebido-real">—</div>
           </div>
@@ -822,7 +1388,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <div class="finance-item">
             <div class="finance-label">
               <span>Custo Real Total</span>
-              <span class="finance-desc">Soma de todas as despesas pagas registradas</span>
+              <span class="finance-desc">Soma de custos pagos no mês</span>
             </div>
             <div class="finance-value negative" id="dash-custo-real">—</div>
           </div>
@@ -830,7 +1396,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <div class="finance-item" style="margin-top: 8px; border-top: 2px solid var(--border); padding-top: 18px;">
             <div class="finance-label">
               <span style="font-weight: 700; color: var(--white);">EBITDA Realizado</span>
-              <span class="finance-desc">Lucro operacional real acumulado</span>
+              <span class="finance-desc">Lucro operacional real do mês</span>
             </div>
             <div class="finance-value highlight" id="dash-ebitda-real" style="color: var(--white);">—</div>
           </div>
@@ -838,15 +1404,15 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <div class="finance-item">
             <div class="finance-label">
               <span style="font-weight: 700; color: var(--white);">Margem EBITDA Real</span>
-              <span class="finance-desc">Eficiência operacional real</span>
+              <span class="finance-desc">Eficiência operacional real do mês</span>
             </div>
             <div class="finance-value" id="dash-margem-real">—</div>
           </div>
         </div>
 
-        <!-- PAINEL 2: PROJETADO & RECEBÍVEIS (Previsões e Mensalidades) -->
-        <div class="finance-panel" style="border-top: 4px solid var(--blue)">
-          <h2>🔵 Fluxo Financeiro Projetado <span style="font-size:11px;font-weight:400;color:var(--text-3);">(Mensal / Recorrências)</span></h2>
+        <!-- CONTEÚDO: PROJETADO -->
+        <div id="finance-projetado" class="finance-tab-content" style="padding: 24px;">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">Projeções baseadas em recorrências e contratos</div>
           
           <div class="finance-item">
             <div class="finance-label">
@@ -905,7 +1471,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
       <div class="topbar">
         <h1>👥 Clientes</h1>
         <div class="topbar-actions">
-          <button class="btn btn-primary" onclick="openModal('modal-cliente')">+ Novo Cliente</button>
+          <button class="btn btn-primary" onclick="openNovoCliente()">+ Novo Cliente</button>
         </div>
       </div>
       <div class="card">
@@ -979,7 +1545,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <button class="btn btn-primary" onclick="openModal('modal-custo')">+ Novo Custo</button>
         </div>
       </div>
-      <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);max-width:500px;margin-bottom:20px;">
+      <div class="stats-grid stats-grid-custos" style="max-width:500px;margin-bottom:20px;">
         <div class="stat-card" style="--accent:var(--red)">
           <div class="stat-icon">📅</div>
           <div class="stat-val" id="custo-mes-val">—</div>
@@ -993,7 +1559,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
       </div>
       <!-- FILTROS DE DATA -->
       <div class="card" style="margin-bottom:20px;padding:14px 20px;">
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div class="filters-row">
           <div style="display:flex;align-items:center;gap:8px;">
             <label style="margin:0;font-size:13.5px;font-weight:500;">Filtrar por Período:</label>
             <select id="custos-filter-month" onchange="loadCustos()" style="padding:6px 12px;font-size:13px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-main);width:150px;cursor:pointer;">
@@ -1034,6 +1600,62 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- CHAT FINANCEIRO IA -->
+    <div id="page-ia-chat" class="page" style="display:none">
+      <div class="topbar">
+        <h1>💬 Chat Financeiro IA</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost btn-sm" onclick="clearChatHistory()" style="color: var(--text-3); font-size: 12px; display: flex; align-items: center; gap: 6px;">
+            🧹 Limpar Conversa
+          </button>
+        </div>
+      </div>
+      <div class="chat-container">
+
+        <!-- Boas-vindas -->
+        <div id="chat-welcome">
+          <div style="font-size: 28px; margin-bottom: 8px;">🤖</div>
+          <h3>Como posso ajudar no seu financeiro hoje?</h3>
+          <p>
+            Diga: <em>"Paguei R$ 120 de internet hoje"</em> ou <em>"Recebi R$ 1.600 de Larissa Lobão"</em>. Pode também enviar áudio, PDF ou foto!
+          </p>
+        </div>
+
+        <!-- Janela de Mensagens -->
+        <div id="chat-messages">
+          <!-- Mensagens da conversa -->
+        </div>
+
+        <!-- Preview do Arquivo Selecionado -->
+        <div id="chat-file-preview" style="display: none; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+            <span style="font-size: 18px; flex-shrink: 0;" id="chat-file-preview-icon">📁</span>
+            <div style="min-width: 0;">
+              <div style="font-size: 12px; color: var(--white); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="chat-file-preview-name">arquivo.pdf</div>
+              <div style="font-size: 11px; color: var(--text-3);" id="chat-file-preview-size">0 KB</div>
+            </div>
+          </div>
+          <button type="button" onclick="clearSelectedChatFile()" style="color: var(--red); border: none; background: transparent; cursor: pointer; font-size: 18px; flex-shrink: 0; padding: 4px 8px;">✕</button>
+        </div>
+
+        <!-- Indicador de Gravação de Áudio -->
+        <div id="chat-recording-indicator" style="display: none; align-items: center; justify-content: center; gap: 10px; padding: 10px; background: rgba(239,68,68,0.1); border-top: 1px solid var(--border); color: var(--red); font-weight: 600; font-size: 13px; flex-shrink: 0;">
+          <span class="recording-pulse" style="width: 8px; height: 8px; border-radius: 50%; background: var(--red); display: inline-block; animation: pulse 1s infinite;"></span>
+          <span>Gravando áudio... fale agora.</span>
+        </div>
+
+        <!-- Área de Input -->
+        <div class="chat-input-area">
+          <button type="button" class="chat-btn-icon" onclick="triggerChatFileInput()" title="Anexar arquivo">📎</button>
+          <input type="file" id="chat-file-input" style="display: none;" onchange="onChatFileSelected(event)" accept="image/*,application/pdf,audio/*">
+          <button type="button" class="chat-btn-icon" id="chat-audio-btn" onclick="toggleAudioRecording()" title="Gravar áudio">🎤</button>
+          <input type="text" id="chat-text-input" placeholder="Digite uma mensagem ou descreva a transação..." onkeydown="handleChatKeydown(event)">
+          <button type="button" class="chat-btn-send" onclick="sendChatMessage()">Enviar ➔</button>
+        </div>
+
       </div>
     </div>
 
@@ -1134,7 +1756,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               <label>Nome do Contato</label>
               <input id="c-contato" placeholder="Nome do contato na empresa">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:15px;">
+            <div class="form-grid-2" style="margin-bottom:15px;">
               <div class="fg">
                 <label>Telefone</label>
                 <input id="c-telefone" placeholder="(00) 00000-0000">
@@ -1144,7 +1766,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
                 <input id="c-email" type="email" placeholder="cliente@empresa.com.br">
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:15px;">
+            <div class="form-grid-2" style="margin-bottom:15px;">
               <div class="fg">
                 <label>CPF</label>
                 <input id="c-cpf" placeholder="000.000.000-00">
@@ -1167,6 +1789,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               <textarea id="c-notas" placeholder="Informações adicionais do cliente..."></textarea>
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--border); padding-top:16px;">
+              <button type="button" class="btn btn-danger" id="btn-excluir-cliente" style="margin-right:auto; display:none;" onclick="excluirClienteAtual()">🗑️ Excluir Cliente</button>
               <button type="button" class="btn btn-ghost" onclick="closeModal('modal-cliente')">Cancelar</button>
               <button type="submit" class="btn btn-primary">💾 Salvar Cliente</button>
             </div>
@@ -1250,18 +1873,18 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               </div>
               <div class="fg">
                 <label>Tipo de Contrato</label>
-                <select id="ct-recorrente" onchange="toggleRecorrenciaFields(); atualizarValorRecebidoAutomatico('recorrente')">
+                <select id="ct-recorrente" onchange="toggleRecorrenciaFields(); atualizarChecklistDoInput()">
                   <option value="1">Mensalidade (Recorrente)</option>
                   <option value="0">Pontual (Projeto Único)</option>
                 </select>
               </div>
               <div class="fg">
                 <label>Data do Contrato *</label>
-                <input id="ct-data-adesao" type="date" required>
+                <input id="ct-data-adesao" type="date" required onchange="atualizarChecklistDoInput()">
               </div>
               <div class="fg">
                 <label>Dia de Vencimento (Boleto)</label>
-                <input id="ct-data-boleto" type="date">
+                <input id="ct-data-boleto" type="number" min="1" max="31" placeholder="Ex: 10" oninput="atualizarChecklistDoInput()">
               </div>
               <div class="fg">
                 <label>Nº Contrato / ID</label>
@@ -1287,27 +1910,27 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px;">
               <div class="fg">
                 <label>Valor da Mensalidade (R$)</label>
-                <input id="ct-valor-parcela" type="number" step="0.01" placeholder="0,00" oninput="calcFaturamentoTotal(); atualizarValorRecebidoAutomatico('mensalidade')">
+                <input id="ct-valor-parcela" type="number" step="0.01" placeholder="0,00" oninput="calcFaturamentoTotal(); atualizarChecklistDoInput()">
               </div>
               <div class="fg">
                 <label>Parcelas de Recorrência (meses)</label>
-                <input id="ct-parcelas" type="number" placeholder="Ex: 3, 6, 12" oninput="calcFaturamentoTotal(); atualizarValorRecebidoAutomatico('parcelas')">
+                <input id="ct-parcelas" type="number" placeholder="Ex: 3, 6, 12" oninput="calcFaturamentoTotal(); atualizarChecklistDoInput()">
               </div>
               <div class="fg">
                 <label>Meses Executados</label>
-                <input id="ct-parcelas-pagas" type="number" value="0" placeholder="0" oninput="atualizarValorRecebidoAutomatico('pagas')">
+                <input id="ct-parcelas-pagas" type="number" value="0" placeholder="0" readonly style="background: var(--bg-3); cursor: not-allowed;">
               </div>
               <div class="fg">
                 <label>Valor do Contrato (Faturamento Total R$)</label>
-                <input id="ct-credito" type="number" step="0.01" placeholder="0,00" oninput="atualizarValorRecebidoAutomatico('credito')">
+                <input id="ct-credito" type="number" step="0.01" placeholder="0,00" oninput="atualizarChecklistDoInput()">
               </div>
               <div class="fg">
                 <label>Valor Recebido (R$)</label>
-                <input id="ct-comissao-rec" type="number" step="0.01" value="0">
+                <input id="ct-comissao-rec" type="number" step="0.01" value="0" readonly style="background: var(--bg-3); cursor: not-allowed;">
               </div>
               <div class="fg">
                 <label>Status do Pagamento</label>
-                <select id="ct-status-comissao" onchange="atualizarValorRecebidoAutomatico('status')">
+                <select id="ct-status-comissao" disabled style="background: var(--bg-3); cursor: not-allowed;">
                   <option value="pendente">Pendente</option>
                   <option value="parcial">Parcial</option>
                   <option value="recebida">Recebido</option>
@@ -1330,6 +1953,14 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
               <div class="fg">
                 <label>% Parceria</label>
                 <input id="ct-parceria-pct" type="number" step="0.01" placeholder="0">
+              </div>
+            </div>
+
+            <!-- BLOCO 4: Cronograma de Pagamentos (Checklist) -->
+            <div id="ct-secao-parcelas-pagas" style="margin-bottom: 20px;">
+              <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-3); margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:6px;">📅 Cronograma de Pagamentos (Mapeamento de Recebidos)</div>
+              <div id="ct-checklist-parcelas" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; background: var(--bg-2); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                <!-- Gerado dinamicamente via JS -->
               </div>
             </div>
 
@@ -1362,7 +1993,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <label>Descrição *</label>
           <input id="cu-descricao" required placeholder="Ex: Aluguel, Ferramentas, etc.">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-grid-2">
           <div class="fg">
             <label>Categoria</label>
             <select id="cu-categoria">
@@ -1421,7 +2052,7 @@ tbody tr:hover { background: rgba(59,130,246,.04); }
           <label>E-mail *</label>
           <input id="usr-email" type="email" required placeholder="Ex: joao@vigasales.com.br">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:15px;">
+        <div class="form-grid-2" style="margin-bottom:15px;">
           <div class="fg">
             <label>Função / Nível</label>
             <select id="usr-role">
@@ -1482,6 +2113,7 @@ let searchTimers = {};
 
 let clientesCache = [];
 let contratosCache = [];
+let modalInstallments = [];
 
 /* ════════════════════════════════════════════════════════════════
    UTILITÁRIOS
@@ -1552,16 +2184,32 @@ function initApp(user) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-role').textContent = user.role;
   document.getElementById('user-avatar').textContent = user.name[0].toUpperCase();
-  
-  if (user.role === 'master' || user.role === 'admin') {
-    document.getElementById('section-admin').style.display = 'block';
-    document.getElementById('nav-users').style.display = 'flex';
+  SESSION_USER = user;
+
+  // Controle de visibilidade por role
+  const isAdmin = user.role === 'master' || user.role === 'admin';
+  document.getElementById('section-admin').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('nav-users').style.display = isAdmin ? 'flex' : 'none';
+
+  if (window.innerWidth <= 900) {
+    goto('ia-chat');
   } else {
-    document.getElementById('section-admin').style.display = 'none';
-    document.getElementById('nav-users').style.display = 'none';
+    goto('dashboard');
   }
+}
+
+function switchFinanceTab(tab) {
+  // Toggle active class on tabs
+  document.querySelectorAll('.finance-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.finance-tab-content').forEach(c => c.classList.remove('active'));
   
-  goto('dashboard');
+  if (tab === 'realizado') {
+    document.querySelector('.tab-realizado').classList.add('active');
+    document.getElementById('finance-realizado').classList.add('active');
+  } else {
+    document.querySelector('.tab-projetado').classList.add('active');
+    document.getElementById('finance-projetado').classList.add('active');
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1570,9 +2218,13 @@ function initApp(user) {
 function goto(page) {
   document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`page-${page}`).style.display = 'block';
+
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) pageEl.style.display = 'block';
+
   const navEl = document.getElementById(`nav-${page}`);
   if (navEl) navEl.classList.add('active');
+
   const loaders = {
     dashboard: loadDashboard,
     clientes:  loadClientes,
@@ -1580,8 +2232,59 @@ function goto(page) {
     custos:    loadCustos,
     extratos:  loadExtratos,
     users:     loadUsers,
+    'ia-chat': initChat,
   };
   if (loaders[page]) loaders[page]();
+
+  // Fecha sidebar no mobile ao navegar
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+  } else {
+    sidebar.classList.add('open');
+    if (overlay) overlay.classList.add('active');
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
+}
+
+function openNovoCliente() {
+  document.getElementById('form-cliente').reset();
+  document.getElementById('c-id').value = '';
+  document.getElementById('modal-cliente-title').textContent = 'Novo Cliente';
+  const btnExcluir = document.getElementById('btn-excluir-cliente');
+  if (btnExcluir) btnExcluir.style.display = 'none';
+  openModal('modal-cliente');
+}
+
+async function excluirClienteAtual() {
+  const id = document.getElementById('c-id').value;
+  const nome = document.getElementById('c-nome').value;
+  if (!id) return;
+  if (!confirm(`⚠️ Tem certeza que deseja excluir o cliente "${nome}"?\n\nTodos os contratos e recebimentos relacionados serão permanentemente apagados.`)) return;
+  try {
+    showLoading('Excluindo cliente...');
+    await api('DELETE', `/clientes/${id}`);
+    toast('Cliente excluído com sucesso!', 'success');
+    closeModal('modal-cliente');
+    loadClientes();
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    hideLoading();
+  }
 }
 
 function debounceSearch(type) {
@@ -1636,6 +2339,8 @@ function doLogout() {
   TOKEN = '';
   SESSION_USER = null;
   localStorage.removeItem('vs_fin_token');
+  localStorage.removeItem('vigasales_chat_messages_html');
+  localStorage.removeItem('vigasales_chat_history');
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 }
@@ -1653,33 +2358,6 @@ async function checkAuth() {
   }
 }
 
-function initApp(user) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('user-name').textContent = user.name;
-  document.getElementById('user-role').textContent = user.role;
-  document.getElementById('user-avatar').textContent = user.name[0].toUpperCase();
-  goto('dashboard');
-}
-
-/* ════════════════════════════════════════════════════════════════
-   NAVEGAÇÃO
-════════════════════════════════════════════════════════════════ */
-function goto(page) {
-  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`page-${page}`).style.display = 'block';
-  const navEl = document.getElementById(`nav-${page}`);
-  if (navEl) navEl.classList.add('active');
-  const loaders = {
-    dashboard: loadDashboard,
-    clientes:  loadClientes,
-    contratos: loadContratos,
-    custos:    loadCustos,
-    extratos:  loadExtratos,
-  };
-  if (loaders[page]) loaders[page]();
-}
 
 /* ════════════════════════════════════════════════════════════════
    DASHBOARD
@@ -1817,6 +2495,8 @@ function populateClienteFields(c) {
   document.getElementById('c-responsavel').value = c.responsavel || '';
   document.getElementById('c-notas').value       = c.notas || '';
   document.getElementById('modal-cliente-title').textContent = 'Editar Cliente';
+  const btnExcluir = document.getElementById('btn-excluir-cliente');
+  if (btnExcluir) btnExcluir.style.display = 'block';
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1899,6 +2579,8 @@ async function openNovoContrato(clienteId, clienteNome) {
   }
   
   toggleRecorrenciaFields();
+  modalInstallments = [];
+  renderChecklist();
   openModal('modal-contrato');
 }
 
@@ -1907,7 +2589,7 @@ function toggleRecorrenciaFields() {
   
   document.getElementById('ct-valor-parcela').disabled = !rec;
   document.getElementById('ct-parcelas').disabled = !rec;
-  document.getElementById('ct-parcelas-pagas').disabled = !rec;
+  document.getElementById('ct-parcelas-pagas').disabled = true; // Sempre gerenciado pelo checklist
   
   const faturamentoEl = document.getElementById('ct-credito');
   if (rec) {
@@ -1921,6 +2603,7 @@ function toggleRecorrenciaFields() {
     document.getElementById('ct-parcelas').value = '';
     document.getElementById('ct-parcelas-pagas').value = '0';
   }
+  atualizarChecklistDoInput();
 }
 
 function calcFaturamentoTotal() {
@@ -1934,50 +2617,196 @@ function calcFaturamentoTotal() {
   }
 }
 
-function atualizarValorRecebidoAutomatico(triggerSource) {
-  const rec = document.getElementById('ct-recorrente').value === '1';
-  const statusSelect = document.getElementById('ct-status-comissao');
-  const statusComissao = statusSelect ? statusSelect.value : 'pendente';
-  const comissaoRecInput = document.getElementById('ct-comissao-rec');
-  const parcelasPagasInput = document.getElementById('ct-parcelas-pagas');
-  const totalParcelas = parseInt(document.getElementById('ct-parcelas').value) || 0;
-  const mensalidade = parseFloat(document.getElementById('ct-valor-parcela').value) || 0;
-  const totalCredito = parseFloat(document.getElementById('ct-credito').value) || 0;
+// ── Funções Auxiliares e Checklist do Cronograma de Pagamento ──
+function getDayFromBoletoValue(val) {
+  if (!val) return '';
+  if (typeof val === 'string' && val.includes('-')) {
+    const parts = val.split('-');
+    return parseInt(parts[2]) || '';
+  }
+  return val;
+}
 
-  if (rec) {
-    let parcelasPagas = parseInt(parcelasPagasInput.value) || 0;
-    
-    if (triggerSource === 'status' && statusSelect) {
-      if (statusSelect.value === 'recebida' && totalParcelas > 0) {
-        parcelasPagas = totalParcelas;
-        parcelasPagasInput.value = totalParcelas;
-      } else if (statusSelect.value === 'pendente') {
-        parcelasPagas = 0;
-        parcelasPagasInput.value = 0;
+function getInstallmentDefaultDate(i, dataAdesaoStr, dueDayStr) {
+  if (!dataAdesaoStr) {
+    return new Date().toISOString().split('T')[0];
+  }
+  const parts = dataAdesaoStr.split('-');
+  const year = parseInt(parts[0]);
+  const month = parseInt(parts[1]);
+  const day = parseInt(parts[2]);
+  
+  // JS Date uses 0-indexed month
+  const date = new Date(year, month - 1 + i, day);
+  
+  if (dueDayStr) {
+    const dueDay = parseInt(dueDayStr);
+    if (dueDay >= 1 && dueDay <= 31) {
+      date.setDate(dueDay);
+    }
+  }
+  return date.toISOString().split('T')[0];
+}
+
+function atualizarChecklistDoInput() {
+  const isRec = document.getElementById('ct-recorrente').value === '1';
+  const total = isRec ? (parseInt(document.getElementById('ct-parcelas').value) || 12) : 1;
+  const value = isRec 
+    ? (parseFloat(document.getElementById('ct-valor-parcela').value) || 0)
+    : (parseFloat(document.getElementById('ct-credito').value) || 0);
+
+  const newInstallments = [];
+  for (let i = 0; i < total; i++) {
+    if (modalInstallments[i]) {
+      const inst = modalInstallments[i];
+      if (!inst.checked) {
+        inst.valor = value;
       }
+      newInstallments.push(inst);
+    } else {
+      newInstallments.push({
+        index: i,
+        checked: false,
+        valor: value,
+        data_pagamento: ''
+      });
     }
+  }
+  modalInstallments = newInstallments;
+  renderChecklist();
+}
+
+function updateTotalsFromChecklist() {
+  const checkedInst = modalInstallments.filter(x => x.checked);
+  const totalChecked = checkedInst.length;
+  
+  const valParcela = parseFloat(document.getElementById('ct-valor-parcela').value) || 0;
+  const isRec = document.getElementById('ct-recorrente').value === '1';
+  let totalReceived = 0;
+  
+  checkedInst.forEach(inst => {
+    totalReceived += parseFloat(inst.valor) || valParcela || 0;
+  });
+  
+  document.getElementById('ct-parcelas-pagas').value = totalChecked;
+  document.getElementById('ct-comissao-rec').value = totalReceived.toFixed(2);
+  
+  const total = parseInt(document.getElementById('ct-parcelas').value) || (isRec ? 12 : 1);
+  let status = 'pendente';
+  if (totalChecked > 0) {
+    status = totalChecked >= total ? 'recebida' : 'parcial';
+  }
+  document.getElementById('ct-status-comissao').value = status;
+}
+
+function renderChecklist() {
+  const container = document.getElementById('ct-checklist-parcelas');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  const isRec = document.getElementById('ct-recorrente').value === '1';
+  const valParcela = parseFloat(document.getElementById('ct-valor-parcela').value) || 0;
+  const dataAdesao = document.getElementById('ct-data-adesao').value || '';
+  const dueDay = document.getElementById('ct-data-boleto').value || '';
+
+  modalInstallments.forEach((inst, i) => {
+    const defaultDate = inst.data_pagamento || getInstallmentDefaultDate(i, dataAdesao, dueDay);
     
-    if (mensalidade > 0) {
-      comissaoRecInput.value = (mensalidade * parcelasPagas).toFixed(2);
-    }
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'space-between';
+    row.style.gap = '10px';
+    row.style.padding = '6px 8px';
+    row.style.borderBottom = '1px solid var(--border)';
     
-    if (triggerSource !== 'status' && statusSelect) {
-      if (parcelasPagas === 0) {
-        statusSelect.value = 'pendente';
-      } else if (totalParcelas > 0 && parcelasPagas >= totalParcelas) {
-        statusSelect.value = 'recebida';
+    const label = document.createElement('label');
+    label.style.display = 'flex';
+    label.style.alignItems = 'center';
+    label.style.gap = '8px';
+    label.style.cursor = 'pointer';
+    label.style.margin = '0';
+    label.style.fontWeight = 'normal';
+    label.style.color = inst.checked ? 'var(--text-1)' : 'var(--text-3)';
+    
+    const chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = inst.checked;
+    chk.onchange = (e) => {
+      inst.checked = e.target.checked;
+      if (inst.checked) {
+        inst.data_pagamento = defaultDate;
+        inst.valor = valParcela || inst.valor || 0;
       } else {
-        statusSelect.value = 'parcial';
+        inst.data_pagamento = '';
       }
+      updateTotalsFromChecklist();
+      renderChecklist();
+    };
+    
+    const span = document.createElement('span');
+    span.textContent = isRec 
+      ? `Parcela ${i + 1} (${fmt.money(inst.valor || valParcela)})`
+      : `Pagamento Único (${fmt.money(inst.valor || valParcela)})`;
+      
+    label.appendChild(chk);
+    label.appendChild(span);
+    row.appendChild(label);
+    
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.value = inst.checked ? inst.data_pagamento : '';
+    dateInput.disabled = !inst.checked;
+    dateInput.style.width = '150px';
+    dateInput.style.padding = '4px 8px';
+    dateInput.style.fontSize = '13px';
+    dateInput.style.borderRadius = '4px';
+    dateInput.style.border = '1px solid var(--border)';
+    dateInput.style.background = inst.checked ? 'var(--bg-1)' : 'var(--bg-3)';
+    dateInput.onchange = (e) => {
+      inst.data_pagamento = e.target.value;
+      updateTotalsFromChecklist();
+    };
+    
+    row.appendChild(dateInput);
+    container.appendChild(row);
+  });
+}
+
+async function loadContratoRecebimentos(ctId, ct) {
+  try {
+    const payments = await api('GET', `/contratos/${ctId}/recebimentos`);
+    const isRec = ct.recorrente != null ? (Number(ct.recorrente) === 1) : true;
+    const total = isRec ? (ct.total_parcelas || 12) : 1;
+    const value = isRec ? (ct.valor_parcela || 0) : (ct.valor_credito || 0);
+    
+    const len = Math.max(total, payments.length);
+    modalInstallments = [];
+    for (let i = 0; i < len; i++) {
+      const pay = payments[i] || null;
+      modalInstallments.push({
+        index: i,
+        checked: !!pay,
+        valor: pay ? pay.valor : value,
+        data_pagamento: pay ? pay.data_pagamento : ''
+      });
     }
-  } else {
-    if (triggerSource === 'status' || triggerSource === 'credito' || triggerSource === 'recorrente') {
-      if (statusComissao === 'recebida') {
-        comissaoRecInput.value = totalCredito.toFixed(2);
-      } else if (statusComissao === 'pendente') {
-        comissaoRecInput.value = '0.00';
-      }
+    renderChecklist();
+  } catch (err) {
+    console.error('Erro ao carregar recebimentos do contrato:', err);
+    const isRec = ct.recorrente != null ? (Number(ct.recorrente) === 1) : true;
+    const total = isRec ? (ct.total_parcelas || 12) : 1;
+    const value = isRec ? (ct.valor_parcela || 0) : (ct.valor_credito || 0);
+    modalInstallments = [];
+    for (let i = 0; i < total; i++) {
+      modalInstallments.push({
+        index: i,
+        checked: false,
+        valor: value,
+        data_pagamento: ''
+      });
     }
+    renderChecklist();
   }
 }
 
@@ -1986,6 +2815,7 @@ async function editContrato(ctId, clienteId) {
   if (cached) {
     populateContratoFields(cached.ct, cached.c);
     openModal('modal-contrato');
+    await loadContratoRecebimentos(ctId, cached.ct);
   }
   try {
     const c = await api('GET', `/clientes/${clienteId}`);
@@ -2002,6 +2832,7 @@ async function editContrato(ctId, clienteId) {
     }
     if (document.getElementById('ct-id').value === ctId) {
       populateContratoFields(ct, c);
+      await loadContratoRecebimentos(ctId, ct);
     }
   } catch (err) {
     if (!cached) toast(err.message, 'error');
@@ -2036,7 +2867,7 @@ function populateContratoFields(ct, c) {
   document.getElementById('ct-status-comissao').value  = ct.status_comissao || 'pendente';
   document.getElementById('ct-atraso').value           = ct.em_atraso ? '1' : '0';
   document.getElementById('ct-nf').value               = ct.nf_emitida ? '1' : '0';
-  document.getElementById('ct-data-boleto').value      = ct.data_boleto ? ct.data_boleto.split('T')[0] : '';
+  document.getElementById('ct-data-boleto').value      = getDayFromBoletoValue(ct.data_boleto);
   document.getElementById('ct-responsavel').value      = ct.responsavel || '';
   document.getElementById('ct-parceria-pct').value     = ct.parceria_pct || '';
   document.getElementById('ct-notas').value            = ct.notas || '';
@@ -2080,6 +2911,13 @@ async function saveContrato(e) {
   const parceria_pct = parseFloat(document.getElementById('ct-parceria-pct').value) || null;
   const notas = document.getElementById('ct-notas').value;
   const empresa = document.getElementById('ct-empresa').value || 'VS';
+
+  const recebimentos = modalInstallments
+    .filter(x => x.checked)
+    .map(x => ({
+      valor: parseFloat(x.valor) || valor_parcela || 0,
+      data_pagamento: x.data_pagamento
+    }));
 
   try {
     showLoading('Salvando contrato...');
@@ -2134,6 +2972,7 @@ async function saveContrato(e) {
       responsavel,
       notas,
       recorrente:          rec ? 1 : 0,
+      recebimentos,
     };
 
     if (id) {
@@ -2662,6 +3501,30 @@ function exportProvisao() {
 async function loadUsers() {
   try {
     const users = await api('GET', '/users');
+    
+    // Restaurar layout original do page-users caso tenha sido alterado pela restrição anterior
+    const pageUsers = document.getElementById('page-users');
+    if (pageUsers) {
+      pageUsers.innerHTML = `
+        <div class="topbar">
+          <h1>⚙️ Controle de Usuários</h1>
+          <div class="topbar-actions">
+            <button class="btn btn-primary" onclick="openNovoUsuario()">+ Novo Usuário</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Nome</th><th>E-mail</th><th>Função (Nível)</th><th>Status</th><th>Ações</th></tr>
+              </thead>
+              <tbody id="tbody-users"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
     const tbody = document.getElementById('tbody-users');
     tbody.innerHTML = '';
     
@@ -2694,7 +3557,30 @@ async function loadUsers() {
       tbody.appendChild(tr);
     });
   } catch (err) {
-    toast('Erro ao carregar usuários: ' + err.message, 'error');
+    if (err.message.includes('Sem permissão') || err.message.includes('403') || err.message.toLowerCase().includes('forbidden') || err.message.toLowerCase().includes('negado')) {
+      const pageUsers = document.getElementById('page-users');
+      if (pageUsers) {
+        pageUsers.innerHTML = `
+          <div class="topbar">
+            <h1>⚙️ Configurações do Sistema</h1>
+          </div>
+          <div style="display: flex; justify-content: center; align-items: center; min-height: 400px; padding: 20px;">
+            <div class="card" style="max-width: 500px; text-align: center; padding: 40px 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow);">
+              <div style="font-size: 48px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(139,92,246,0.2));">🔒</div>
+              <h2 style="color: var(--white); margin-bottom: 12px; font-size: 20px;">Acesso Restrito às Configurações</h2>
+              <p style="color: var(--text-2); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                Apenas usuários com nível <strong>Admin</strong> ou <strong>Master</strong> têm permissão para gerenciar usuários e alterar configurações globais do sistema.
+              </p>
+              <div style="border-top: 1px solid var(--border); padding-top: 20px; font-size: 13px; color: var(--text-3);">
+                Seu perfil atual: <span class="badge badge-gray">${SESSION_USER ? SESSION_USER.role.toUpperCase() : 'USER'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      toast('Erro ao carregar usuários: ' + err.message, 'error');
+    }
   }
 }
 
@@ -2775,6 +3661,395 @@ function escapeHtml(str) {
 function escapeJsString(str) {
   if (!str) return '';
   return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/`/g, '\\`').replace(/\$/g, '\\$');
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CHAT FINANCEIRO IA
+════════════════════════════════════════════════════════════════ */
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let selectedChatFile = null;
+let chatHistory = [];
+
+function saveChatState() {
+  const container = document.getElementById('chat-messages');
+  if (container) {
+    // Clone container to avoid mutating live DOM
+    const clone = container.cloneNode(true);
+    const tempIndicator = clone.querySelector('#chat-typing-bubble');
+    if (tempIndicator) tempIndicator.remove();
+    
+    localStorage.setItem('vigasales_chat_messages_html', clone.innerHTML);
+    localStorage.setItem('vigasales_chat_history', JSON.stringify(chatHistory));
+  }
+}
+
+function loadChatState() {
+  const container = document.getElementById('chat-messages');
+  if (!container) return;
+  
+  const savedHtml = localStorage.getItem('vigasales_chat_messages_html');
+  const savedHistory = localStorage.getItem('vigasales_chat_history');
+  
+  if (savedHtml) {
+    container.innerHTML = savedHtml;
+    container.scrollTop = container.scrollHeight;
+    const welcome = document.getElementById('chat-welcome');
+    if (welcome && container.children.length > 0) {
+      welcome.style.display = 'none';
+    }
+  }
+  
+  if (savedHistory) {
+    try {
+      chatHistory = JSON.parse(savedHistory);
+    } catch (e) {
+      console.error('Failed to parse saved chat history:', e);
+      chatHistory = [];
+    }
+  }
+}
+
+function clearChatHistory() {
+  if (confirm('Deseja realmente limpar todo o histórico da conversa com a IA?')) {
+    localStorage.removeItem('vigasales_chat_messages_html');
+    localStorage.removeItem('vigasales_chat_history');
+    chatHistory = [];
+    const container = document.getElementById('chat-messages');
+    if (container) container.innerHTML = '';
+    const welcome = document.getElementById('chat-welcome');
+    if (welcome) welcome.style.display = 'flex';
+    initChat();
+    toast('Histórico de conversa limpo!', 'success');
+  }
+}
+
+function initChat() {
+  const container = document.getElementById('chat-messages');
+  if (container && container.children.length === 0) {
+    loadChatState();
+    if (container.children.length === 0) {
+      appendChatMessage('assistant', 'Olá! Sou o assistente financeiro da Viga Sales. Envie uma mensagem de texto, comprovante em imagem/PDF ou uma mensagem de voz descrevendo uma despesa ou receita, e eu farei o lançamento automaticamente.');
+    }
+  }
+  const input = document.getElementById('chat-text-input');
+  if (input) input.focus();
+}
+
+function triggerChatFileInput() {
+  document.getElementById('chat-file-input').click();
+}
+
+function onChatFileSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const base64 = dataUrl.split(',')[1];
+    
+    selectedChatFile = {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      mimeType: file.type,
+      base64: base64
+    };
+    
+    displaySelectedChatFilePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearSelectedChatFile() {
+  selectedChatFile = null;
+  document.getElementById('chat-file-input').value = '';
+  document.getElementById('chat-file-preview').style.display = 'none';
+}
+
+function displaySelectedChatFilePreview() {
+  if (!selectedChatFile) return;
+  
+  const preview = document.getElementById('chat-file-preview');
+  const iconEl = document.getElementById('chat-file-preview-icon');
+  const nameEl = document.getElementById('chat-file-preview-name');
+  const sizeEl = document.getElementById('chat-file-preview-size');
+  
+  nameEl.textContent = selectedChatFile.name;
+  const kb = (selectedChatFile.size / 1024).toFixed(1);
+  sizeEl.textContent = `${kb} KB`;
+  
+  let icon = '📁';
+  if (selectedChatFile.type.startsWith('image/')) {
+    icon = '🖼️';
+  } else if (selectedChatFile.type === 'application/pdf') {
+    icon = '📄';
+  } else if (selectedChatFile.type.startsWith('audio/')) {
+    icon = '🎵';
+  }
+  iconEl.textContent = icon;
+  
+  preview.style.display = 'flex';
+}
+
+async function toggleAudioRecording() {
+  const audioBtn = document.getElementById('chat-audio-btn');
+  const indicator = document.getElementById('chat-recording-indicator');
+  
+  if (!isRecording) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      
+      mediaRecorder.ondataavailable = function(e) {
+        if (e.data.size > 0) {
+          audioChunks.push(e.data);
+        }
+      };
+      
+      mediaRecorder.onstop = function() {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const dataUrl = e.target.result;
+          const base64 = dataUrl.split(',')[1];
+          
+          selectedChatFile = {
+            name: 'gravacao_voz.webm',
+            size: audioBlob.size,
+            type: 'audio/webm',
+            mimeType: 'audio/webm',
+            base64: base64
+          };
+          
+          displaySelectedChatFilePreview();
+        };
+        reader.readAsDataURL(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      isRecording = true;
+      indicator.style.display = 'flex';
+      audioBtn.innerHTML = '⏹️';
+      audioBtn.style.color = 'var(--red)';
+      audioBtn.title = 'Parar Gravação';
+    } catch (err) {
+      console.error('Erro ao acessar microfone:', err);
+      toast('Não foi possível acessar o microfone. Verifique as permissões de áudio.', 'error');
+    }
+  } else {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    isRecording = false;
+    indicator.style.display = 'none';
+    audioBtn.innerHTML = '🎤';
+    audioBtn.style.color = 'inherit';
+    audioBtn.title = 'Gravar Mensagem de Voz';
+  }
+}
+
+function handleChatKeydown(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    sendChatMessage();
+  }
+}
+
+function appendChatMessage(sender, contentHtml) {
+  const container = document.getElementById('chat-messages');
+  if (!container) return null;
+  
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble chat-bubble-${sender}`;
+  bubble.innerHTML = contentHtml;
+  
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+  
+  const welcome = document.getElementById('chat-welcome');
+  if (welcome && sender === 'user') {
+    welcome.style.display = 'none';
+  }
+  
+  saveChatState();
+  
+  return bubble;
+}
+
+function showChatTypingIndicator() {
+  const container = document.getElementById('chat-messages');
+  if (!container) return null;
+  
+  const bubble = document.createElement('div');
+  bubble.id = 'chat-typing-bubble';
+  bubble.className = 'chat-bubble chat-bubble-assistant';
+  bubble.style.padding = '8px 16px';
+  bubble.innerHTML = `
+    <div class="chat-typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+  return bubble;
+}
+
+function removeChatTypingIndicator() {
+  const el = document.getElementById('chat-typing-bubble');
+  if (el) el.remove();
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-text-input');
+  if (!input) return;
+  
+  const text = input.value.trim();
+  const file = selectedChatFile;
+  
+  if (!text && !file) return;
+  
+  input.value = '';
+  clearSelectedChatFile();
+  
+  let userMsgHtml = '';
+  if (text) {
+    userMsgHtml += `<div>${escapeHtml(text)}</div>`;
+  }
+  if (file) {
+    let fileIcon = '📁';
+    if (file.type.startsWith('image/')) fileIcon = '🖼️';
+    else if (file.type === 'application/pdf') fileIcon = '📄';
+    else if (file.type.startsWith('audio/')) fileIcon = '🎵';
+    
+    userMsgHtml += `
+      <div style="margin-top: 6px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 6px; display: flex; align-items: center; gap: 8px; font-size: 12px; border: 1px solid rgba(255,255,255,0.05);">
+        <span>${fileIcon}</span>
+        <span style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(file.name)}</span>
+        <span style="color: rgba(255,255,255,0.5)">(${(file.size / 1024).toFixed(1)} KB)</span>
+      </div>
+    `;
+  }
+  
+  appendChatMessage('user', userMsgHtml);
+  showChatTypingIndicator();
+  
+  try {
+    // Enviar histórico das mensagens anteriores (sem a atual)
+    const historyToSend = chatHistory.slice();
+    chatHistory.push({ role: 'user', content: text || 'Arquivo anexado' });
+    saveChatState();
+    const result = await api('POST', '/chat/process', { text, file, history: historyToSend });
+    removeChatTypingIndicator();
+    
+    if (result.explanation) {
+      appendChatMessage('assistant', result.explanation);
+      chatHistory.push({ role: 'assistant', content: result.explanation });
+      if (chatHistory.length > 30) chatHistory = chatHistory.slice(-20);
+      saveChatState();
+    } else if (result.message) {
+      appendChatMessage('assistant', result.message);
+      chatHistory.push({ role: 'assistant', content: result.message });
+      saveChatState();
+    } else {
+      appendChatMessage('assistant', 'Não consegui classificar a transação. Poderia reformular ou dar mais detalhes?');
+    }
+    
+    if (result.inserted) {
+      const ins = result.inserted;
+      let cardHtml = '';
+      
+      if (result.action === 'cost') {
+        cardHtml = `
+          <div class="chat-card">
+            <div class="chat-card-title cost">
+              <span>💸</span> Despesa/Custo Registrado
+            </div>
+            <div class="chat-card-details">
+              <table>
+                <tr><td>Descrição:</td><td>${escapeHtml(ins.descricao || 'Despesa')}</td></tr>
+                <tr><td>Valor:</td><td style="color: var(--red-light); font-weight: 600;">${fmt.money(ins.valor)}</td></tr>
+                <tr><td>Data:</td><td>${ins.data ? ins.data.split('-').reverse().join('/') : ''}</td></tr>
+                <tr><td>Categoria:</td><td>${escapeHtml(ins.categoria || 'Outro')}</td></tr>
+                <tr><td>Tipo:</td><td>${ins.tipo === 'fixo' ? 'Fixo' : 'Variável'}</td></tr>
+              </table>
+            </div>
+            <button class="chat-card-btn-undo" onclick="undoRegisteredChatAction('cost', '${ins.id}', this)">
+              Desfazer Registro
+            </button>
+          </div>
+        `;
+      } else if (result.action === 'revenue') {
+        cardHtml = `
+          <div class="chat-card">
+            <div class="chat-card-title revenue">
+              <span>💰</span> Recebimento Vinculado
+            </div>
+            <div class="chat-card-details">
+              <table>
+                <tr><td>Cliente:</td><td>${escapeHtml(ins.cliente_nome || 'Cliente')}</td></tr>
+                <tr><td>Contrato:</td><td>${escapeHtml(ins.contrato_desc || 'Contrato')}</td></tr>
+                <tr><td>Valor:</td><td style="color: var(--green-light); font-weight: 600;">${fmt.money(ins.valor)}</td></tr>
+                <tr><td>Data Pagto:</td><td>${ins.data_pagamento ? ins.data_pagamento.split('-').reverse().join('/') : ''}</td></tr>
+              </table>
+            </div>
+            <button class="chat-card-btn-undo" onclick="undoRegisteredChatAction('revenue', '${ins.id}', this, '${ins.contrato_id || ''}', '${ins.cliente_id || ''}')">
+              Desfazer Registro
+            </button>
+          </div>
+        `;
+      }
+      
+      if (cardHtml) {
+        appendChatMessage('assistant', cardHtml);
+      }
+    }
+  } catch (err) {
+    removeChatTypingIndicator();
+    appendChatMessage('assistant', `<span style="color: var(--red-light);">⚠️ Ocorreu um erro ao processar a mensagem: ${escapeHtml(err.message)}</span>`);
+  }
+}
+
+async function undoRegisteredChatAction(action, id, buttonEl, contratoId = '', clienteId = '') {
+  try {
+    buttonEl.disabled = true;
+    buttonEl.textContent = 'Desfazendo...';
+    
+    if (action === 'cost') {
+      await api('DELETE', `/custos/${id}`);
+    } else if (action === 'revenue') {
+      await api('DELETE', `/recebimentos/${id}`);
+      if (contratoId) {
+        await api('DELETE', `/contratos/${contratoId}`);
+      }
+      if (clienteId) {
+        await api('DELETE', `/clientes/${clienteId}`);
+      }
+    }
+    
+    buttonEl.textContent = 'Desfeito com Sucesso';
+    buttonEl.style.borderColor = 'var(--text-3)';
+    buttonEl.style.color = 'var(--text-3)';
+    
+    const cardDetails = buttonEl.previousElementSibling;
+    if (cardDetails) {
+      cardDetails.style.opacity = '0.5';
+      cardDetails.style.textDecoration = 'line-through';
+    }
+    
+    toast('Lançamento desfeito com sucesso!', 'success');
+    saveChatState();
+  } catch (err) {
+    buttonEl.disabled = false;
+    buttonEl.textContent = 'Desfazer Registro';
+    toast('Erro ao desfazer lançamento: ' + err.message, 'error');
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════

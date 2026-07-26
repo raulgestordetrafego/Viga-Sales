@@ -124,8 +124,8 @@ async function processBroadcast(broadcastId, message, mediaUrl, mediaType) {
   let sent = 0, failed = 0;
   for (const log of logs) {
     try {
-      // Delay de 2-5s entre mensagens para evitar ban
-      await sleep(2000 + Math.random() * 3000);
+      // Delay de 5-15s entre mensagens para evitar ban (mais delay de digitação em evolutionApi)
+      await sleep(5000 + Math.random() * 10000);
 
       if (mediaUrl && mediaType === 'image') {
         await evolutionApi.sendImageMessage(log.phone, mediaUrl, message);

@@ -1,0 +1,190 @@
+{
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/serve_landing.py": {
+    "mtime": 1775587564.9742463,
+    "hash": "e5e1667f3f8cb4f2443df608d368bc3e"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/postgres-init.sql": {
+    "mtime": 1774357480.488303,
+    "hash": "4b3771895c5f477e7a82b65eeb0a3e9d"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server.ts": {
+    "mtime": 1776349749.7455196,
+    "hash": "ccfd3f9dc7a52bdb9c65048b65c304ae"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/webhook/handler.js": {
+    "mtime": 1777851985.5509706,
+    "hash": "9212b8b7a139c9f4e02b797ebed0b316"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/db/database.js": {
+    "mtime": 1777852409.9145284,
+    "hash": "d9b56a76fbc5c8612a77e2963215c57d"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/routes/prospecting.js": {
+    "mtime": 1777854393.2099335,
+    "hash": "2e24c5fe5b93b5b616f6f78686119c84"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/routes/abCapital.js": {
+    "mtime": 1776303688.5587883,
+    "hash": "f58f90e7a4a318543cb393bd04b6cfa0"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/routes/contacts.js": {
+    "mtime": 1775496432.168351,
+    "hash": "edb596215a832712571ad22a4cc764ce"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/routes/conversations.js": {
+    "mtime": 1773804203.0081875,
+    "hash": "111f54877186dc3e37db7ee8a5ca84ab"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/routes/broadcasts.js": {
+    "mtime": 1773800326.3403823,
+    "hash": "614a90718e29aeb116c1193f1fa0b8b1"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/server/services/evolutionApi.js": {
+    "mtime": 1776276771.9477565,
+    "hash": "de24aa8a414514ae6b5b13e450463348"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/scripts/push-prospects-to-api.js": {
+    "mtime": 1776969762.2969334,
+    "hash": "530a4f63c077dd2515bf17f964a9685a"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/scripts/import-prospects-xlsx.js": {
+    "mtime": 1776969261.0207984,
+    "hash": "225db3fd5149c82e6398ce9131f408e8"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/apps/abcapital-crm/server.js": {
+    "mtime": 1776352363.5758145,
+    "hash": "dede2bb608592c467a12fbdaa24b1460"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/apps/abcapital-crm/db/database.js": {
+    "mtime": 1776376426.0646899,
+    "hash": "464be6a7b0888c1a557ca88e42a3a1dd"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/apps/abcapital-crm/routes/abCapital.js": {
+    "mtime": 1777563459.7062087,
+    "hash": "2c220df4b4de0a4fb5c4b2138c15c651"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/apps/abcapital-crm/services/evolutionApi.js": {
+    "mtime": 1776349686.264917,
+    "hash": "de24aa8a414514ae6b5b13e450463348"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/src/main.tsx": {
+    "mtime": 1773694638.0,
+    "hash": "aa122bdcf833a2c00fdf9ca8e5348675"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/src/App.jsx": {
+    "mtime": 1775182072.8287475,
+    "hash": "54015b73d7dd30d1e712be1ef1d98ca5"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/src/TasksModule.jsx": {
+    "mtime": 1773801337.1617615,
+    "hash": "84236d89aed98ed3b8be8af4d93a6462"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/src/api.js": {
+    "mtime": 1773802899.063564,
+    "hash": "92da9c6f2454ff0bb15354f6d9621dd9"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/src/ClientBriefing.jsx": {
+    "mtime": 1773802362.165032,
+    "hash": "7acbe22e50fb33ade0543dff271e6c91"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/render.yaml": {
+    "mtime": 1773694638.0,
+    "hash": "cdd4254909c33a3d2809ed84d7ce4097"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/index.html": {
+    "mtime": 1774052375.7215464,
+    "hash": "d48acf11e1d589831b39ececd0d66873"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/README.md": {
+    "mtime": 1773694638.0,
+    "hash": "7021359c60a4e8402b39d9f8a461cbd9"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/docker-compose.yml": {
+    "mtime": 1777852280.9108758,
+    "hash": "c479c0b82c263a791df2fed8482f6a63"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/landing.html": {
+    "mtime": 1776374000.4177191,
+    "hash": "663ef8853e3751a6466893dc13c99bab"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/cardiocor/index.html": {
+    "mtime": 1775735731.696572,
+    "hash": "7d026f753367ac9a5e3e9ab9a3c5717a"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Montserrat/OFL.txt": {
+    "mtime": 1774314112.0,
+    "hash": "edcb7f99b7cfc36c22a21b28d7cbf3bb"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Montserrat/README.txt": {
+    "mtime": 1774314112.0,
+    "hash": "f4adfe35eaeb5c7b0621cd8dbddb966d"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/deploy/GUIA-DEPLOY.md": {
+    "mtime": 1775160989.6819398,
+    "hash": "94cabe17b66634d7ca183d5b1245f2ff"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/public/prospecting-strategy.html": {
+    "mtime": 1776789703.035004,
+    "hash": "115927d2e38cbfb41639bbe6f8987e2a"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/public/abcapital/index.html": {
+    "mtime": 1776413480.5882308,
+    "hash": "1e613e66d50071b1be4a73349b22985c"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/PRIMAL BRANDING VIGA SALES.pdf": {
+    "mtime": 1774309083.9952188,
+    "hash": "9dc2f29f45226e9b86a7d84b7441c75b"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_7u0riu7u0riu7u0r.png": {
+    "mtime": 1774308922.3524053,
+    "hash": "2ddcb956215121f6f6ae7d7ecec9aff2"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_o07bxyo07bxyo07b (1).png": {
+    "mtime": 1774308977.4544373,
+    "hash": "58e4c017b8d70a99a9ffd7d505889f5d"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_o07bxyo07bxyo07b.png": {
+    "mtime": 1774224813.9245412,
+    "hash": "c98ab29b9837034cb07dc27b613c7889"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_hb8f9ahb8f9ahb8f.png": {
+    "mtime": 1774308879.6602502,
+    "hash": "bbc58fa778ea0790f0732fbe0281bc87"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_w6cxvkw6cxvkw6cx.png": {
+    "mtime": 1774308949.7243042,
+    "hash": "bfd51e96da12b7bc2a1ca391afd6936b"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/Gemini_Generated_Image_84c3vd84c3vd84c3.png": {
+    "mtime": 1774309009.3191516,
+    "hash": "0a5691e7b6651c95fbc552c87fa95518"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/unnamed.jpg": {
+    "mtime": 1774311741.1562471,
+    "hash": "4586ce6a79be8f316572988bca0a531e"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/ChatGPT Image 1 de mai. de 2026, 15_23_51.png": {
+    "mtime": 1777659831.995842,
+    "hash": "e30f82fc0388ec5c8a8511f8f37c9bc3"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/viga sales sem fundo.png": {
+    "mtime": 1777395832.140757,
+    "hash": "a7cd55c71c29321b26c2c2d913e863cb"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/public/favicon.svg": {
+    "mtime": 1773785499.979138,
+    "hash": "628b7a0ac4c07d22aa031fc6c9063917"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/public/abcapital/favicon-192.png": {
+    "mtime": 1776375085.6775284,
+    "hash": "bec361a8b356deddbf4e5ef4998ed02f"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/public/abcapital/logo.png": {
+    "mtime": 1775797891.8058486,
+    "hash": "9b896712769fc50cef9acf5bd886fe0f"
+  },
+  "/Users/raulysdyxyamferreirasantos/Documents/viga-sales/manual de identidade viusal viga sales/AQPLabXlfLPPR46VB14o8-Epkw5u0ZC5M29e9bI8OdfA4SYwL6cww61uMIvSb_bpRYcod3PQ2Upr1GlfJXDO1lolbgJNsBGDTXSlcEdyHg.mp4": {
+    "mtime": 1777409473.4410052,
+    "hash": "3ce0f23beda8f2b9b08be31ac777708b"
+  }
+}

@@ -1,0 +1,2165 @@
+Bem-vindo, bem-vindo, bem-vinda,
+bem-vinda à nossa live número 365.
+365
+terças-feiras às 3 horas da tarde,
+entregando ao vivo conteúdo sobre
+tráfego pago. Você parou para pensar
+isso? Se é a gente pegar só o número de
+aulas ao vivo que a gente deu. Ao longo
+de 365
+semanas, a gente tem um ano. Um ano
+estamos completando o primeiro
+aniversário das aulas ao vivo. [risadas]
+365
+semanas, toda terça-feira, entregando
+conteúdos de tráfego pago e anúncio
+online. E hoje, na nossa live número
+365, a gente vai falar sobre como que
+você vai criar as suas campanhas no
+Google Ads. E essa habilidade que você
+vai adquirir aqui na aula de hoje, ela
+serve tanto para você que quer se tornar
+gestor de tráfego. Pedro, que que é
+gestor de tráfego? O que que faz um
+gestor de tráfego? Gestor de tráfego é o
+profissional que cuida dos anúncios de
+outras empresas, cuida do Google Ads de
+outras empresas e é pago por isso. Ou
+você também pode utilizar essa
+habilidade para cuidar dos anúncios do
+seu próprio negócio, caso você tenha um
+negócio para você chamar de seu. Agora,
+um detalhe importante, você pode falar
+assim: "Pô, Pedro, 365
+semanas dando aulas ao vivo? Isso quer
+dizer que eu vou entrar aqui no seu
+canal do YouTube e eu vou encontrar 365
+lives. Aí o que eu te digo, meu querido,
+minha querida, você não vai. Por quê?
+Porque nós seguimos um estilo de
+conteúdo aqui que eu gosto de chamar de
+conteúdo perecível. Que que é o conteúdo
+perecível? Basicamente é o seguinte,
+toda terça-feira, 3 horas da tarde você
+vai chegar aqui, vai ter uma aula ao
+vivo, tá? Toda terça-feira eu vou estar
+ao vivo aqui com você. Ah, Pedro, mas
+próxima terça-feira é dia 30, vai ter
+aula ao vivo? Vai ter aula ao vivo. Vou
+est lá na praia, vou est viajando, mas
+teremos aula ao vivo. Já tenho o meu
+lugarzinho lá para fazer aula ao vivo.
+Já chequei. A internet do hotel é boa,
+vai tudo funcionar bem. Então, toda
+terça-feira tem aula ao vivo. Agora,
+terça-feira da semana seguinte, eu tiro
+a aula da semana anterior do ar, exceto
+com algumas aulas que eu chamo de lives
+essenciais. Se você entrar aqui no meu
+canal do YouTube, você vai encontrar
+várias dessas lives. Por exemplo, aqui
+no meu canal do YouTube você consegue
+assistir a live eh 283. Já aconteceu há
+mais de um ano essa live. Ela segue aqui
+disponível no canal. Por quê? Porque ela
+é um dos conteúdos essenciais. E essa
+live que você tá assistindo aqui, talvez
+você esteja vendo a gravação, ela é uma
+live essencial também. Por quê? Porque
+aqui você vai aprender um dos
+conhecimentos mais importantes do
+tráfego pago, que é como que você vai
+criar, como que você vai gerenciar as
+suas campanhas dentro dessa ferramenta
+maravilhosa que é o Google Ads, tá?
+Então, três pontos importantes antes da
+gente entrar no conteúdo aqui. Não se
+engane. Teremos aqui mais ou menos 1
+hora, 1 hora20 de conteúdo. Três pontos
+importantes. Primeiro ponto, na
+descrição deste vídeo, você vai
+encontrar três aulas importantes. Como
+que você vai configurar o seu pixel no
+Google Ads, como que você cria sua conta
+de anúncios no Google Ads e como que
+você segmenta suas campanhas no Google
+Ads. Pedro, por que que isso não vai
+estar tudo nessa aula de agora? Por que
+que você vai entregar aulas extras?
+Porque eu gosto de eh por por ser mais
+didático, eu gosto de separar os
+conteúdos em blocos. Então aqui a gente
+vai falar 1 hora, 1 hora20 sobre um
+assunto específico, que é como que você
+cria suas campanhas no Google Ads. Nas
+outras aulas você vai ter focos em focos
+em outros assuntos. E essas daqui também
+são lives conteúdos essenciais, onde
+você vai aprender exclusivamente um
+único conteúdo. Pedro, mas eu nem sei
+que que é pixel ainda segmentar. Não sei
+o que que é isso direito. Calma,
+respira. Até o final da aula aqui você
+vai entender como é que tudo funciona,
+para que que você vai precisar de cada
+uma dessas coisas. Segundo ponto
+importante, ao final deste vídeo, eu vou
+falar para você, dessa live, eu vou
+falar para você sobre a comunidade
+subido de tráfego, tá? Se você não
+quiser ver, se não quiser saber sobre o
+nosso produto para gestores de tráfego,
+que não está vendo nesse momento, tá?
+Então não tô vendendo nada para você,
+mas eu vou falar sobre ele porque muita
+gente gosta de saber sobre o produto,
+gosta de se preparar, gosta de entender
+o que que tem lá dentro. No final eu
+falo sobre ele. Se você não quiser ver,
+tá tudo certo, tá tudo tranquilo, você
+consegue aprender tráfego pago com
+conteúdo gratuito da internet, tá? E o
+terceiro grande recado que eu acabei
+começando por ele, era falar para você
+sobre o modelo das aulas perecíveis, que
+são as aulas que ficam no ar durante uma
+semana, tá? Agora, sem mais delongas,
+começamos o conteúdo aqui da nossa live
+número 365.
+E uma coisa importante, falando de
+competências, eu sempre gosto de deixar
+isso muito bem claro. O que que é
+esperado de você no final dessa live? Ao
+final dessa live, você vai desenvolver,
+você será capaz de criar uma campanha no
+Google Ads do absoluto zero. Isso quer
+dizer que você vai ser um deus da
+criação das campanhas? Não, Deus da
+criação das campanhas, você vai ser
+depois que você criar muitas campanhas,
+que você tiver que fazer campanhas em
+diferentes cenários para diferentes
+situações, tem uma parte ali que só a
+prática vai te dar. É tipo nadar. Você
+não consegue aprender a nadar lendo um
+só um livro sobre natação. Mas aqui ao
+final dessa aula, com o checklist que a
+gente vai desenvolver juntos aqui nessa
+aula, você vai ser capaz de criar sua as
+suas campanhas dentro do Google Ads, tá?
+E você que já é mais avançado, mais
+intermediário, essa aula ela não é 100%
+eh descartável para você. Na verdade,
+ela é 0% descartável para você. Porque
+por mais que você já saiba criar suas
+campanhas no Google Ads, eu digo que uma
+das habilidades mais importantes do
+gestor de tráfego quando tem clientes de
+tráfego pago é saber dar aulas para os
+seus clientes. E dar aulas para os seus
+clientes é saber explicar as coisas pros
+clientes de forma simples. Então o que
+que você precisa aprender? explicar pro
+seu cliente, você que é gestor de
+tráfego, e o que que você que tá
+começando tem que entender agora. Você
+tem que entender quais são os tipos de
+campanhas que nós temos disponíveis
+dentro do Google Ads. E eu gosto de
+dividir o Google Ads em quatro
+caixinhas. Então, quais são os quatro
+principais tipos de campanhas essenciais
+do Google Ads? Primeira campanha
+essencial, e essa daqui você vai dominar
+ela na aula de hoje, é a campanha
+institucional do Google Ads na rede de
+pesquisa. Pedro, que que é isso?
+Simples. Alguém, um anúncio aparece toda
+vez que alguém pesquisa o seu nome, o
+nome da sua marca lá no Google. A pessoa
+foi no Google, jogou o seu nome, jogou o
+nome da sua marca, tem que aparecer o
+seu anúncio lá. Sempre. Se existe alguma
+marca que quando alguém está pesquisando
+o nome dessa marca no Google, não está
+aparecendo o anúncio da marca, essa
+marca tá perdendo dinheiro. Você pode
+ter certeza absoluta. Ah, mas cada vez
+mais as pessoas pesquisam menos no
+Google. Sim, mas isso não quer dizer que
+ainda não dá dinheiro você anunciar no
+Google Ads, não quer dizer que não dá
+resultado você anunciar no Google Ads,
+principalmente porque o Google Ads ele é
+uma ferramenta
+de intenção. Pedro, como assim intenção?
+Você não vai no Google navegar pelo
+Google para ver o que que tá lá, não.
+Normalmente quando você vai no Google,
+você tem uma intenção, você tem um
+motivo pela sua pesquisa no Google.
+Pedro, mas você tá falando aí de Google
+Ads? Google Ads, que que é esse negócio
+de Google Ads? Google Ads, ó, é essa
+plataforma aqui que eu tô mostrando para
+você na tela. Essa plataforma é a
+plataforma que a gente vai utilizar para
+fazer com que os nossos anúncios
+apareçam toda vez que alguém pesquisar o
+nome, o nosso nome, o nome da nossa
+marca, o nome do nosso cliente, o nome
+da marca do nosso cliente lá no Google.
+Então, a gente vai utilizar essa
+ferramenta aqui que parece um painel de
+avião. Ah, Pedro, tá aqui, ó, que você
+gastou R$ 33.000, eu tenho que gastar
+tudo isso de dinheiro? Não, com R$ 5, R$
+10 por dia você já consegue estar
+anunciando no Google antes, tá? Mas esse
+é o primeiro tipo de campanha. Segundo
+tipo de campanha que a gente tem no
+Google Ads são as campanhas de conversão
+no YouTube, aquele anúncio chato que
+você consegue pular depois de 5
+segundos. Então, sabe aquele anúncio
+chato que aparece na sua frente que você
+pula no YouTube? Pois é. É através do
+Google Ads que a gente vai fazer esse
+anúncio aparecer pras pessoas. Então
+você, quando você se tornar gestor de
+tráfego ou você que é gestor de tráfego
+e você quer poupar a pessoa
+de uma explicação maçante do que você
+faz, se a pessoa falar assim: "O que que
+você faz?" Você fala assim: "Cara, sabe
+aqueles anúncios de 5 segundos do que
+você pula lá no YouTube?" Pessoa fala:
+"Sei". Você fala assim: "Então, meu
+trabalho é colocar esses anúncios no ar
+pras outras empresas". Aí a pessoa vai
+te odiar um pouquinho, mas você pode
+falar para ela: "Olha, em minha defesa,
+eu também não gosto dos anúncios, mas
+esse é o meu trabalho". E tem muita
+gente que gosta dos anúncios. Quem? As
+pessoas que clicam e que são atingidas
+pelos anúncios certos. Depois nós temos
+o remarketing no display. Pedro, o que
+que é o remarketing no display? Que
+palavra esquisita é essa? Remarketing,
+né? O re é é a é a sigla ali, o prefixo,
+né? que a gente coloca para dizer que
+algo está acontecendo novamente.
+Remarketing é o seguinte, eu vou fazer
+marketing, eu vou aparecer para alguém
+que já teve algum contato comigo. Eu
+digo que remarketing são as geladeiras
+que te perseguem na internet. Pedro,
+como assim? Pesquisei lá na Black Friday
+comprar geladeira, entrei num site de
+três, quatro geladeiras diferentes. Que
+que vai acontecer? Geladeira, geladeira,
+geladeira, geladeira. Onde você entrar
+na internet vai ter anúncio de
+geladeira. Ah, Pedro, isso é tipo aquele
+negócio que o meu celular me escuta? Me
+fala no chat, você acha que o seu
+celular te escuta ou você acha que ele
+não te escuta? Eu eu acredito que o
+celular nos escuta.
+A meta fala que não e tal, mas eu acho
+que o celular nos escuta. Eu acho que
+tudo aquilo que a gente fala em áudios
+do WhatsApp é transcrito e é utilizado
+para desenvolver o nosso perfil. Ah, eu
+acho isso meio invasivo. Olha, desde que
+esteja me mostrando bons anúncios,
+coisas relevantes para mim, eu acho OK,
+a gente tá na internet para ver coisas
+relevantes pra gente. Quanto mais as
+ferramentas entendem o que é relevante
+pra gente, normalmente melhores são os
+eh melhor é a nossa experiência dentro
+das plataformas, tá? Mas o remarketing
+no display é basicamente quando você
+aparece para as você aparece para as
+empresas em sites da internet, tá?
+Então, presta atenção aqui que eu tô te
+explicando o que que é o Google Ads de
+maneira simples. Então, institucional no
+Google Ads na rede de pesquisa. Alguém
+pesquisou seu nome no Google, você vai
+est lá. Anúncio no YouTube, você
+consegue pular depois de 5 segundos.
+Remarketing no display, anúncios que
+aparecem em sites pela internet. E por
+último e não menos importante, Pemex ou
+Performancy,
+performance Max, que é o Xudo das
+campanhas. É uma campanha que tem o
+poder de aparecer em todas as redes do
+Google, tá? E eu não tenho poder de
+escolher exatamente para quem que eu vou
+aparecer, tá? Então, eu posso escolher
+em todas as redes do Google ao mesmo
+tempo, mas eu não escolho exatamente
+a minha segmentação. Então, eu não vou
+dizer exatamente para quem eu vou
+aparecer. Ela funciona muito bem para
+e-commerces e para e para visitas a
+negócios locais, tá? Então, vou falar um
+pouquinho mais disso aqui pra frente,
+mas já fica aqui uma
+um insejo do para que que serve esse
+tipo de campanha. Pedro, essas são as
+únicas quatro campanhas do Google, não
+são, mas como eu falei para você aqui,
+são as quatro principais tipos de
+campanha. Então, quando eu vou vender o
+Google Ads para alguém e eu tenho que
+vender o Google Ads pro meu cliente, eu
+tenho que vender os tipos de campanha
+para ele, eu consigo explicar de maneira
+extremamente simples. Visualiz aqui no
+meio da tela e aí nesse X eu tenho os
+quatro tipos de campanha do Google. Aqui
+no quadrante superior eu tenho a
+campanha que aparece na pesquisa. Toda
+alguém, toda vez que alguém pesquisa o
+nome dele, o anúncio aparece. Aqui eu
+tenho as campanhas de YouTube. Toda
+pessoa que tem interesse sobre aquilo
+que ele fala ou que já pesquisou o nome
+dele, a marca dele, o serviço dele no
+Google, eu apareço para essa pessoa no
+YouTube num anúncio de 5 segundos. A
+pessoa visitou o site do meu cliente,
+ela clicou no anúncio do Google, ela
+clicou no anúncio do YouTube, mas ela
+não converteu. Eu tenho a campanha de
+remarketing no display, que é quando eu
+vou aparecer para essa pessoa em todos
+os sites da internet com imagens. Se eu
+tenho um negócio local e quero que as
+pessoas visitem o meu negócio local, se
+eu tenho uma loja online e eu quero
+anunciar para essas pessoas, eu tenho o
+Xudo das campanhas, que é a Performance
+Max, quatro quadrantes. Pronto, você já
+tá sabendo muito mais de Google Ads do
+que a maioria das pessoas. E melhor,
+você sabe explicar Google Ads mais
+simples do que a maioria das pessoas.
+Ah, mas eu ainda não sei fazer, não tem
+problema, porque a gente tá aqui
+construindo blocos de conhecimento, um
+em cima do outro. Agora, o que que a
+gente vai fazer? A gente vai estruturar
+aqui em 10 passos como que você vai
+subir a sua campanha lá no Google Ads,
+tá? Então, em 10 passos, só isso que
+você precisa. A gente vai caminhar 10
+passos juntos. Eu vou te explicar cada
+um deles e no final dessa aula você vai
+saber criar sua campanha no Google Ads.
+Pedro, eu vou est 100% confiante que eu
+sei criar campanhas para todas as
+situações em todos os cenários. Não,
+isso daí ninguém consegue te as pessoas
+podem te prometer isso numa aula, mas
+ninguém te entrega isso numa aula,
+porque uma aula não te entrega isso. A
+aula te entrega a base, te entrega o
+checklist para que depois você mesmo
+sai, você vai lá apertando os botões e
+você vai desenvolvendo as suas
+habilidades, tá? Então, quais são os 10
+passos que nós vamos passar? Primeiro,
+nós vamos definir os objetivos. Depois
+nós vamos entender quais são os tipos de
+campanha e as segmentações que a gente
+vai utilizar para cada um dos tipos de
+campanha que existem. Depois, e essa vai
+ser a parte mais longa da aula, esse
+passo número dois, tá? Já vou te avisar.
+Depois, passo número três, nós vamos
+estabelecer as metas de conversão. Vou
+te explicar o que que são elas. Passo
+número quatro, a gente vai paraas
+nomenclaturas, pô, metas de conversão.
+Foi o único que ficou minúsculo. Metas
+de conversão. Depois, número quatro,
+nomenclatura, como que a gente dá nome
+pras campanhas. Passo número cinco,
+vamos falar de estratégia de lance e
+orçamento, quanto de dinheiro que a
+gente vai gastar. Passo número seis,
+vamos falar de redes, ou seja, onde que
+eu vou aparecer e formato de anúncios.
+Passo número sete, vou te ensinar a
+configurar a localização, onde que a
+pessoa está quando meu anúncio aparece
+para ela e qual o idioma que ela fala.
+Passo número oito, início e programação.
+Ou seja, quando que o meu anúncio
+começa, quando que ele termina, que
+horas do dia que ele vai aparecer pras
+pessoas. Passo número nove, segunda
+parte mais longa da nossa aula. Vamos
+falar de segmentação. Então, para quem
+que eu vou anunciar quais são os tipos
+de segmentação que eu tenho dentro do
+Google Ads. E passo número 10, anúncio.
+Tá? Dominamos esses 10 passos aqui,
+pronto, a gente consegue criar nossa
+campanha no Google Ads, tá? Então, vamos
+começar pelo começo, né? Vamos começar
+pelo passo número um. Quais são os
+possíveis objetivos de campanha? É o
+seguinte, toda vez que você for criar
+uma campanha, seja no Meta Ads, no
+Google Ads, no TikTok Ads, no LinkedIn
+Ads, no Twitter Ads, no Pinterest Ads,
+no Tabula, no Altbrain, no Shope Ads, no
+Amazon Ads, Mercado Livre Ads, Sobral
+Ads, Subido, Ads, Apple Ads, Chat GPT
+Ads. Não importa o ads que você
+escolher, não importa.
+Toda ferramenta de tráfego pago vai
+pedir para que você escolha o seu
+objetivo. Toda. Esse é sempre o passo
+número um. E os objetivos, na maioria
+das vezes, eles são extremamente óbvios.
+Que que eu quero dizer com eles? São
+extremamente óbvios. Se eu tenho um
+objetivo que o nome dele é vendas, ele
+me ajuda a fazer o quê? Vender. Se eu
+tenho um objetivo chamado leads, né?
+Lead é uma palavra em inglês para
+cadastro. O o que que ele faz para mim?
+Ele gera cadastro. Se eu tenho um
+objetivo chamado tráfego no website, o
+que que ele faz? Ele gera acessos no meu
+site. Se eu tenho um objetivo chamado
+promoções de aplicativo, ele divulga o
+meu aplicativo. Se eu tenho um objetivo
+chamado reconhecimento e consideração,
+ele faz as pessoas reconhecerem e
+considerarem a minha marca, tá? Aqui eu
+vou escrever diferente, mas é a mesma
+coisa. Levar conteúdo para as pessoas.
+As pessoas vão reconhecer quem minha
+marca é vão começar a criar consideração
+pela minha marca. E se eu tenho um
+objetivo que é chamado de promoção e
+visitas às lojas, ele vai fazer o quê?
+Ele vai ser bom para fazer as pessoas
+visitarem a minha loja física, tá? Então
+é simples. O nome ele diz o que que o
+objetivo faz. Pedro, mas onde que tá
+isso dentro da ferramenta? E aí agora eu
+quero que você preste atenção, porque a
+gente vai ficar o tempo inteiro fazendo
+isso daqui, ó. Vou est te explicando
+aqui no bloco de notas que aqui eu
+consigo escrever, eu consigo deixar
+claro para você. E aí a gente vai entrar
+aqui na poluição visual, que é a
+ferramenta. Na ferramenta da poluição
+visual
+você vai ter que prestar atenção no que
+eu tô fazendo aqui para não se perder.
+Mas você vai ter o passo a passo. Você
+pode ver e rever esse vídeo aqui quantas
+vezes você quiser. Fechou? Vamos para
+cima. Como que você vai ter acesso à sua
+conta do Google Ads? Na descrição desse
+vídeo vai ter um link onde tem um passo
+a passo de como que você cria sua conta.
+Mas é igual criar uma conta no Gmail. É
+extremamente simples. Qualquer pessoa
+consegue. É de graça, não custa nada
+para criar. Não tem risco de você gastar
+dinheiro sem querer. É só seguir o passo
+a passo. Beleza? Criou a conta no Google
+Ads, você vai ter acesso a isso daqui
+que eu tenho aqui, ó. Só que a sua vai
+estar vazia, não vai ter nada gasto, não
+vai ter nenhuma campanha aqui. Aí você
+vai apertar nesse botãozinho de mais,
+tá? Às vezes você pode ter sido levado
+para essa aba aqui, ó, overview. Você
+pode apertar nesse botão de mais aqui do
+lado, ó. Esse botão é coloridinho aqui,
+ó. create. Então vamos apertar nele
+aqui, ó, create. Aí você vai criar o
+quê? Uma campanha. O meu tá em inglês,
+mas é bom que você já se acostume. Por
+quê? Porque às vezes a a ferramenta ela
+desconfigura, ela passa por alguma
+atualização e o seu e o seu idioma ele
+pode acabar ficando eh em outro idioma,
+pode acabar ficando em inglês, tá?
+Então, a gente tem sales, que é venda,
+leads, que é cadastro, tráfego no site,
+promoção de aplicativo, reconhecimento e
+consideração, visitas a lojas locais e
+promoções e campanha sem meta.
+Normalmente a gente não vai criar uma
+campanha sem meta, tá? Tem essa opção
+aqui, mas a gente não vai utilizar ela.
+O que que a gente vai escolher aqui? O
+que for mais pertinente pro momento em
+que a gente tá, tá? E aí você vai
+escolher: "Ah, eu quero vender, eu quero
+gerar cadastro, eu vou fazer uma
+campanha de venda". Por quê? Porque se
+você sabe criar uma campanha de venda,
+você consegue criar qualquer outra,
+porque é tudo igual, tá? Porque a
+campanha de venda, ela é a ela é a que
+mais vai ter
+opções para você, tá? É a que mais vai
+ter eh escolhas que eu tenho que fazer
+no meio do caminho, tá? Então,
+selecionei aqui a minha campanha de
+vendas, eu vou lá pro meu passo número
+dois, ó, deixa eu colocar aqui passo
+número dois. Eu vou inverter o passo
+dois e três, tá? Que é o meta de
+conversão,
+tá? Meta de conversão é o seguinte, eu
+vou est aqui na minha campanha,
+selecionei vendas, vai aparecer isso
+daqui, ó. Selecione o objetivo de
+conversão para aumentar as suas vendas.
+O que que é isso daqui? É o Google me
+perguntando, Sobral, você quer focar no
+quê? Você quer que a pessoa compre? Você
+quer gerar contatos? Você quer gerar
+visualização na página? Você quer que as
+pessoas elas enviem o formulário? O que
+que você quer? Eu quero vendas, no caso,
+porque eu tô fazendo a minha campanha de
+venda. Então, eu vou tirar tudo aqui, ó,
+que não é venda. Vou apertar nos três
+pontinhos e vou remover tudo que não é
+venda. Pedro, mas como que eu configuro
+isso daqui? Como é que eu configuro esse
+objetivo de venda para ele aparecer aqui
+para mim? Como é que o Google vai saber
+que alguém foi no meu site e comprou?
+Mais importante do que qualquer coisa,
+né? Porque como eu tô dizendo pro
+Google, Google, eu quero vender. Como é
+que o Google sabe que eu vendi? Eu tenho
+que contar para ele aí que tá. Sim e
+não. Toda ferramenta de tráfego pago. E
+agora presta atenção, porque eu tô
+falando de Google Ads, mas eu quero te
+ensinar pensar tráfego pago. Quero te
+ensinar a pensar em qualquer ferramenta
+que existe. Toda ferramenta de tráfego
+pago, ela sempre vai ter dentro dela a
+opção de você gerar um pixel. Pedro, o
+que que é pixel? É aquele bonequinho da
+Disney que pula lá da Pixar. Não, pixel
+é um código. O que que é um código? É um
+monte de letra e número e símbolos sem
+sentido que nem eu, nem você, nem
+ninguém temos que entender. Mas você tem
+que saber para que que ele serve. É como
+se eu crio a minha conta no Google Ads
+ou no Metaads ou no TikTok Ads, LinkedIn
+Ads, Pinterest Ads, qualquer ads, eu
+crio a minha conta lá e aí nessa
+ferramenta vai ter um local onde eu vou
+clicar lá em configurar o meu pixel.
+Quando eu clico lá em configurar o meu
+pixel, a ferramenta vai gerar para mim
+esse código, um monte de letra, um monte
+de número, um monte de símbolo sem
+sentido. Esse código ele é meu, ele é
+único, é como se fosse a identificação
+da sua conta de anúncios, tá? Então eu
+vou pegar esse código e o que que eu vou
+fazer com esse código? Eu vou instalar
+ele lá no meu site. Pedro, por que que
+eu vou instalar esse bendito código no
+meu site? Porque esse código ele vai
+fazer algumas atividades importantes,
+três atividades importantes para ser
+mais honesto com você. Presta atenção em
+mim. Primeira atividade importante que
+esse código faz no meu site, ele
+funciona como um informante. Então é
+como se esse código tivesse lá no meu
+site e ele é a sua vizinha fofoqueira
+que fica contando o que que tá
+acontecendo. Aí você não vai acreditar.
+A Maria acabou de colocar o produto no
+carrinho, foi embora, deixou o produto
+no carrinho. Acabou de entrar o João
+aqui. João é João. João tem 26 anos, tem
+interesse em moda, em beleza. João, hum,
+João é viajante internacional frequente.
+Esse menino viaja, viaja, viaja. Ó, João
+tá comprando, tá adicionando o produto
+no carrinho, botou as informações de
+compra. João comprou, menina. João
+gastou R$ 563
+aqui no site. Pedro Pixel tem esse
+poder. Um código tem esse poder. Sim.
+Ele vai ler o que acontece no seu site e
+ele vai mandar essas informações pro
+Google. Então primeira coisa que o Pixel
+faz é entender o que tá acontecendo no
+seu site. Ele vai entender essas
+informações e ele vai informar isso pro
+Google. Segunda coisa que o Pixel faz, o
+Pixel ele é fofoqueiro e ele começa a
+entender o padrão, ele começa a falar
+assim: "Hum, tá vendo que todo mundo que
+compra aqui tem interesse em moda e
+beleza? Tem mais ou menos entre 20, 25
+anos. acessa normalmente esse tipo de
+site. O pixel ele é inteligente. Então,
+cada vez que o seu pixel começa a gerar
+informações, ele vai mandando essas
+informações pro Google e o Google fica
+mais inteligente. É como se a sua conta
+fosse mais madura, mais sábia. Ela sabe
+exatamente para quem que ela tem que
+anunciar. E a terceira coisa que o Pixel
+faz é te ajudar a criar os públicos, tá?
+Então você pode criar o público, por
+exemplo, de quem adicionou o produto no
+carrinho, mas não comprou. Você pode
+criar o público de quem comprou para
+vender outros produtos para essas
+pessoas. Você pode criar o público de
+quem visitou o seu site. Pedro, por que
+que eu ia querer fazer isso? Ué, lembra
+que a gente tem quatro principais tipos
+de campanha no Google? Tem um tipo de
+campanha do Google que é o remarketing,
+é aparecer para quem já teve algum
+contato com você. Então, a pessoa já viu
+meu anúncio lá na pesquisa do Google.
+Ela clicou no meu anúncio, ela foi até
+meu site, ela adicionou o produto no
+carrinho, o pixel viu tudo e a pessoa
+não comprou. Que que eu faço? Eu vou
+criar o público depois de pessoas que
+adicionaram um produto no carrinho, mas
+não compraram e vou anunciar para essas
+pessoas, tá? Pedro, como é que eu faço
+para criar esse pixel? Porque esse
+negócio é pixel, tem que instalar no
+site, é complexo, não é? É muito mais
+simples do que parece, tá? E a gente tem
+uma aula que eu explico tudo isso que eu
+expliquei para você aqui com muitos
+detalhes sobre como que você cria, onde
+que clica, como que instala. Tem todo o
+passo a passo, tá? Essa aula também vai
+estar na descrição deste vídeo, tá?
+Estamos todo mundo numa mesma página?
+Fala comigo aqui no chat.
+Todo mundo na mesma, tudo na mesma
+página, né? Estamos aqui na nas
+analogias, né? Estamos aqui numa
+explicação que qualquer pessoa consegue
+entender. Pedro, qualquer pessoa,
+vírgula, porque eu tô meio confuso. Você
+tá falando um monte de termo que eu
+nunca vi na vida. Normal. Primeiro
+contato com o tráfego é sempre uma coisa
+meio doída. Parece que você não vai
+conseguir aprender, mas acredita, todo
+mundo que aprendeu passou por isso que
+você passou. Eu falo que a confusão é o
+primeiro estágio do entendimento. Você
+tá ali naquela estágio de confusão, pô,
+um monte de termo novo, um monte de
+palavra, sua cabeça não consegue
+assimilar tudo ao mesmo tempo. Mas aí o
+que que você faz? Você volta, volta na
+semana que vem pra próxima aula. Volta
+na outra, volta na outra, volta na
+outra. Eu não conheço ninguém,
+ninguém, ninguém que tentou aprender
+tráfego pago, teve consistência aqui nas
+aulas e não aprendeu. Não conheço
+ninguém. 365 semanas fazendo isso, tá?
+Conheço ninguém, tá? Então vamos
+seguindo aqui. Pedro, eu preciso ter
+site porque você tá falando de site. Eu
+preciso ter site para anunciar no
+Google. Não precisa, mas o ideal é que
+você tenha. Hoje, por um preço muito
+barato, você compra um site aí de
+alguém, tá? Uma página, não precisa ser
+um site completo, pode ser uma página
+onde a pessoa cadastra, onde a pessoa
+vai contratar o seu serviço, onde a
+pessoa vai comprar o seu produto. Pode
+ser para e-commerce, para prestador de
+serviço, para delivery, para negócio
+local. Isso aqui funciona para tudo que
+é tipo de negócio, tá? Você só vai
+adaptar o site aquilo que você tá
+vendendo. Ah, mas eu sou psicólogo. A
+pessoa vai agendar a consulta. Eu não
+quero que ela compre direto. Eu quero
+que ela entre em contato. Então você vai
+selecionar o objetivo de gerar
+cadastros. A pessoa vai fazer um
+cadastro. Você vai receber esses dados.
+O Pixel vai informar o Google: "Ó,
+acabou de fazer o cadastro aqui. Você
+vai receber esses dados. Você entra em
+contato, faz a venda um a um". As
+possibilidades elas são infinitas, tá?
+Então, passo número dois, metas de
+conversão. Passo número três, e aqui que
+o bicho vai pegar, eu vou confundir sua
+cabeça, tá? Só que eu preciso que você
+preste atenção agora, passo número três,
+tipos de campanha e segmentações
+indicadas. Porque o que que acontece
+aqui no Google? A gente acabou, olha só,
+a gente só selecionou o objetivo e aí
+apareceram as metas de conversão aqui.
+Depois que eu selecionar a meta de
+conversão, eu vou apertar aqui em
+continuar. E aí vai aparecer o quê para
+mim? Selecione o tipo de campanha. E
+isso daqui é a parte, uma das partes
+mais importantes. Por quê? Porque aqui
+eu vou selecionar o quê?
+Qual desses tipos de campanha que eu
+quero? Se eu quero aquela campanha
+institucional da pesquisa? Se eu quero a
+campanha do YouTube, se eu quero a
+campanha que vai perseguir as pessoas
+nos sites, se eu quero as campanhas de
+performance max. É aqui que eu vou fazer
+essa seleção. Quais são os tipos de
+campanhas que nós temos e qual
+segmentação que eu uso em cada uma?
+Pedro, o que que é uma segmentação?
+Segmentação é eu escolher para quem que
+eu vou aparecer. Só que você tem que
+entender que no Google eu posso escolher
+para quem que eu vou aparecer de várias
+maneiras diferentes. Hum. Beleza. Calma
+que você vai entender agora. Vamos
+embora. Primeiro tipo de campanha,
+pesquisa. Qual que é a segmentação
+indicada aqui? Palavras chave. Pedro, o
+que que são palavras chave? Eu vou
+escolher para quais buscas que eu quero
+aparecer. Então, se alguém vem aqui no
+Google e a pessoa digita curso de
+tráfego pago, eu quero aparecer com o
+meu anúncio. Agora, se a pessoa digita
+aqui comprar velas aromáticas, eu não
+quero que o meu anúncio de tráfego pago
+apareça para essa pessoa. Então eu vou
+segmentar, escolher quando eu vou
+aparecer, baseado na pesquisa da pessoa,
+baseado em palavras-chave. Ponto.
+Acabou. Segundo tipo de campanha que nós
+temos aqui, display. O que que é o
+display? Display é você aparecer nos
+sites
+quando que tipo de segmentação que eu
+vou usar no display? Eu vou utilizar
+públicos quentes. O que que são públicos
+quentes? Pessoas que já tiveram um
+contato
+com a minha marca. O que que já tiveram
+contato com a minha marca? Já visitaram
+meu site? Já pesquisaram meu nome na
+internet? já se cadastraram no meu site,
+já são meus clientes, foram até o meu
+site, mas não finalizaram a compra.
+Então, eu vou anunciar para quem já teve
+algum contato comigo. Eu só vou
+perseguir as pessoas pelos sites da
+internet depois que elas já tiveram
+contato comigo. Depois disso, nós temos
+as a campanha de shopping. Pedro, por
+que que você não tá fazendo na ordem?
+Também não sei, tá? Eu sei que eu hora
+que eu planejei a aula, eu planejei
+nessa ordem, então vou fazer meio
+aleatório. Shopping. O que que são as
+campanhas de shopping? Campanha de
+shopping é o seguinte, eu vou aparecer
+para pessoas que já interagiram com a
+minha loja online. Pedro, e se eu não
+tenho loja online? Não usa esse
+objetivo. Pronto, acabou. Vamos pro
+próximo, tá? Então, campanha de shopping
+é bom para quem já é ele vai, a gente
+vai anunciar para quem já interagiu com
+o nosso e-commerce, pra nossa loja
+online. Eu deixei um asterisco
+laranjinha aqui. Já já eu vou falar
+sobre esse tipo de campanha aqui, porque
+para você utilizar ela, você vai ter que
+configurar um carinha que chama Google
+Merchant Center, tá? Vixe, Pedro, é
+muita coisa. Eu sei, no começo não tem
+como dizer que não é. Realmente são
+muitas coisas, muitos nomes, muitas
+siglas, muitas palavras diferentes, mas
+é o que eu falei, vamos aos pouquinhos,
+o importante é você não desistir e aí a
+gente vai construindo o conhecimento
+aqui juntos. Depois da campanha de
+shopping, nós temos a campanha de vídeo,
+tá? Então essa daqui é a campanha onde a
+gente vai anunciar no YouTube, tá?
+Então, campanha de vídeo é a campanha
+que a gente vai fazer que tipos de
+segmentações que a gente vai utilizar
+nelas mais amplo. Aqui para aparecer
+pras campanhas de vídeo, eu vou utilizar
+públicos alvo. Pedro, o que que são
+públicos alvo? Público alvo é eu
+escolher. Quero aparecer para pessoas
+que já visitaram meu canal do YouTube,
+que já viram algum vídeo do meu YouTube,
+que já visitaram meu site. Quero
+aparecer para pessoas que eh têm
+interesse em moda e beleza. Quero
+aparecer para pessoas que são viajantes
+internacionais frequentes. Quero
+aparecer para pessoas que têm filhos de
+menos de um ano de idade. Quero aparecer
+para pessoas que gostam de filmes de
+terror. quero aparecer. E aí você vai
+escolher as características desse
+público. Pode ser um comportamento que
+esse público teve, pode ser algum dado
+demográfico que essa pessoa tem, pode
+ser algum interesse que essa pessoa tem
+na internet, assuntos que ela tem
+afinidade, ações que essa essa pessoa já
+teve com a sua marca. Pedro, é muito,
+mais uma vez é uma infinidade de
+possibilidades. Pois é, por isso que a
+gente tem uma aula específica. E aí eu
+sei do que eu tô, eu já, eu já dou aula
+disso há muito tempo, então eu sei a sua
+capacidade de entender tudo de uma única
+vez. Ela tem um limite. A gente tem uma
+aula específica onde a gente fala só
+sobre público alvo. É uma das aulas mais
+importantes de Google Ads, porque lá eu
+falo sobre todos os tipos de
+segmentação, lá eu apresento tudo que
+tem de possibilidade do Google. E aí
+essa outra aula vai conectar 100% com o
+que você tá vendo aqui. É quase que um
+passo dois dessa aula de agora aqui.
+Essa aula, na verdade, ela poderia ser o
+passo dois da outra, mas enfim. Na
+descrição desse vídeo, ao final do ao
+vivo, eu vou colocar o link também aqui
+para você assistir essa aula de público
+alvo. E é uma aula que tá sempre
+disponível, você pode ver, rever. Lá tem
+todas as explicações de quais são os
+públicos alvos, como que você cria cada
+um deles, como que funciona, tá tudo
+garantido. Só sentar a bunda na cadeira
+e ver aula, não tem mistério, tá? Mas
+para anunciar campanhas de vídeo, eu
+também posso selecionar palavraschave.
+Por quê? Porque as pessoas elas vão lá
+no YouTube e aí no YouTube elas fazem
+buscas. O YouTube é o segundo maior
+buscador da internet. Então a pessoa
+chega aqui no YouTube e ela digita curso
+de tráfego pago.
+Aí a pessoa vem aqui no YouTube, digitou
+curso de tráfego pago, pô, vai aparecer
+meu anúncio para ela. Tem que aparecer
+meu anúncio para ela. Então as pessoas
+também fazem pesquisas aqui no Google.
+Então eu vou anunciar para
+palavraschaves e vou anunciar para
+canais. O que que são os canais? É eu
+selecionar os canais e os vídeos que eu
+quero aparecer. Então, eu quero aparecer
+em vídeos que falam sobre esses
+determinados assuntos, quero aparecer
+para pessoas que estão vendo vídeos que
+desse canal aqui específico. Beleza?
+Então, eu tenho campanha de pesquisa e
+aqui eu vou segmentar palavra-chave.
+Tenho campanha de display e aqui eu vou
+aparecer para públicos quentes. Tenho
+campanha de vídeo, opa, de shopping. E
+aí eu vou aparecer para quem já
+interagiu com o meu site, meu
+e-commerce. campanha de vídeo, vou
+aparecer no YouTube e aí vou anunciar
+para públicos alvo, ou seja, baseado nas
+características das pessoas, palavras
+chave igual a pesquisa e canais. São os
+três tipos de segmentação que eu vou
+fazer aqui. Aplicativos eu vou anunciar
+para usuários do seu aplicativo. Então,
+pessoas que já estão baixaram seu
+aplicativo, estão usando o seu
+aplicativo e públicos alvo. É a
+campanhazinha aqui de apps, tá? Então é
+o tipo de campanha que eu vou utilizar.
+E por último, penúltimo, na verdade,
+penúltimo, penúltimo,
+campanha de máximo desempenho, que é a
+campanha de performance max. Campanha de
+máximo desempenho é o quê? É o X tudo
+das campanhas. É quando eu vou anunciar
+em vídeo, quando eu vou anunciar no
+display, quando eu vou anunciar na
+pesquisa, tudo junto e misturado ao
+mesmo tempo, tá? Então eu vou aparecer
+em todos os lugares. Só que aqui quando
+eu vou aparecer em todos os lugares, eu
+não escolho para quem que eu vou
+aparecer. O Google vai me pedir um
+indicador de público alvo. Que que é um
+indicador de público alvo? É o Google me
+dizendo: "Olha, aqui eu vou tomar conta
+de tudo, mas se você quiser me dar uma
+indicação de para quem que a gente vai
+aparecer, em quem que você quer focar,
+me dá a sua indicação de público alvo."
+Então ele vai pedir pra gente configurar
+esse indicador de público alvo, que é a
+mesma coisa de configurar um público
+normal. Eu vou selecionar palavra-chave,
+vou selecionar público alvo, mas o
+Google tá vai usar aquilo ali só como
+uma sugestão para mim, tá? Então esse é
+o máximo desempenho. E aí temos
+a geração de demanda, que é as
+campanhas, ela muda de nome toda hora,
+mas ela é chamada de Discovery ou
+demand, a geração de demanda. Essa
+campanha aqui, ela vai ser utilizada
+para duas grandes situações. Primeiro,
+eu vou utilizar ela para anunciar para
+públicos quentes
+para campanhas de conversão no YouTube,
+tá? Então aqui eu vou focar muito em
+público quente ou campanha de conversão
+no YouTube dentro. E eu não sei porque
+que o Google fez isso, tá? Mas
+antigamente, se eu queria fazer anúncios
+de venda em vídeo, era só selecionar
+vídeo. Agora, se eu quero fazer
+campanhas de vendas em vídeo, eu tenho
+que selecionar a geração de demanda, tá?
+Mudou? Então, o Google mudou isso daqui
+e aí eu tenho que selecionar geração de
+demanda para fazer conversões no
+YouTube. Então, se eu quero fazer
+conversões no YouTube, geração de
+demanda, tá? Uma mudança que teve. E aí,
+assim,
+ela funciona para isso, tá? Essa é a
+verdade. O resto você pode até aparecer
+no na nos sites da internet com essa
+campanha, mas ela não funciona tão bem.
+Demand Jane, se a gente for resumir, é
+vamos usar,
+vou até mudar, vamos usar
+para campanhas de conversão no YouTube,
+tá? E aí aqui você vai utilizar
+principalmente
+públicos alvo como segmentação,
+tá? Agora, detalhes importantes que que
+eu falei para você aqui. Primeiro,
+campanha de shopping, pessoas que já
+interagiram com a sua loja online. Você
+tem que configurar. Eu escrevi errado,
+eu escrevi merhat. É Merchard.
+Google Merchant Center. É isso, né?
+Deixa eu ver. Merchante. Não, Merchant.
+Escrevi errado de novo. Merchant Center.
+Agora sim. O que que é o Google Merchant
+Center? Ele é basicamente uma conexão
+entre a sua loja online e o Google Ads.
+Para eu fazer essas campanhas de
+shopping, eu tenho que conectar o Google
+Ads com a minha loja.
+E para isso eu tenho que configurar o
+Google Merchant Center. Para configurar
+o Google Merchant Center, minha sugestão
+para você é chame a pessoa que fez seu
+site para você, tá? Por quê? porque não
+é o negócio mais fácil do mundo de ser
+configurado. Então, o ideal é que você
+chame a pessoa que fez o seu site para
+fazer essa configuração do Google
+Merchant Center para você. Ele vai
+conectar o seu site, o seu estoque ao
+Google e aí você vai estar anunciando
+sempre aquilo que está disponível dentro
+do seu site. Repara que eu coloquei um
+outro asterisco aqui em vídeo, tá? Eu
+vou colocar ele tanto em vídeo quanto
+nas campanhas de geração de demanda. Por
+quê? Porque a gente tem alguns públicos
+bons para YouTube que eles são sempre os
+mesmos, são sempre esses daqui que
+funcionam e as pessoas teimam e não
+utilizá-los. Quais são eles? Vamos lá.
+Primeiro, pessoas que quase converteram,
+pessoa que chegou até a sua página de
+captura, sua página de venda, seu
+carrinho, mas não comprou. sempre tem
+que anunciar para essas pessoas no
+YouTube. Segundo o público, pessoas que
+viram seu anúncio. Então, a pessoa viu
+seu anúncio em vídeo, clicou no seu
+anúncio em texto, mas não converteu.
+Então, a gente sempre vai excluir a
+pessoa que não converteu, que não
+comprou. Outro público bom para YouTube,
+envolvimentos de 1 a 30 dias. pessoas
+que se envolveram de alguma maneira,
+viram algum vídeo, eh curtiram,
+compartilharam, se inscreveram no seu
+canal do YouTube entre 1 a 30 dias.
+Sempre é um público que funciona bem.
+Pessoas que estão inscritas no seu canal
+nos últimos 540 dias, tá? Então é um
+público bem amplo, mas ele funciona bem.
+Listas de leads, que é uma são listas de
+e-mails ou de telefones, segmentos
+personalizados. Isso aqui é uma
+maravilha do Google Ads, que é
+basicamente o público que eu crio com
+base nas pesquisas que as pessoas fazem
+no Google. Presta atenção. Eu crio um
+público baseado em tudo que já foi
+pesquisado no Google por um grupo de
+pessoas, nos sites que a pessoa acessa
+ou nos aplicativos que a pessoa tem no
+celular. Presta atenção no que que isso
+quer dizer. Eu posso pegar o seguinte,
+todo mundo que já pesquisou alguma vez
+na vida alguma coisa sobre o meu negócio
+no Google, eu quero aparecer para essa
+pessoa lá no YouTube. Você faz isso com
+esse tipo de segmentação? Ah, eu quero
+aparecer para todo mundo que já visitou
+esses sites aqui na vida. Pode ser site
+que não é meu, pode. Ah, eu quero
+aparecer para todo mundo que tem esses
+determinados aplicativos no celular.
+Você vai aparecer para essas pessoas,
+tá? Então isso daqui é muito, muito,
+muito, muito poderoso e eu ensino também
+lá na aula de segmentações do Google
+Ads, tá? A aula, o link dessa aula tá lá
+na descrição para você assistir. Você
+pode ver ela depois quantas vezes você
+quiser. Público alvo de mercado, que são
+listas de interesses prontas que o
+Google te fornece. Então, pessoas que
+têm interesse no assunto A, B, C, D, E,
+F, G, todos esses A, B, C, D, E, E, F,
+G, o Google tem a lista ali dos
+possíveis interesses pra gente fazer os
+nossos anúncios. E por último e não
+menos importante, palavras chaves ou
+canais. Eu escolho para quais pesquisas
+ou canais eu quero aparecer. Então, o
+que que a pessoa tá pesquisando que vai
+aparecer meu anúncio para ela no
+YouTube? Qual canal que ela tá vendo?
+Qual vídeo que ela tá vendo? que eu
+quero que o meu anúncio apareça naquele
+canal, eu quero que o meu anúncio
+apareça naquele vídeo, tá? Falei para
+você, essa é a parte mais densa do
+conteúdo, que são os tipos de campanhas
+e segmentações, tá? Por quê? Porque aqui
+a gente vai dizer basicamente para onde
+que a nossa campanha vai. Pedro, nós
+vamos criar todas elas? Não, mas você
+vai ver que a criação de todas elas é
+muito parecida. Vamos fazer a de
+pesquisa, porque essa daqui é a campanha
+que todo mundo deve ter quando vai
+anunciar no Google, tá? que era é para
+aparecer para aquilo que as pessoas
+estão pesquisando. Colocar o nosso
+anúncio na frente da pesquisa certa é
+uma habilidade que vai colocar dinheiro
+no nosso bolso, tá? Então, selecionei
+pesquisa aqui. Ele vai me perguntar como
+é que eu quero alcançar o meu objetivo.
+Você pode ignorar isso daqui ou
+selecionar, tá? Se a gente for
+selecionar, a gente vai selecionar site,
+tá? Então, a gente sempre vai jogar as
+pessoas para um site para anunciar no
+Google. Não é essencial que você tenha
+um site, mas é muito importante, tá?
+Então vou colocar aqui meu site,
+pedrosobbral.com.br/ha
+aulas, tá? Então faz de conta que esse
+daqui é o link para o qual eu quero
+enviar as pessoas. E aí eu vou apertar
+em continuar.
+Apertei em continuar, ele vai me pedir o
+nome da minha campanha. E aí a gente vai
+pro passo número quatro, que é a
+nomenclatura,
+tá? Então, o que que a pessoa, qual que
+é o nome que eu vou colocar que vai
+identificar a minha campanha? Eu tenho
+um modelo que eu sempre gosto de
+utilizar. Eu coloco o objetivo da minha
+campanha, o tipo da minha campanha, o
+subtipo e uma descrição. Então, por
+exemplo, vendas, pesquisa, breve
+descrição, vendas YouTube, breve
+descrição, vendas, display, breve
+descrição. Subtipo raramente você vai
+utilizar, tá? ou visitas à loja Pemex.
+Aqui poderia ser eh
+cadastros, né, leads, cadastros,
+display e uma breve descrição da minha
+campanha, tá? Então eu vou colocar um
+nomezinho aqui que identifique a minha
+campanha, tá? Usa um padrãozinho. Quanto
+melhor for esse padrão, quanto mais você
+utilizar, mais fácil vai ser. Beleza?
+Vou apertar em continuar. Só isso, esse
+passo. Só isso, esse passo, tá? Isso
+aqui não vai aparecer para você, tá? Mas
+eu vou apertar aqui em começar uma
+campanha nova paraa
+gente seguir o processo aqui. Beleza?
+Agora vai aparecer aqui para mim a o
+passo número cinco, que é a estratégia
+de lance, deixa eu voltar aqui pro meu
+cantinho, que é a estratégia de lance e
+o orçamento. O que que é a estratégia de
+lance? É basicamente o Google me fazendo
+a seguinte pergunta: "Em qual resultado
+você quer focar e quanto que você quer
+pagar por esse resultado?" É isso. Que
+que você tá buscando? Ah, eu tô buscando
+conversões. Conversão. Ah, eu tô
+buscando cliqus. Cliqus. Ah, eu tô
+buscando impressões.
+O que que eu estou buscando de
+resultado? Quando a gente tá falando de
+campanhas para quem tá começando, ou a
+gente vai focar em conversão ou eu vou
+focar em clique, tá? E na maioria das
+vezes a gente vai focar em conversão,
+dinheiro no bolso. E aí ele vai me
+perguntar: "Quanto que você quer pagar
+por uma conversão? Quanto que vale
+alguém ir no seu site e converter?" Aí
+você vai botar, vou botar 1 centavo, né?
+Aí que tá. Qual que é o problema? Se eu
+botar um valor muito baixo, o Google não
+vai gastar o meu dinheiro. Por quê?
+Quanto maior é o meu lance, o que que é
+o lance? Sou eu dizendo pro Google:
+"Olha, isso daqui é o que eu tô disposto
+a gastar. Isso é o lance. Quanto maior o
+meu lance, mais eu gasto, mas mais eu
+pago por resultado. Quanto menor o meu
+lance, menos eu gasto, mas menos eu pago
+por resultado. Eu sei que isso pode
+parecer confuso, mas aí é só você pensar
+num leilão de quadros. Como assim um
+leilão de quadros? Imagina o seguinte,
+vai acontecer um leilão de quadros. Se
+eu chego lá e cada vez que que alguém
+fala assim: "Eu dou 2.000", eu falo: "Eu
+dou trê". A pessoa fala: "Eu dou 4.000".
+Eu falo: "Eu dou cinco." Eu a pessoa
+falou: "Eu dou seis". Eu falo: "Eu dou
+7.000. Eu dou 8.000, dou 9.000." A
+pessoa fala: "Eu dou 10.000, eu dou
+20.000". Que que tá acontecendo? Eu tô
+dando um lance maior, só que eu vou
+gastar mais, mas eu vou pagar mais caro
+também por cada quadro que eu comprar.
+No Google é a mesma coisa, só que no
+Google a gente não tá leiloando quadro,
+a gente tá leiloando conversão. Então eu
+vou dizer pro Google: "Olha, eu tô
+disposto a pagar R$ 5 por uma conversão,
+beleza? Você vai aparecer x vezes, mas
+se eu botar que eu tô disposto a pagar
+10, eu vou aparecer mais vezes, mas eu
+vou pagar mais caro também. Então isso
+daqui é o seu acelerador do Google.
+Quanto maior é o lance, mais eu tô
+pisando no acelerador. Quanto menor é o
+lance, eu tô tirando o pé do freio. Se
+eu tô anunciando no Google e eu tô
+pagando muito caro, o que que eu faço?
+Tiro o pé do acelerador. Se eu tô
+anunciando no Google e não tá gastando
+dinheiro ou o custo, o resultado tá
+barato e eu quero gastar mais, pisa no
+acelerador. Então, pisei no acelerador,
+eu vou aumentar meu lance para 11, para
+12, para 13, para 14, para 15. Opa,
+ficou caro. Ah, vamos voltar para 13,
+tá? E aí você e aí eu não sei quanto que
+você vai pagar por conversão, porque
+depende do seu negócio. Quanto que você
+pode pagar por uma venda? Essa é uma
+resposta que você tem que ter ou se você
+é gestor de tráfego que o dono do
+negócio tem que ter, tá? E aí a gente
+tem algumas alguns tipos de estratégias
+de lance. Eu não vou entrar nesse nível
+de detalhe aqui com você, tá? Porque
+para quem tá começando, não vai fazer
+sentido você aprender isso, mas a
+questão aqui é quando vou aí essa esse
+Google eu não posso deixar muito pequeno
+porque senão vocês não enxergam, mas
+quando a gente vai anunciar no Google, a
+gente tem que escolher em que tipo de
+resultado que a gente quer focar. Então
+você vai selecionar sua estratégia de
+lance. Pedro, você colocou estratégia de
+lance e orçamento? Sim. Na maioria das
+campanhas que você for criar aqui, você
+já vai ter que escolher o quanto de
+dinheiro você quer gastar por dia. No
+caso da campanha de pesquisa, a gente
+vai escolher isso só no final, tá? Por
+quê? Sei lá, o Google é meio louco às
+vezes, tá? Mas na maioria das campanhas
+vai ser aqui que a gente vai selecionar.
+Nesse caso específico que estamos
+simulando a criação de uma campanha de
+pesquisa, a gente seleciona isso daqui
+lá no final. Passo número seis, que que
+a gente vai fazer? A gente vai pular
+essa parte aqui de aquisição, tá? Pode
+ignorar isso daqui, não vai fazer
+diferença nenhuma para você que tá
+começando agora. E aí a gente vai
+apertar aqui em próximo. Apertei em
+próximo, vai aparecer aqui, vão aparecer
+as redes. O que que são as redes? As
+redes é o passo número seis, que é onde
+que eu quero aparecer, que é redes e ou
+formato, tá? Então aqui vai aparecer
+redes ou vai aparecer formato ou vai
+aparecer os dois. Redes é eu dizer: "Eu
+quero aparecer só no Google, eu quero
+aparecer só no YouTube". Se eu for
+aparecer no YouTube, qual que é o
+formato do meu vídeo? É um vídeo
+vertical? É um vídeo horizontal? É um
+vídeo que vai aparecer na pesquisa do
+YouTube? Qual que é o formato do vídeo
+que vai aparecer pras pessoas? Se eu vou
+anunciar na eu quero aparecer na rede de
+display, então qual que é a rede que eu
+quero aparecer? Quando a gente tá
+falando de Google Ads, a gente vai só
+selecionar o Google e os parceiros da
+pesquisa do Google, tá? Que são sites
+que não são o Google, mas que são
+parceiros do Google e o seu anúncio vai
+ser mostrado lá quando alguém fizer
+pesquisas lá. Não vamos selecionar essa
+opção do display. Por quê? Porque ela é
+uma bosta e não funciona. Simples assim,
+tá? Então isso daqui é o o configuração
+padrão da rede de pesquisa. Selecionado
+isso, vamos pro passo sete. Lembra? São
+10 passos. A gente tá chegando no final.
+Passo sete,
+localização e idiomas, que é onde que o
+nosso anúncio vai aparecer, onde que
+está a pessoa que está vendo o meu
+anúncio. Então, essa pessoa que vai ver
+o meu anúncio, ela tá em qualquer país e
+qualquer território? Ela tá no Brasil ou
+ela tá numa localização específica? Se
+ela tá numa localização específica, eu
+quero aparecer para alguém que tá em
+todo o estado do Paraná, por exemplo.
+Não, eu não quero. Eu quero aparecer
+para as pessoas que estão numa cidade,
+por exemplo, do Paraná, como por
+exemplo, a cidade de Londrina. Não, eu
+não quero. Eu quero aparecer num CEP do
+de Londrina, no CEP 86015. Só os cinco
+primeiros dígitos do CEP, ó. 86015.
+incluir. Quero aparecer somente neste
+local aqui.
+Ou eu quero aqui a gente tem a pesquisa
+avançada, né, onde eu consigo ver eh
+onde que tá o meu onde que tá o o o
+local onde eu tô aparecendo aqui na na
+cidade de Londrina. Então, eu tenho
+várias opções. Eu posso anunciar para
+vários CPs, para várias cidades, para um
+estado, vários estados, um país, vários
+países. Você vai selecionar aqui a sua
+localização. Importante aqui tem as
+opções de localização, location options.
+Aqui você vai colocar presença, porque o
+o aqui é presença ou interesse. Aqui eu
+vou aparecer para todo mundo que está
+nesse CP ou tem interesse nesse CEP.
+Vamos dizer que eu não vou anunciar no
+CEP, vamos dizer que eu vou anunciar
+para Londrina mesmo, na cidade de
+Londrina, no Paraná. Então tô anunciando
+para Londrina aqui. Se uma pessoa tem
+interesse em Londrina, eu já vou
+aparecer, mas ela pode morar no Maranhão
+e eu tenho um delivery e aí eu vou
+aparecer o meu anúncio de delivery pro
+cara que tá no Maranhão. Não. Então por
+isso que eu vou selecionar presença.
+Aqui eu vou aparecer para quem está na
+cidade de Londrina. Aí depois vamos pro
+idioma. Qual que é o idioma dessa
+pessoa? Normalmente o idioma do
+navegador. Perceba o meu navegador aqui,
+o Google Chrome. O seu pode ser o
+Mozilla Firefox, o Aura, o o Internet
+Ed, o Explorer. Cada um tem. Hoje em dia
+tem 1000 navegadores, tá? Mas o Safari,
+mas qual que é o idioma do navegador da
+pessoa? Aqui você sempre vai colocar
+inglês, português e espanhol.
+Sempre português, English, Spanish.
+Português, inglês e espanhol. Sempre
+esses três. Passo sete, check. Passo
+oito, início e programação. Você vai vir
+aqui, ó, em mais configurações, tá,
+Pedro? E essas políticas, ignora
+segmentos de audiência, ignora mais
+configurações. Aqui em mais
+configurações, você tem a data de início
+e a data de término. Quando que a
+campanha começa? Quando que a campanha
+termina? Então, começa no dia 23 de
+dezembro de 2025. Quando que ela
+termina? Ah, ela termina daqui a duas
+semanas. Ela termina no dia 6 de
+janeiro, no dia que a gente vai estar
+fazendo aula ao vivo também. Data de
+início, data de término, mais
+configurações.
+Aqui você tem a programação
+schedule, programação dos anúncios.
+Quais são os horários e os dias que os
+meus anúncios vão aparecer? Ah, então
+meu anúncio vai aparecer segunda, terça,
+quarta,
+quinta
+e sexta. Só que ele vai aparecer só das
+8 horas da manhã. Opa.
+Vai aparecer só das 8 até às
+18. Por quê? Porque eu tenho um
+comércio, um eu sou psicólogo, eu presto
+serviço e é só nesse horário aqui que eu
+atendo. Então, seus anúncios vão
+aparecer só de segunda a sexta nesses
+horários. Você vai escolher a a agenda
+dos seus anúncios aqui. Aí, se eu quiser
+aparecer todos os dias, aí é só
+selecionar aqui. Tem, ó, todos os dias,
+tá? Você seleciona aqui os dias da
+semana que você quer aparecer. Feito
+isso, passo nove, são 10 passos. Você
+tá, você tá vendo? A gente tá criando a
+campanha, é rapidinho, é só ir
+selecionando. Você tem que entender o
+seguinte, o Google, eu sei que é um
+monte de informação nova, mas o Google
+ele quer que você saiba criar a
+campanha. É só você seguir o passo a
+passo e vai acompanhando a aula. Ah, mas
+eu não vou me sentir pronto para fazer
+sozinho. Você e nem ninguém que tá
+começando. Nem eu quando comecei, muito
+menos eu. Eu quando comecei ficava vendo
+1 milhão de tutorial para conseguir
+criar as minhas campanhas. O ano era
+2015, não tinha esse tanto de informação
+na internet, não tinha esse tanto de
+live. Mas, pô, se eu conseguir numa
+época sem informação, hoje em dia com o
+passo a passo aqui bonitinho, pô, você
+vai voar, tá? Finalizei isso daqui, eu
+vou paraa próxima etapa aqui. Na próxima
+etapa, a meta vai, a meta não, desculpa,
+o Google vai me sugerir as opções de
+inteligência artificial do Google, tá?
+Isso daqui é o quê? Vamos otimizar sua
+campanha com a nossa IA. Não tá legal
+ainda, tá? No futuro pode ser que
+melhore. Não é nem que pode ser. No
+futuro vai ficar bom. E aí quando ficar
+bom vai ter aula sobre isso daqui aqui,
+tá? Mas agora não tá legal. Então, a
+gente só vai deixarelecionado
+essa opção, tá? Só vamos tirar essa
+opção aqui e vamos apertar em próxima.
+E aí o Google vai agora paraa próxima
+etapa, que é, mais uma vez ele tá
+tentando fazer com que eu crie as minhas
+palavras-chaves de maneira automática.
+Ainda não tá legal. Eu vou pular essa
+etapa aqui. Então vai ter um botão aqui.
+Se o seu estiver em português, vai tá
+escrito pular. Eu vou pular essa etapa.
+E agora eu vou vir aqui, ó, para criação
+do meu grupo de anúncio, paraa criação
+da próxima etapa da minha campanha, que
+é eu selecionar para quem que eu vou
+aparecer, tá? No nosso caso aqui, por
+isso que eu coloquei aqui segmentação,
+no nosso caso aqui do Google, a gente tá
+criando uma campanha de pesquisa. Como
+eu tô criando uma campanha de pesquisa,
+a segmentação que eu vou utilizar aqui
+são as palavraschave,
+tá? Então essa é uma campanha de
+pesquisa, essa é a segmentação que a
+gente vai utilizar aqui. Quando a gente
+tá falando de anunciar no Google, para
+te trazer uma explicação de uma maneira
+um pouquinho mais aprofundada, o Google
+ele nos dá três tipos de segmentação. Eu
+posso segmentar as minhas campanhas por
+público alvo, tá? O que que é o público
+alvo? Eu, como eu falei para você, eu
+vou escolher as características de quem
+vai ver o meu anúncio demográficas, os
+interesses, as interações que ela já
+teve comigo, com a minha marca, as
+pesquisas que essa pessoa já fez, os
+aplicativos que ela tem no celular, isso
+é público alvo. Só que eu também posso
+segmentar as pessoas com base em
+conteúdo que eu vou escolher aparecer
+pra pessoa com base no que ela está
+pesquisando, acessando ou vendo. Quando
+a gente vai fazer anúncios no Google, eu
+vou segmentar com base em conteúdo e não
+em característica, porque eu quero
+aparecer quando a pessoa está fazendo
+uma pesquisa de um determinado assunto.
+Se eu tenho uma loja que vende vela
+aromática, eu quero aparecer quando a
+pessoa digitar comprar vela aromática.
+Então, se eu pesquisar comprar vela
+aromática, vão aparecer anúncios para
+mim aqui no Google, ó. Resultados
+patrocinados. Tudo isso aqui é anúncio.
+Entregamos em todo o Brasil. Site candle
+e co velas com aromas elegantes. The
+minimalist candle. Velas de alta
+performance. Cara, até a vela é de alta
+performance agora. Mas a questão a vela
+coach, né? [risadas]
+Que que sua vela é uma vela normal? Não,
+essa aqui é uma vela de alta
+performance. você acende ela e ela te
+traz uma mensagem positiva pro seu dia.
+Mas a segmentação com base no conteúdo,
+a pessoa que colocou esse anúncio no ar
+aqui, ela não escolheu aparecer para
+homens que moram em São Paulo, que tem
+30 anos, que tem interesse sobre de
+marketing digital. Essa pessoa não
+escolheu isso. Ela não escolheu aparecer
+para mim com base nas minhas
+características. ela escolheu aparecer
+para mim com base na minha pesquisa, no
+meu conteúdo, no que a pessoa está
+pesquisando, acessando ou vendo. No
+nosso caso aqui, a gente vai focar no
+que a pessoa está pesquisando, tá? E aí
+tem o último tipo de segmentação que é o
+indicador de público alvo que eu vou
+usar lá na minha campanha X Tudo na
+Performance Max, que eu vou dar pistas
+da minha segmentação pro Google. Eu vou
+dar sugestões para ele da minha
+segmentação. Quando a gente tá falando
+de pesquisa, eu tenho que selecionar as
+palavraschaves. Aqui eu vou escrever as
+palavras-chaves, uma embaixo
+da outra, tá? Então, para quais termos
+que eu quero que o Google anuncie para
+mim? O que que você vai fazer para
+descobrir as suas palavras chaves, tá?
+Você tem que se perguntar o que que o
+seu cliente ideal pesquisa, tá? Que tipo
+de pesquisa que ele faz no Google? Ah,
+como é que eu vou descobrir isso? Tem
+sites como Ans the Public
+also Asked que te ajudam nisso daqui,
+tá? Então, só para te mostrar o answer
+the public, eu posso botar o link na
+descrição depois. Eu vou digitar aqui,
+por exemplo, ah, eu quero saber é o que
+que as pessoas estão digitando sobre
+vela aromática,
+tá? Vou botar aqui, ó, vela aromática e
+vou botar aqui o meu idioma português,
+Brasil,
+e vou pesquisar que que vai acontecer.
+O sistema ele vai procurar para mim, ele
+vai entender tudo aquilo que as pessoas
+pesquisam no Google sobre vela
+aromática, tá? Aí ele vai ficar
+aparecendo aqui nesse nesse formato. Aí
+mudou essa ferramenta aqui. Eu queria
+muito ver no outro formato, ó. Mas ele
+mostra aqui para mim, ó. É vela
+aromática, lembrancinha, vela aromática
+de lavanda, vela aromática lembrancinha
+chá de bebê, é vela aromática de
+latinha, vela aromática lata, vela
+aromática lembrancinha 15 anos. Ó, já vi
+que tem muita gente que pesquisa vela
+aromática em latinha, não sabia. Aí ele
+faz pesquisas nas mídias sociais, enfim,
+ele vai, ó, fazer todas as pesquisas
+para mim aqui de tipos de pesquisas que
+as pessoas estão fazendo de vela
+aromática. E aqui você vai ter várias
+ideias, ó. Aqui eu tenho, ó, a lista em
+ordem alfabética aqui, ó.
+Ó, como apagar, como fazer.
+Vela aromática, como acender,
+personalizada,
+vela infinita aromática. Pô, uma vela
+infinita. Isso aí nem eu sabia que
+existia. Aqui você vai ter assim, ó,
+toneladas e toneladas de ideias, tá? Aí
+você vai se perguntar, você tem que
+entender o seu público alvo. Depois que
+você descobriu essas palavras-chaves,
+você vai anotando elas e aí a gente vai
+colocar correspondência nessas
+palavras-chaves. Pedro, o que que é uma
+correspondência? É o seguinte, tem três
+tipos de palavras-chaves. Tem as amplas,
+tem as de frase e tem as exatas, tá?
+ampla é quando eu só coloco a
+palavra-chave aqui, por exemplo,
+curso de anúncio online.
+Frase é quando eu coloco ela entre
+aspas, curso de anúncio online,
+entre aspas, tá vendo que eu botei aqui
+uma
+uma aspinha? Deixa eu fechar isso aqui.
+Coloquei aqui uma aspinha do lado da
+palavra-chave e exata é quando eu coloco
+ela com o colchete,
+tá? No começo vai ser um pouco confuso,
+mas você vai pegar rápido. Ampla. Eu tô
+dizendo pro Google, Google, anuncia para
+mim, para quem tá procurando por curso
+de anúncios online ou coisas similares.
+Então, a pessoa pode pesquisar curso de
+anúncios online e eu vou aparecer. A
+pessoa pode pesquisar curso de anúncios
+e eu vou aparecer. A pessoa pode
+pesquisar como aprender anunciar online
+e eu vou aparecer. A pessoa pode
+pesquisar comprar um curso de anúncio
+online e eu vou aparecer. A pessoa pode
+pesquisar, comprar um curso de anúncio
+online barato e eu vou aparecer. Agora
+frase é quando eu tô dizendo Google, eu
+quero que na pesquisa da pessoa tenham
+essas palavras nesta ordem.
+Tem que ter essas palavras nessa ordem.
+Então se a pessoa pesquisar curso de
+anúncios online, eu posso aparecer,
+porque tem essas palavras nessa ordem.
+Se a pessoa pesquisar cursos de
+anúncios, não vou aparecer, porque não
+tem todas essas palavras nesta ordem. Só
+tem curso de anúncios, mas não tem o
+online. Se a pessoa pesquisar como
+aprender a anunciar online, também não
+vou aparecer,
+tá, Pedro? E se a pessoa pesquisar
+comprar curso de anúncios online? Aí eu
+posso aparecer. Por quê? Porque tem
+curso de anúncios online nesta mesma
+ordem
+na pesquisa da pessoa. Aí se a pessoa
+pesquisar comprar um curso de anúncios
+online barato, muito legal. Posso
+aparecer? Posso aparecer. Por quê?
+Porque tem curso de anúncios online no
+meio da pesquisa da pessoa.
+E aí, por último e não menos importante,
+temos a exata. A exata é o quê? Só vou
+aparecer quando a pessoa pesquisar isso
+daqui, tá? que é
+curso de anúncio online. Todo o resto
+não vou aparecer. Por quê? Porque não é
+exatamente aquilo que eu coloquei para
+aparecer pra pessoa. Pedro, qual que eu
+uso? Eu uso a ampla
+que tá aqui em azul, eu uso a defrase,
+que tá aqui em roxo ou eu uso a exata
+que tá aqui em laranja.
+você vai fazer um mix delas, não tem
+regra, mas quer dizer, tem uma regra. Se
+você tá começando, foca mais na de
+frase, na exata. Por quê? Porque você
+vai ter mais controle, tá? E aí você vai
+encontrar várias palavras que t a ver
+com aquilo que você tá divulgando. Não
+pode ser coisas completamente
+aleatórias, tem que est tudo dentro do
+mesmo tema. Então, por exemplo, eu vou
+anunciar para quem quer trabalhar em
+casa. Então, eu posso pegar essas
+palavraschaves aqui, ó. Trabalho home
+office, trabalho online, trabalho de
+casa, trabalhar na internet, trabalhar
+em casa, quero trabalhar como home
+office, trabalhar online. Como trabalhar
+em casa, como trabalhar home office,
+trabalho na internet, como trabalhar em
+casa, como trabalhar home office. Então,
+é um conjunto de palavraschaves que
+estão falando todas sobre o mesmo tema.
+E aí eu vou colocar todas elas aqui, ó,
+uma embaixo da outra, tá? Coloquei todas
+as palavras aqui bonitinhas, ó. uma
+embaixo da outra. Deixa eu tirar esses
+espaços. Eu vou tá anunciando para essas
+palavraschaves. E aí eu vou fazer o quê?
+Eu vou pro último passo. O último passo,
+sim, passo 10. Falei para você que ia
+demorar 1 horinha 20, vai dar certinho.
+Passo 10, anúncio. Eu vou configurar o
+meu anúncio. E aqui no meu anúncio, o
+Google vai pedir para mim para que eu
+coloque títulos no meu anúncio, tá?
+Então, quais são os títulos que vão
+estar no meu anúncio? Por exemplo, quais
+são os títulos desse anúncio aqui? Site
+candle e co é um título. Velas com
+aromas elegantes é outro título. Aqui
+the minimalist candle é um título aqui.
+Velas de alta performance é outro
+título. E eu vou colocar vários títulos
+e o Google vai descobrir para mim o que
+funciona melhor. Então eu vou colocar
+aqui o nome da minha marca Pedro Sobral.
+Eu vou colocar coisas que t a ver com
+aquilo que eu tô coloquei nas minhas
+palavras-chaves. Então, ó, tráfego pago,
+100% home office. Fature com tráfego
+pago, um benefício. Sua renda extra com
+anúncios. Trabalhe online sem aparecer.
+Domine a gestão de tráfego. Aulas ao
+vivo e gratuitas. Como ser gestor de
+tráfego? Tá vendo? Eu vou colocar, ó,
+deixa eu apertar no mais aqui.
+São 20 títulos. Coloca todos. Coloca
+pequenas variações. Trabalhe em casa com
+tráfego pago, o profissional mais bem
+pago. Tráfego pago, sua renda extra.
+Trabalhe 100% home office. Trabalhe em
+casa do seu PC, trabalho sem
+pré-requisitos. Vou colocar aqui todas
+as palavras, vou preencher tudo. Depois,
+descrição. São 90 caracteres que eu vou
+descrever o que eu tô divulgando. Então,
+vou colocar aqui: "Descubra tudo sobre a
+gestão de tráfego e como fazer dela sua
+nova profissão. Se cadastre e seja
+avisado das melhores aulas de gestão de
+tráfego pago. Quer descobrir como
+trabalhar de casa e com anúncios online
+sem aparecer e ser bem pago? passo a
+passo para você conquistar um trabalho
+home office, onde você é bem remunerado.
+Então, tudo isso aqui vai compor o meu
+anúncio, ó. E aí ele vai montar para mim
+aqui, ó. Eu posso ver vários exemplos,
+ó. Fature com tráfego pago, trabalho sem
+pré-requisitos.
+Trabalhe de casa com tráfego, trabalhe
+de casa do seu PC. O profissional mais
+bem pago trabalha online sem aparecer.
+Descubro como fazer da gestão de tráfego
+pago e como fazer dela só. Vai aparecer
+tudo aqui para mim bonitinho. Tudo isso
+daqui. Agora vou e tá vendo que é só
+seguir o passo a passo. Imagens, ele vai
+me pedir imagens para colocar meu
+anúncio. Daqui para baixo nada é
+obrigado, é tudo extra, tá? Tá? Então eu
+posso colocar imagens aqui, ó, que tem a
+ver com aquilo que eu tô divulgando.
+E aí eu salvo, vou subir essas imagens
+aqui que são a que tem a ver com o meu
+anúncio. Nome do meu negócio, vou
+colocar aqui, ó, Pedro Sobral.
+nome da empresa que eu tô divulgando,
+logo do meu negócio. Então eu vou
+colocar aqui a logo do meu curso, no
+caso, posso apertar em editar aqui,
+posso subir uma outra logo pro para ser
+anunciada. Site links são outros sites
+do meu domínio que eu quero enviar as
+pessoas. Então eu posso mandar as
+pessoas pro meu canal do YouTube, posso
+enviar as pessoas para uma página de
+depoimentos. É só apertar em mais aqui,
+ó. E aí você vai colocar aqui, ó, eh,
+veja.
+outras histórias de sucesso ou sei lá,
+vela aromática de latinha, depoimentos
+eh de alunos. E aí eu vou colocar aqui,
+ó, veja os depoimentos
+de outras pessoas
+pessoas
+como você. Aí eu vou botar aqui, opa,
+pedros.com.br/depoimento.
+br/depoimentos.
+Aí eu vou enviar a pessoa para esse site
+aqui. Pera aí. H
+h h h h h h h h h h h ht h https
+2/p.
+Opa,
+deu. Vou colocar meu site aqui. Então
+vai ficar assim, ó. Depoimento de
+alunos. Aqui eu posso clicar para ver
+como é que vai ficar no computador, ó.
+Aí eu vejo como é que vai ficar no
+computador. Aqui ó, o preview. Então eu
+vou colocar esses outros elementos aqui
+que vão compor e deixar o meu anúncio
+ainda mais completo, tá? Tudo isso daqui
+são elementos extras que eu tô colocando
+no meu anúncio, tá? Que vão deixar o meu
+anúncio cada vez mais completo, cada vez
+mais eh bem preenchido, cada vez mais ah
+chamativo. No final das contas, é isso
+daqui que a gente quer fazer a a gente
+quer fazer no final. Mas o que que eu
+quero que você perceba aqui?
+Tem 1 milhão de tipos de campanha do
+Google, tá? Tem vários tipos. A gente
+criou a campanha da rede de pesquisa.
+Perceba que o Google ele não te pede
+tudo ao mesmo tempo. Ele não chega para
+você e fala assim: "Ah, me dá aí o que
+você precá aí o que eu preciso para
+criar sua campanha". Não, ele vai te
+pedindo passo a passo, item por item,
+item por item, item por item, item por
+item, item por item. Como que você vai
+dominar isso daqui? Como é que você vai
+se sentir seguro de criar campanhas no
+Google? Cria a sua primeira campanha.
+Até aqui o momento onde eu tô, eu não
+apertei em salvar aqui, ó, que é o
+final, tá? O último passo é apertar em
+salvar. Aí ele vai abrir a parte da
+revisão da campanha, que eu vou apertar
+em próximo, e ele vai me pedir agora o
+meu orçamento, que é a última coisa que
+falta, que é o quanto que eu vou gastar
+por dia, tá? E aqui eu gosto de colocar
+um orçamento customizado e você escolhe
+o quanto que você vai gastar por dia,
+tá? Posso botar 10, posso botar cinco.
+Google vai recomendar sempre que você
+coloque mais, tá? Botei 10. Aí agora eu
+vou apertar aqui em próximo. Aí ele vai
+revisar a minha campanha com todas as
+informações, com tudo aquilo que eu
+coloquei aqui na minha campanha. Vai ver
+se tá tudo certo. Ele vai dar uma uma
+carregada aqui pra gente dar os próximos
+passos, ó. E aí, agora eu vou publicar
+minha campanha. Só corre o risco de eu
+gastar dinheiro quando eu apertar nesse
+botão aqui. Qual que é a minha sugestão
+para você? Mesmo que você não tenha um
+cliente, mesmo que você não vá criar
+campanha, mesmo que você seja o seu
+próprio cliente, mas você tá com medo,
+você tá inseguro, faz o processo, faz
+todo o passo a passo, deixa a campanha
+pronta, só não aperta no publicar.
+Apertou no publicar, a campanha vai
+rodar. Se você fez tudo certo, vai dar
+certo, vai dar resultado, tá? E aí a
+minha grande sugestão aqui é: cria a sua
+primeira campanha institucional,
+tá? Cria sua primeira campanha
+institucional. O que que é
+institucional? Anuncia pros termos da
+sua marca. Então, no meu caso, eu vou
+anunciar para Pedro Sobral, comunidade
+subido, subido, curso subido,
+eh, Sobral, tráfego pago. Vou anunciar
+para termos que t a ver com a minha
+marca, Comunidade Sobral. Vou anunciar
+para várias palavraschaves que tem a ver
+com a minha marca. Isso é a campanha
+institucional. Faz a campanha mais
+segura de todas. Bota R$ 5 por dia para
+gastar nela, tá? Isso daqui é a minha
+grande sugestão para você. Faz o negócio
+acontecer. Ah, Pedro e os outros tipos
+de campanha. Eventualmente aqui no canal
+do YouTube a gente dá aulas onde eu
+aprofundo sobre um tipo de campanha
+específica. Hoje eu dei uma aula geral
+do Google Ads, mas que você sai daqui
+sabendo todos os passo a todo o passo a
+passo de uma campanha. Ah, mas eu não
+entendi tudo, eu não tô 100% seguro.
+Tudo bem, você tá exatamente onde você
+deveria est, mas você tá saindo daqui
+muito melhor do que você chegou no
+início da aula. Isso daí você tem que
+ter certeza absoluta disso, tá, Pedro?
+Mas e se eu quiser um passo a passo mais
+próximo? E se eu quiser um negócio mais
+estruturadinho,
+mais no passo a passo do detalhinho? Aí
+a gente tem a comunidade subido de
+tráfego. Eu sabia, ele só queria me
+vender. Não, não quero te vender nada.
+Se você acha que eu só quero te vender,
+não compra nada, meu. Você consegue
+aprender de graça com o que tem aqui no
+canal do YouTube, mas você vai ter que
+fazer sua parte. Agora aqui dentro do
+universo subido, você tem aqui o nosso
+curso de tráfego pago, que é a
+comunidade subido de tráfego, tá? A
+gente não tá com as inscrições abertas
+agora, mas se você tem interesse em
+participar, em saber mais, na descrição
+deste vídeo tem um link, ó, vou te
+mostrar aqui onde você tá agora, ó. Você
+está aqui neste vídeo
+aqui, ó. Você tá vendo essa aula aqui,
+ó? Vou entrar nela aqui. Você tá vendo
+essa aula aqui, tá? Aqui na descrição
+deste vídeo, você tem aqui, ó, primeiro
+o link para você receber a amostra
+grátis da comunidade subido. Você vai
+clicar nesse link aqui, ó. Você vai cair
+nessa página, faz o cadastro aqui e você
+vai poder acessar a plataforma de aulas
+aqui. Só que não tão as aulas
+disponíveis, disponíveis, é óbvio, tem
+uma aula que tá disponível para você ver
+como funciona, mas aí você consegue ver,
+você consegue clicar, você consegue ver
+a lista das aulas, dos temas das aulas
+que tem aqui dentro, tá tudo bonitinho
+lá para você navegar pelo portal, tá? Só
+clicar no primeiro link que tá aqui na
+descrição.
+Se você quiser fazer parte da nossa
+lista de espera, tá no segundo link da
+descrição. E nós temos também a lista de
+presença da nossa live de hoje, tá? O
+que que é a lista de presença? É o
+seguinte, toda terça-feira, 3 horas da
+tarde, a gente tem uma live, tá? Toda
+terça-feira. E aí, uma vez por mês, a
+gente faz um sorteio. Na última
+terça-feira, inclusive, a gente fez três
+sorteios. E aí, quanto mais aulas você
+assiste, melhores são os prêmios que
+você ganha. E como é que você faz para
+marcar sua presença? Simples. Você vai
+vir aqui, ó, vai colocar o seu nome, o
+seu e-mail, seu WhatsApp e aí você vai
+escolher a palavra-chave da aula, tá? A
+palavra da chave da aula de hoje é
+domine o topo. Para você dominar o topo
+lá da rede de pesquisa. Seleciona aqui a
+palavra-chave da aula de hoje, que é
+domínio o topo, e confirma sua presença.
+Se quiser, quiser dar alguma sugestão de
+tema pra próxima aula, pode colocar
+aqui. Eu uso ela para uso essas
+sugestões para planejar várias das
+próximas aulas que vão acontecer e
+confirma a sua presença aqui embaixo,
+tá? Agora, para você que tá curioso, a
+gente tem aqui o nosso portal de
+conteúdo, né, onde nós temos não só um
+curso, mas nós temos vários cursos aqui
+dentro. Basicamente a gente divide os
+conteúdos aqui da comunidade subido em
+seis grandes blocos. Nós temos o curso
+subido de tráfego, que aqui você vai
+aprender tudo sobre o meu método de
+tráfego, tudo sobre MetaS, tudo sobre
+Google Ads, tudo sobre otimização de
+campanhas, sobre estruturar estratégias
+de tráfego pago, TikTok ads, LinkedIn
+Ads, bloqueios e contingência. Tá? Você
+vai dominar tudo sobre esses assuntos
+aqui dentro do curso subido do 00
+até o mais avançado, que é elaborar
+estratégias, otimizar campanhas. Se você
+for ser gestor de tráfego, tem o curso
+subido de prospecção e vendas. Aqui você
+vai entender tudo sobre o serviço de
+tráfego pago, para quem que você vende,
+quando que você tá pronto para vender.
+Vou te ensinar como é que você se
+prepara para vender, como que você
+escolhe para quem que você vai vender,
+que que você tem que melhorar no seu
+perfil, no seu WhatsApp para vender pras
+pessoas, como que você prospecta,
+scripts de prospecções, proposta
+comercial e fechamento. Aqui eu te
+explico tudo sobre como que você faz uma
+proposta, como que você cria, faz uma
+reunião, quebra objeção, tá? Isso aqui é
+um módulo, ó. Se eu abrir aqui, ó, você
+vai ter as aulas desse módulo. São todas
+aulas mais curtinhas, 10, 15 minutos por
+aula, mas aulas extremamente práticas e
+passo a passo para você aprender o que
+que você precisa para vender, tá? Então,
+como é que precifica, como que cobra,
+como que oferece o serviço, para quem
+que você tem que oferecer, como que eu
+sei que eu vou conseguir gerar resultado
+pro cliente, tudo isso tá aqui, tá? Aí
+te explico como é que você faz tráfego
+pago. Se você já tem dinheiro para
+fechar clientes no futuro, você vai usar
+esse módulo aqui, como que você escala o
+seu negócio? E a gente tem um módulo de
+ferramentas aqui de tráfego paco. Temos
+o curso de especialização de tráfego,
+onde você vai aprender tráfego para
+negócio local, tráfego para e-commerce,
+tráfego para infoprodutos. Temos o curso
+de habilidades complementares, que já
+tem as aulas de automações e CRM. Já
+estamos com as aulas de copywriting para
+gestores de tráfego gravadas que vão
+entrar na comunidade subito. Temos
+também o curso de dados, traqueamentos e
+relatórios, que são os nossos cursos de
+Google Analytics, Google Tag Manager,
+Google Locker Studio, que é para criação
+de dashboards e relatórios
+automatizados, e a gravação das lives e
+eventos, essas lives que você tá vendo
+aqui, e não só essas lives que você tá
+vendo, como nós também temos as lives
+comunitárias, que são aulas exclusivas
+para quem é da comunidade. Nessas aulas
+exclusivas, você vai ter aulas com
+especialistas em determinados nichos de
+mercado. Então, imagina o seguinte, na
+comunidade subido, nosso produto, nós
+temos mais de 50.000 gestores de
+tráfego. Lá dentro tem um gestor de
+tráfego que é especialista em tráfego
+para petshop. Tem um gestor de tráfego
+que é especialista em tráfego para
+distribuidora de bebida. Tem um gestor
+de tráfego que é especialista em tráfego
+pro agro. Tem um gestor de tráfego que é
+especialista em tráfego para marmitaria
+congelada, tráfego para sexy shop,
+tráfego para médico, para advogado, para
+dentista, ótica, clínica de estética,
+imobiliária, para eh adestramento de
+cães, para venda de vasos ornamentais.
+Tem um especialista de tráfego para cada
+um dos nichos, tá? E aí você consegue
+através dessas aulas assistir uma aula
+com esse especialista que vai dar uma
+aula específica sobre esse nicho,
+específica sobre esse negócio
+específico, com estratégias,
+recomendações, ideias de anúncios, tudo
+pronto para você simplesmente chegar,
+copiar, colar, implementar pro seu
+cliente de tráfego pago ou então pro seu
+próprio negócio. Dessas lives
+comunitárias já são 118, tá? São 118
+lives comunitárias. A gente tem ela
+sobre todos os nichos que você pode
+imaginar, hotelaria, lead de alta renda,
+agência de modelo, eh, imobiliária, para
+ótica, para advogado, para psicólogo,
+para personal trainer, concessionária,
+fisioterapeuta, tatuador, estúdio de
+pilates, nicho de educação de cães,
+escola de idiomas, para show, para
+contador, para tudo, tá? tudo que é tipo
+de nicho tem aqui você. E aí você vai
+falar assim: "Putz, Pedro, mas é muito
+conteúdo". Pois é, mas aqui a comunidade
+ela funciona como um estudo sobre
+demanda. Você vai assistir as principais
+aulas, tá? E aí para isso você tem a
+rota de estudos aqui em que você vai
+responder um questionário e o sistema
+vai dizer para você o que que você tem
+que consumir de conteúdo e o resto do
+conteúdo ele funciona sob demanda.
+Então, putz, preciso. Tem um cliente,
+esse cliente quer que eu configure o CRM
+dele. Eu não sei configurar. Vai clicar
+aqui, vai ter as aulas, vai assistir as
+aulas. Pronto, acabou. Ah, Pedro, mas é
+só aula, é só vídeo. Não, não é. Porque
+dentro, e aí você pode ver isso quando
+você for testar o sistema. Dentro do
+sistema, você tem aqui, ó, recursos para
+criar anúncios na meta. Você tem a aula,
+tá, que é onde você vai assistir ao
+conteúdo, tá? Então, tô aqui assistindo
+conteúdo, alta edição, tudo bonitinho.
+Aí, além da aula, eu tenho a Aa, que é o
+quê? Embaixo da aula você tem um
+professor particular, que é uma
+inteligência artificial treinada
+exclusivamente para essa aula aqui. E
+ela domina os assuntos dessa aula. Aí
+você pode pedir para ela avaliar o seu
+conhecimento, você pode fazer perguntas
+sobre essa aula e ela vai responder você
+da maneira mais didática que você já viu
+na sua vida, tá? Então assim, putz, não
+entendi a diferença entre um perfil e
+uma página.
+Mandar para ela aqui, pô, o Pedro
+explicou na aula, eu não entendi. Aí ela
+vai digitar enquanto ela tá comendo os
+biscoitos
+e vai me explicar. Ótima pergunta. Eu
+vou te explicar a diferença de forma
+simples. Perfil do Facebook é o seu RG
+digital, representa uma pessoa, você
+usado para interagir com amigos, entrar
+em grupos, comentar, curtir, se
+relacionar. É obrigatório para criar
+anúncios, porque a meta quer saber que
+quem tá fazendo anúncio é uma pessoa
+real. Você deve adicionar amigos,
+colocar foto e fazer parecer um perfil
+normal para passar confiança. Página no
+Facebook é o seu perfil profissional,
+representa o seu negócio, sua marca. Tá
+vendo? A explicação é simples, não são
+termos complexos. Ela foi treinada para
+ser didática. Então você tem a aula,
+você tem a aí depois você tem um
+tutorial prático, que a gente chama isso
+de ABC. Que que é o tutorial prático?
+Você vai clicar aqui no próximo
+itenzinho do menu e aí eu vou pro
+tutorial prático. Ao invés de assistir
+um vídeo onde eu te ensino a criar sua
+conta de anúncio, você vai clicar aí nos
+todos os botões de criar uma conta de
+anúncio. Então, ó, você vai acessar nas
+ferramentas, você vai clicar em se
+cadastrar, você vai colocar suas
+informações, você vai colocar o código
+aqui, vai apertar em OK, depois você vai
+apertar em enviar, depois você vai
+selecionar sua conta, depois você vai
+selecionar configurações. Eu tô clicando
+nos botões aqui, ó. Você vai clicar
+aqui, ó, nesse menuzinho. Aí você vai
+apertar aqui, ó, em conta de anúncio.
+Depois você vai adicionar. Você vai
+clicar nesse botão, então você vai fazer
+todo o passo a passo de forma
+interativa. Então não é uma plataforma
+em que você fica só passivamente
+assistindo aula, não. Você tem a aula
+onde você assiste passivamente, mas
+depois você tem um tutorial mão na
+massa, onde você vai botar a mão na
+massa para fazer todo o processo junto
+com a plataforma e aí depois você
+replica isso dentro do dentro do seu
+gerenciador de anúncios quando você for
+criar suas campanhas, tá? Tem muito mais
+por trás, mas eu não tô aqui para ficar
+te mostrando toda a comunidade subido. É
+só para você que tem interesse, tá
+certeza aí que você tem certeza que você
+quer fazer tráfego pago, quer virar
+gestor de tráfego, quer cuidar dos
+anúncios do seu próprio negócio. Não
+existe um treinamento mais completo e
+que tem absolutamente tudo o que você
+precisa para se tornar um gestor de
+tráfego profissional do zero, como na
+comunidade subito de tráfego. Se você
+tem interesse, mais uma vez, você pode
+experimentar no link da descrição ou já
+se cadastrar na nossa lista de espera
+para quando a gente abrir as inscrições
+na próxima vez, tá? Já falei a
+palavra-chave aqui para vocês da aula de
+hoje, que é domine o topo. Meus
+queridos, essa foi a nossa live número
+365. A gente se vê agora na próxima
+terça-feira, 3 horas da tarde, na nossa
+live número 366.
+Não sei quando você tá vendo esse
+conteúdo, mas próxima terça-feira, 3 da
+tarde, tenha certeza que eu estarei aqui
+neste canal com você, te entregando o
+melhor conteúdo de tráfego pago da
+internet. Não esquece de curtir esse
+vídeo, se cadastrar no canal, mandar
+para alguém que você gosta, que você
+acha que vai se interessar por esse tipo
+de conteúdo que vai, pô, bombar no
+tráfego pago em 2026. Fechou? Tamo junto
+e a gente se vê na próxima terça-feira.
+Valeu, fui.

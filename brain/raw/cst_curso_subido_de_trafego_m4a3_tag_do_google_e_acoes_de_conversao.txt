@@ -1,0 +1,183 @@
+--- Página 1 ---
+AULA 3
+Tag do Google
+e ações de
+conversão
+1
+
+--- Página 2 ---
+Tag do Google e ações de conversão
+Índice
+Introdução …………………………………………………………………………………………….……………………………………….……….………………………….…………………………….…………………………………………. Pág. 2
+Pixel vs. ação de conversão ……………………………………………………….………….………….………….………….………….………….………………………….…………………………….……… Pág. 3
+Identificando IDs……………………………………………………….………….………….………….………….………….………….………………………….…………………………….…………………………………………… Pág. 4
+Configurações da ação de conversão………….………….………….………….………………………….…………………………….……………………………………………………... Pág. 5
+Por que a tag do Google é importante?………….………….………….………….………………………….…………………………….………………………………………………….. Pág. 6
+00’02’’
+Introdução
+Já começa a ler esse conteúdo respirando fundo. Porque você vai passar
+󰤇
+nervoso. Desculpa, eu tenho que ser sincero com você.
+Você nunca acorda em um belo dia de sol e fala assim:
+Mas, por mais que esse assunto
+seja não tão divertido, ainda assim
+a gente precisa disso.
+A tag de conversão do Google
+nada mais é do que o nosso pixel
+do Google. No passado, tudo se
+chamava pixel. Agora, a Meta
+chama de conjunto de dados, API de conversões. Todos os dias alguém muda
+o nome desse negócio — e com certeza vão mudar de novo no futuro.
+A verdade é uma só: sem isso, nenhum dado faz sentido!
+Bora aprender a seguir?
+Pág. 2
+
+--- Página 3 ---
+Tag do Google e ações de conversão
+01’13’’
+Pixel vs. ação de conversão
+1. Tag do Google Ads: A tag do Google Ads é o pixel, e ela é única.
+Significa que você tem uma tag do Google Ads só, e que essa tag deve
+estar instalada em todas as páginas do seu site. É equivalente ao pixel
+da Meta.
+2. Ação de Conversão: Por sua vez, a ação de conversão é única. Ou
+seja: você terá uma ação de conversão para medir cada coisa e ela
+deve estar instalada na página em que queremos medir determinadas
+ações.
+Outras características:
+● Equivale a um evento: cadastro, compra, clique…
+● Deve ficar só na página de “obrigado”/confirmação.
+Como instalar? Depois de criar uma ação de conversão, nós vamos ter três
+opções para instalar essa ação de conversão:
+Pág. 3
+
+--- Página 4 ---
+Tag do Google e ações de conversão
+1. Google Tag Manager (recomendado)
+● É a melhor opção! Existe um curso completo sobre isso em
+“Ferramentas do Google” na CST.
+● Facilita gestão de tags e eventos sem tocar em código.
+2. Instalação Manual
+● Clique em “Ver Snippet de Evento” no Google Ads e copie o código.
+● Cole no <head> ou no <body> da página desejada.
+3. Envio para Dev
+● Gere o snippet e envie por e-mail para o desenvolvedor.
+04’00’’
+Identificando IDs
+󰡷
+No snippet (tanto da tag quanto do evento), você só precisa localizar:
+Pág. 4
+
+--- Página 5 ---
+Tag do Google e ações de conversão
+● AW-XXXXXXXXXX → A ID da sua tag (ao lado de ‘AW’)
+● YYYYYYYYYYY → A ID da sua ação
+Não precisa decorar todo o código. Apenas lembre que:
+● Tag: “AW-” + seu número
+● Evento: “/” + número extra
+06’03’’
+Configurações da
+ação de conversão
+⚙
+Ao criar no Google Ads, você define aspectos como:
+1. Categoria (compra, lead, visualização…);
+2. Nome;
+3. Valor (pode ser R$0 para cadastro);
+4. Contagem;
+● Uma: conta 1 vez por usuário.
+● Todas: conta todas as conversões do mesmo usuário.
+5. Janela de clique e visualização;
+6. Modelo de atribuição.
+Esses detalhes são explicados visualmente na aula prática. Não precisa
+decorar agora!
+Pág. 5
+
+--- Página 6 ---
+Tag do Google e ações de conversão
+12’13’’
+Por que a tag do Google
+é importante?
+A tag do Google funciona como o Pixel da Meta: ela coleta informações
+essenciais sobre o que acontece no seu site.
+Ela tem três grandes funções:
+1. 2. 3.
+Informar o Google Ads Treinar o algoritmo da Criar públicos
+sobre os resultados: conta de anúncios: personalizados:
+A tag monitora tudo o Com base nesses Ela permite montar
+que acontece no seu dados, o Google públicos com base no
+site: quais anúncios começa a entender comportamento do
+estão vendendo, qual quais perfis têm mais usuário: quem acessou
+público está chance de converter e o site, quem clicou em
+funcionando e o que passa a otimizar os determinada página,
+não está gerando seus anúncios quem iniciou um
+resultado. Ela é o seu automaticamente. A checkout, etc. Esses
+informante de tag se torna o cérebro dados são essenciais
+confiança. da sua conta, ajudando para estratégias de
+o algoritmo a trabalhar remarketing e
+melhor. segmentação
+avançada.
+Pág. 6
+
+
+[ Tabela 1 na página 6 ]
+
+1.
+Informar o Google Ads
+sobre os resultados:
+A tag monitora tudo o
+que acontece no seu
+site: quais anúncios
+estão vendendo, qual
+público está
+funcionando e o que
+não está gerando
+resultado. Ela é o seu
+informante de
+confiança. | 2.
+Treinar o algoritmo da
+conta de anúncios:
+Com base nesses
+dados, o Google
+começa a entender
+quais perfis têm mais
+chance de converter e
+passa a otimizar os
+seus anúncios
+automaticamente. A
+tag se torna o cérebro
+da sua conta, ajudando
+o algoritmo a trabalhar
+melhor. | 3.
+Criar públicos
+personalizados:
+Ela permite montar
+públicos com base no
+comportamento do
+usuário: quem acessou
+o site, quem clicou em
+determinada página,
+quem iniciou um
+checkout, etc. Esses
+dados são essenciais
+para estratégias de
+remarketing e
+segmentação
+avançada.
+
+--- Página 7 ---
+Tag do Google e ações de conversão
+Ou seja: sem a tag do Google, você voa no escuro. Ela é a base para
+conversões, otimizações e construção de público.
+🧠💥
+Ferveu o cérebro aí, né?
+Então, respira e segue o passo a passo:
+Revise a aula prática de Google Tag Manager.
+Crie sua tag e suas ações de conversão no Google Ads.
+Instale via Tag Manager (ou manual/dev).
+Associe nos seus grupos de anúncios para otimizar e mensurar
+Importante: o único erro aqui é não executar por medo do código. Você tem
+recursos e muito suporte na CST.
+Bora configurar e começar a colher dados reais!
+🚀
+Tamo junto!
+Pág. 7

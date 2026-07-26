@@ -59,6 +59,7 @@ export const stats        = () => api.get('/stats').then(r => r.data);
 export const statsDaily   = () => api.get('/stats/daily').then(r => r.data);
 export const statsRecent  = () => api.get('/stats/recent-contacts').then(r => r.data);
 export const dashboardAll = () => api.get('/dashboard').then(r => r.data);
+export const prospectingStats = (date) => api.get('/dashboard/prospecting', { params: date ? { date } : {} }).then(r => r.data);
 export const globalSearch = (q) => api.get('/search', { params: { q } }).then(r => r.data);
 export const wpStatus= () => api.get('/whatsapp/status').then(r => r.data);
 export const wpQR    = () => api.get('/whatsapp/qrcode').then(r => r.data);
@@ -81,6 +82,23 @@ export const wpInstances = {
   delete:       (id)            => api.delete(`/whatsapp/instances/${id}`).then(r => r.data),
   addUser:      (id, user_id)   => api.post(`/whatsapp/instances/${id}/users`, { user_id }).then(r => r.data),
   removeUser:   (id, userId)    => api.delete(`/whatsapp/instances/${id}/users/${userId}`).then(r => r.data),
+};
+
+// ─── Meta WhatsApp Templates ──────────────────────────────────────────────────
+export const metaTemplates = {
+  list:     ()              => api.get('/whatsapp/templates').then(r => r.data),
+  listMeta: ()              => api.get('/whatsapp/templates/meta').then(r => r.data),
+  sync:     ()              => api.post('/whatsapp/templates/sync').then(r => r.data),
+  create:   (data)          => api.post('/whatsapp/templates', data).then(r => r.data),
+  update:   (id, data)      => api.put(`/whatsapp/templates/${id}`, data).then(r => r.data),
+  delete:   (id)            => api.delete(`/whatsapp/templates/${id}`).then(r => r.data),
+};
+
+// ─── Equipe / Agent Monitoring ────────────────────────────────────────────────
+export const equipe = {
+  status:   ()       => api.get('/equipe/status').then(r => r.data),
+  logs:     (agentId) => api.get(`/equipe/logs/${agentId}?limit=50`).then(r => r.data),
+  timeline: ()       => api.get('/equipe/timeline').then(r => r.data),
 };
 
 // ─── Custom Fields ────────────────────────────────────────────────────────────

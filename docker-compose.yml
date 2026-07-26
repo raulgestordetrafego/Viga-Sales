@@ -8,9 +8,37 @@ services:
       - POSTGRES_PASSWORD=AgentViga2024!
     volumes:
       - postgres-agente-data:/var/lib/postgresql/data
-      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./01 - DB/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - n8n_traefik
+      - viga_db
+
+  # ── Postgres CRM ──────────────────────────────────────────────────────────
+  postgres-crm:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=vigasales
+      - POSTGRES_USER=vigasales
+      - POSTGRES_PASSWORD=VigaSales2024!
+    volumes:
+      - postgres-crm-data:/var/lib/postgresql/data
+      - ./01 - DB/postgres-crm-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - viga_db
+
+  # ── Postgres Leads ────────────────────────────────────────────────────────
+  postgres-leads:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=vigasales_leads
+      - POSTGRES_USER=vigasales_leads
+      - POSTGRES_PASSWORD=VigaSalesLeads2024!
+    volumes:
+      - postgres-leads-data:/var/lib/postgresql/data
+      - ./01 - DB/postgres-leads-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - viga_db
 
   # ── Container 1: Viga Sales CRM ──────────────────────────────────────────────
   viga-sales:
@@ -22,12 +50,13 @@ services:
       - traefik.enable=true
       - traefik.docker.network=n8n_default
 
-      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`)
+      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`) || Host(`equipe.vigasales.shop`) || Host(`blog.vigasales.com.br`)
       - traefik.http.routers.vigasales.tls=true
       - traefik.http.routers.vigasales.entrypoints=web,websecure
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
       - traefik.http.services.vigasales.loadbalancer.server.port=3000
     environment:
+      - TZ=America/Sao_Paulo
       - NODE_ENV=production
       - PORT=3000
       - EVOLUTION_API_URL=${EVOLUTION_API_URL}
@@ -36,23 +65,47 @@ services:
       - FORWARD_WEBHOOK_URL=${FORWARD_WEBHOOK_URL}
       - APP_URL=${APP_URL}
       - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - SENDER_NAME=${SENDER_NAME:-Raul}
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
       - VIGA_INTERNAL_TOKEN=${VIGA_INTERNAL_TOKEN}
+      - JWT_SECRET=${JWT_SECRET}
+      - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
       - N8N_LEAD_WEBHOOK_URL=${N8N_LEAD_WEBHOOK_URL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - IMAP_HOST=${IMAP_HOST}
+      - IMAP_PORT=${IMAP_PORT}
+      - IMAP_USER=${IMAP_USER}
+      - IMAP_PASSWORD=${IMAP_PASSWORD}
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN}
+      - META_PHONE_NUMBER_ID=${META_PHONE_NUMBER_ID}
+      - META_VERIFY_TOKEN=${META_VERIFY_TOKEN}
+      - BOSS_PHONES=${BOSS_PHONES}
+      - GROUP_COMANDO_ID=${GROUP_COMANDO_ID}
+      - GROUP_OPERACOES_ID=${GROUP_OPERACOES_ID}
+      - GROUP_CONTEUDO_ID=${GROUP_CONTEUDO_ID}
+      - GTM_CONTAINER_ID=${GTM_CONTAINER_ID}
+      - DATABASE_URL=postgresql://vigasales:VigaSales2024!@postgres-crm:5432/vigasales?sslmode=disable
     volumes:
-      - viga-sales-db:/app/db
       - ./public/audio:/app/public/audio:ro
+      - ./public/templates:/app/public/templates
     networks:
       - default
       - n8n_traefik
+      - viga_db
 
 networks:
   n8n_traefik:
     external: true
     name: n8n_default
+  viga_db:
+    internal: true
 
 volumes:
-  viga-sales-db:
   postgres-agente-data:
+  postgres-crm-data:
+  postgres-leads-data:

@@ -1,0 +1,219 @@
+--- Página 1 ---
+AULA 4
+Segmentações
+no Google Ads
+1
+
+--- Página 2 ---
+Segmentações no Google Ads
+Índice
+Introdução …………………………………………………………………………………………….……………………………………….……….………………………….…………………………….…………………………………………. Pág. 2
+Segmentação no Google Ads………….………….………….………….………….………………….………….………………………….…………………………….……………………………………….. Pág. 3
+00’02’’
+Introdução
+Você não precisa sair daqui um “deus das segmentações”. A ideia é te
+apresentar as opções, para quando você for montar suas campanhas, já saber
+por onde começar.
+Esse é o tipo de conteúdo que vai “destravar” a sua cabeça para o que vem
+depois.
+Hoje, a gente tem 4 formas principais de segmentar o público dentro do Google
+Ads.
+Bora conhecer todas elas a seguir!
+Pág. 2
+
+--- Página 3 ---
+Segmentações no Google Ads
+01’45’’
+Segmentações no Google Ads
+Segmentação por público-alvo
+👤
+Quem é a pessoa que vai ver meu anúncio?
+Nesse tipo de segmentação, você define as características do público, como
+interesses, dados demográficos e comportamentos. É uma das mais usadas e
+mais poderosas do Google Ads.
+Aqui dentro, temos quatro subtipos:
+1. Meus dados (remarketing)
+🔁
+Aqui, você mostra anúncios para quem já
+teve algum contato com você. Pode ser quem:
+● Visitou seu site;
+● Usou seu aplicativo;
+● Interagiu com seu canal do YouTube;
+● Está em uma lista de clientes
+(nome + e-mail).
+Esses públicos podem ser criados no próprio
+Google Ads ou puxados do Google Analytics, dependendo da estratégia.
+2. Segmentos personalizados
+🧠
+É uma das segmentações mais legais do Google. Aqui, você ensina para o
+Google como é o seu público ideal, com base em:
+Pág. 3
+
+--- Página 4 ---
+Segmentações no Google Ads
+● Intenção de compra (palavras-chave);
+● Pesquisas de termos no Google;
+● Sites que ele acessa (inclusive da concorrência);
+● Canais ou vídeos do YouTube relacionados ao seu mercado;
+● Aplicativos que a pessoa tem no celular.
+Isso é ouro! Funciona muito bem, porque faz você focar em intenção real.
+3. Públicos prontos: interesses e demografia detalhada
+📋
+Aqui, o Google te dá uma lista de públicos prontos para você escolher.
+Essa lista inclui quatro categorias:
+● No mercado: pessoas com intenção de compra ativa em certos temas.
+● Eventos importantes: casamento, mudança de casa, formatura, entre
+outros.
+● Demografia detalhada: filhos, escolaridade e renda.
+● Afinidade: hábitos, estilo de vida, assuntos que a pessoa gosta.
+Esses públicos são genéricos, mas às vezes funcionam bem como ponto de
+partida.
+4. Demografia clássica
+Este subtipo aqui é básico, mas indispensável em 100% das campanhas, pois
+leva em consideração fatores como:
+● Idade;
+● Gênero;
+● Localização geográfica;
+● Renda familiar estimada.
+Pág. 4
+
+--- Página 5 ---
+Segmentações no Google Ads
+Importante: essa segmentação de renda é mais precisa em alguns países,
+como os EUA. Em países da América Latina e Europa, os dados são menos
+precisos por questões legais.
+Segmentação por conteúdo
+📺
+Onde meu anúncio vai aparecer?
+Aqui, você não escolhe quem vai ver seu anúncio, e sim em qual conteúdo ele
+vai aparecer. Ou seja: você foca no contexto da exibição, e não no perfil da
+pessoa. Temos 3 tipos de segmentação de conteúdo:
+🖥
+Canais, vídeos e sites específicos
+Você pode escolher entre:
+● Canais do YouTube onde quer aparecer;
+● Vídeos específicos dentro do YouTube;
+● Sites parceiros da rede de display.
+É muito útil quando você conhece os espaços ideais para se comunicar com a
+sua audiência.
+🗂
+Temas (antigo “tópicos”)
+O Google disponibiliza uma lista de temas prontos, como:
+● Finanças;
+● Educação;
+● Tecnologia;
+● Moda;
+● Saúde.
+Pág. 5
+
+--- Página 6 ---
+Segmentações no Google Ads
+Assim, você escolhe os assuntos e o Google tenta mostrar seu anúncio dentro
+de conteúdos relacionados.
+Contudo, é importante ressaltar: não é a segmentação mais poderosa.
+Funciona em alguns casos, mas tende a ser menos precisa.
+🔑
+Palavras-chave
+Essa é a estrela da segmentação por conteúdo.
+Por meio deste recurso, você fornece palavras ou frases e o Google mostra seus
+anúncios em conteúdos (sites, vídeos, pesquisas) relacionados a essas
+palavras.
+Além disso, palavras-chave são base para:
+● Campanhas de pesquisa;
+● Segmentos personalizados;
+● Públicos baseados em intenção.
+Pág. 6
+
+--- Página 7 ---
+Segmentações no Google Ads
+Segmentação otimizada
+⚙
+Deixa que o Google escolhe
+Aqui, você basicamente diz pro Google:
+Essa segmentação pode aparecer como uma opção ativada por padrão,
+principalmente quando você cria
+campanhas usando modelos
+prontos.
+Geralmente, não é a melhor escolha,
+porque o Google pode mostrar seus
+anúncios para públicos aleatórios.
+Mas, em alguns casos de teste, pode surpreender. Então, vale testar com
+critério.
+Pág. 7
+
+--- Página 8 ---
+Segmentações no Google Ads
+Indicadores de público-alvo
+🎯
+Você sugere, mas quem escolhe é o Google
+Esse tipo é usado nas campanhas do tipo Performance Max. Você não
+escolhe diretamente para quem vai anunciar — você dá pistas e o Google se
+vira para encontrar essas pessoas. É uma forma indireta, mas com potencial
+de escala, se usada com estratégia.
+📌
+Para fixar
+TIPO DE
+SEGMENTAÇÃO FOCO CONTROLE QUANDO USAR
+1. Público-alvo Pessoa Alto Quando você
+conhece seu
+público
+2. Conteúdo Onde o anúncio Médio Quando você
+aparece sabe os
+canais/sites
+certos para
+anunciar
+3. Segmentação Google escolhe Baixo Em testes ou
+otimizada pra você campanhas
+experimentais
+4. Indicadores Você sugere, o Baixo Em campanhas
+de Google escolhe de Performance
+público-alvo para você Max
+Pág. 8
+
+
+[ Tabela 1 na página 8 ]
+
+TIPO DE
+SEGMENTAÇÃO | FOCO | CONTROLE | QUANDO USAR
+
+1. Público-alvo | Pessoa | Alto | Quando você
+conhece seu
+público
+
+2. Conteúdo | Onde o anúncio
+aparece | Médio | Quando você
+sabe os
+canais/sites
+certos para
+anunciar
+
+3. Segmentação
+otimizada | Google escolhe
+pra você | Baixo | Em testes ou
+campanhas
+experimentais
+
+4. Indicadores
+de
+público-alvo | Você sugere, o
+Google escolhe
+para você | Baixo | Em campanhas
+de Performance
+Max
+
+--- Página 9 ---
+Segmentações no Google Ads
+1. Público-alvo: você escolhe para quem vai anunciar.
+2. Conteúdo: você escolhe o tipo de conteúdo que a pessoa está
+assistindo/pesquisando/acessando.
+3. Segmentação otimizada: o Google escolhe para você. Evite ao
+máximo.
+4. Indicadores de público-alvo: você dá pistas e o Google se vira para
+encontrar essas pessoas.
+Você não precisa dominar tudo de cara. Mas precisa saber o que existe.
+Quanto mais você testar, mais vai entender o que funciona melhor para o seu
+tipo de campanha.
+E lembra: segmentar bem é o que transforma orçamento em resultado.
+🚀
+Tamo junto!
+Pág. 9

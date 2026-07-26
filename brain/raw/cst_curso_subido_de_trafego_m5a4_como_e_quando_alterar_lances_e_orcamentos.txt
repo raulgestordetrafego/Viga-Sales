@@ -1,0 +1,115 @@
+--- Página 1 ---
+AULA 4
+Como e quando alterar
+lances e orçamento?
+1
+
+--- Página 2 ---
+Como e quando alterar lances e orçamento?
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….… Pág. 2
+Alterando lances e orçamento………………………………………………………………………..……………………………………………………………………………………….………….. Pág. 3
+00’02’’
+Introdução
+As alterações mais constantes que você fará nas suas campanhas, até acertar
+o “sweet spot” (ponto certo), são as alterações de lances e de orçamento.
+Tanto a alteração de lances quanto a de orçamento já foram muito
+abordadas neste módulo (até o momento) como catalisadoras da sua
+campanha, certo?
+Afinal, se você tem lances mais altos, você gasta mais dinheiro (aumenta o
+orçamento) e, consequentemente, gera mais resultados — assim como em
+um leilão de quadros, onde você pode gastar mais e arrematar mais quadros,
+ou pode gastar menos, arrematando menos quadros.
+Mas, o que fazer quando, na ferramenta de tráfego pago, você deseja
+modificar o seu custo por resultado?
+Continue a leitura!
+Pág. 2
+
+--- Página 3 ---
+Como e quando alterar lances e orçamento?
+01’43’’
+Alterando lances
+e orçamentos
+Se o seu custo está caro, a primeira opção
+que você tem é diminuir o seu orçamento,
+e, consequentemente, o seu lance.
+Quando a estratégia de lance é automática, na maioria das vezes, na Meta, e
+em alguns casos no Google, o lance está atrelado ao orçamento. Logo, se você
+quer diminuir o seu lance, na estratégia automática, você diminuirá o seu
+orçamento — no Google Ads, o lance e o orçamento não estão atrelados.
+Mas quando, de fato, você deve diminuir o seu lance? Acompanhe, abaixo,
+algumas situações em que isso acontece:
+● Aceleração do pacing de campanha: o quão rápido a sua
+campanha está gastando toda a verba — o que significa que seu
+lance está muito alto e você deve distribuir o orçamento ao
+longo do dia.
+Exemplo: Se você tem uma campanha gastando toda a verba antes
+das 23:59, significa que o lance está alto.
+Quando o lance é automático, a Meta regula a distribuição de
+orçamento muito bem. Já no caso do Google Ads, você precisa
+monitorar constantemente o seu pacing. E caso o seu pacing esteja
+muito devagar, você deve mudar isso, aumentando o seu lance.
+Pág. 3
+
+--- Página 4 ---
+Como e quando alterar lances e orçamento?
+● Custo por resultado acima do esperado: quando você está
+pagando muito caro por resultado — logo, é necessário diminuir
+o lance.
+● Diminuição do gasto em um grupo de anúncio: quando a
+campanha está gastando toda a verba em um único grupo de
+anúncio — assim, é necessário redistribuir o lance.
+Agora, quando você deve aumentar um lance? Acompanhe,
+abaixo, algumas situações:
+● Desaceleração do pacing de campanha: se a campanha não
+está entregando, não está gastando dinheiro do jeito que você
+deseja — hora de aumentar o seu lance, pacing.
+● Custo por resultado abaixo do esperado: quando se está
+pagando muito barato e pode-se gastar mais — aumente o seu
+lance. Custo barato nem sempre é bom, afinal, você quer
+maximizar o volume de resultados dentro do custo esperado.
+● Forçar gastos em um determinado grupo de anúncio: quando
+se quer forçar uma campanha a gastar em um grupo de
+anúncio específico.
+Pela lógica, os lances devem funcionar assim: você mantém o
+que está “Ok”; aumenta o que está bom; e diminui o que está
+ruim.
+Mas de quanto em quanto tempo você deve alterar esses lances? Acompanhe,
+abaixo, alguns direcionamentos:
+Pág. 4
+
+--- Página 5 ---
+Como e quando alterar lances e orçamento?
+● Se você está com resultados abaixo da média e está gastando,
+por exemplo, mais de 200 dólares por dia, você fará otimizações
+de uma a duas vezes por dia — se estiver gastando menos de
+200 dólares por dia, você fará otimizações de duas a três vezes
+por semana.
+● Se você tem resultados dentro do esperado, ou até melhor, e
+estiver gastando mais de 200 dólares por dia, fará alterações
+duas vezes por semana — em caso de verbas menores que 200
+dólares por dia, otimização uma vez por semana.
+Resumindo, quanto menor a sua verba, menos otimizações
+você fará, afinal, você terá menos dados para ler, identificar os
+resultados da campanha e tomar suas decisões.
+Lembrando que este valor que utilizei de exemplo é uma verba diária para
+cada conjunto de anúncio — mas isso não é uma regra oficial da Meta, beleza?
+E que dia da semana você deve realizar as otimizações quando seus
+resultados estiverem abaixo da média? O dia que você conseguir! Que
+horário? O horário que for bom para você!
+Agora, se você tem resultados dentro do esperado, verba maior que 200
+dólares por dia, faça otimização duas vezes por semana. Se você tem verba
+Pág. 5
+
+--- Página 6 ---
+Como e quando alterar lances e orçamento?
+menor que 200 dólares por dia, otimização mais espaçada, uma vez por
+semana.
+Com o passar do tempo, você começará a desenvolver o feeling de tráfego
+pago. Tenha uma ferramenta de organização da sua vida e agende os dias da
+semana para realizar otimizações (alterações) até que sua campanha fique
+dentro do resultado esperado — isso, com certeza, vai te ajudar.
+Mais uma vez, respire fundo — eu sei que é bastante coisa, mas esse daqui é o
+típico conteúdo que você só sentirá segurança na prática.
+Fechou? Tamo junto!
+Pág. 6

@@ -1,0 +1,179 @@
+--- Página 1 ---
+AULA 08
+Exclusão e
+hierarquia de
+públicos
+
+--- Página 2 ---
+Exclusão e hierarquia de públicos
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….… Pág. 2
+Campanha de exemplo…………………………………………………………………………………………………….……………………………………………………………………………………………….…… Pág. 3
+Entendendo as interseções…………………………………………………………………………………………………….………………………………………………………………………………………….. Pág. 4
+Como evitamos as interseções?…………………………………………………………………………………………………….…………………………………………………………………………. Pág. 4
+O Método Subido de Hierarquia…………………………………………………………………………………………………….……………………………………………………………………………. Pág. 5
+Quando não fazer exclusões?…………………………………………………………………………………………………….………………………………………………………………………………… Pág. 6
+E quando fazer exclusões?…………………………………………………………………………………………………….…………………………………………………………………………………………… Pág. 7
+Exemplo de estrutura hierárquica…………………………………………………………………………………………………….……………………………………………………………………. Pág. 8
+00’02’’
+Introdução
+É quando a gente começa a se perder que as coisas começam a fazer sentido.
+E é exatamente isso que vai aprofundar, cada vez mais, o seu conhecimento
+técnico sobre tráfego pago.
+Hoje a gente vai falar sobre dois conceitos fundamentais: exclusão e
+hierarquia de públicos. Em outras palavras: como organizar diferentes públicos
+dentro de um conjunto de anúncios e, mais importante, como evitar que você
+anuncie duas vezes para a mesma pessoa sem querer.
+Pág. 2
+
+--- Página 3 ---
+Exclusão e hierarquia de públicos
+00’40’’
+Campanha de exemplo
+Pra isso ficar claro, vamos imaginar uma campanha de exemplo. A estrutura
+dela aparece pra você no vídeo. É uma campanha de engajamento, um teste
+onde vamos anunciar apenas para públicos quentes, promovendo uma
+publicação específica.
+Os públicos envolvidos nesta campanha são:
+● Envolvimento com Instagram e Facebook;
+● Pessoas que visualizaram vídeos;
+● Lista completa de clientes;
+● Público semelhante (lookalike) 1% de quem se envolveu com o
+Instagram nos últimos 30 dias;
+● Segmentação aberta.
+Agora, presta atenção em algo importante: a numeração na frente do nome
+dos conjuntos de anúncio. Isso é o que chamamos de fator de exclusão. Por
+exemplo:
+● O público de envolvimento Instagram + Facebook tem o número 00;
+● O público de visualização de vídeo tem o número 01;
+● A lista completa de leads também é 01 (e não, não está errado);
+● O lookalike vem com o 02;
+● A segmentação aberta também é 02.
+Você pode estar confuso agora, pensando: “mas por que dois públicos
+diferentes têm a mesma numeração?” Calma, que eu vou te explicar.
+Pág. 3
+
+--- Página 4 ---
+Exclusão e hierarquia de públicos
+02’12’’
+Entendendo as interseções
+Vamos imaginar o seguinte cenário: você tem um público de lista completa e
+um público de envolvimento 30 dias no Instagram/Facebook.
+Algumas pessoas estão nos dois públicos ao mesmo tempo. Se você anunciar
+para os dois separadamente, vai acabar anunciando duas vezes para essas
+mesmas pessoas – ou seja, vai ter interseção.
+Isso significa que a frequência de exibição para essas pessoas vai aumentar,
+e você perde o controle sobre isso. Aumentar frequência é ruim? Não
+necessariamente. Só se for de forma descontrolada - ou sem saber que está
+acontecendo.
+A ideia aqui é que, em algumas situações, vamos evitar interseções. Em outras,
+vamos aceitá-las. Existem casos para os dois.
+04’10’’
+Como evitamos
+as interseções?
+A resposta é simples: fazendo um sistema de exclusões, o famoso sistema de
+hierarquia de públicos (ou exclusões progressivas).
+Esse sistema tenta (sim, tenta – não garante 100%) evitar que o mesmo usuário
+veja o mesmo anúncio mais de uma vez em conjuntos diferentes.
+Pág. 4
+
+--- Página 5 ---
+Exclusão e hierarquia de públicos
+04’50’’
+O Método Subido
+de Hierarquia
+E como funciona esse tal “método subido de hierarquia”? Simples:
+1. Você cria o conjunto de anúncio A → público A (sem exclusões).
+2. Cria o conjunto de anúncio B → público B, excluindo o público A;
+3. Cria o conjunto de anúncio C → público C, excluindo os públicos B e A;
+4. Cria o conjunto D → público D, excluindo C, B e A.
+E por aí vai. O que isso faz? Garante que cada conjunto anuncie para um
+público exclusivo, sem sobreposição com os anteriores. E aí entra a
+numeração:
+● Público 00: Sem exclusão;
+● Público 01: Exclui os públicos 00;
+● Público 02: Exclui os públicos 00 e 01.
+E assim por diante.
+Você pode ter mais de um público no mesmo
+nível de hierarquia, tipo dois públicos “01”, se
+fizer sentido. Mas entenda: se ambos são “01”,
+não há exclusão entre eles.
+Pág. 5
+
+--- Página 6 ---
+Exclusão e hierarquia de públicos
+09’00’’
+Quando não fazer
+exclusões?
+Existem quatro situações em que não vale a pena fazer exclusões:
+Públicos extremamente parecidos
+Por exemplo, lista de leads e quem viu um vídeo. Se são
+semelhantes em qualidade, você pode mantê-los no mesmo
+nível, tipo dois conjuntos “01”;
+Públicos muito pequenos
+Se você já tem um público pequeno e ainda faz exclusão,
+pode acabar matando a segmentação. Ela encolhe demais
+e perde força;
+Públicos frios entre si
+Essa é regra de ouro. Entre públicos frios, não se faz
+exclusão. Eles funcionam melhor assim. Pode confiar, isso é
+baseado em muitos testes;
+Testes intencionais
+Às vezes, você quer ver como os públicos performam com
+interseção. Vale testar sem exclusões (principalmente com
+pouca verba).
+Pág. 6
+
+--- Página 7 ---
+Exclusão e hierarquia de públicos
+12’16’’
+E quando fazer
+exclusões?
+Agora o contrário. Quando você deve fazer exclusões entre os conjuntos?
+Públicos com perfis muito diferentes
+Exemplo clássico: quem iniciou checkout (quase comprou)
+versus quem só se envolveu no Instagram. São níveis bem
+diferentes de intenção. É uma boa prática excluir públicos
+quentes das campanhas que miram os frios.
+Quando você quer ter controle total sobre a
+entrega
+Às vezes, seu objetivo é garantir que um público veja um
+anúncio exclusivo, sem cruzar com outros.
+Pág. 7
+
+--- Página 8 ---
+Exclusão e hierarquia de públicos
+13’53’’
+Exemplo de estrutura
+hierárquica
+Imagine uma campanha de leads para uma aula ao vivo. Veja como poderia
+ficar a hierarquia:
+● 00 – Posicionamento automático / Público quente (quem caiu na
+captura e viu o anúncio);
+● 00 – Outro público quente (inscritos nos últimos 180 dias);
+● 01 – Envolvimento com Instagram/Facebook nos últimos 7 dias;
+● 02 – Lista completa de leads;
+● 02 – Envolvimento nos últimos 30 dias (muito parecido com o anterior);
+● 03 – Envolvimento nos últimos 60 dias.
+Agora, vamos imaginar uma nova campanha, com públicos frios, anunciando
+a mesma aula:
+● Começa no 04, porque a última terminou em 03;
+● No público 04, você exclui todos os públicos anteriores (de 00 a 03);
+● Pode usar aqui: lookalike de quem se cadastrou na aula, lookalike de
+quem se envolveu no Insta, etc.
+Pra finalizar!
+Se ficou confuso, tá tudo certo. Isso aqui leva tempo pra assimilar. Você já viu
+esses números antes quando criou campanhas, mas agora está entendendo a
+lógica por trás.
+Pág. 8
+
+--- Página 9 ---
+Exclusão e hierarquia de públicos
+● Entre públicos quentes e frios, a gente faz exclusão;
+● Entre públicos frios entre si, normalmente não faz;
+● Exclusão ajuda no controle, mas nem sempre é necessária;
+● Entender isso muda completamente o seu jogo com tráfego pago.
+Se bateu dúvida? Pede ajuda. Comenta na comunidade, fala com a Ayla. A
+conversa com o conteúdo é parte fundamental do aprendizado.
+Tamo junto!
+Pág. 9

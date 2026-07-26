@@ -1,0 +1,17 @@
+--- Página 1 ---
+Modelo de roteiro
+para criativo
+[insira aqui o nome do cliente]
+
+--- Página 2 ---
+Roteiro para criativo
+Título:
+Faça o seu roteiro
+Texto:
+[Insira aqui o número do anúncio]
+Observações importantes:
+[Insira aqui o contexto da gravação do anúncio]
+Referência:
+[Insira aqui o link da referência]
+Narração:
+[Insira aqui o texto que deve ser gravado pelo cliente, o roteiro do anúncio]

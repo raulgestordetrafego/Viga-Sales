@@ -1,0 +1,53 @@
+--- Página 1 ---
+AULA 6
+Guia de formatos
+para a rede de display
+(Google Ads)
+
+--- Página 2 ---
+Guia de formatos para a rede de display (Google Ads)
+Banners
+● O formato gráfico do Google display não pode ultrapassar 150kb.
+Responsivos Gráficos essenciais Gráficos adicionais
+Google Display Google Display Google Display
+● 1200x628 ● 250x250 ● 300x200
+● 1080x1080 ● 300x50 ● 300x100
+● 728x90 ● 200x200
+● 336x280 ● 300x250
+● 300x600 ● 970x90
+● 160x600 ● 468x60
+Exemplo de banners
+Google Display Responsivo
+108
+Pág. 2
+
+
+[ Tabela 1 na página 2 ]
+
+Responsivos
+Google Display | Gráficos essenciais
+Google Display | Gráficos adicionais
+Google Display
+
+● 1200x628
+● 1080x1080 | ● 250x250
+● 300x50
+● 728x90
+● 336x280
+● 300x600
+● 160x600 | ● 300x200
+● 300x100
+● 200x200
+● 300x250
+● 970x90
+● 468x60
+
+--- Página 3 ---
+Guia de formatos para a rede de display (Google Ads)
+Google Display Essenciais
+Pág. 3
+
+--- Página 4 ---
+Guia de formatos para a rede de display (Google Ads)
+Google Display Adicionais
+Pág. 4

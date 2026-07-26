@@ -1,0 +1,151 @@
+--- Página 1 ---
+AULA 6
+Criação de
+campanhas na
+rede de pesquisa
+
+--- Página 2 ---
+Criação de campanhas na rede de pesquisa
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 2
+A lógica do bolo de cenoura fofinho…………………….……………………………………………………………………………………………….……………………………………… Pág. 3
+Estrutura da campanha………………………………………………………………………………….………………………………………………………………………………………………………………… Pág. 4
+Boas práticas para criar anúncios campeões………………………………………………………………………………….…………………………….…………… Pág. 5
+00’02’’
+Introdução
+Antes de sair apertando qualquer botão, você precisa entender a lógica por
+trás das campanhas na Rede de Pesquisa. Essa aula é para isso: te dar
+clareza. A parte técnica, de onde clicar, fica pra aula prática. Aqui, você vai
+entender como fazer uma campanha que realmente funcione.
+"Aquilo que eu pesquiso é igual ao que
+aparece pra mim, que é igual ao site
+que eu clico."
+Essa é a base do Google Ads.
+E tudo começa com a... lógica do bolo de cenoura fofinho.
+Sim, é isso mesmo que você acabou de ler!
+Não entendeu ainda? Calma, que eu vou te explicar a seguir.
+Pág. 2
+
+--- Página 3 ---
+Criação de campanhas na rede de pesquisa
+01:35’’
+A lógica do
+bolo de cenoura fofinho
+Imagine que você pesquisa "bolo de cenoura fofinho" no Google. O que
+você espera ver? Eu, Pedro, espero:
+● um resultado com esse nome no título;
+● e, ao clicar, ir para um site com a receita de bolo de cenoura fofinho.
+Essa coerência entre termo de pesquisa, anúncio e página de destino é o
+que faz uma campanha ser relevante e performar bem.
+Palavra-chave = termo que a pessoa digita.
+Anúncio = o que aparece para ela.
+Landing page = o site que ela acessa.
+Esses 3 pontos devem sempre estar alinhados.
+“Eu afeto o termo de pesquisa alterando a palavra-chave. Eu
+altero o resultado da pesquisa alterando o meu anúncio. E eu
+altero o destino alterando a landing page.”
+Pág. 3
+
+--- Página 4 ---
+Criação de campanhas na rede de pesquisa
+04’14’’
+Estrutura da campanha
+1. Campanha
+Aqui você define:
+● Objetivo;
+● Orçamento;
+● Tipo de campanha (rede de pesquisa, por exemplo).
+2. Grupos de anúncio
+Funciona como um grupo de palavras-chave com um tema em comum.
+Exemplos:
+● Grupo 1: tráfego pago;
+● Grupo 2: anunciar no Instagram.
+Cada grupo vai conter:
+● Palavras-chave relacionadas;
+● Anúncios alinhados a esse grupo.
+3. Anúncios
+Cada grupo vai conter anúncios que reforcem o tema daquelas
+palavras-chave.
+Exemplos:
+● Grupo "tráfego pago" → anúncios sobre tráfego pago.
+● Grupo "Instagram Ads" → anúncios sobre anunciar no Instagram.
+Isso garante que o usuário veja exatamente o que pesquisou, e
+clique porque viu coerência.
+Pág. 4
+
+--- Página 5 ---
+Criação de campanhas na rede de pesquisa
+07’55’’
+Boas práticas para criar
+anúncios campeões
+1. Respeite a lógica do bolo de cenoura fofinho
+Na lógica de vendas online, quando uma pessoa digita algo no campo de
+pesquisa do Google, ela está fazendo um pedido.
+Pensando nisso, mantenha o alinhamento entre:
+● Palavra-chave;
+● Título do anúncio;
+● Conteúdo da landing page.
+2. Use o máximo de recursos que o Google disponibiliza
+Inclua o que for possível, considerando:
+● 15 títulos;
+● 4 descrições;
+● Extensões (imagem, local, chamada, etc.).
+3. Analise todos os anúncios da concorrência
+Antes de escrever seus títulos, pesquise seus termos no Google. Veja:
+● O que os concorrentes estão falando?
+● Como posso fazer melhor?
+Pág. 5
+
+--- Página 6 ---
+Criação de campanhas na rede de pesquisa
+4. Use CTAs (call to actions) em alguns títulos
+Inclua comandos como:
+● “Clique agora”;
+● “Faça seu orçamento”;
+● “Inscreva-se”.
+5. Destaque benefícios em alguns títulos
+Fale menos do produto e mais do ganho do cliente. O que ele conquista
+com aquilo?
+6. Inclua o nome da sua marca nos anúncios
+Ajuda na confiança e no reconhecimento. Não subestime o poder do
+branding.
+7. Inclua bônus (se fizer sentido)
+Tem algo extra? E-book? Mentoria? Coloca no título. Todo mundo gosta de
+bônus.
+8. Especifique o tempo da ação no seu site
+Quanto tempo demora para a pessoa concluir a ação que você deseja?
+"Cadastro em menos de 2 minutos" é exemplo de algo que pode fazer a
+diferença no clique.
+9. Repita suas palavras-chave nas descrições
+Isso garante a relevância e fortalece a coerência do anúncio.
+10. Faça perguntas na copy
+Exemplo: "Procurando um curso de tráfego pago?" Isso gera conexão
+imediata com o leitor.
+Pág. 6
+
+--- Página 7 ---
+Criação de campanhas na rede de pesquisa
+11. Use parâmetros dinâmicos (títulos que mudam automaticamente)
+1. Keyword (inserção de palavra-chave)
+Substitui o título pelo que o usuário pesquisou. Por isso, insira a
+palavra-chave que aciona seu anúncio.
+Exemplo: {keyword:Pedro Sobral}
+Se a pesquisa for muito longa ou inválida, aparecerá: "Pedro Sobral".
+2. Countdown (contagem regressiva)
+Mostra o tempo restante para um evento, gerando urgência.
+3. Localização (location)
+Substitui parte do título pela cidade do usuário. Portanto, insira o local que
+aciona seu anúncio.
+Exemplo:
+"Contrate gestor de tráfego em Curitiba" ou "em São Paulo"
+Use sempre que fizer sentido.
+Essa estrutura deixa tudo organizado e segmentado, garantindo que o
+Google mostre o anúncio certo para a busca certa.
+Campanha boa na rede de pesquisa não é sobre botão. É sobre
+coerência, estrutura e pesquisa.
+Com essas boas práticas e a lógica do nosso amado bolo de cenoura
+fofinho, você vai aparecer no topo, atrair as pessoas certas e gerar muito
+mais resultado.
+🚀
+Tamo junto!
+Pág. 7

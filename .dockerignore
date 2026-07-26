@@ -1,0 +1,47 @@
+# Variáveis de ambiente — NUNCA entram na imagem Docker
+.env
+.env.local
+.env.production
+
+# Git
+.git/
+.gitignore
+
+# Dependências
+node_modules/
+
+# Build do frontend
+dist/
+
+# Banco de dados local
+/db/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# PM2
+.pm2/
+
+# Documentação e assets não necessários em runtime
+graphify-out/
+manual de identidade viusal viga sales/
+Producao de Conteudos/
+Produção de Conteúdos/
+deploy/
+render.yaml
+ecosystem.config.cjs
+
+# Scripts de migração (só rodam manualmente)
+migrate-to-pg.cjs

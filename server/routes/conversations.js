@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
+import * as metaApi from '../services/metaWhatsapp.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,7 +66,7 @@ router.get('/', async (req, res) => {
       sql += ' AND c.assigned_to = ?';
       params.push(assigned_to);
     }
-    sql += ' ORDER BY c.last_message_at DESC';
+    sql += ' ORDER BY c.last_message_at DESC NULLS LAST';
 
     const convs = await query(sql, params);
     res.json(convs);
@@ -97,7 +98,7 @@ router.get('/:id/messages', async (req, res) => {
   }
 });
 
-// POST /conversations/:id/messages - enviar mensagem
+// POST /conversations/:id/messages - enviar mensagem (Meta oficial ou Evolution)
 router.post('/:id/messages', async (req, res) => {
   try {
     const { content, type = 'text', media_url } = req.body;
@@ -107,40 +108,83 @@ router.post('/:id/messages', async (req, res) => {
     `, [req.params.id]);
     if (!conv) return res.status(404).json({ error: 'Conversa não encontrada' });
 
-    // Enviar via Evolution API
+    const useMeta = metaApi.isConfigured();
+
     let result;
     let savedMediaUrl = media_url || null;
+    let wamid = null;
 
     if (type === 'text') {
-      result = await evolutionApi.sendTextMessage(conv.phone, content);
+      if (useMeta) {
+        result = await metaApi.sendText(conv.phone, content);
+        wamid = result?.messages?.[0]?.id || null;
+      } else {
+        result = await evolutionApi.sendTextMessage(conv.phone, content);
+        wamid = result?.key?.id || null;
+      }
     } else if (type === 'image') {
-      // Imagem: passa base64 direto para Evolution API (sendMedia aceita base64 puro)
-      const imgData = req.body.base64 || media_url;
-      result = await evolutionApi.sendImageMessage(conv.phone, imgData, content);
-      // Também salva em disco para exibir no histórico
-      if (req.body.base64) {
-        try { savedMediaUrl = saveBase64File(req.body.base64, type); } catch(_) {}
+      if (useMeta) {
+        let imageUrl = media_url;
+        if (req.body.base64) {
+          try { imageUrl = saveBase64File(req.body.base64, type); savedMediaUrl = imageUrl; } catch(_) {}
+        }
+        result = await metaApi.sendImage(conv.phone, imageUrl, content);
+        wamid = result?.messages?.[0]?.id || null;
+      } else {
+        const imgData = req.body.base64 || media_url;
+        result = await evolutionApi.sendImageMessage(conv.phone, imgData, content);
+        wamid = result?.key?.id || null;
+        if (req.body.base64) {
+          try { savedMediaUrl = saveBase64File(req.body.base64, type); } catch(_) {}
+        }
       }
     } else if (type === 'audio') {
-      // Áudio: salva em disco e passa URL (sendWhatsAppAudio funciona com URL)
-      if (req.body.base64) {
-        try {
-          const audioUrl = saveBase64File(req.body.base64, type);
-          savedMediaUrl = audioUrl;
-          console.log(`[Media] Áudio salvo: ${audioUrl}`);
-          result = await evolutionApi.sendAudioMessage(conv.phone, audioUrl);
-        } catch(e) {
-          return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
+      if (useMeta) {
+        let audioUrl = media_url;
+        if (req.body.base64) {
+          try {
+            audioUrl = saveBase64File(req.body.base64, type);
+            savedMediaUrl = audioUrl;
+            result = await metaApi.sendAudio(conv.phone, audioUrl);
+            wamid = result?.messages?.[0]?.id || null;
+          } catch(e) {
+            return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
+          }
+        } else {
+          result = await metaApi.sendAudio(conv.phone, audioUrl);
+          wamid = result?.messages?.[0]?.id || null;
         }
       } else {
-        result = await evolutionApi.sendAudioMessage(conv.phone, media_url);
+        if (req.body.base64) {
+          try {
+            const audioUrl = saveBase64File(req.body.base64, type);
+            savedMediaUrl = audioUrl;
+            result = await evolutionApi.sendAudioMessage(conv.phone, audioUrl);
+            wamid = result?.key?.id || null;
+          } catch(e) {
+            return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
+          }
+        } else {
+          result = await evolutionApi.sendAudioMessage(conv.phone, media_url);
+          wamid = result?.key?.id || null;
+        }
       }
     } else if (type === 'document') {
-      let docUrl = media_url;
-      if (req.body.base64) {
-        try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
+      if (useMeta) {
+        let docUrl = media_url;
+        if (req.body.base64) {
+          try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
+        }
+        result = await metaApi.sendImage(conv.phone, docUrl, content);
+        wamid = result?.messages?.[0]?.id || null;
+      } else {
+        let docUrl = media_url;
+        if (req.body.base64) {
+          try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
+        }
+        result = await evolutionApi.sendDocumentMessage(conv.phone, docUrl, content);
+        wamid = result?.key?.id || null;
       }
-      result = await evolutionApi.sendDocumentMessage(conv.phone, docUrl, content);
     }
 
     // Salvar mensagem no banco
@@ -150,7 +194,7 @@ router.post('/:id/messages', async (req, res) => {
     await run(`
       INSERT INTO messages (id, conversation_id, whatsapp_message_id, direction, type, content, media_url, status, timestamp)
       VALUES (?, ?, ?, 'outbound', ?, ?, ?, 'sent', ?)
-    `, [msgId, req.params.id, result?.key?.id || null, type, content || null, savedMediaUrl, now]);
+    `, [msgId, req.params.id, wamid, type, content || null, savedMediaUrl, now]);
 
     await run(`
       UPDATE conversations SET last_message = ?, last_message_at = ?, updated_at = ? WHERE id = ?
@@ -160,25 +204,31 @@ router.post('/:id/messages', async (req, res) => {
     res.json(message);
   } catch (err) {
     console.error('POST /conversations/:id/messages error:', err.message);
-    if (err.response && err.response.data) {
-      const raw = err.response.data;
-      console.error('Evolution API Error:', JSON.stringify(raw));
+    res.status(500).json({ error: err.message });
+  }
+});
 
-      let errorMessage = 'Erro na Evolution API';
-      if (typeof raw.message === 'string') errorMessage = raw.message;
-      else if (typeof raw.error === 'string') errorMessage = raw.error;
-      else if (typeof raw.details === 'string') errorMessage = raw.details;
-      else errorMessage = JSON.stringify(raw).slice(0, 200);
+// POST /conversations/:id/messages/save — salva mensagem já enviada (sem reenviar)
+router.post('/:id/messages/save', async (req, res) => {
+  try {
+    const { content, type = 'text', media_url } = req.body;
+    const msgId = uuidv4();
+    const now = new Date().toISOString();
 
-      if (Array.isArray(raw.message)) {
-        const notExists = raw.message.find(m => m.exists === false);
-        if (notExists) errorMessage = `O número ${notExists.number.split('@')[0]} não possui WhatsApp.`;
-      }
+    await run(
+      "INSERT INTO messages (id, conversation_id, direction, type, content, media_url, status, timestamp) VALUES (?, ?, 'outbound', ?, ?, ?, 'sent', ?)",
+      [msgId, req.params.id, type, content || null, media_url || null, now]
+    );
+    await run(
+      "UPDATE conversations SET last_message = ?, last_message_at = ?, updated_at = ? WHERE id = ?",
+      [content || '[mídia]', now, now, req.params.id]
+    );
 
-      res.status(err.response.status).json({ error: errorMessage });
-    } else {
-      res.status(500).json({ error: err.message });
-    }
+    const message = await queryOne('SELECT * FROM messages WHERE id = ?', [msgId]);
+    res.json(message);
+  } catch (err) {
+    console.error('POST /conversations/:id/messages/save error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 

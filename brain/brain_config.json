@@ -1,0 +1,12 @@
+{
+  "name": "cerebro-trafego",
+  "version": "2.0",
+  "description": "Ferramenta de busca inteligente no cérebro de tráfego pago",
+  "usage": "node scripts/query-brain.mjs '<pergunta>' ou python3 scripts/query_brain.py '<pergunta>'",
+  "how_it_works": "1. Recebe a pergunta 2. Busca no índice de keywords 3. Retorna os tópicos + arquivos mais relevantes 4. A IA só precisa ler esses arquivos específicos",
+  "files": {
+    "index": "brain/search_index.json",
+    "topics_dir": "brain/topics/",
+    "raw_dir": "brain/raw/"
+  }
+}

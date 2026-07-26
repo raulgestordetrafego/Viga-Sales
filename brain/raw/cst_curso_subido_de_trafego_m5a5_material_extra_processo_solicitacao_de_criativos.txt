@@ -1,0 +1,108 @@
+--- Página 1 ---
+Modelo de
+solicitação de
+criativos
+[insira aqui o
+nome do cliente]
+
+--- Página 2 ---
+Solicitação de criativos
+Título em destaque:
+Dados preliminares
+CLIENTE: [insira aqui o nome do cliente]
+SEGMENTO: [insira aqui o segmento dos anúncios]
+MATERIAL: [estático ou vídeo]
+QUANTIDADE: [quantos anúncios você precisa receber?]
+FORMATO: [escolha algumas dessas opções stories (1920x1080), Feed (1350x1080),
+Carrossel Feed (1080x1080) e Carrossel Story (1920x1080)]
+CAMPANHA: [qual é esta campanha dentro da estratégia traçada?]
+
+--- Página 3 ---
+Solicitação de criativos
+CRIATIVO 01
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]
+
+--- Página 4 ---
+Solicitação de criativos
+CRIATIVO 02
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]
+
+--- Página 5 ---
+Solicitação de criativos
+CRIATIVO 03
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]
+
+--- Página 6 ---
+Solicitação de criativos
+CRIATIVO 04
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]
+
+--- Página 7 ---
+Solicitação de criativos
+CRIATIVO 05
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]
+
+--- Página 8 ---
+Solicitação de criativos
+CRIATIVO 06
+PÚBLICO:
+[insira aqui os dados sobre o público-alvo dos anúncios]
+RESTRIÇÃO:
+[insira aqui as restrições de público que serão configuradas posteriormente]
+MATERIAL PARA CRIAÇÃO:
+[Insira aqui mais informações para que o cliente entenda o que deve ser criado]
+REFERÊNCIA:
+[insira aqui o link com o material referência para o cliente entender melhor o
+conceito do anúncio]
+COPY (opcional):
+[insira aqui o link para o roteiro para criativos]

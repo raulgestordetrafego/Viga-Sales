@@ -103,26 +103,59 @@ export async function configureWebhook(webhookUrl) {
 
 // ─── Enviar Mensagens ────────────────────────────────────────────────────────
 
+export async function updatePresence(phone, presence) {
+  const instance = getInstance();
+  const formattedPhone = formatPhone(phone);
+  try {
+    const res = await getApi().post(`/chat/updatePresence/${instance}`, {
+      number: formattedPhone,
+      presence, // 'composing', 'recording', 'paused'
+    });
+    return res.data;
+  } catch (err) {
+    console.warn(`[Evolution] Failed to update presence to ${presence} for ${phone}:`, err.message);
+    return null;
+  }
+}
+
 export async function sendTextMessage(phone, text) {
   const instance = getInstance();
   const formattedPhone = formatPhone(phone);
   console.log(`[Evolution] Sending text to ${phone} (formatted: ${formattedPhone})`);
+  
+  // Simular comportamento de digitação humano antes de enviar
+  await updatePresence(phone, 'composing');
+  // Espera proporcional ao tamanho da mensagem (mínimo 2 segundos, máximo 5 segundos)
+  const typingTime = Math.min(Math.max(text.length * 15, 2000), 5000);
+  await new Promise(resolve => setTimeout(resolve, typingTime));
+
   const res = await getApi().post(`/message/sendText/${instance}`, {
     number: formattedPhone,
     text,
     delay: 1200,
   });
+
+  // Pausar digitação
+  await updatePresence(phone, 'paused').catch(() => {});
   return res.data;
 }
 
 export async function sendTextMessageFromInstance(instanceName, phone, text) {
   const formattedPhone = formatPhone(phone);
   console.log(`[Evolution] Sending text via instance "${instanceName}" to ${phone} (formatted: ${formattedPhone})`);
+  
+  // Simular comportamento de digitação humano
+  await updatePresence(phone, 'composing');
+  const typingTime = Math.min(Math.max(text.length * 15, 2000), 5000);
+  await new Promise(resolve => setTimeout(resolve, typingTime));
+
   const res = await getApi().post(`/message/sendText/${instanceName}`, {
     number: formattedPhone,
     text,
     delay: 1200,
   });
+
+  await updatePresence(phone, 'paused').catch(() => {});
   return res.data;
 }
 
@@ -143,6 +176,10 @@ export async function sendImageMessage(phone, imageData, caption = '', mimetype 
   const ext = mt.split('/')[1] || 'jpg';
   console.log(`[Evolution] sendImageMessage: mediatype=image, mimetype=${mt}, mediaLen=${media.length}`);
 
+  // Simular comportamento de digitação humano para imagem com legenda
+  await updatePresence(phone, 'composing');
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
   const res = await getApi().post(`/message/sendMedia/${instance}`, {
     number: formatPhone(phone),
     mediatype: 'image',
@@ -151,6 +188,8 @@ export async function sendImageMessage(phone, imageData, caption = '', mimetype 
     caption: caption || '',
     fileName: `image.${ext}`,
   });
+
+  await updatePresence(phone, 'paused').catch(() => {});
   return res.data;
 }
 
@@ -167,12 +206,22 @@ export async function sendDocumentMessage(phone, documentUrl, fileName) {
 
 export async function sendAudioMessage(phone, audioUrl) {
   const instance = getInstance();
+  const formattedPhone = formatPhone(phone);
+  
+  // Simular comportamento de "gravando áudio..." antes do disparo
+  await updatePresence(phone, 'recording');
+  // Simula o tempo que levaria gravando o áudio (ex: 5 segundos)
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
   // sendWhatsAppAudio envia como mensagem de voz (PTT), encoding:true converte para opus/ogg
   const res = await getApi().post(`/message/sendWhatsAppAudio/${instance}`, {
-    number: formatPhone(phone),
+    number: formattedPhone,
     audio: audioUrl,
     encoding: true,
   });
+
+  // Pausar gravação
+  await updatePresence(phone, 'paused').catch(() => {});
   return res.data;
 }
 
@@ -396,4 +445,5 @@ export default {
   getBase64FromMediaMessage,
   parseIncomingWebhook,
   formatPhone,
+  updatePresence,
 };

@@ -1,0 +1,115 @@
+--- Página 1 ---
+AULA 10
+Criação de
+campanhas
+de PMax
+1
+
+--- Página 2 ---
+Criação de campanhas de PMax
+Índice
+Introdução ……………………………………………………………………………...………………….……………………………………….……….………………………….…………………………….……………………………………… Pág. 2
+Estrutura da PMax…………..….…………………………….…...………….…...………….…...………….…...………………………………………………………………………………………………………………………….. Pág. 3
+Cuidados com a PMax …………..….…………………………….…...………….…...………….……………………….....………….…...…………………………………………………………………………………… Pág. 5
+PMax para loja física …………..….…………………………….…...………….…...………….……………………….....………….…...…………………………………………………………………………………………. Pág. 5
+Melhores práticas da campanha PMax…………..….……………….….…...……….....………….…...……………………………………………………………………………………. Pág. 6
+00’02’’
+Introdução
+A Performance Max é, ao mesmo
+tempo, a queridinha dos
+anunciantes iniciantes e a pedra no
+sapato dos mais experientes. Isso
+porque ela promete (e muitas vezes entrega) alta escala e facilidade, mas
+também é uma campanha que exige alguns cuidados importantes.
+A proposta da PMAX é simples: uma campanha que aparece em todas as
+redes do Google. Isso inclui:
+● YouTube;
+● Rede de Display;
+● Rede de Pesquisa;
+● Discover;
+● Gmail;
+● Google Maps.
+E se o Google lançar uma nova rede? A PMax vai estar lá também. É uma
+campanha "one fits all", pensada para colocar seu anúncio em todo lugar.
+Bora conhecer a estrutura dessa campanha a seguir!
+Pág. 2
+
+--- Página 3 ---
+Criação de campanhas de PMax
+00’48’’
+Estrutura da PMax
+A estrutura da campanha de Performance Max é um pouco diferente das
+campanhas tradicionais do Google Ads. Em vez da clássica organização
+"Campanha > Grupo de Anúncio > Anúncio", a PMAX apresenta novos nomes e
+conceitos:
+1. Campanhas
+Nada muda aqui: é o nível mais alto da estrutura. É onde você define objetivo,
+orçamento, localização e estratégia de lance.
+2. Indicadores de público-alvo (substitui o grupo de anúncio)
+Ao contrário das outras campanhas, onde você define o público com mais
+controle, aqui, você apenas sugere um tipo de público. O nome "indicador" não
+é à toa: você está sinalizando para o Google quem seria o perfil ideal de pessoa
+para ver seu anúncio.
+É uma segmentação mais flexível e menos precisa, porque o Google pode (e
+vai) explorar outros perfis se achar que pode trazer resultado.
+3. Grupo de recursos (substitui o anúncio)
+Em vez de criar um anúncio pronto e fechado, você entrega recursos
+separados (textos, imagens, vídeos, links, etc.) e o Google monta os anúncios
+de forma automática, com base em onde ele vai ser exibido.
+O grupo de recursos é basicamente um pacote de criativos. O Google usa
+essas peças para montar combinações de anúncios adaptadas para cada
+rede (Pesquisa, YouTube, Display, Gmail, etc.).
+Pág. 3
+
+--- Página 4 ---
+Criação de campanhas de PMax
+Essa estrutura torna a campanha mais flexível, mas também exige que você
+alimente o algoritmo com os melhores recursos possíveis.
+Pág. 4
+
+--- Página 5 ---
+Criação de campanhas de PMax
+05’02’’
+Cuidados com a PMax
+⚠
+A PMAX tende a gerar muita escala, mas você precisa ficar atento à
+qualidade do resultado. Exemplo clássico: uma campanha de leads que
+entrega um custo por lead muito baixo, mas com pessoas completamente
+desqualificadas.
+06’23’’
+PMax para loja física
+🏫
+Se você tem um estabelecimento físico, use a PMAX com o objetivo de
+visitas a lojas locais. Mas, para isso:
+● Tenha seu Google Business Profile (Google Meu Negócio) bem
+configurado;
+● Use boas imagens e categorias dentro do perfil.
+Pág. 5
+
+--- Página 6 ---
+Criação de campanhas de PMax
+06’56’’
+Melhores práticas da
+campanha PMax
+1. 2. 3.
+Use seus melhores Teste diferentes grupos Em cada campanha,
+anúncios de outras de recursos em busque colocar de 2 a 4
+redes nos grupo de campanhas diferentes. grupo de recursos.
+recursos.
+4. 5. 6.
+Crie sua sugestão de Faça a melhor Selecione sempre a
+audiência de duas segmentação localização e teste
+formas: com foco no demográfica localizações premium
+público buscado ou em possível. (onde há tendência de
+públicos superquentes). vender mais).
+Pág. 6
+
+--- Página 7 ---
+Criação de campanhas de PMax
+Lógica central da PMAX: quanto mais você alimentar o algoritmo com dados
+de qualidade, melhores serão os resultados. A PMAX é poderosa, mas não faz
+milagre sozinha. Ela funciona melhor quando você já tem experiência, dados
+validados e criativos otimizados.
+🙌
+Tamo junto!
+Pág. 7

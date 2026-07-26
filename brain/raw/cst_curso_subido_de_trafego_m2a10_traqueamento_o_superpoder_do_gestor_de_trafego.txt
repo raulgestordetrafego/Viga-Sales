@@ -1,0 +1,68 @@
+--- Página 1 ---
+AULA 10
+Traqueamento: o
+superpoder do
+gestor de tráfego
+1
+
+--- Página 2 ---
+Traqueamento: o superpoder do gestor de tráfego
+Índice
+Introdução ……………………………………………………………………………...………………….……………………………………….……….………………………….…………………………….……………………………………… Pág. 2
+Como traquear?…………..….…………………………….…...………….…...………….…...………….…….…….…….…….…….…….…….…….…….…….…….…….…….……..…...……………………………………… Pág. 3
+00’02’’
+Introdução
+Quando o assunto é traqueamento, a “dor de cabeça” é certa, mas, afinal, o
+que é traqueamento?
+Dito isso, bora aprender mais sobre a jornada da conta de anúncio à venda?
+Pág. 2
+
+--- Página 3 ---
+Traqueamento: o superpoder do gestor de tráfego
+05’02’’
+Introdução
+Basicamente, quando falamos de traqueamento, é mais do que suficiente fazer
+“o básico bem feito” e, neste caso, trata-se de fazê-lo das seguintes formas:
+Pixel instalado:
+O que é e para que serve?
+Nada mais é do que um conjunto de letras, números e símbolos, ou seja, um
+código, o qual exerce três grandes funções: leva informação acerca das ações
+do seu site para a fonte de tráfego; funciona como o cérebro da sua conta de
+anúncios; cria audiências (em resumo, mapeia as ações de um site — e você
+precisa ser proprietário dele!).
+Como instalar o pixel?
+● Manualmente;
+● Via parceiros;
+● Instruções por e-mail;
+● Via Google Tag Manager (melhor opção de todas).
+API de conversões instalado no site:
+O que é e para que serve?
+De maneira simplista, a API de conversões é um potencializador do pixel,
+fazendo com que as três funções anteriormente citadas sejam desenvolvidas
+de maneira ainda melhor.
+Como realizar o traqueamento?
+● Via pixel e API de conversões;
+Pág. 3
+
+--- Página 4 ---
+Traqueamento: o superpoder do gestor de tráfego
+Ferramenta externa de traqueamento:
+O que é e para que serve? Mesmíssima função do pixel.
+Como realizar o traqueamento?
+● Via Google Analytics + UTMs
+(Parâmetros de
+acompanhamento);
+● Página específica para fonte
+específica;
+● Canais de venda específicos;
+● Pesquisa;
+● Lista de pessoas que compraram;
+● Faturamento na ferramenta de recebimento.
+Eu sei que parece um pouco complicado e são muitas informações para
+assimilar, mas, não se preocupe, pois, ao decorrer deste curso, você terá em
+mãos todos os conhecimentos e tutoriais possíveis para te auxiliar nessa
+jornada — além, é claro, da nossa querida IA.
+Lembre-se: não existe traqueamento perfeito; o que existe, sim, é o básico
+bem feito!
+Fechou? Tamo junto!
+Pág. 4

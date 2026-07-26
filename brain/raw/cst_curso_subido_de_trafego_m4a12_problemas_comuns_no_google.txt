@@ -1,0 +1,124 @@
+--- Página 1 ---
+AULA 12
+Problemas
+comuns no
+Google
+1
+
+--- Página 2 ---
+Problemas comuns no Google
+Índice
+Introdução ……………………………………………………………………………...………………….……………………………………….……….………………………….…………………………….……………………………………… Pág. 2
+Problema 1: “minha campanha não gasta dinheiro”……..….……………….…...………….…...………….…...…………………………………………….. Pág. 3
+Problema 2: “minha campanha gasta tudo em um só grupo de anúncios” …………….…...……………… Pág. 5
+00’01’’
+Introdução
+Se tem uma coisa que todo gestor de tráfego vai enfrentar em algum
+momento, é problema na campanha. Seja ela não gastando nada, seja
+torrando tudo em um só grupo de anúncio. A seguir, vou te mostrar os erros
+mais comuns e como resolver cada um deles, na vida real mesmo, sem
+enrolação.
+Pág. 2
+
+--- Página 3 ---
+Problemas comuns no Google
+00’04’’
+Problema 1: “minha
+campanha não gasta
+dinheiro”
+O que verificar primeiro:
+🗓
+1. A data da análise
+Parece bobeira, mas muita gente analisa o período errado. Verifique se você
+está olhando os dados de ontem ou hoje, não de dias passados.
+✅
+2. Status dos anúncios
+Veja se os anúncios foram aprovados. Se estiverem reprovados ou
+aguardando aprovação, é isso que está travando tudo.
+⬆
+3. Valor dos lances
+Se o lance estiver baixo, você não entra no leilão. Aumente os lances
+gradualmente e fique de olho.
+Dica de ouro: reduza o orçamento para um valor seguro e depois
+aumente agressivamente os lances. Assim você testa se o problema
+é o valor do lance sem correr risco de gastar tudo de uma vez.
+Pág. 3
+
+--- Página 4 ---
+Problemas comuns no Google
+🔰
+4. Segmentação muito restrita
+Retire ressegmentações e exclusões exageradas e expanda o público. Crie uma
+campanha paralela com público bem amplo (exemplo: segmento de
+mercado) para testar se o problema é a restrição.
+📊
+5. Estratégia de lance mal escolhida
+Dê "passos para trás":
+● Troque CPA por CPC;
+● Troque CPC por CPM;
+● Troque estratégia manual por automatizada (ex: maximizar
+conversões).
+💸
+6. Orçamento muito baixo
+Em raros casos, o problema pode ser um orçamento tão pequeno que a
+campanha não entra nem no jogo. Teste subir o valor.
+💳
+7. Erro no pagamento
+Veja se seu cartão foi recusado ou se tem pendência no faturamento. Não
+custa ligar para o Google.
+📞
+8. Ligue para o suporte do Google
+Se nada funcionar, abra um chamado. Muitas vezes, eles te mostram o
+problema em segundos.
+Pág. 4
+
+--- Página 5 ---
+Problemas comuns no Google
+04’44’’
+Problema 2: “minha
+campanha gasta tudo em um
+só grupo de anúncios”
+Você tem uma campanha com vários grupos de anúncios,
+mas só um deles está consumindo toda a verba?
+Aqui estão os diagnósticos possíveis:
+1. 2. 3.
+Tamanhos de público Um público está Lances desequilibrados:
+muito diferentes: entregando muito Um grupo está com
+Um grupo é muito mais resultado: lance 10x maior que os
+amplo, os outros são Se está dando resultado, outros. Obviamente, é ele
+minúsculos. O Google o Google vai priorizar. que vai vencer o leilão.
+naturalmente vai Isso não é um problema,
+priorizar onde tem é otimização.
+mais volume.
+Soluções:
+⬆📉
+1. Ajuste os lances
+Reduza o lance do grupo que está gastando muito e aumente o dos que estão
+parados.
+Pág. 5
+
+--- Página 6 ---
+Problemas comuns no Google
+🔀
+2. Expanda o público dos grupos fracos
+Amplie os públicos que não estão gastando.
+Exemplo: se for um público de 7 dias, tente aumentar para 30 dias.
+📦
+3. Isole os grupos que não gastam
+Crie uma nova campanha com os grupos que estão apagados. Isso força o
+Google a testá-los isoladamente.
+Observação: na maioria dos casos, você vai descobrir que eles
+realmente eram fracos.
+❌
+4. Isole o grupo que mais gasta (se não estiver performando)
+Se ele gasta muito, mas não gera resultado, mova-o para outra campanha e
+dê espaço para os outros grupos.
+Se o grupo está performando bem, não mexa no time que está ganhando!
+Apenas isole os que não estão performando.
+Todo gestor de tráfego vai passar por isso. O segredo é ter um checklist prático
+na cabeça e testar com lógica. Nem sempre é bug, nem sempre é azar. Às
+vezes é só uma configuração simples, mesmo. Para isso, revisite este conteúdo
+sempre que precisar.
+🙌
+Tamo junto!
+Pág. 6

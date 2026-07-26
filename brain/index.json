@@ -1,0 +1,1677 @@
+{
+  "modulos": {
+    "M5A5": {
+      "aulas": [
+        {
+          "arquivo": "_cst_curso_subido_de_tráfego_m5a5_material_extra_ modelo_de_roteiro_para_criativos .docx.pdf",
+          "txt": "_cst_curso_subido_de_tráfego_m5a5_material_extra_ modelo_de_roteiro_para_criativos .docx.txt",
+          "modulo": "M5A5",
+          "aula": "",
+          "titulo": "modelo roteiro para criativos .docx",
+          "caracteres": 396,
+          "paginas_extraidas": 2
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a5_como_e_quando_otimizar_segmentacoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a5_como_e_quando_otimizar_segmentacoes.txt",
+          "modulo": "M5A5",
+          "aula": "",
+          "titulo": "como quando otimizar segmentacoes",
+          "caracteres": 2299,
+          "paginas_extraidas": 4
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a5_material_extra_processo_solicitacao_de_criativos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a5_material_extra_processo_solicitacao_de_criativos.txt",
+          "modulo": "M5A5",
+          "aula": "",
+          "titulo": "processo solicitacao criativos",
+          "caracteres": 3489,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 6184
+    },
+    "M4A05": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_prospecção_e_vendas_m4a05_extra_planilha_de_projeção_de_resultados - Como editar este material_.pdf",
+          "txt": "cst_curso_subido_de_prospecção_e_vendas_m4a05_extra_planilha_de_projeção_de_resultados - Como editar este material_.txt",
+          "modulo": "M4A05",
+          "aula": "",
+          "titulo": "planilha projeção resultados - Como editar este material",
+          "caracteres": 1131,
+          "paginas_extraidas": 1
+        }
+      ],
+      "total_caracteres": 1131
+    },
+    "M10A2": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m10a2_informacoes_importantes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m10a2_informacoes_importantes.txt",
+          "modulo": "M10A2",
+          "aula": "",
+          "titulo": "informacoes importantes",
+          "caracteres": 1993,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1993
+    },
+    "M2A10": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a10_traqueamento_o_superpoder_do_gestor_de_trafego.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a10_traqueamento_o_superpoder_do_gestor_de_trafego.txt",
+          "modulo": "M2A10",
+          "aula": "",
+          "titulo": "traqueamento o superpoder do gestor",
+          "caracteres": 2432,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2432
+    },
+    "M2A11": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a11_o_metodo_subido_de_distribuicao_de_conteudo.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a11_o_metodo_subido_de_distribuicao_de_conteudo.txt",
+          "modulo": "M2A11",
+          "aula": "",
+          "titulo": "o metodo distribuicao conteudo",
+          "caracteres": 3630,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 3630
+    },
+    "M2A12": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a12_como_escalar_suas_campanhas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a12_como_escalar_suas_campanhas.txt",
+          "modulo": "M2A12",
+          "aula": "",
+          "titulo": "como escalar suas campanhas",
+          "caracteres": 1726,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1726
+    },
+    "M2A13": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a13_implementacao_tecnica.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a13_implementacao_tecnica.txt",
+          "modulo": "M2A13",
+          "aula": "",
+          "titulo": "implementacao tecnica",
+          "caracteres": 1366,
+          "paginas_extraidas": 2
+        }
+      ],
+      "total_caracteres": 1366
+    },
+    "M2A1": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a1_os_12_conceitos_universais_do_trafego_pago.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a1_os_12_conceitos_universais_do_trafego_pago.txt",
+          "modulo": "M2A1",
+          "aula": "",
+          "titulo": "os 12 conceitos universais do pago",
+          "caracteres": 4330,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 4330
+    },
+    "M2A2": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a2_fontes_de_trafego.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a2_fontes_de_trafego.txt",
+          "modulo": "M2A2",
+          "aula": "",
+          "titulo": "fontes",
+          "caracteres": 3944,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3944
+    },
+    "M2A3": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a3_leilao_um_conceito_avancado_que_vai_te_ajudar_a_sair_do_zero.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a3_leilao_um_conceito_avancado_que_vai_te_ajudar_a_sair_do_zero.txt",
+          "modulo": "M2A3",
+          "aula": "",
+          "titulo": "leilao um conceito avancado que vai te ajudar a sair do zero",
+          "caracteres": 3639,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3639
+    },
+    "M2A4": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a4_objetivos_sua_mira_a_laser .pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a4_objetivos_sua_mira_a_laser .txt",
+          "modulo": "M2A4",
+          "aula": "",
+          "titulo": "objetivos sua mira a laser",
+          "caracteres": 1847,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1847
+    },
+    "M2A5": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a5_cardapio_de_segmentacoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a5_cardapio_de_segmentacoes.txt",
+          "modulo": "M2A5",
+          "aula": "",
+          "titulo": "cardapio segmentacoes",
+          "caracteres": 4617,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 4617
+    },
+    "M2A6": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m2a6_como_fazer_uma_pesquisa_de_icp.pdf",
+          "txt": "cst_curso_subido_de_trafego_m2a6_como_fazer_uma_pesquisa_de_icp.txt",
+          "modulo": "M2A6",
+          "aula": "",
+          "titulo": "como fazer uma pesquisa icp",
+          "caracteres": 1970,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1970
+    },
+    "M3A10": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a10_posicionamentos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a10_posicionamentos.txt",
+          "modulo": "M3A10",
+          "aula": "",
+          "titulo": "posicionamentos",
+          "caracteres": 2497,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2497
+    },
+    "M3A11": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a11_fase_de_aprendizado.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a11_fase_de_aprendizado.txt",
+          "modulo": "M3A11",
+          "aula": "",
+          "titulo": "fase aprendizado",
+          "caracteres": 1220,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1220
+    },
+    "M3A1": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a1_recursos_para_criar_anuncios_na_meta.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a1_recursos_para_criar_anuncios_na_meta.txt",
+          "modulo": "M3A1",
+          "aula": "",
+          "titulo": "recursos para criar anuncios na meta",
+          "caracteres": 2503,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 2503
+    },
+    "M3A2": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a2_pixel_conjunto_de_dados_e_api_de_conversoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a2_pixel_conjunto_de_dados_e_api_de_conversoes.txt",
+          "modulo": "M3A2",
+          "aula": "",
+          "titulo": "pixel conjunto dados api conversoes",
+          "caracteres": 2482,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2482
+    },
+    "M3A3": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a3_criacao_de_publicos_alvo.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a3_criacao_de_publicos_alvo.txt",
+          "modulo": "M3A3",
+          "aula": "",
+          "titulo": "criacao publicos alvo",
+          "caracteres": 2754,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2754
+    },
+    "M3A4": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a4_estrutura_e_nomenclatura_de_campanhas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a4_estrutura_e_nomenclatura_de_campanhas.txt",
+          "modulo": "M3A4",
+          "aula": "",
+          "titulo": "estrutura nomenclatura campanhas",
+          "caracteres": 2752,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 2752
+    },
+    "M3A5": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a5_selecao_de_objetivos_e_metas_de_desempenho.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a5_selecao_de_objetivos_e_metas_de_desempenho.txt",
+          "modulo": "M3A5",
+          "aula": "",
+          "titulo": "selecao objetivos metas desempenho",
+          "caracteres": 4916,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 4916
+    },
+    "M3A6": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a6_recursos_advantage.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a6_recursos_advantage.txt",
+          "modulo": "M3A6",
+          "aula": "",
+          "titulo": "recursos advantage",
+          "caracteres": 4638,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 4638
+    },
+    "M3A7": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a7_os_4_tipos_de_orcamento.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a7_os_4_tipos_de_orcamento.txt",
+          "modulo": "M3A7",
+          "aula": "",
+          "titulo": "os 4 tipos orcamento",
+          "caracteres": 5328,
+          "paginas_extraidas": 7
+        }
+      ],
+      "total_caracteres": 5328
+    },
+    "M3A8": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a8_estrategia_de_lance.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a8_estrategia_de_lance.txt",
+          "modulo": "M3A8",
+          "aula": "",
+          "titulo": "estrategia lance",
+          "caracteres": 3655,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3655
+    },
+    "M3A9": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m3a9_as_5_maneiras_de_segmentar_o_seu_publico-alvo.pdf",
+          "txt": "cst_curso_subido_de_trafego_m3a9_as_5_maneiras_de_segmentar_o_seu_publico-alvo.txt",
+          "modulo": "M3A9",
+          "aula": "",
+          "titulo": "as 5 maneiras segmentar o seu publico-alvo",
+          "caracteres": 3396,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 3396
+    },
+    "M4A10": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a10_criacao_de_campanhas_pmax.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a10_criacao_de_campanhas_pmax.txt",
+          "modulo": "M4A10",
+          "aula": "",
+          "titulo": "criacao campanhas pmax",
+          "caracteres": 4325,
+          "paginas_extraidas": 7
+        }
+      ],
+      "total_caracteres": 4325
+    },
+    "M4A11": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a11_criacao_de_campanhas_de_visitas_a_loja.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a11_criacao_de_campanhas_de_visitas_a_loja.txt",
+          "modulo": "M4A11",
+          "aula": "",
+          "titulo": "criacao campanhas visitas a loja",
+          "caracteres": 3051,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3051
+    },
+    "M4A12": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a12_problemas_comuns_no_google.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a12_problemas_comuns_no_google.txt",
+          "modulo": "M4A12",
+          "aula": "",
+          "titulo": "problemas comuns no google",
+          "caracteres": 4089,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 4089
+    },
+    "M4A13": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a13_google_ads_editor.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a13_google_ads_editor.txt",
+          "modulo": "M4A13",
+          "aula": "",
+          "titulo": "google ads editor",
+          "caracteres": 3996,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 3996
+    },
+    "M4A1": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a1_como_funciona_o_google_ads.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a1_como_funciona_o_google_ads.txt",
+          "modulo": "M4A1",
+          "aula": "",
+          "titulo": "como funciona o google ads",
+          "caracteres": 9052,
+          "paginas_extraidas": 10
+        }
+      ],
+      "total_caracteres": 9052
+    },
+    "M4A2": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a2_lances_como_acelerar_ou_frear_seus_resultados.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a2_lances_como_acelerar_ou_frear_seus_resultados.txt",
+          "modulo": "M4A2",
+          "aula": "",
+          "titulo": "lances como acelerar ou frear seus resultados",
+          "caracteres": 9161,
+          "paginas_extraidas": 10
+        }
+      ],
+      "total_caracteres": 9161
+    },
+    "M4A3": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a3_tag_do_google_e_acoes_de_conversao.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a3_tag_do_google_e_acoes_de_conversao.txt",
+          "modulo": "M4A3",
+          "aula": "",
+          "titulo": "tag do google acoes conversao",
+          "caracteres": 5764,
+          "paginas_extraidas": 7
+        }
+      ],
+      "total_caracteres": 5764
+    },
+    "M4A4": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a4_segmentacoes_no_google_ads.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a4_segmentacoes_no_google_ads.txt",
+          "modulo": "M4A4",
+          "aula": "",
+          "titulo": "segmentacoes no google ads",
+          "caracteres": 6516,
+          "paginas_extraidas": 9
+        }
+      ],
+      "total_caracteres": 6516
+    },
+    "M4A5": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras-chave.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras-chave.txt",
+          "modulo": "M4A5",
+          "aula": "",
+          "titulo": "lista palavras-chave",
+          "caracteres": 4663,
+          "paginas_extraidas": 8
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras_positivas_e_negativas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras_positivas_e_negativas.txt",
+          "modulo": "M4A5",
+          "aula": "",
+          "titulo": "lista palavras positivas negativas",
+          "caracteres": 1550,
+          "paginas_extraidas": 3
+        },
+        {
+          "arquivo": "cst_curso_subido_de_tráfego_m4a5_material_extra_ planilha_de_correspondência.xlsx - Intruções de uso da planilha.pdf",
+          "txt": "cst_curso_subido_de_tráfego_m4a5_material_extra_ planilha_de_correspondência.xlsx - Intruções de uso da planilha.txt",
+          "modulo": "M4A5",
+          "aula": "",
+          "titulo": "planilha correspondência.xlsx - Intruções de uso da planilha",
+          "caracteres": 4794,
+          "paginas_extraidas": 2
+        }
+      ],
+      "total_caracteres": 11007
+    },
+    "M4A6": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a6_criacao_de_campanhas_de_pesquisa.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a6_criacao_de_campanhas_de_pesquisa.txt",
+          "modulo": "M4A6",
+          "aula": "",
+          "titulo": "criacao campanhas pesquisa",
+          "caracteres": 5461,
+          "paginas_extraidas": 7
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a6_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a6_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.txt",
+          "modulo": "M4A6",
+          "aula": "",
+          "titulo": "guia formatos anuncios para a rede display google ads",
+          "caracteres": 994,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 6455
+    },
+    "M4A7": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a7_metricas_especificas_da_rede_de_pesquisa.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a7_metricas_especificas_da_rede_de_pesquisa.txt",
+          "modulo": "M4A7",
+          "aula": "",
+          "titulo": "metricas especificas da rede pesquisa",
+          "caracteres": 5553,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 5553
+    },
+    "M4A8": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a8_criacao_de_campanhas_de_youtube.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a8_criacao_de_campanhas_de_youtube.txt",
+          "modulo": "M4A8",
+          "aula": "",
+          "titulo": "criacao campanhas youtube",
+          "caracteres": 10595,
+          "paginas_extraidas": 12
+        }
+      ],
+      "total_caracteres": 10595
+    },
+    "M4A9": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a9_criacao_de_campanhas_de_display.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a9_criacao_de_campanhas_de_display.txt",
+          "modulo": "M4A9",
+          "aula": "",
+          "titulo": "criacao campanhas display",
+          "caracteres": 5325,
+          "paginas_extraidas": 8
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m4a9_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.pdf",
+          "txt": "cst_curso_subido_de_trafego_m4a9_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.txt",
+          "modulo": "M4A9",
+          "aula": "",
+          "titulo": "guia formatos anuncios para a rede display google ads",
+          "caracteres": 994,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 6319
+    },
+    "M5A10": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a10_como_definir_a_sua_rotina_de_otimizacoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a10_como_definir_a_sua_rotina_de_otimizacoes.txt",
+          "modulo": "M5A10",
+          "aula": "",
+          "titulo": "como definir a sua rotina otimizacoes",
+          "caracteres": 3591,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3591
+    },
+    "M5A11": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a11_as_4_maneiras_de_testar_variacoes_nas_suas_campanhas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a11_as_4_maneiras_de_testar_variacoes_nas_suas_campanhas.txt",
+          "modulo": "M5A11",
+          "aula": "",
+          "titulo": "as 4 maneiras testar variacoes nas suas campanhas",
+          "caracteres": 1910,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1910
+    },
+    "M5A12": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a12_como_manipular_suas_metricas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a12_como_manipular_suas_metricas.txt",
+          "modulo": "M5A12",
+          "aula": "",
+          "titulo": "como manipular suas metricas",
+          "caracteres": 2047,
+          "paginas_extraidas": 4
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a12_material_extra_guia_de_otimizacao_de_metricas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a12_material_extra_guia_de_otimizacao_de_metricas.txt",
+          "modulo": "M5A12",
+          "aula": "",
+          "titulo": "guia otimizacao metricas",
+          "caracteres": 25414,
+          "paginas_extraidas": 21
+        }
+      ],
+      "total_caracteres": 27461
+    },
+    "M5A13": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a13_como_documentar_otimizacoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a13_como_documentar_otimizacoes.txt",
+          "modulo": "M5A13",
+          "aula": "",
+          "titulo": "como documentar otimizacoes",
+          "caracteres": 2458,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2458
+    },
+    "M5A14": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a14_otimizacoes_especificas_do_google_ads.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a14_otimizacoes_especificas_do_google_ads.txt",
+          "modulo": "M5A14",
+          "aula": "",
+          "titulo": "otimizacoes especificas do google ads",
+          "caracteres": 2919,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2919
+    },
+    "M5A1": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a1_o_metodo_subido_de_otimizacao.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a1_o_metodo_subido_de_otimizacao.txt",
+          "modulo": "M5A1",
+          "aula": "",
+          "titulo": "o metodo otimizacao",
+          "caracteres": 2912,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 2912
+    },
+    "M5A2": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a2_o_que_e_uma_melhora_nos_seus_resultados.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a2_o_que_e_uma_melhora_nos_seus_resultados.txt",
+          "modulo": "M5A2",
+          "aula": "",
+          "titulo": "o que uma melhora nos seus resultados",
+          "caracteres": 5104,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 5104
+    },
+    "M5A3": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a3_quando_otimizar_e_quando_nao_otimizar_suas_campanhas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a3_quando_otimizar_e_quando_nao_otimizar_suas_campanhas.txt",
+          "modulo": "M5A3",
+          "aula": "",
+          "titulo": "quando otimizar quando nao otimizar suas campanhas",
+          "caracteres": 3471,
+          "paginas_extraidas": 4
+        }
+      ],
+      "total_caracteres": 3471
+    },
+    "M5A4": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a4_como_e_quando_alterar_lances_e_orcamentos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a4_como_e_quando_alterar_lances_e_orcamentos.txt",
+          "modulo": "M5A4",
+          "aula": "",
+          "titulo": "como quando alterar lances orcamentos",
+          "caracteres": 5224,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 5224
+    },
+    "M5A6": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a6_como_e_quando_otimizar_criativos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a6_como_e_quando_otimizar_criativos.txt",
+          "modulo": "M5A6",
+          "aula": "",
+          "titulo": "como quando otimizar criativos",
+          "caracteres": 2462,
+          "paginas_extraidas": 4
+        },
+        {
+          "arquivo": "cst_curso_subido_de_tráfego_m5a6_material_extra_modelo_de_solicitação_de_criativos.pdf",
+          "txt": "cst_curso_subido_de_tráfego_m5a6_material_extra_modelo_de_solicitação_de_criativos.txt",
+          "modulo": "M5A6",
+          "aula": "",
+          "titulo": "modelo solicitação criativos",
+          "caracteres": 3489,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 5951
+    },
+    "M5A7": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a7_como_e_quando_otimizar_estruturas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a7_como_e_quando_otimizar_estruturas.txt",
+          "modulo": "M5A7",
+          "aula": "",
+          "titulo": "como quando otimizar estruturas",
+          "caracteres": 3118,
+          "paginas_extraidas": 5
+        }
+      ],
+      "total_caracteres": 3118
+    },
+    "M5A8": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a8_como_e_quando_otimizar_pixel.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a8_como_e_quando_otimizar_pixel.txt",
+          "modulo": "M5A8",
+          "aula": "",
+          "titulo": "como quando otimizar pixel",
+          "caracteres": 1591,
+          "paginas_extraidas": 3
+        }
+      ],
+      "total_caracteres": 1591
+    },
+    "M5A9": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a9_como_e_quando_otimizar_destino.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a9_como_e_quando_otimizar_destino.txt",
+          "modulo": "M5A9",
+          "aula": "",
+          "titulo": "como quando otimizar destino",
+          "caracteres": 2477,
+          "paginas_extraidas": 4
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_guia_do_cliente_oculto.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_guia_do_cliente_oculto.txt",
+          "modulo": "M5A9",
+          "aula": "",
+          "titulo": "guia do cliente oculto",
+          "caracteres": 8498,
+          "paginas_extraidas": 9
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_manual_de_uma_boa_landing_page.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_manual_de_uma_boa_landing_page.txt",
+          "modulo": "M5A9",
+          "aula": "",
+          "titulo": "manual uma boa landing page",
+          "caracteres": 12569,
+          "paginas_extraidas": 13
+        },
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_processo_cliente_oculto_retroativo.pdf",
+          "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_processo_cliente_oculto_retroativo.txt",
+          "modulo": "M5A9",
+          "aula": "",
+          "titulo": "processo cliente oculto retroativo",
+          "caracteres": 6705,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 30249
+    },
+    "M5V13": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m5v13_extra_registro_de_otimizações.xlsx - pg .pdf",
+          "txt": "cst_curso_subido_de_trafego_m5v13_extra_registro_de_otimizações.xlsx - pg .txt",
+          "modulo": "M5V13",
+          "aula": "",
+          "titulo": "registro otimizações.xlsx - pg",
+          "caracteres": 44049,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 44049
+    },
+    "M6A01": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a01_como_criar_uma_estrategia_de_trafego_pago.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a01_como_criar_uma_estrategia_de_trafego_pago.txt",
+          "modulo": "M6A01",
+          "aula": "",
+          "titulo": "como criar uma estrategia pago",
+          "caracteres": 9205,
+          "paginas_extraidas": 10
+        }
+      ],
+      "total_caracteres": 9205
+    },
+    "M6A02": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a02_como_deixar_de_ser_um_apertador_de_botoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a02_como_deixar_de_ser_um_apertador_de_botoes.txt",
+          "modulo": "M6A02",
+          "aula": "",
+          "titulo": "como deixar ser um apertador botoes",
+          "caracteres": 9327,
+          "paginas_extraidas": 9
+        }
+      ],
+      "total_caracteres": 9327
+    },
+    "M6A03": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a03_planejamento_de_campanhas_para_negocios_fisicos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a03_planejamento_de_campanhas_para_negocios_fisicos.txt",
+          "modulo": "M6A03",
+          "aula": "",
+          "titulo": "planejamento campanhas para negocios fisicos",
+          "caracteres": 8933,
+          "paginas_extraidas": 10
+        }
+      ],
+      "total_caracteres": 8933
+    },
+    "M6A04": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a04_como_criar_um_planejamento_de_campanhas_para_e-commerces.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a04_como_criar_um_planejamento_de_campanhas_para_e-commerces.txt",
+          "modulo": "M6A04",
+          "aula": "",
+          "titulo": "como criar um planejamento campanhas para e-commerces",
+          "caracteres": 7709,
+          "paginas_extraidas": 9
+        }
+      ],
+      "total_caracteres": 7709
+    },
+    "M6A05": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a05_planejamento_de_campanhas_para_infoprodutos_de_venda_continua.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a05_planejamento_de_campanhas_para_infoprodutos_de_venda_continua.txt",
+          "modulo": "M6A05",
+          "aula": "",
+          "titulo": "planejamento campanhas para infoprodutos venda continua",
+          "caracteres": 6205,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 6205
+    },
+    "M6A06": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a06_planejamento_de_campanhas_de_trafego_para_lancamentos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a06_planejamento_de_campanhas_de_trafego_para_lancamentos.txt",
+          "modulo": "M6A06",
+          "aula": "",
+          "titulo": "planejamento campanhas para lancamentos",
+          "caracteres": 6215,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 6215
+    },
+    "M6A07": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a07_quando_unir_e_separar_conjuntos_de_anuncios_e_campanhas.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a07_quando_unir_e_separar_conjuntos_de_anuncios_e_campanhas.txt",
+          "modulo": "M6A07",
+          "aula": "",
+          "titulo": "quando unir separar conjuntos anuncios campanhas",
+          "caracteres": 9524,
+          "paginas_extraidas": 10
+        }
+      ],
+      "total_caracteres": 9524
+    },
+    "M6A08": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a08_exclusao_e_hierarquia_de_publicos.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a08_exclusao_e_hierarquia_de_publicos.txt",
+          "modulo": "M6A08",
+          "aula": "",
+          "titulo": "exclusao hierarquia publicos",
+          "caracteres": 7361,
+          "paginas_extraidas": 9
+        }
+      ],
+      "total_caracteres": 7361
+    },
+    "M6A09": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a09_15_principios_para_ser_estrategico_em_suas_segmentacoes.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a09_15_principios_para_ser_estrategico_em_suas_segmentacoes.txt",
+          "modulo": "M6A09",
+          "aula": "",
+          "titulo": "15 principios para ser estrategico em suas segmentacoes",
+          "caracteres": 5719,
+          "paginas_extraidas": 7
+        }
+      ],
+      "total_caracteres": 5719
+    },
+    "M6A10": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a10_distribuicao_de_conteudo.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a10_distribuicao_de_conteudo.txt",
+          "modulo": "M6A10",
+          "aula": "",
+          "titulo": "distribuicao conteudo",
+          "caracteres": 5773,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 5773
+    },
+    "M6A11": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a11_distribuicao_de_conteudo_validacao_e_escolha.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a11_distribuicao_de_conteudo_validacao_e_escolha.txt",
+          "modulo": "M6A11",
+          "aula": "",
+          "titulo": "distribuicao conteudo validacao escolha",
+          "caracteres": 5526,
+          "paginas_extraidas": 7
+        }
+      ],
+      "total_caracteres": 5526
+    },
+    "M6A12": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a12_distribuicao_de_conteudo_descoberta_e_aquecimento.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a12_distribuicao_de_conteudo_descoberta_e_aquecimento.txt",
+          "modulo": "M6A12",
+          "aula": "",
+          "titulo": "distribuicao conteudo descoberta aquecimento",
+          "caracteres": 4903,
+          "paginas_extraidas": 6
+        }
+      ],
+      "total_caracteres": 4903
+    },
+    "M6A13": {
+      "aulas": [
+        {
+          "arquivo": "cst_curso_subido_de_trafego_m6a13_distribuicao_de_conteudo_diversificacao_e_variacao.pdf",
+          "txt": "cst_curso_subido_de_trafego_m6a13_distribuicao_de_conteudo_diversificacao_e_variacao.txt",
+          "modulo": "M6A13",
+          "aula": "",
+          "titulo": "distribuicao conteudo diversificacao variacao",
+          "caracteres": 5518,
+          "paginas_extraidas": 8
+        }
+      ],
+      "total_caracteres": 5518
+    }
+  },
+  "total_pdfs": 75,
+  "arquivos": [
+    {
+      "arquivo": "_cst_curso_subido_de_tráfego_m5a5_material_extra_ modelo_de_roteiro_para_criativos .docx.pdf",
+      "txt": "_cst_curso_subido_de_tráfego_m5a5_material_extra_ modelo_de_roteiro_para_criativos .docx.txt",
+      "modulo": "M5A5",
+      "aula": "",
+      "titulo": "modelo roteiro para criativos .docx",
+      "caracteres": 396,
+      "paginas_extraidas": 2
+    },
+    {
+      "arquivo": "cst_curso_subido_de_prospecção_e_vendas_m4a05_extra_planilha_de_projeção_de_resultados - Como editar este material_.pdf",
+      "txt": "cst_curso_subido_de_prospecção_e_vendas_m4a05_extra_planilha_de_projeção_de_resultados - Como editar este material_.txt",
+      "modulo": "M4A05",
+      "aula": "",
+      "titulo": "planilha projeção resultados - Como editar este material",
+      "caracteres": 1131,
+      "paginas_extraidas": 1
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m10a2_informacoes_importantes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m10a2_informacoes_importantes.txt",
+      "modulo": "M10A2",
+      "aula": "",
+      "titulo": "informacoes importantes",
+      "caracteres": 1993,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a10_traqueamento_o_superpoder_do_gestor_de_trafego.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a10_traqueamento_o_superpoder_do_gestor_de_trafego.txt",
+      "modulo": "M2A10",
+      "aula": "",
+      "titulo": "traqueamento o superpoder do gestor",
+      "caracteres": 2432,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a11_o_metodo_subido_de_distribuicao_de_conteudo.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a11_o_metodo_subido_de_distribuicao_de_conteudo.txt",
+      "modulo": "M2A11",
+      "aula": "",
+      "titulo": "o metodo distribuicao conteudo",
+      "caracteres": 3630,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a12_como_escalar_suas_campanhas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a12_como_escalar_suas_campanhas.txt",
+      "modulo": "M2A12",
+      "aula": "",
+      "titulo": "como escalar suas campanhas",
+      "caracteres": 1726,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a13_implementacao_tecnica.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a13_implementacao_tecnica.txt",
+      "modulo": "M2A13",
+      "aula": "",
+      "titulo": "implementacao tecnica",
+      "caracteres": 1366,
+      "paginas_extraidas": 2
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a1_os_12_conceitos_universais_do_trafego_pago.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a1_os_12_conceitos_universais_do_trafego_pago.txt",
+      "modulo": "M2A1",
+      "aula": "",
+      "titulo": "os 12 conceitos universais do pago",
+      "caracteres": 4330,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a2_fontes_de_trafego.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a2_fontes_de_trafego.txt",
+      "modulo": "M2A2",
+      "aula": "",
+      "titulo": "fontes",
+      "caracteres": 3944,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a3_leilao_um_conceito_avancado_que_vai_te_ajudar_a_sair_do_zero.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a3_leilao_um_conceito_avancado_que_vai_te_ajudar_a_sair_do_zero.txt",
+      "modulo": "M2A3",
+      "aula": "",
+      "titulo": "leilao um conceito avancado que vai te ajudar a sair do zero",
+      "caracteres": 3639,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a4_objetivos_sua_mira_a_laser .pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a4_objetivos_sua_mira_a_laser .txt",
+      "modulo": "M2A4",
+      "aula": "",
+      "titulo": "objetivos sua mira a laser",
+      "caracteres": 1847,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a5_cardapio_de_segmentacoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a5_cardapio_de_segmentacoes.txt",
+      "modulo": "M2A5",
+      "aula": "",
+      "titulo": "cardapio segmentacoes",
+      "caracteres": 4617,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m2a6_como_fazer_uma_pesquisa_de_icp.pdf",
+      "txt": "cst_curso_subido_de_trafego_m2a6_como_fazer_uma_pesquisa_de_icp.txt",
+      "modulo": "M2A6",
+      "aula": "",
+      "titulo": "como fazer uma pesquisa icp",
+      "caracteres": 1970,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a10_posicionamentos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a10_posicionamentos.txt",
+      "modulo": "M3A10",
+      "aula": "",
+      "titulo": "posicionamentos",
+      "caracteres": 2497,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a11_fase_de_aprendizado.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a11_fase_de_aprendizado.txt",
+      "modulo": "M3A11",
+      "aula": "",
+      "titulo": "fase aprendizado",
+      "caracteres": 1220,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a1_recursos_para_criar_anuncios_na_meta.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a1_recursos_para_criar_anuncios_na_meta.txt",
+      "modulo": "M3A1",
+      "aula": "",
+      "titulo": "recursos para criar anuncios na meta",
+      "caracteres": 2503,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a2_pixel_conjunto_de_dados_e_api_de_conversoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a2_pixel_conjunto_de_dados_e_api_de_conversoes.txt",
+      "modulo": "M3A2",
+      "aula": "",
+      "titulo": "pixel conjunto dados api conversoes",
+      "caracteres": 2482,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a3_criacao_de_publicos_alvo.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a3_criacao_de_publicos_alvo.txt",
+      "modulo": "M3A3",
+      "aula": "",
+      "titulo": "criacao publicos alvo",
+      "caracteres": 2754,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a4_estrutura_e_nomenclatura_de_campanhas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a4_estrutura_e_nomenclatura_de_campanhas.txt",
+      "modulo": "M3A4",
+      "aula": "",
+      "titulo": "estrutura nomenclatura campanhas",
+      "caracteres": 2752,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a5_selecao_de_objetivos_e_metas_de_desempenho.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a5_selecao_de_objetivos_e_metas_de_desempenho.txt",
+      "modulo": "M3A5",
+      "aula": "",
+      "titulo": "selecao objetivos metas desempenho",
+      "caracteres": 4916,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a6_recursos_advantage.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a6_recursos_advantage.txt",
+      "modulo": "M3A6",
+      "aula": "",
+      "titulo": "recursos advantage",
+      "caracteres": 4638,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a7_os_4_tipos_de_orcamento.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a7_os_4_tipos_de_orcamento.txt",
+      "modulo": "M3A7",
+      "aula": "",
+      "titulo": "os 4 tipos orcamento",
+      "caracteres": 5328,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a8_estrategia_de_lance.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a8_estrategia_de_lance.txt",
+      "modulo": "M3A8",
+      "aula": "",
+      "titulo": "estrategia lance",
+      "caracteres": 3655,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m3a9_as_5_maneiras_de_segmentar_o_seu_publico-alvo.pdf",
+      "txt": "cst_curso_subido_de_trafego_m3a9_as_5_maneiras_de_segmentar_o_seu_publico-alvo.txt",
+      "modulo": "M3A9",
+      "aula": "",
+      "titulo": "as 5 maneiras segmentar o seu publico-alvo",
+      "caracteres": 3396,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a10_criacao_de_campanhas_pmax.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a10_criacao_de_campanhas_pmax.txt",
+      "modulo": "M4A10",
+      "aula": "",
+      "titulo": "criacao campanhas pmax",
+      "caracteres": 4325,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a11_criacao_de_campanhas_de_visitas_a_loja.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a11_criacao_de_campanhas_de_visitas_a_loja.txt",
+      "modulo": "M4A11",
+      "aula": "",
+      "titulo": "criacao campanhas visitas a loja",
+      "caracteres": 3051,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a12_problemas_comuns_no_google.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a12_problemas_comuns_no_google.txt",
+      "modulo": "M4A12",
+      "aula": "",
+      "titulo": "problemas comuns no google",
+      "caracteres": 4089,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a13_google_ads_editor.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a13_google_ads_editor.txt",
+      "modulo": "M4A13",
+      "aula": "",
+      "titulo": "google ads editor",
+      "caracteres": 3996,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a1_como_funciona_o_google_ads.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a1_como_funciona_o_google_ads.txt",
+      "modulo": "M4A1",
+      "aula": "",
+      "titulo": "como funciona o google ads",
+      "caracteres": 9052,
+      "paginas_extraidas": 10
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a2_lances_como_acelerar_ou_frear_seus_resultados.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a2_lances_como_acelerar_ou_frear_seus_resultados.txt",
+      "modulo": "M4A2",
+      "aula": "",
+      "titulo": "lances como acelerar ou frear seus resultados",
+      "caracteres": 9161,
+      "paginas_extraidas": 10
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a3_tag_do_google_e_acoes_de_conversao.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a3_tag_do_google_e_acoes_de_conversao.txt",
+      "modulo": "M4A3",
+      "aula": "",
+      "titulo": "tag do google acoes conversao",
+      "caracteres": 5764,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a4_segmentacoes_no_google_ads.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a4_segmentacoes_no_google_ads.txt",
+      "modulo": "M4A4",
+      "aula": "",
+      "titulo": "segmentacoes no google ads",
+      "caracteres": 6516,
+      "paginas_extraidas": 9
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras-chave.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras-chave.txt",
+      "modulo": "M4A5",
+      "aula": "",
+      "titulo": "lista palavras-chave",
+      "caracteres": 4663,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras_positivas_e_negativas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a5_lista_de_palavras_positivas_e_negativas.txt",
+      "modulo": "M4A5",
+      "aula": "",
+      "titulo": "lista palavras positivas negativas",
+      "caracteres": 1550,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a6_criacao_de_campanhas_de_pesquisa.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a6_criacao_de_campanhas_de_pesquisa.txt",
+      "modulo": "M4A6",
+      "aula": "",
+      "titulo": "criacao campanhas pesquisa",
+      "caracteres": 5461,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a6_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a6_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.txt",
+      "modulo": "M4A6",
+      "aula": "",
+      "titulo": "guia formatos anuncios para a rede display google ads",
+      "caracteres": 994,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a7_metricas_especificas_da_rede_de_pesquisa.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a7_metricas_especificas_da_rede_de_pesquisa.txt",
+      "modulo": "M4A7",
+      "aula": "",
+      "titulo": "metricas especificas da rede pesquisa",
+      "caracteres": 5553,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a8_criacao_de_campanhas_de_youtube.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a8_criacao_de_campanhas_de_youtube.txt",
+      "modulo": "M4A8",
+      "aula": "",
+      "titulo": "criacao campanhas youtube",
+      "caracteres": 10595,
+      "paginas_extraidas": 12
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a9_criacao_de_campanhas_de_display.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a9_criacao_de_campanhas_de_display.txt",
+      "modulo": "M4A9",
+      "aula": "",
+      "titulo": "criacao campanhas display",
+      "caracteres": 5325,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m4a9_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.pdf",
+      "txt": "cst_curso_subido_de_trafego_m4a9_guia_de_formatos_de_anuncios_para_a_rede_de_display_google_ads.txt",
+      "modulo": "M4A9",
+      "aula": "",
+      "titulo": "guia formatos anuncios para a rede display google ads",
+      "caracteres": 994,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a10_como_definir_a_sua_rotina_de_otimizacoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a10_como_definir_a_sua_rotina_de_otimizacoes.txt",
+      "modulo": "M5A10",
+      "aula": "",
+      "titulo": "como definir a sua rotina otimizacoes",
+      "caracteres": 3591,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a11_as_4_maneiras_de_testar_variacoes_nas_suas_campanhas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a11_as_4_maneiras_de_testar_variacoes_nas_suas_campanhas.txt",
+      "modulo": "M5A11",
+      "aula": "",
+      "titulo": "as 4 maneiras testar variacoes nas suas campanhas",
+      "caracteres": 1910,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a12_como_manipular_suas_metricas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a12_como_manipular_suas_metricas.txt",
+      "modulo": "M5A12",
+      "aula": "",
+      "titulo": "como manipular suas metricas",
+      "caracteres": 2047,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a12_material_extra_guia_de_otimizacao_de_metricas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a12_material_extra_guia_de_otimizacao_de_metricas.txt",
+      "modulo": "M5A12",
+      "aula": "",
+      "titulo": "guia otimizacao metricas",
+      "caracteres": 25414,
+      "paginas_extraidas": 21
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a13_como_documentar_otimizacoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a13_como_documentar_otimizacoes.txt",
+      "modulo": "M5A13",
+      "aula": "",
+      "titulo": "como documentar otimizacoes",
+      "caracteres": 2458,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a14_otimizacoes_especificas_do_google_ads.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a14_otimizacoes_especificas_do_google_ads.txt",
+      "modulo": "M5A14",
+      "aula": "",
+      "titulo": "otimizacoes especificas do google ads",
+      "caracteres": 2919,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a1_o_metodo_subido_de_otimizacao.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a1_o_metodo_subido_de_otimizacao.txt",
+      "modulo": "M5A1",
+      "aula": "",
+      "titulo": "o metodo otimizacao",
+      "caracteres": 2912,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a2_o_que_e_uma_melhora_nos_seus_resultados.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a2_o_que_e_uma_melhora_nos_seus_resultados.txt",
+      "modulo": "M5A2",
+      "aula": "",
+      "titulo": "o que uma melhora nos seus resultados",
+      "caracteres": 5104,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a3_quando_otimizar_e_quando_nao_otimizar_suas_campanhas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a3_quando_otimizar_e_quando_nao_otimizar_suas_campanhas.txt",
+      "modulo": "M5A3",
+      "aula": "",
+      "titulo": "quando otimizar quando nao otimizar suas campanhas",
+      "caracteres": 3471,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a4_como_e_quando_alterar_lances_e_orcamentos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a4_como_e_quando_alterar_lances_e_orcamentos.txt",
+      "modulo": "M5A4",
+      "aula": "",
+      "titulo": "como quando alterar lances orcamentos",
+      "caracteres": 5224,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a5_como_e_quando_otimizar_segmentacoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a5_como_e_quando_otimizar_segmentacoes.txt",
+      "modulo": "M5A5",
+      "aula": "",
+      "titulo": "como quando otimizar segmentacoes",
+      "caracteres": 2299,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a5_material_extra_processo_solicitacao_de_criativos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a5_material_extra_processo_solicitacao_de_criativos.txt",
+      "modulo": "M5A5",
+      "aula": "",
+      "titulo": "processo solicitacao criativos",
+      "caracteres": 3489,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a6_como_e_quando_otimizar_criativos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a6_como_e_quando_otimizar_criativos.txt",
+      "modulo": "M5A6",
+      "aula": "",
+      "titulo": "como quando otimizar criativos",
+      "caracteres": 2462,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a7_como_e_quando_otimizar_estruturas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a7_como_e_quando_otimizar_estruturas.txt",
+      "modulo": "M5A7",
+      "aula": "",
+      "titulo": "como quando otimizar estruturas",
+      "caracteres": 3118,
+      "paginas_extraidas": 5
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a8_como_e_quando_otimizar_pixel.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a8_como_e_quando_otimizar_pixel.txt",
+      "modulo": "M5A8",
+      "aula": "",
+      "titulo": "como quando otimizar pixel",
+      "caracteres": 1591,
+      "paginas_extraidas": 3
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a9_como_e_quando_otimizar_destino.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a9_como_e_quando_otimizar_destino.txt",
+      "modulo": "M5A9",
+      "aula": "",
+      "titulo": "como quando otimizar destino",
+      "caracteres": 2477,
+      "paginas_extraidas": 4
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_guia_do_cliente_oculto.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_guia_do_cliente_oculto.txt",
+      "modulo": "M5A9",
+      "aula": "",
+      "titulo": "guia do cliente oculto",
+      "caracteres": 8498,
+      "paginas_extraidas": 9
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_manual_de_uma_boa_landing_page.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_manual_de_uma_boa_landing_page.txt",
+      "modulo": "M5A9",
+      "aula": "",
+      "titulo": "manual uma boa landing page",
+      "caracteres": 12569,
+      "paginas_extraidas": 13
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5a9_material_extra_processo_cliente_oculto_retroativo.pdf",
+      "txt": "cst_curso_subido_de_trafego_m5a9_material_extra_processo_cliente_oculto_retroativo.txt",
+      "modulo": "M5A9",
+      "aula": "",
+      "titulo": "processo cliente oculto retroativo",
+      "caracteres": 6705,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m5v13_extra_registro_de_otimizações.xlsx - pg .pdf",
+      "txt": "cst_curso_subido_de_trafego_m5v13_extra_registro_de_otimizações.xlsx - pg .txt",
+      "modulo": "M5V13",
+      "aula": "",
+      "titulo": "registro otimizações.xlsx - pg",
+      "caracteres": 44049,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a01_como_criar_uma_estrategia_de_trafego_pago.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a01_como_criar_uma_estrategia_de_trafego_pago.txt",
+      "modulo": "M6A01",
+      "aula": "",
+      "titulo": "como criar uma estrategia pago",
+      "caracteres": 9205,
+      "paginas_extraidas": 10
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a02_como_deixar_de_ser_um_apertador_de_botoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a02_como_deixar_de_ser_um_apertador_de_botoes.txt",
+      "modulo": "M6A02",
+      "aula": "",
+      "titulo": "como deixar ser um apertador botoes",
+      "caracteres": 9327,
+      "paginas_extraidas": 9
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a03_planejamento_de_campanhas_para_negocios_fisicos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a03_planejamento_de_campanhas_para_negocios_fisicos.txt",
+      "modulo": "M6A03",
+      "aula": "",
+      "titulo": "planejamento campanhas para negocios fisicos",
+      "caracteres": 8933,
+      "paginas_extraidas": 10
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a04_como_criar_um_planejamento_de_campanhas_para_e-commerces.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a04_como_criar_um_planejamento_de_campanhas_para_e-commerces.txt",
+      "modulo": "M6A04",
+      "aula": "",
+      "titulo": "como criar um planejamento campanhas para e-commerces",
+      "caracteres": 7709,
+      "paginas_extraidas": 9
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a05_planejamento_de_campanhas_para_infoprodutos_de_venda_continua.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a05_planejamento_de_campanhas_para_infoprodutos_de_venda_continua.txt",
+      "modulo": "M6A05",
+      "aula": "",
+      "titulo": "planejamento campanhas para infoprodutos venda continua",
+      "caracteres": 6205,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a06_planejamento_de_campanhas_de_trafego_para_lancamentos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a06_planejamento_de_campanhas_de_trafego_para_lancamentos.txt",
+      "modulo": "M6A06",
+      "aula": "",
+      "titulo": "planejamento campanhas para lancamentos",
+      "caracteres": 6215,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a07_quando_unir_e_separar_conjuntos_de_anuncios_e_campanhas.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a07_quando_unir_e_separar_conjuntos_de_anuncios_e_campanhas.txt",
+      "modulo": "M6A07",
+      "aula": "",
+      "titulo": "quando unir separar conjuntos anuncios campanhas",
+      "caracteres": 9524,
+      "paginas_extraidas": 10
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a08_exclusao_e_hierarquia_de_publicos.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a08_exclusao_e_hierarquia_de_publicos.txt",
+      "modulo": "M6A08",
+      "aula": "",
+      "titulo": "exclusao hierarquia publicos",
+      "caracteres": 7361,
+      "paginas_extraidas": 9
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a09_15_principios_para_ser_estrategico_em_suas_segmentacoes.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a09_15_principios_para_ser_estrategico_em_suas_segmentacoes.txt",
+      "modulo": "M6A09",
+      "aula": "",
+      "titulo": "15 principios para ser estrategico em suas segmentacoes",
+      "caracteres": 5719,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a10_distribuicao_de_conteudo.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a10_distribuicao_de_conteudo.txt",
+      "modulo": "M6A10",
+      "aula": "",
+      "titulo": "distribuicao conteudo",
+      "caracteres": 5773,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a11_distribuicao_de_conteudo_validacao_e_escolha.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a11_distribuicao_de_conteudo_validacao_e_escolha.txt",
+      "modulo": "M6A11",
+      "aula": "",
+      "titulo": "distribuicao conteudo validacao escolha",
+      "caracteres": 5526,
+      "paginas_extraidas": 7
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a12_distribuicao_de_conteudo_descoberta_e_aquecimento.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a12_distribuicao_de_conteudo_descoberta_e_aquecimento.txt",
+      "modulo": "M6A12",
+      "aula": "",
+      "titulo": "distribuicao conteudo descoberta aquecimento",
+      "caracteres": 4903,
+      "paginas_extraidas": 6
+    },
+    {
+      "arquivo": "cst_curso_subido_de_trafego_m6a13_distribuicao_de_conteudo_diversificacao_e_variacao.pdf",
+      "txt": "cst_curso_subido_de_trafego_m6a13_distribuicao_de_conteudo_diversificacao_e_variacao.txt",
+      "modulo": "M6A13",
+      "aula": "",
+      "titulo": "distribuicao conteudo diversificacao variacao",
+      "caracteres": 5518,
+      "paginas_extraidas": 8
+    },
+    {
+      "arquivo": "cst_curso_subido_de_tráfego_m4a5_material_extra_ planilha_de_correspondência.xlsx - Intruções de uso da planilha.pdf",
+      "txt": "cst_curso_subido_de_tráfego_m4a5_material_extra_ planilha_de_correspondência.xlsx - Intruções de uso da planilha.txt",
+      "modulo": "M4A5",
+      "aula": "",
+      "titulo": "planilha correspondência.xlsx - Intruções de uso da planilha",
+      "caracteres": 4794,
+      "paginas_extraidas": 2
+    },
+    {
+      "arquivo": "cst_curso_subido_de_tráfego_m5a6_material_extra_modelo_de_solicitação_de_criativos.pdf",
+      "txt": "cst_curso_subido_de_tráfego_m5a6_material_extra_modelo_de_solicitação_de_criativos.txt",
+      "modulo": "M5A6",
+      "aula": "",
+      "titulo": "modelo solicitação criativos",
+      "caracteres": 3489,
+      "paginas_extraidas": 8
+    }
+  ]
+}

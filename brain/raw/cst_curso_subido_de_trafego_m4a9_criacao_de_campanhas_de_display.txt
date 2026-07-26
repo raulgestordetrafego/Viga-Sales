@@ -1,0 +1,138 @@
+--- Página 1 ---
+AULA 9
+Criação de
+campanhas
+de display
+1
+
+--- Página 2 ---
+Criação de campanhas de display
+Índice
+Introdução ……………………………………………………………………………...………………….……………………………………….……….………………………….…………………………….……………………………………… Pág. 2
+O poder (e o perigo) da rede de Display……..….………………………….…...………….…...………….…...…………………………………………………………………………… Pág. 3
+Tipos de segmentação: público x conteúdo …………..….…………………………….…...………….…...………….……………………….....………….…...……………… Pág. 4
+Tipos de campanha que funcionam na GDN ………..….…………………………….…...………….…...………….……………………….....………….…...……………… Pág. 5
+Estratégias de lance …………..….…………………………….…...………….…...………….……………………….....………….…...………………………………………………………………………………………….. Pág. 6
+Formatos de anúncio…………..….…………………………….…...………….…...………….……………………….....………….…...………………………………………………………………………………………… Pág. 7
+Otimização: não pule esta etapa…..….…………………………….…...………………………………….…...………………………………………………………………………………………… Pág. 7
+00’01’’
+Introdução
+A melhor forma de entender o que são as campanhas da rede de display é
+pensar nelas como campanhas de remarketing. Também chamadas de
+"retargeting", elas têm como objetivo reaparecer para quem já teve algum
+contato com você.
+A rede de display é o canal perfeito para manter o
+relacionamento com esses leads quentes. E, para ilustrar
+isso, nada melhor do que o famoso exemplo da
+"perseguição da geladeira":
+Você pesquisa um eletrodoméstico, compara preços,
+acessa vários sites, mas ainda não decide nada. Dias
+Pág. 2
+
+--- Página 3 ---
+Criação de campanhas de display
+depois, começa a ver geladeiras por todos os lados da internet.
+Isso é remarketing em ação, feito via Google Display Network (GDN) — a rede
+de sites parceiros do Google, que cobre cerca de 90% da internet.
+Bora entender mais sobre isso?
+02’21’’
+O poder (e o perigo)
+da rede de Display
+O alcance da GDN é gigante. E é exatamente por isso que ela é tão poderosa.
+No entanto, esse poder também traz desafios.
+Uma coisa que você precisa saber: campanhas mal segmentadas na rede de
+display podem atrair um público desqualificado.
+Um exemplo real disso: ao rodar uma campanha para um curso de inglês, um
+cliente meu começou a receber várias mensagens de pessoas achando que
+estavam se inscrevendo para vagas de emprego. Por quê? Porque os banners
+estavam aparecendo em sites de vagas. E muitas pessoas confundem o
+banner com o conteúdo da página.
+Esse tipo de situação mostra a importância de segmentar bem. Por isso, é
+fundamental trabalhar com públicos quentes. Evite ao máximo usar a
+campanha de display para públicos frios.
+Pág. 3
+
+--- Página 4 ---
+Criação de campanhas de display
+03’44’’
+Tipos de segmentação:
+público x conteúdo
+Você pode configurar sua campanha com dois tipos principais de
+segmentação:
+Segmentação por público-alvo: você quer atingir pessoas
+com determinado perfil ou interesse, como "aprender inglês" ou "marketing
+digital".
+Segmentação por conteúdo: você quer que seus anúncios
+apareçam em páginas e sites que falem de temas específicos.
+Na teoria, segmentar por conteúdo é ótimo. Mas, na prática, pode limitar
+demais sua campanha e matar a escala.
+Pág. 4
+
+--- Página 5 ---
+Criação de campanhas de display
+05’04’’
+Tipos de campanha que
+funcionam na GDN
+Aqui estão os cenários onde a GDN brilha:
+1. Remarketing para vendas e leads
+Mostre seus banners para quem:
+● Visitou a página de vendas e não comprou;
+● Tentou se cadastrar, mas não finalizou;
+● Interagiu com você, mas ainda não tomou a ação.
+2. Remarketing para lembrete (aula, promoção, lembretes,
+novidade)
+É ótimo para:
+● Anunciar eventos ao vivo (ex: aula às 20h);
+● Lembrar de lançamentos e promoções;
+● Divulgar atualizações no site.
+3. Remarketing para branding
+São campanhas de reconhecimento de marca. Elas não buscam cliques nem
+conversões diretas. O foco é apenas marcar presença. Tipo os comerciais da
+Coca-Cola.
+Importante: todos os exemplos acima trabalham com públicos quentes.
+Pág. 5
+
+--- Página 6 ---
+Criação de campanhas de display
+06’45’’
+Estratégias de lance
+Cada tipo de campanha pede uma abordagem diferente:
+● CPA desejado: se o foco é conversão, use essa estratégia.
+● CPC desejado ou otimizado: para tráfego e lembretes, buscando
+cliques.
+● CPM: foca em impressões, ideal para branding e reforço de marca.
+Pág. 6
+
+--- Página 7 ---
+Criação de campanhas de display
+09’45’’
+Formatos de anúncio
+O Google padroniza os formatos de banners para garantir compatibilidade
+com os sites parceiros. Portanto, você não precisa decorar nada.
+Se você não incluir, por exemplo, um
+banner 300 x 300, e um site aceitar
+apenas esse formato, você deixará de
+aparecer lá. Simples assim.
+10’27’’
+Otimização: não pule
+esta etapa
+A rede de display precisa de revisão constante. Dentro do Google Ads, vá até a
+aba "Onde os anúncios foram exibidos" para:
+● Verificar os sites onde você está aparecendo;
+● Excluir os que têm baixo desempenho ou não convertem;
+● E ajustar suas campanhas para sites mais relevantes.
+Pág. 7
+
+--- Página 8 ---
+Criação de campanhas de display
+📌
+Para fixar
+● Use a rede de display principalmente para remarketing.
+● Foque em públicos quentes.
+● Trabalhe com todos os formatos de banner.
+● Escolha sua estratégia de lance com base no seu objetivo.
+● Otimize frequentemente: exclua sites que não entregam resultado.
+Seguindo esses passos, você vai extrair o melhor da rede de display.
+🙌
+Tamo junto!
+Pág. 8

@@ -24,8 +24,7 @@ class DatabaseWrapper {
       try {
         this.pool = new Pool({
           connectionString: DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
-          connectionTimeoutMillis: 5000 // 5 seconds timeout
+      connectionTimeoutMillis: 5000 // 5 seconds timeout
         });
         console.log('Using PostgreSQL database');
       } catch (err) {
@@ -78,10 +77,67 @@ class DatabaseWrapper {
           result += char;
         }
       }
+      // Convert SQLite datetime() to Postgres equivalents
+      result = result.replace(/datetime\('now'(,\s*'([+-]\d+)\s+(\w+)')?\)/g, (match, fullExpr, amount, unit) => {
+        if (!fullExpr) return 'NOW()';
+        const sign = amount.startsWith('-') ? '-' : '+';
+        const val = amount.replace(/[+-]/, '');
+        return `NOW() ${sign} INTERVAL '${val} ${unit}'`;
+      });
+      // datetime(column) -> column::timestamp (for comparison in WHERE)
+      result = result.replace(/datetime\((\w+)\)/g, '$1::timestamp');
+      // date(column) -> column::date (for comparison in WHERE)
+      result = result.replace(/date\(([\w.]+)\)/g, '$1::date');
       return result;
     } else {
-      // Convert Postgres ILIKE to SQLite LIKE (SQLite LIKE is case-insensitive by default)
-      return sql.replace(/ILIKE/gi, 'LIKE');
+      // Convert Postgres syntax → SQLite
+      let result = sql;
+
+      // 1. $N parameter placeholders → ?
+      let j = 0;
+      let inStr = false;
+      let out = '';
+      for (let k = 0; k < result.length; k++) {
+        const ch = result[k];
+        if (ch === "'") inStr = !inStr;
+        if (ch === '$' && !inStr && /\d/.test(result[k + 1] || '')) {
+          out += '?';
+          k++; // skip digit
+          while (k + 1 < result.length && /\d/.test(result[k + 1])) k++; // skip more digits
+        } else {
+          out += ch;
+        }
+      }
+      result = out;
+
+      // 2. column::date → date(column)
+      result = result.replace(/([\w.]+)::date/gi, 'date($1)');
+
+      // 3. Remove remaining Postgres type casts: ::int, ::text, ::timestamp, ::bigint, etc.
+      result = result.replace(/::\w+(\s*\[\])?/g, '');
+
+      // 4. CURRENT_DATE ± INTERVAL 'N unit' → date('now', '±N unit')
+      result = result.replace(/CURRENT_DATE\s*-\s*INTERVAL\s*'(\d+)\s*(\w+)'/gi,
+        "date('now', '-$1 $2')");
+      result = result.replace(/CURRENT_DATE\s*\+\s*INTERVAL\s*'(\d+)\s*(\w+)'/gi,
+        "date('now', '+$1 $2')");
+
+      // 5. CURRENT_DATE → date('now')
+      result = result.replace(/CURRENT_DATE/gi, "date('now')");
+
+      // 6. NOW() ± INTERVAL 'N unit' → datetime('now', '±N unit')
+      result = result.replace(/NOW\(\)\s*-\s*INTERVAL\s*'(\d+)\s*(\w+)'/gi,
+        "datetime('now', '-$1 $2')");
+      result = result.replace(/NOW\(\)\s*\+\s*INTERVAL\s*'(\d+)\s*(\w+)'/gi,
+        "datetime('now', '+$1 $2')");
+
+      // 7. NOW() → datetime('now')
+      result = result.replace(/NOW\(\)/gi, "datetime('now')");
+
+      // 8. ILIKE → LIKE (SQLite LIKE is case-insensitive for ASCII)
+      result = result.replace(/ILIKE/gi, 'LIKE');
+
+      return result;
     }
   }
 
@@ -144,12 +200,13 @@ class DatabaseWrapper {
       try {
         await client.query('BEGIN');
         const result = await client.query(
-          `SELECT * FROM prospects
+           `SELECT * FROM prospects
            WHERE status = 'novo'
              ${campaignId ? "AND campaign_id = $2" : ""}
              AND NOT EXISTS (
                SELECT 1 FROM prospecting_logs
-               WHERE prospect_id = prospects.id AND action = 'enviado'
+               WHERE prospect_id = prospects.id AND action IN ('enviado', 'enviado_meta')
+                 AND date(created_at) = CURRENT_DATE
              )
            ORDER BY created_at ASC
            LIMIT $1
@@ -174,13 +231,14 @@ class DatabaseWrapper {
       // SQLite: transação síncrona — atomicidade garantida
       const db = this.sqlite;
       const reserve = db.transaction((campaignId, limit) => {
-        const rows = db.prepare(
+         const rows = db.prepare(
           `SELECT * FROM prospects
            WHERE status = 'novo'
              ${campaignId ? "AND campaign_id = ?" : ""}
              AND NOT EXISTS (
                SELECT 1 FROM prospecting_logs
-               WHERE prospect_id = prospects.id AND action = 'enviado'
+               WHERE prospect_id = prospects.id AND action IN ('enviado', 'enviado_meta')
+                 AND date(created_at) = date('now')
              )
            ORDER BY created_at ASC
            LIMIT ?`
@@ -467,6 +525,53 @@ async function initializeSchema() {
       error TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS meta_templates (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE,
+      vars TEXT NOT NULL DEFAULT '[]',
+      body TEXT NOT NULL,
+      segment TEXT DEFAULT 'geral',
+      max_sends INTEGER DEFAULT 50,
+      sent_count INTEGER DEFAULT 0,
+      paused INTEGER DEFAULT 0,
+      media_url TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS meta_template_logs (
+      id TEXT PRIMARY KEY,
+      template_id TEXT NOT NULL,
+      prospect_id TEXT,
+      phone TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'sent',
+      error TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS system_config (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS community_logs (
+      id TEXT PRIMARY KEY,
+      content_type TEXT DEFAULT 'text',
+      body TEXT,
+      sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS blog_posts (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      subtitle TEXT,
+      body TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      tags TEXT DEFAULT '[]',
+      faq JSONB DEFAULT '[]',
+      cover_image TEXT,
+      status TEXT DEFAULT 'draft',
+      published_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS whatsapp_instances (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -496,6 +601,106 @@ async function initializeSchema() {
       value TEXT,
       PRIMARY KEY (contact_id, field_id)
     )`,
+    `CREATE TABLE IF NOT EXISTS email_templates (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      body_html TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS email_lists (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      file_name TEXT,
+      recipient_count INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS email_recipients (
+      id TEXT PRIMARY KEY,
+      list_id TEXT NOT NULL,
+      email TEXT NOT NULL,
+      name TEXT,
+      company TEXT,
+      extra_data TEXT DEFAULT '{}',
+      status TEXT DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS email_campaigns (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      template_id TEXT,
+      list_id TEXT,
+      subject TEXT NOT NULL,
+      body_html TEXT NOT NULL,
+      sender_name TEXT DEFAULT 'Viga Sales',
+      sender_email TEXT DEFAULT 'contato@vigasales.com.br',
+      reply_to TEXT,
+      status TEXT DEFAULT 'draft',
+      daily_limit INTEGER DEFAULT 50,
+      time_start TEXT DEFAULT '08:00',
+      time_end TEXT DEFAULT '18:00',
+      days_of_week TEXT DEFAULT '[1,2,3,4,5]',
+      min_delay_sec INTEGER DEFAULT 30,
+      max_delay_sec INTEGER DEFAULT 120,
+      use_ai_variation INTEGER DEFAULT 0,
+      ai_variation_prompt TEXT,
+      sent_count INTEGER DEFAULT 0,
+      bounced_count INTEGER DEFAULT 0,
+      opened_count INTEGER DEFAULT 0,
+      clicked_count INTEGER DEFAULT 0,
+      total_recipients INTEGER DEFAULT 0,
+      last_sent_at TEXT,
+      started_at TEXT,
+      finished_at TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS email_send_logs (
+      id TEXT PRIMARY KEY,
+      campaign_id TEXT NOT NULL,
+      recipient_id TEXT NOT NULL,
+      smtp_message_id TEXT,
+      status TEXT DEFAULT 'pending',
+      subject_sent TEXT,
+      body_sent TEXT,
+      error TEXT,
+      sent_at TEXT,
+      opened_at TEXT,
+      clicked_at TEXT,
+      replied_at TEXT,
+      bounced_at TEXT,
+      complained_at TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS chief_tasks (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      category TEXT DEFAULT 'geral',
+      priority TEXT DEFAULT 'media',
+      status TEXT DEFAULT 'pendente',
+      week_start DATE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      completed_at TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS boss_memory (
+      id TEXT PRIMARY KEY,
+      phone TEXT NOT NULL,
+      role TEXT NOT NULL,
+      content TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS login_attempts (
+      id TEXT PRIMARY KEY,
+      ip TEXT NOT NULL,
+      email TEXT,
+      success INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_login_attempts_ip ON login_attempts(ip)`,
+    `CREATE INDEX IF NOT EXISTS idx_login_attempts_created ON login_attempts(created_at)`,
 
   ];
 
@@ -534,6 +739,21 @@ async function initializeSchema() {
   try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_convs_status ON conversations(status)`); } catch {}
   try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_contacts_stage ON contacts(pipeline_stage)`); } catch {}
   try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_email_recipients_list ON email_recipients(list_id)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_email_logs_campaign ON email_send_logs(campaign_id)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_email_logs_recipient ON email_send_logs(recipient_id)`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_email_logs_status ON email_send_logs(status)`); } catch {}
+  // Migrações email
+  try { await db.exec(`ALTER TABLE email_campaigns ADD COLUMN sent_today INTEGER DEFAULT 0`); } catch {}
+  try { await db.exec(`ALTER TABLE email_campaigns ADD COLUMN send_count_reset_date TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE email_campaigns ADD COLUMN replied_count INTEGER DEFAULT 0`); } catch {}
+  try { await db.exec(`ALTER TABLE email_send_logs ADD COLUMN smtp_message_id TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE email_send_logs ADD COLUMN replied_at TEXT`); } catch {}
+  // Meta WhatsApp delivery tracking
+  try { await db.exec(`ALTER TABLE meta_template_logs ADD COLUMN wamid TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE meta_template_logs ADD COLUMN delivered_at TEXT`); } catch {}
+  try { await db.exec(`ALTER TABLE meta_template_logs ADD COLUMN read_at TEXT`); } catch {}
+  try { await db.exec(`CREATE INDEX IF NOT EXISTS idx_meta_logs_wamid ON meta_template_logs(wamid)`); } catch {}
   // Corrigir campaign_id dos prospects importados antes da criação da campanha
   try {
     await db.run(

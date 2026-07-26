@@ -1,0 +1,156 @@
+--- Página 1 ---
+AULA 7
+Métricas específicas
+da rede de pesquisa
+
+--- Página 2 ---
+Métricas específicas da rede de pesquisa
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….…. Pág. 2
+Índice de share perdido pela classificação na primeira posição………………………….…………………………………….. Pág. 3
+Porcentagem de impressões na primeira posição……………………………………………………………………….…………………………………….. Pág. 4
+Índice de share na parte superior da pesquisa………………………………………………………………………………….…………………………………….…. Pág. 5
+Parcela de impressões perdidas na rede de pesquisa (por orçamento)….…………………………………….…. Pág. 6
+Índice de share de impressões perdidas na primeira posição da rede de pesquisa
+(por orçamento)…………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….… Pág. 7
+Parcela de impressões perdidas na rede de pesquisa (por qualificação)………………………………….…. Pág. 7
+00’01’’
+Introdução
+Quando falamos em anúncios no Google, existem
+métricas que só fazem sentido dentro da rede de
+pesquisa. E entender essas métricas é essencial
+para quem quer escalar campanhas de forma
+inteligente.
+O objetivo deste conteúdo não é te fazer decorar os
+nomes complicados das métricas, mas te
+apresentar quais são elas, o que significam e,
+principalmente, como usá-las na prática.
+Assim, quando estiver rodando campanhas na rede de pesquisa, você vai
+lembrar:
+“Tem uma métrica para isso, vou consultar no material do Pedro!”.
+🚀
+Vamos nessa?
+Pág. 2
+
+--- Página 3 ---
+Métricas específicas da rede de pesquisa
+01’06’’
+Índice de share perdido pela
+classificação na primeira
+posição
+🎯
+Essa métrica mostra a porcentagem de vezes em que o seu anúncio
+poderia ter aparecido na primeira posição, mas não apareceu.
+Motivos:
+● Baixa qualidade do anúncio;
+● Lance baixo;
+● Orçamento insuficiente.
+Se o Google diz que você perdeu 50% das
+impressões no topo por orçamento, ele
+está praticamente dizendo:
+“Coloca mais dinheiro aqui que você
+vai aparecer mais”.
+Importante: essa é uma métrica secundária, mas ela aponta um potencial de
+escala da sua campanha. Se a campanha está dando resultado e essa
+métrica aponta perdas por orçamento, vale considerar aumentar o
+investimento.
+Pág. 3
+
+--- Página 4 ---
+Métricas específicas da rede de pesquisa
+02’19’’
+Porcentagem de impressões
+na primeira posição
+🥇
+Essa é uma métrica mais descritiva. Ela mostra a porcentagem de vezes que
+o seu anúncio realmente apareceu na primeira posição da pesquisa.
+Serve para responder àquele clássico questionamento do cliente:
+“Pesquisei no Google e meu anúncio não apareceu!”
+Explique que o Google funciona como leilão. Nem sempre o anúncio aparece —
+ele pode até estar testando não mostrar ninguém só para observar o
+comportamento do usuário.
+Por isso, uma ou duas buscas isoladas não dizem nada. O que importa é o
+todo.
+Pág. 4
+
+--- Página 5 ---
+Métricas específicas da rede de pesquisa
+03’32’’
+Índice de share na parte
+superior da pesquisa
+🧠
+Essa métrica mostra quantas vezes seu anúncio apareceu na parte
+superior da página, ou seja, acima dos resultados orgânicos.
+É o número de impressões que você recebeu entre os anúncios na parte de
+cima da página de resultados da pesquisa dividido pelo número estimado de
+impressões que você tinha qualificação para receber.
+A porcentagem é calculada com base nas impressões que o Google estimou
+que você poderia ter. Se o índice está baixo, há espaço para melhorar —
+ajustando orçamento ou qualidade.
+Pág. 5
+
+--- Página 6 ---
+Métricas específicas da rede de pesquisa
+04’18’’
+Parcela de impressões
+perdidas na rede de pesquisa
+(por orçamento)
+💰
+Essa métrica é ouro para quem quer escalar. Ela mostra a frequência com
+que seu anúncio deixou de aparecer por falta de verba.
+Está na dúvida se deve investir mais?
+Essa métrica responde com clareza:
+"Você poderia estar aparecendo mais se colocasse mais dinheiro."
+Simples assim.
+Pág. 6
+
+--- Página 7 ---
+Métricas específicas da rede de pesquisa
+04’58’’
+Índice de share de impressões
+perdidas na primeira posição
+da rede de pesquisa (por
+orçamento)
+📌
+É uma métrica parecida com a anterior, mas focada na primeira posição.
+Ela mostra quantas vezes você deixou de aparecer no topo da página por
+causa do orçamento. Se você quer brigar pela liderança do leilão, essa métrica
+é essencial.
+05’27’’
+Parcela de impressões
+perdidas na rede de pesquisa
+(por qualificação)
+Agora o papo é outro: não é dinheiro, é qualidade.
+Essa métrica estima quantas vezes seu anúncio não foi exibido na rede de
+pesquisa devido a uma classificação do anúncio insatisfatória.
+E o que você pode fazer? Eu digo:
+Pág. 7
+
+--- Página 8 ---
+Métricas específicas da rede de pesquisa
+● Melhorar títulos e descrições;
+● Revisar a copy;
+● Ajustar os termos de pesquisa para os quais está aparecendo.
+A qualidade do anúncio está diretamente relacionada à relevância para o
+termo buscado. Não adianta ser bom "no geral". Tem que ser bom para o que a
+pessoa está buscando.
+Dica do Subido
+👁📈
+Fique de Olho no CTR!
+O CTR (Click Through Rate) é um ótimo
+indicativo de qualidade. Aqui no Brasil, um
+bom CTR na rede de pesquisa é acima de
+8% a 10%.
+Mas cuidado: mesmo com CTR alto, pode
+haver problema. Se a classificação geral
+for ruim, outros anunciantes com anúncios
+melhores vão aparecer no seu lugar.
+Essas são as principais métricas que uso no dia a dia, e que também vão te
+ajudar a analisar suas campanhas com muito mais precisão.
+Você não precisa decorar tudo. Basta consultar sempre que precisar.
+Com essas métricas na mão, você já está avançando mais do que 99% dos
+💪
+anunciantes por aí.
+🚀
+Tamo junto!
+Pág. 8

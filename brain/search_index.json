@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "name": "Cérebro de Tráfego Pago - Viga Sales",
+    "version": "2.0",
+    "total_fontes": "75 PDFs + 29 lives YouTube (~41h)",
+    "total_caracteres": "~3M+",
+    "topicos": 5,
+    "ultima_atualizacao": "2026-07-23"
+  },
+  "topicos": {
+    "fundamentos": {
+      "arquivo": "brain/topics/fundamentos.md",
+      "descricao": "12 conceitos universais, PÃO E OVO, leilão, ICP, pixel, RETINA, escala",
+      "keywords": ["fundamentos", "conceitos", "leilão", "pão e ovo", "ICP", "pixel", "retina", "escala", "iniciante", "básico", "teoria", "universal", "fontes de tráfego", "público frio", "público quente", "público morno", "marketing de performance", "CPM", "CPC", "CPA", "CTR", "API de conversões", "traqueamento", "distribuição de conteúdo"],
+      "quando_usar": ["está começando no tráfego pago", "quer entender conceitos básicos", "precisa do framework PÃO E OVO", "quer entender como funciona o leilão", "precisa definir ICP"]
+    },
+    "meta-ads": {
+      "arquivo": "brain/topics/meta-ads.md",
+      "descricao": "Facebook/Instagram Ads: estrutura, segmentação, orçamentos, lances, criativos",
+      "keywords": ["meta ads", "facebook", "instagram", "CBO", "ABO", "Advantage", "segmentação", "público-alvo", "lookalike", "semelhante", "posicionamento", "stories", "feed", "reels", "nomenclatura", "conjunto de anúncios", "business manager", "gerenciador de anúncios", "fase de aprendizado", "pixel meta", "API conversões meta"],
+      "quando_usar": ["vai criar campanha no Facebook/Instagram", "precisa definir orçamento CBO vs ABO", "quer estruturar nomenclatura de campanhas", "precisa configurar pixel da Meta", "quer entender segmentações da Meta", "precisa otimizar criativos no Meta Ads"]
+    },
+    "google-ads": {
+      "arquivo": "brain/topics/google-ads.md",
+      "descricao": "Google Ads: pesquisa, display, YouTube, PMax, lances, palavras-chave",
+      "keywords": ["google ads", "pesquisa", "display", "youtube", "pmax", "performance max", "shopping", "GDN", "palavras-chave", "keyword planner", "correspondência", "ampla", "frase", "exata", "palavra negativa", "tag do google", "conversão", "remarketing", "institucional", "brand", "google ads editor", "lances google", "CPC manual", "maximizar cliques", "maximizar conversões", "CPA desejado", "ROAS desejado"],
+      "quando_usar": ["vai criar campanha no Google Ads", "precisa escolher tipo de campanha", "quer montar lista de palavras-chave", "precisa configurar tag do Google", "vai fazer remarketing no Display", "quer anunciar no YouTube", "precisa configurar PMax", "campanha não está gastando", "quer usar Google Ads Editor"]
+    },
+    "otimizacao": {
+      "arquivo": "brain/topics/otimizacao.md",
+      "descricao": "Rotina de otimização, 19 métricas, lances, segmentações, criativos, landing pages",
+      "keywords": ["otimização", "métricas", "CPM", "CPC", "CTR", "CPA", "ROAS", "LTV", "lance", "orçamento", "segmentação", "criativo", "estrutura", "pixel", "landing page", "teste AB", "documentação", "rotina", "frequência", "sweet spot", "pacing", "hook rate", "connect rate", "checkout", "abandono de carrinho", "ticket médio", "AOV", "funil", "gargalo", "cliente oculto"],
+      "quando_usar": ["resultados estão ruins e precisa otimizar", "quer montar rotina de otimização", "precisa melhorar uma métrica específica", "vai otimizar landing page", "quer fazer testes A/B", "precisa documentar otimizações", "quer auditar funil de vendas"]
+    },
+    "estrategia": {
+      "arquivo": "brain/topics/estrategia.md",
+      "descricao": "Planejamento por tipo de negócio, hierarquia de públicos, distribuição de conteúdo",
+      "keywords": ["estratégia", "planejamento", "negócio físico", "e-commerce", "infoproduto", "lançamento", "hierarquia", "exclusão", "públicos", "distribuição de conteúdo", "branding", "geolocalização", "CPL", "funil de vendas", "lookalike", "warming", "autoridade", "ticket médio", "LTV", "tráfego orgânico", "RETINA"],
+      "quando_usar": ["vai planejar estratégia para um cliente", "precisa de plano para e-commerce", "precisa de plano para negócio físico", "precisa de plano para infoproduto", "precisa de plano para lançamento", "quer estruturar hierarquia de públicos", "vai fazer distribuição de conteúdo"]
+    },
+    "youtube-lives": {
+      "arquivo": "brain/topics/youtube-lives.md",
+      "descricao": "29 lives YouTube (~41h) processadas por IA: insights extraídos, ruído removido, organizado por tema",
+      "keywords": ["youtube", "lives", "pedro sobral", "thiago tesma", "subido", "google ads 2026", "passo a passo", "checklist", "iniciante", "primeira campanha", "institucional", "10 passos", "answer the public", "also asked", "live", "aula ao vivo", "vídeo aula", "Andrômeda", "MCP", "Chat GPT Ads", "AEO", "copywriting", "GCC", "gancho", "criativo com tempero", "RETINA", "pixel tutorial", "whatsapp ads", "segmentação google", "PMax tutorial", "lead scoring", "storytelling", "jornada do herói", "negócios locais", "KPIs", "ROAS", "LTV", "oferta vencedora", "cliente oculto", "filosofia sobral", "PMax", "Advantage+", "catálogo meta"],
+      "quando_usar": ["quer passo a passo para primeira campanha", "precisa de checklist Google Ads", "quer dicas práticas do especialista", "precisa de exemplos reais", "quer ver cases práticos", "precisa aprender copywriting para anúncios", "quer dominar criativos e ganchos", "precisa configurar pixel da Meta", "quer aprender sobre Chat GPT Ads e AEO", "precisa montar campanha de WhatsApp", "quer entender automações (Andrômeda, Advantage+, PMax)", "precisa de estratégia para negócio local", "quer melhorar storytelling em anúncios", "precisa de framework de lead scoring"]
+    }
+  },
+  "raw": {
+    "descricao": "Arquivos brutos com transcrições completas para deep-dive",
+    "pdfs": "brain/raw/*.txt (75 arquivos)",
+    "youtube": "brain/raw/youtube_*.txt (14 arquivos)"
+  },
+  "rotas_inteligentes": {
+    "quero_criar_minha_primeira_campanha": ["fundamentos", "google-ads", "youtube-lives"],
+    "campanha_nao_esta_performando": ["otimizacao", "meta-ads", "google-ads"],
+    "quero_estruturar_conta_de_cliente": ["estrategia", "meta-ads", "google-ads"],
+    "preciso_melhorar_meus_criativos": ["meta-ads", "otimizacao"],
+    "quero_escalar_resultados": ["fundamentos", "otimizacao", "estrategia"],
+    "cliente_quer_relatorio": ["otimizacao"],
+    "vou_lancar_um_produto": ["estrategia"],
+    "preciso_configurar_pixel": ["fundamentos", "meta-ads", "google-ads"],
+    "quero_montar_rotina_de_otimizacao": ["otimizacao"],
+    "quero_fazer_remarketing": ["google-ads", "meta-ads", "estrategia"],
+    "preciso_definir_orcamento": ["meta-ads", "google-ads"],
+    "quero_anunciar_no_youtube": ["google-ads"],
+    "quero_melhorar_landing_page": ["otimizacao"],
+    "sou_iniciante_total": ["fundamentos", "youtube-lives"]
+  }
+}

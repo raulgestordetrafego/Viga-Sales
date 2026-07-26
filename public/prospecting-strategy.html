@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estratégia de Prospecção Ativa — Viga Sales</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --surface2: #1C2330;
+    --border: rgba(255,255,255,0.07);
+    --green: #00C853;
+    --green-dim: rgba(0,200,83,0.12);
+    --yellow: #FFD600;
+    --yellow-dim: rgba(255,214,0,0.10);
+    --red: #FF1744;
+    --red-dim: rgba(255,23,68,0.10);
+    --blue: #2979FF;
+    --blue-dim: rgba(41,121,255,0.10);
+    --orange: #FF6D00;
+    --orange-dim: rgba(255,109,0,0.10);
+    --text: #E6EDF3;
+    --muted: #7D8590;
+    --font: 'Syne', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    margin-bottom: 56px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid rgba(0,200,83,0.2);
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .header-tag::before { content: '▶'; font-size: 8px; }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--green); }
+
+  .header-sub {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    font-family: var(--mono);
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.35s; }
+  .section:nth-child(6) { animation-delay: 0.4s; }
+  .section:nth-child(7) { animation-delay: 0.45s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Cards grid ── */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  .card.green  { border-left: 3px solid var(--green);  background: linear-gradient(135deg, var(--surface), rgba(0,200,83,0.04)); }
+  .card.yellow { border-left: 3px solid var(--yellow); background: linear-gradient(135deg, var(--surface), rgba(255,214,0,0.04)); }
+  .card.red    { border-left: 3px solid var(--red);    background: linear-gradient(135deg, var(--surface), rgba(255,23,68,0.04)); }
+  .card.blue   { border-left: 3px solid var(--blue);   background: linear-gradient(135deg, var(--surface), rgba(41,121,255,0.04)); }
+  .card.orange { border-left: 3px solid var(--orange); background: linear-gradient(135deg, var(--surface), rgba(255,109,0,0.04)); }
+
+  .card-icon { font-size: 24px; margin-bottom: 10px; }
+  .card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .card-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .card-body  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin: 3px 3px 0 0;
+  }
+
+  .tag-green  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(0,200,83,0.25); }
+  .tag-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,214,0,0.25); }
+  .tag-blue   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(41,121,255,0.25); }
+  .tag-red    { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(255,23,68,0.25); }
+  .tag-gray   { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ── Timeline ── */
+  .timeline {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .timeline-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .timeline-bar {
+    position: relative;
+    height: 48px;
+    background: var(--surface2);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .timeline-sleep {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 33.3%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(255,255,255,0.025) 4px,
+      rgba(255,255,255,0.025) 8px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timeline-active {
+    position: absolute;
+    left: 33.3%;
+    top: 0;
+    height: 100%;
+    width: 41.7%;
+    background: linear-gradient(90deg, rgba(0,200,83,0.15), rgba(0,200,83,0.25));
+    border-left: 2px solid var(--green);
+    border-right: 2px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .timeline-active-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  .timeline-sleep-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .timeline-night {
+    position: absolute;
+    left: 75%;
+    top: 0;
+    height: 100%;
+    width: 25%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(255,255,255,0.025) 4px,
+      rgba(255,255,255,0.025) 8px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timeline-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+
+  .tick {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* ── Cycle ── */
+  .cycle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .cycle-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cycle-step::after {
+    content: '→';
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    z-index: 2;
+  }
+
+  .cycle-step:last-child::after { display: none; }
+
+  .cycle-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .cycle-label {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .cycle-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── Math box ── */
+  .math-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .math-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .math-value {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .math-label {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── Funnel ── */
+  .funnel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .funnel-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .funnel-bubble {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 2px solid;
+    flex-shrink: 0;
+  }
+
+  .funnel-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .funnel-arrow {
+    font-size: 20px;
+    color: var(--muted);
+    flex-shrink: 0;
+    padding-bottom: 24px;
+  }
+
+  /* ── Searches list ── */
+  .search-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  .search-icon { font-size: 16px; flex-shrink: 0; }
+
+  .search-query {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .search-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid rgba(0,200,83,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── Limitations ── */
+  .limit-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .limit-item:last-child { border-bottom: none; }
+
+  .limit-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .limit-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .limit-text strong { color: var(--text); }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%       { transform: scale(1.5); opacity: 0.5; }
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="header-tag">sistema ativo</div>
+    <h1>Prospecção Ativa<br><span>Viga Sales</span></h1>
+    <p class="header-sub">// mapa completo da estratégia de aquisição via WhatsApp</p>
+  </header>
+
+  <!-- S1: ICP -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Quem prospectar — ICP</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card blue">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">perfil ideal</div>
+        <div class="card-title">Profissionais da Construção Civil</div>
+        <div class="card-body">
+          Engenheiros civis, arquitetos, construtores, empreiteiros.<br>
+          Acima de 30 anos. Donos do negócio.
+        </div>
+        <div style="margin-top: 12px;">
+          <span class="tag tag-blue">👷 Engenheiro Civil</span>
+          <span class="tag tag-blue">🏛️ Arquiteto</span>
+          <span class="tag tag-blue">🏗️ Construtor</span>
+          <span class="tag tag-blue">🔧 Empreiteiro</span>
+        </div>
+      </div>
+      <div class="card yellow">
+        <div class="card-icon">😤</div>
+        <div class="card-label">dor central</div>
+        <div class="card-title">Frustrações com Marketing</div>
+        <div class="card-body">
+          Nunca investiu em marketing — ou investiu, não funcionou, desistiu.<br>
+          Depende de indicação. Quer leads que tenham condição de contratar.
+        </div>
+        <div style="margin-top: 12px;">
+          <span class="tag tag-yellow">📍 Distrito Federal</span>
+          <span class="tag tag-yellow">🔄 Entorno do DF</span>
+          <span class="tag tag-gray">🌎 Aberto a fora do DF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: Geração de Leads -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Geração de Leads — Flow 1 (Manual)</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom: 16px;">
+      <div class="card">
+        <div class="card-icon">🗺️</div>
+        <div class="card-label">fonte</div>
+        <div class="card-title">Google Maps via Apify</div>
+        <div class="card-body">Extrai empresas com telefone, avaliação, endereço e site. Filtra automaticamente por número válido.</div>
+      </div>
+      <div class="card green">
+        <div class="card-icon">📊</div>
+        <div class="card-label">rendimento por rodada</div>
+        <div class="card-title" style="color: var(--green);">~300–400 leads únicos</div>
+        <div class="card-body">5 buscas × até 100 resultados. Deduplicação automática por telefone. Status inicial: <strong style="color: var(--text);">novo</strong>.</div>
+      </div>
+    </div>
+    <div class="search-list">
+      <div class="search-item">
+        <span class="search-icon">🔍</span>
+        <span class="search-query">"construtora em Brasília DF"</span>
+        <span class="search-badge">até 100</span>
+      </div>
+      <div class="search-item">
+        <span class="search-icon">🔍</span>
+        <span class="search-query">"escritório de arquitetura em Brasília DF"</span>
+        <span class="search-badge">até 100</span>
+      </div>
+      <div class="search-item">
+        <span class="search-icon">🔍</span>
+        <span class="search-query">"engenheiro civil em Brasília DF"</span>
+        <span class="search-badge">até 100</span>
+      </div>
+      <div class="search-item">
+        <span class="search-icon">🔍</span>
+        <span class="search-query">"empreiteiro em Brasília DF"</span>
+        <span class="search-badge">até 100</span>
+      </div>
+      <div class="search-item">
+        <span class="search-icon">🔍</span>
+        <span class="search-query">"empresa de reforma em Brasília DF"</span>
+        <span class="search-badge">até 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: Disparo -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Fluxo de Disparo — Flow 2 (Automático)</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-title">⏱ janela de disparo — segunda a sábado</div>
+      <div class="timeline-bar">
+        <div class="timeline-sleep">
+          <span class="timeline-sleep-label">😴 0h–8h</span>
+        </div>
+        <div class="timeline-active">
+          <div class="pulse-dot"></div>
+          <span class="timeline-active-label">✅ ATIVO — 8h às 18h (40 msgs/dia)</span>
+        </div>
+        <div class="timeline-night">
+          <span class="timeline-sleep-label">🌙 18h–24h</span>
+        </div>
+      </div>
+      <div class="timeline-ticks">
+        <span class="tick">0h</span>
+        <span class="tick">4h</span>
+        <span class="tick">8h</span>
+        <span class="tick">12h</span>
+        <span class="tick">16h</span>
+        <span class="tick">18h</span>
+        <span class="tick">24h</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <div class="section-header" style="margin-bottom: 12px;">
+        <span style="font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;">ciclo a cada 15 minutos</span>
+      </div>
+      <div class="cycle-grid">
+        <div class="cycle-step">
+          <span class="cycle-num">step 1</span>
+          <span class="cycle-label">🔔 Trigger</span>
+          <span class="cycle-sub">A cada 15min</span>
+        </div>
+        <div class="cycle-step">
+          <span class="cycle-num">step 2</span>
+          <span class="cycle-label">📋 Fila</span>
+          <span class="cycle-sub">Busca 3 prospects</span>
+        </div>
+        <div class="cycle-step">
+          <span class="cycle-num">step 3</span>
+          <span class="cycle-label">🤖 IA</span>
+          <span class="cycle-sub">Gemini gera msg</span>
+        </div>
+        <div class="cycle-step">
+          <span class="cycle-num">step 4</span>
+          <span class="cycle-label">⏳ Delay</span>
+          <span class="cycle-sub">3–8 min aleatório</span>
+        </div>
+        <div class="cycle-step">
+          <span class="cycle-num">step 5</span>
+          <span class="cycle-label">📱 WhatsApp</span>
+          <span class="cycle-sub">Evolution API</span>
+        </div>
+        <div class="cycle-step">
+          <span class="cycle-num">step 6</span>
+          <span class="cycle-label">✅ Status</span>
+          <span class="cycle-sub">→ "enviado"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Math -->
+    <div class="math-grid">
+      <div class="math-card">
+        <div class="math-value" style="color: var(--blue);">22</div>
+        <div class="math-label">ciclos de 15min<br>(8h às 18h)</div>
+      </div>
+      <div class="math-card">
+        <div class="math-value" style="color: var(--blue);">×3</div>
+        <div class="math-label">prospects<br>por ciclo</div>
+      </div>
+      <div class="math-card">
+        <div class="math-value" style="color: var(--yellow);">= 66</div>
+        <div class="math-label">capacidade<br>máxima</div>
+      </div>
+      <div class="math-card">
+        <div class="math-value" style="color: var(--green);">40</div>
+        <div class="math-label">limite configurado<br>(segurança)</div>
+      </div>
+      <div class="math-card">
+        <div class="math-value" style="color: var(--muted);">3–8<span style="font-size:14px">min</span></div>
+        <div class="math-label">intervalo anti-spam<br>entre envios</div>
+      </div>
+      <div class="math-card">
+        <div class="math-value" style="color: var(--green);">240</div>
+        <div class="math-label">msgs por semana<br>(6 dias)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: Follow-up -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Follow-up — Flow 3</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card orange">
+        <div class="card-icon">🔁</div>
+        <div class="card-label">gatilho</div>
+        <div class="card-title">D+3 sem resposta</div>
+        <div class="card-body">
+          3 dias após o envio sem nenhuma resposta do prospect, uma segunda mensagem é disparada automaticamente com tom diferente — mais direto, mais específico.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">✍️</div>
+        <div class="card-label">abordagem</div>
+        <div class="card-title">Tom diferente</div>
+        <div class="card-body">
+          Primeira msg: apresentação suave, curiosidade.<br>
+          Segunda msg: mais direto, com prova social ou pergunta de qualificação.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: Funil -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Funil de Status</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--muted); background: rgba(255,255,255,0.04);">🆕</div>
+        <div class="funnel-label">novo</div>
+      </div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--yellow); background: var(--yellow-dim);">🔒</div>
+        <div class="funnel-label">reservado</div>
+      </div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--blue); background: var(--blue-dim);">📤</div>
+        <div class="funnel-label">enviado</div>
+      </div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--green); background: var(--green-dim);">💬</div>
+        <div class="funnel-label">respondeu</div>
+      </div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--orange); background: var(--orange-dim);">🔁</div>
+        <div class="funnel-label">follow-up</div>
+      </div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--green); background: var(--green-dim);">🏆</div>
+        <div class="funnel-label">convertido</div>
+      </div>
+      <div style="color: var(--muted); font-size: 20px; padding-bottom: 24px;">/</div>
+      <div class="funnel-step">
+        <div class="funnel-bubble" style="border-color: var(--red); background: var(--red-dim);">🚫</div>
+        <div class="funnel-label">descartado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6: Limitações e próximos passos -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Limitações Atuais &amp; Próximos Passos</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card red">
+        <div class="card-label">⚠️ limitações atuais</div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--red);"></div>
+          <div class="limit-text"><strong>Google Maps é limitante para liberais</strong> — engenheiros e arquitetos autônomos muitas vezes não têm ficha no Google.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--yellow);"></div>
+          <div class="limit-text"><strong>~300–400 leads por rodada</strong> — a base se esgota rápido sem novas fontes.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--yellow);"></div>
+          <div class="limit-text"><strong>Apify é pago</strong> — cada rodada de scraping consome créditos.</div>
+        </div>
+      </div>
+      <div class="card green">
+        <div class="card-label">🚀 próximos passos</div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--green);"></div>
+          <div class="limit-text"><strong>CAU-DF / CREA-DF</strong> — diretórios públicos de arquitetos e engenheiros registrados. Fonte rica e gratuita.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--green);"></div>
+          <div class="limit-text"><strong>LinkedIn</strong> — segmentação precisa por cargo + localização.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--green);"></div>
+          <div class="limit-text"><strong>Instagram</strong> — scraping de perfis de arquitetura e construção no DF.</div>
+        </div>
+        <div class="limit-item">
+          <div class="limit-dot" style="background: var(--blue);"></div>
+          <div class="limit-text"><strong>Importação CSV</strong> — subir listas manuais direto no CRM.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: Infraestrutura do Servidor -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Infraestrutura — Onde Fica Cada Coisa</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom: 16px;">
+      <div class="card blue">
+        <div class="card-icon">🖥️</div>
+        <div class="card-label">VPS</div>
+        <div class="card-title">vigasales.shop</div>
+        <div class="card-body">
+          Todos os serviços rodam na mesma VPS.<br>
+          Docker Compose gerencia os containers.<br>
+          Traefik faz o roteamento de domínios.
+        </div>
+        <div style="margin-top: 12px;">
+          <span class="tag tag-gray">🐳 Docker Compose</span>
+          <span class="tag tag-gray">🔀 Traefik (proxy)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <div class="card-label">diretório raiz da aplicação</div>
+        <div class="card-title" style="font-family: var(--mono); font-size: 14px;">/opt/viga-sales</div>
+        <div class="card-body">
+          Repositório Git da aplicação principal.<br>
+          <span style="font-family: var(--mono); font-size: 11px; color: var(--muted);">docker compose up -d</span> a partir daqui.<br>
+          Banco SQLite em <span style="font-family: var(--mono); font-size: 11px;">./db/crm.sqlite</span>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom: 16px;">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+        <div style="font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px;">🐳 containers docker</div>
+        <div class="search-list">
+          <div class="search-item">
+            <span class="search-icon">🟢</span>
+            <span class="search-query">viga-sales-viga-sales-1</span>
+            <span class="search-badge">:3000</span>
+          </div>
+          <div class="search-item">
+            <span class="search-icon">🟢</span>
+            <span class="search-query">n8n-n8n-1</span>
+            <span class="search-badge">:5678</span>
+          </div>
+          <div class="search-item">
+            <span class="search-icon">🟢</span>
+            <span class="search-query">evolution-evolution-1</span>
+            <span class="search-badge">:8080</span>
+          </div>
+          <div class="search-item">
+            <span class="search-icon">🟢</span>
+            <span class="search-query">traefik (proxy reverso)</span>
+            <span class="search-badge">:80/:443</span>
+          </div>
+        </div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+        <div style="font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px;">🌐 URLs públicas</div>
+        <div class="search-list">
+          <div class="search-item">
+            <span class="search-icon">🏠</span>
+            <span class="search-query">vigasales.shop</span>
+            <span style="font-family: var(--mono); font-size: 10px; color: var(--blue); background: var(--blue-dim); border: 1px solid rgba(41,121,255,0.2); padding: 2px 8px; border-radius: 4px;">CRM</span>
+          </div>
+          <div class="search-item">
+            <span class="search-icon">⚡</span>
+            <span class="search-query">evolution.vigasales.shop</span>
+            <span style="font-family: var(--mono); font-size: 10px; color: var(--green); background: var(--green-dim); border: 1px solid rgba(0,200,83,0.2); padding: 2px 8px; border-radius: 4px;">WhatsApp</span>
+          </div>
+          <div class="search-item">
+            <span class="search-icon">🔁</span>
+            <span class="search-query">n8n.vigasales.shop</span>
+            <span style="font-family: var(--mono); font-size: 10px; color: var(--orange); background: var(--orange-dim); border: 1px solid rgba(255,109,0,0.2); padding: 2px 8px; border-radius: 4px;">Automação</span>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <div style="font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 6px;">instância WhatsApp ativa</div>
+          <span class="tag tag-green">✅ Raul (conectado)</span>
+        </div>
+      </div>
+    </div>
+    <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;">
+      <div style="font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px;">📜 comandos úteis no servidor</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 8px;">
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">cd /opt/viga-sales &amp;&amp; docker compose ps</div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">docker compose logs -f viga-sales</div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">docker compose up -d --force-recreate</div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">git pull &amp;&amp; docker compose restart app</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Viga Sales CRM &nbsp;·&nbsp; Prospecção Ativa &nbsp;·&nbsp; vigasales.shop
+  </footer>
+
+</div>
+</body>
+</html>

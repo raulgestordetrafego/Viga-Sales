@@ -30,3 +30,18 @@ Thumbs.db
 
 # PM2
 .pm2/
+.claude/
+
+# n8n workflow exports (contêm tokens internos)
+n8n-audio-workflow.json
+deploy/n8n-flows/
+
+# Obsidian editor config
+.obsidian/
+backup/
+*.tar.gz
+*.mp4
+*.MP3
+*.MP4
+.local/
+google-ads.yaml

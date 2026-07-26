@@ -1,0 +1,2166 @@
+[3.6s] Bem-vindo, bem-vindo, bem-vinda,
+[5.5s] bem-vinda à nossa live número 365.
+[12.2s] 365
+[15.0s] terças-feiras às 3 horas da tarde,
+[18.6s] entregando ao vivo conteúdo sobre
+[21.8s] tráfego pago. Você parou para pensar
+[23.6s] isso? Se é a gente pegar só o número de
+[25.5s] aulas ao vivo que a gente deu. Ao longo
+[27.7s] de 365
+[29.8s] semanas, a gente tem um ano. Um ano
+[33.6s] estamos completando o primeiro
+[34.8s] aniversário das aulas ao vivo. [risadas]
+[38.3s] 365
+[40.5s] semanas, toda terça-feira, entregando
+[42.3s] conteúdos de tráfego pago e anúncio
+[44.0s] online. E hoje, na nossa live número
+[46.0s] 365, a gente vai falar sobre como que
+[48.9s] você vai criar as suas campanhas no
+[51.7s] Google Ads. E essa habilidade que você
+[54.2s] vai adquirir aqui na aula de hoje, ela
+[55.6s] serve tanto para você que quer se tornar
+[57.4s] gestor de tráfego. Pedro, que que é
+[59.4s] gestor de tráfego? O que que faz um
+[60.8s] gestor de tráfego? Gestor de tráfego é o
+[62.9s] profissional que cuida dos anúncios de
+[64.8s] outras empresas, cuida do Google Ads de
+[67.6s] outras empresas e é pago por isso. Ou
+[70.0s] você também pode utilizar essa
+[71.6s] habilidade para cuidar dos anúncios do
+[74.4s] seu próprio negócio, caso você tenha um
+[77.1s] negócio para você chamar de seu. Agora,
+[80.0s] um detalhe importante, você pode falar
+[81.4s] assim: "Pô, Pedro, 365
+[84.5s] semanas dando aulas ao vivo? Isso quer
+[87.0s] dizer que eu vou entrar aqui no seu
+[89.5s] canal do YouTube e eu vou encontrar 365
+[92.6s] lives. Aí o que eu te digo, meu querido,
+[94.5s] minha querida, você não vai. Por quê?
+[96.6s] Porque nós seguimos um estilo de
+[98.2s] conteúdo aqui que eu gosto de chamar de
+[100.5s] conteúdo perecível. Que que é o conteúdo
+[102.6s] perecível? Basicamente é o seguinte,
+[104.9s] toda terça-feira, 3 horas da tarde você
+[106.9s] vai chegar aqui, vai ter uma aula ao
+[108.3s] vivo, tá? Toda terça-feira eu vou estar
+[110.0s] ao vivo aqui com você. Ah, Pedro, mas
+[112.0s] próxima terça-feira é dia 30, vai ter
+[114.0s] aula ao vivo? Vai ter aula ao vivo. Vou
+[116.0s] est lá na praia, vou est viajando, mas
+[119.4s] teremos aula ao vivo. Já tenho o meu
+[121.4s] lugarzinho lá para fazer aula ao vivo.
+[123.0s] Já chequei. A internet do hotel é boa,
+[124.8s] vai tudo funcionar bem. Então, toda
+[126.8s] terça-feira tem aula ao vivo. Agora,
+[129.0s] terça-feira da semana seguinte, eu tiro
+[131.8s] a aula da semana anterior do ar, exceto
+[134.6s] com algumas aulas que eu chamo de lives
+[136.8s] essenciais. Se você entrar aqui no meu
+[138.8s] canal do YouTube, você vai encontrar
+[140.1s] várias dessas lives. Por exemplo, aqui
+[142.2s] no meu canal do YouTube você consegue
+[143.8s] assistir a live eh 283. Já aconteceu há
+[149.0s] mais de um ano essa live. Ela segue aqui
+[150.9s] disponível no canal. Por quê? Porque ela
+[152.6s] é um dos conteúdos essenciais. E essa
+[155.1s] live que você tá assistindo aqui, talvez
+[157.0s] você esteja vendo a gravação, ela é uma
+[159.3s] live essencial também. Por quê? Porque
+[161.3s] aqui você vai aprender um dos
+[162.4s] conhecimentos mais importantes do
+[164.7s] tráfego pago, que é como que você vai
+[167.2s] criar, como que você vai gerenciar as
+[169.7s] suas campanhas dentro dessa ferramenta
+[172.0s] maravilhosa que é o Google Ads, tá?
+[174.3s] Então, três pontos importantes antes da
+[176.9s] gente entrar no conteúdo aqui. Não se
+[178.4s] engane. Teremos aqui mais ou menos 1
+[180.2s] hora, 1 hora20 de conteúdo. Três pontos
+[182.9s] importantes. Primeiro ponto, na
+[184.9s] descrição deste vídeo, você vai
+[187.1s] encontrar três aulas importantes. Como
+[189.6s] que você vai configurar o seu pixel no
+[191.4s] Google Ads, como que você cria sua conta
+[193.8s] de anúncios no Google Ads e como que
+[195.8s] você segmenta suas campanhas no Google
+[197.6s] Ads. Pedro, por que que isso não vai
+[199.4s] estar tudo nessa aula de agora? Por que
+[200.9s] que você vai entregar aulas extras?
+[202.9s] Porque eu gosto de eh por por ser mais
+[206.4s] didático, eu gosto de separar os
+[208.7s] conteúdos em blocos. Então aqui a gente
+[211.0s] vai falar 1 hora, 1 hora20 sobre um
+[213.5s] assunto específico, que é como que você
+[215.3s] cria suas campanhas no Google Ads. Nas
+[217.6s] outras aulas você vai ter focos em focos
+[220.4s] em outros assuntos. E essas daqui também
+[222.7s] são lives conteúdos essenciais, onde
+[225.5s] você vai aprender exclusivamente um
+[227.3s] único conteúdo. Pedro, mas eu nem sei
+[229.2s] que que é pixel ainda segmentar. Não sei
+[231.6s] o que que é isso direito. Calma,
+[234.6s] respira. Até o final da aula aqui você
+[236.4s] vai entender como é que tudo funciona,
+[238.3s] para que que você vai precisar de cada
+[240.2s] uma dessas coisas. Segundo ponto
+[242.8s] importante, ao final deste vídeo, eu vou
+[245.0s] falar para você, dessa live, eu vou
+[247.0s] falar para você sobre a comunidade
+[248.8s] subido de tráfego, tá? Se você não
+[251.0s] quiser ver, se não quiser saber sobre o
+[252.8s] nosso produto para gestores de tráfego,
+[254.8s] que não está vendo nesse momento, tá?
+[256.5s] Então não tô vendendo nada para você,
+[258.1s] mas eu vou falar sobre ele porque muita
+[259.6s] gente gosta de saber sobre o produto,
+[260.9s] gosta de se preparar, gosta de entender
+[262.7s] o que que tem lá dentro. No final eu
+[264.2s] falo sobre ele. Se você não quiser ver,
+[266.0s] tá tudo certo, tá tudo tranquilo, você
+[267.8s] consegue aprender tráfego pago com
+[269.4s] conteúdo gratuito da internet, tá? E o
+[272.0s] terceiro grande recado que eu acabei
+[273.5s] começando por ele, era falar para você
+[275.7s] sobre o modelo das aulas perecíveis, que
+[277.9s] são as aulas que ficam no ar durante uma
+[280.8s] semana, tá? Agora, sem mais delongas,
+[283.7s] começamos o conteúdo aqui da nossa live
+[286.0s] número 365.
+[288.3s] E uma coisa importante, falando de
+[290.5s] competências, eu sempre gosto de deixar
+[292.1s] isso muito bem claro. O que que é
+[294.3s] esperado de você no final dessa live? Ao
+[296.6s] final dessa live, você vai desenvolver,
+[299.0s] você será capaz de criar uma campanha no
+[302.6s] Google Ads do absoluto zero. Isso quer
+[305.1s] dizer que você vai ser um deus da
+[306.4s] criação das campanhas? Não, Deus da
+[309.2s] criação das campanhas, você vai ser
+[310.6s] depois que você criar muitas campanhas,
+[312.7s] que você tiver que fazer campanhas em
+[314.3s] diferentes cenários para diferentes
+[315.9s] situações, tem uma parte ali que só a
+[318.2s] prática vai te dar. É tipo nadar. Você
+[320.6s] não consegue aprender a nadar lendo um
+[322.4s] só um livro sobre natação. Mas aqui ao
+[324.7s] final dessa aula, com o checklist que a
+[327.1s] gente vai desenvolver juntos aqui nessa
+[328.8s] aula, você vai ser capaz de criar sua as
+[331.0s] suas campanhas dentro do Google Ads, tá?
+[333.5s] E você que já é mais avançado, mais
+[335.3s] intermediário, essa aula ela não é 100%
+[338.3s] eh descartável para você. Na verdade,
+[339.9s] ela é 0% descartável para você. Porque
+[342.5s] por mais que você já saiba criar suas
+[344.7s] campanhas no Google Ads, eu digo que uma
+[346.7s] das habilidades mais importantes do
+[348.8s] gestor de tráfego quando tem clientes de
+[351.1s] tráfego pago é saber dar aulas para os
+[353.9s] seus clientes. E dar aulas para os seus
+[356.2s] clientes é saber explicar as coisas pros
+[358.0s] clientes de forma simples. Então o que
+[360.2s] que você precisa aprender? explicar pro
+[361.9s] seu cliente, você que é gestor de
+[363.3s] tráfego, e o que que você que tá
+[365.2s] começando tem que entender agora. Você
+[367.6s] tem que entender quais são os tipos de
+[370.3s] campanhas que nós temos disponíveis
+[372.4s] dentro do Google Ads. E eu gosto de
+[374.7s] dividir o Google Ads em quatro
+[377.0s] caixinhas. Então, quais são os quatro
+[379.9s] principais tipos de campanhas essenciais
+[383.7s] do Google Ads? Primeira campanha
+[386.1s] essencial, e essa daqui você vai dominar
+[388.1s] ela na aula de hoje, é a campanha
+[390.4s] institucional do Google Ads na rede de
+[392.8s] pesquisa. Pedro, que que é isso?
+[394.5s] Simples. Alguém, um anúncio aparece toda
+[397.6s] vez que alguém pesquisa o seu nome, o
+[399.8s] nome da sua marca lá no Google. A pessoa
+[402.4s] foi no Google, jogou o seu nome, jogou o
+[404.6s] nome da sua marca, tem que aparecer o
+[406.4s] seu anúncio lá. Sempre. Se existe alguma
+[408.9s] marca que quando alguém está pesquisando
+[411.6s] o nome dessa marca no Google, não está
+[414.0s] aparecendo o anúncio da marca, essa
+[416.5s] marca tá perdendo dinheiro. Você pode
+[418.4s] ter certeza absoluta. Ah, mas cada vez
+[422.0s] mais as pessoas pesquisam menos no
+[424.3s] Google. Sim, mas isso não quer dizer que
+[426.0s] ainda não dá dinheiro você anunciar no
+[428.2s] Google Ads, não quer dizer que não dá
+[429.5s] resultado você anunciar no Google Ads,
+[431.6s] principalmente porque o Google Ads ele é
+[433.4s] uma ferramenta
+[435.3s] de intenção. Pedro, como assim intenção?
+[439.4s] Você não vai no Google navegar pelo
+[441.9s] Google para ver o que que tá lá, não.
+[443.8s] Normalmente quando você vai no Google,
+[445.4s] você tem uma intenção, você tem um
+[447.0s] motivo pela sua pesquisa no Google.
+[449.4s] Pedro, mas você tá falando aí de Google
+[450.9s] Ads? Google Ads, que que é esse negócio
+[452.4s] de Google Ads? Google Ads, ó, é essa
+[454.2s] plataforma aqui que eu tô mostrando para
+[455.7s] você na tela. Essa plataforma é a
+[458.0s] plataforma que a gente vai utilizar para
+[460.0s] fazer com que os nossos anúncios
+[461.6s] apareçam toda vez que alguém pesquisar o
+[463.5s] nome, o nosso nome, o nome da nossa
+[465.6s] marca, o nome do nosso cliente, o nome
+[467.7s] da marca do nosso cliente lá no Google.
+[470.1s] Então, a gente vai utilizar essa
+[471.3s] ferramenta aqui que parece um painel de
+[473.0s] avião. Ah, Pedro, tá aqui, ó, que você
+[475.0s] gastou R$ 33.000, eu tenho que gastar
+[477.2s] tudo isso de dinheiro? Não, com R$ 5, R$
+[479.2s] 10 por dia você já consegue estar
+[480.7s] anunciando no Google antes, tá? Mas esse
+[482.6s] é o primeiro tipo de campanha. Segundo
+[484.7s] tipo de campanha que a gente tem no
+[486.0s] Google Ads são as campanhas de conversão
+[489.0s] no YouTube, aquele anúncio chato que
+[491.4s] você consegue pular depois de 5
+[492.8s] segundos. Então, sabe aquele anúncio
+[494.4s] chato que aparece na sua frente que você
+[496.4s] pula no YouTube? Pois é. É através do
+[499.0s] Google Ads que a gente vai fazer esse
+[500.4s] anúncio aparecer pras pessoas. Então
+[502.4s] você, quando você se tornar gestor de
+[504.3s] tráfego ou você que é gestor de tráfego
+[506.5s] e você quer poupar a pessoa
+[509.6s] de uma explicação maçante do que você
+[511.7s] faz, se a pessoa falar assim: "O que que
+[513.2s] você faz?" Você fala assim: "Cara, sabe
+[515.0s] aqueles anúncios de 5 segundos do que
+[517.4s] você pula lá no YouTube?" Pessoa fala:
+[519.0s] "Sei". Você fala assim: "Então, meu
+[520.6s] trabalho é colocar esses anúncios no ar
+[522.2s] pras outras empresas". Aí a pessoa vai
+[524.2s] te odiar um pouquinho, mas você pode
+[525.7s] falar para ela: "Olha, em minha defesa,
+[527.6s] eu também não gosto dos anúncios, mas
+[529.7s] esse é o meu trabalho". E tem muita
+[531.2s] gente que gosta dos anúncios. Quem? As
+[533.5s] pessoas que clicam e que são atingidas
+[535.5s] pelos anúncios certos. Depois nós temos
+[538.6s] o remarketing no display. Pedro, o que
+[541.5s] que é o remarketing no display? Que
+[543.4s] palavra esquisita é essa? Remarketing,
+[546.5s] né? O re é é a é a sigla ali, o prefixo,
+[549.9s] né? que a gente coloca para dizer que
+[551.4s] algo está acontecendo novamente.
+[553.6s] Remarketing é o seguinte, eu vou fazer
+[555.4s] marketing, eu vou aparecer para alguém
+[557.8s] que já teve algum contato comigo. Eu
+[559.8s] digo que remarketing são as geladeiras
+[562.7s] que te perseguem na internet. Pedro,
+[564.6s] como assim? Pesquisei lá na Black Friday
+[567.2s] comprar geladeira, entrei num site de
+[570.1s] três, quatro geladeiras diferentes. Que
+[571.8s] que vai acontecer? Geladeira, geladeira,
+[574.4s] geladeira, geladeira. Onde você entrar
+[576.2s] na internet vai ter anúncio de
+[577.6s] geladeira. Ah, Pedro, isso é tipo aquele
+[579.9s] negócio que o meu celular me escuta? Me
+[582.1s] fala no chat, você acha que o seu
+[583.9s] celular te escuta ou você acha que ele
+[585.4s] não te escuta? Eu eu acredito que o
+[587.6s] celular nos escuta.
+[590.2s] A meta fala que não e tal, mas eu acho
+[592.1s] que o celular nos escuta. Eu acho que
+[593.7s] tudo aquilo que a gente fala em áudios
+[595.2s] do WhatsApp é transcrito e é utilizado
+[599.0s] para desenvolver o nosso perfil. Ah, eu
+[601.5s] acho isso meio invasivo. Olha, desde que
+[603.5s] esteja me mostrando bons anúncios,
+[605.2s] coisas relevantes para mim, eu acho OK,
+[607.9s] a gente tá na internet para ver coisas
+[609.7s] relevantes pra gente. Quanto mais as
+[611.5s] ferramentas entendem o que é relevante
+[613.0s] pra gente, normalmente melhores são os
+[615.3s] eh melhor é a nossa experiência dentro
+[617.2s] das plataformas, tá? Mas o remarketing
+[619.4s] no display é basicamente quando você
+[621.4s] aparece para as você aparece para as
+[624.2s] empresas em sites da internet, tá?
+[627.0s] Então, presta atenção aqui que eu tô te
+[628.6s] explicando o que que é o Google Ads de
+[630.5s] maneira simples. Então, institucional no
+[632.9s] Google Ads na rede de pesquisa. Alguém
+[635.0s] pesquisou seu nome no Google, você vai
+[636.8s] est lá. Anúncio no YouTube, você
+[639.2s] consegue pular depois de 5 segundos.
+[641.2s] Remarketing no display, anúncios que
+[643.3s] aparecem em sites pela internet. E por
+[646.6s] último e não menos importante, Pemex ou
+[649.7s] Performancy,
+[653.4s] performance Max, que é o Xudo das
+[658.3s] campanhas. É uma campanha que tem o
+[661.3s] poder de aparecer em todas as redes do
+[664.2s] Google, tá? E eu não tenho poder de
+[666.8s] escolher exatamente para quem que eu vou
+[668.6s] aparecer, tá? Então, eu posso escolher
+[670.2s] em todas as redes do Google ao mesmo
+[672.2s] tempo, mas eu não escolho exatamente
+[676.3s] a minha segmentação. Então, eu não vou
+[678.1s] dizer exatamente para quem eu vou
+[679.6s] aparecer. Ela funciona muito bem para
+[682.6s] e-commerces e para e para visitas a
+[685.6s] negócios locais, tá? Então, vou falar um
+[687.9s] pouquinho mais disso aqui pra frente,
+[689.6s] mas já fica aqui uma
+[692.3s] um insejo do para que que serve esse
+[693.8s] tipo de campanha. Pedro, essas são as
+[695.7s] únicas quatro campanhas do Google, não
+[697.6s] são, mas como eu falei para você aqui,
+[699.6s] são as quatro principais tipos de
+[701.4s] campanha. Então, quando eu vou vender o
+[703.4s] Google Ads para alguém e eu tenho que
+[705.0s] vender o Google Ads pro meu cliente, eu
+[707.2s] tenho que vender os tipos de campanha
+[708.8s] para ele, eu consigo explicar de maneira
+[710.8s] extremamente simples. Visualiz aqui no
+[713.6s] meio da tela e aí nesse X eu tenho os
+[716.0s] quatro tipos de campanha do Google. Aqui
+[718.3s] no quadrante superior eu tenho a
+[720.5s] campanha que aparece na pesquisa. Toda
+[722.6s] alguém, toda vez que alguém pesquisa o
+[724.2s] nome dele, o anúncio aparece. Aqui eu
+[727.0s] tenho as campanhas de YouTube. Toda
+[729.1s] pessoa que tem interesse sobre aquilo
+[730.9s] que ele fala ou que já pesquisou o nome
+[732.9s] dele, a marca dele, o serviço dele no
+[735.5s] Google, eu apareço para essa pessoa no
+[737.5s] YouTube num anúncio de 5 segundos. A
+[739.8s] pessoa visitou o site do meu cliente,
+[741.6s] ela clicou no anúncio do Google, ela
+[743.4s] clicou no anúncio do YouTube, mas ela
+[745.0s] não converteu. Eu tenho a campanha de
+[747.2s] remarketing no display, que é quando eu
+[749.0s] vou aparecer para essa pessoa em todos
+[751.0s] os sites da internet com imagens. Se eu
+[753.6s] tenho um negócio local e quero que as
+[755.3s] pessoas visitem o meu negócio local, se
+[757.4s] eu tenho uma loja online e eu quero
+[759.2s] anunciar para essas pessoas, eu tenho o
+[761.7s] Xudo das campanhas, que é a Performance
+[763.8s] Max, quatro quadrantes. Pronto, você já
+[766.3s] tá sabendo muito mais de Google Ads do
+[767.9s] que a maioria das pessoas. E melhor,
+[769.8s] você sabe explicar Google Ads mais
+[772.7s] simples do que a maioria das pessoas.
+[774.3s] Ah, mas eu ainda não sei fazer, não tem
+[775.8s] problema, porque a gente tá aqui
+[777.4s] construindo blocos de conhecimento, um
+[779.5s] em cima do outro. Agora, o que que a
+[781.2s] gente vai fazer? A gente vai estruturar
+[783.0s] aqui em 10 passos como que você vai
+[786.0s] subir a sua campanha lá no Google Ads,
+[787.9s] tá? Então, em 10 passos, só isso que
+[790.1s] você precisa. A gente vai caminhar 10
+[792.9s] passos juntos. Eu vou te explicar cada
+[794.4s] um deles e no final dessa aula você vai
+[796.4s] saber criar sua campanha no Google Ads.
+[798.2s] Pedro, eu vou est 100% confiante que eu
+[800.6s] sei criar campanhas para todas as
+[802.5s] situações em todos os cenários. Não,
+[805.2s] isso daí ninguém consegue te as pessoas
+[807.5s] podem te prometer isso numa aula, mas
+[809.4s] ninguém te entrega isso numa aula,
+[810.9s] porque uma aula não te entrega isso. A
+[812.6s] aula te entrega a base, te entrega o
+[814.7s] checklist para que depois você mesmo
+[817.6s] sai, você vai lá apertando os botões e
+[820.3s] você vai desenvolvendo as suas
+[821.7s] habilidades, tá? Então, quais são os 10
+[823.9s] passos que nós vamos passar? Primeiro,
+[826.1s] nós vamos definir os objetivos. Depois
+[829.2s] nós vamos entender quais são os tipos de
+[832.1s] campanha e as segmentações que a gente
+[834.7s] vai utilizar para cada um dos tipos de
+[836.8s] campanha que existem. Depois, e essa vai
+[839.5s] ser a parte mais longa da aula, esse
+[840.9s] passo número dois, tá? Já vou te avisar.
+[842.8s] Depois, passo número três, nós vamos
+[845.9s] estabelecer as metas de conversão. Vou
+[848.5s] te explicar o que que são elas. Passo
+[850.5s] número quatro, a gente vai paraas
+[852.5s] nomenclaturas, pô, metas de conversão.
+[854.5s] Foi o único que ficou minúsculo. Metas
+[856.8s] de conversão. Depois, número quatro,
+[859.5s] nomenclatura, como que a gente dá nome
+[861.5s] pras campanhas. Passo número cinco,
+[864.0s] vamos falar de estratégia de lance e
+[866.6s] orçamento, quanto de dinheiro que a
+[868.4s] gente vai gastar. Passo número seis,
+[870.7s] vamos falar de redes, ou seja, onde que
+[873.0s] eu vou aparecer e formato de anúncios.
+[876.0s] Passo número sete, vou te ensinar a
+[878.2s] configurar a localização, onde que a
+[880.8s] pessoa está quando meu anúncio aparece
+[883.1s] para ela e qual o idioma que ela fala.
+[885.6s] Passo número oito, início e programação.
+[888.4s] Ou seja, quando que o meu anúncio
+[889.6s] começa, quando que ele termina, que
+[891.5s] horas do dia que ele vai aparecer pras
+[893.1s] pessoas. Passo número nove, segunda
+[895.6s] parte mais longa da nossa aula. Vamos
+[897.8s] falar de segmentação. Então, para quem
+[900.4s] que eu vou anunciar quais são os tipos
+[902.2s] de segmentação que eu tenho dentro do
+[904.3s] Google Ads. E passo número 10, anúncio.
+[907.9s] Tá? Dominamos esses 10 passos aqui,
+[911.0s] pronto, a gente consegue criar nossa
+[912.7s] campanha no Google Ads, tá? Então, vamos
+[915.2s] começar pelo começo, né? Vamos começar
+[917.2s] pelo passo número um. Quais são os
+[919.8s] possíveis objetivos de campanha? É o
+[922.6s] seguinte, toda vez que você for criar
+[925.2s] uma campanha, seja no Meta Ads, no
+[928.5s] Google Ads, no TikTok Ads, no LinkedIn
+[931.7s] Ads, no Twitter Ads, no Pinterest Ads,
+[934.3s] no Tabula, no Altbrain, no Shope Ads, no
+[938.4s] Amazon Ads, Mercado Livre Ads, Sobral
+[942.0s] Ads, Subido, Ads, Apple Ads, Chat GPT
+[945.1s] Ads. Não importa o ads que você
+[948.4s] escolher, não importa.
+[950.5s] Toda ferramenta de tráfego pago vai
+[953.1s] pedir para que você escolha o seu
+[954.5s] objetivo. Toda. Esse é sempre o passo
+[957.1s] número um. E os objetivos, na maioria
+[959.7s] das vezes, eles são extremamente óbvios.
+[962.7s] Que que eu quero dizer com eles? São
+[964.0s] extremamente óbvios. Se eu tenho um
+[966.4s] objetivo que o nome dele é vendas, ele
+[968.9s] me ajuda a fazer o quê? Vender. Se eu
+[971.6s] tenho um objetivo chamado leads, né?
+[973.6s] Lead é uma palavra em inglês para
+[975.1s] cadastro. O o que que ele faz para mim?
+[977.6s] Ele gera cadastro. Se eu tenho um
+[979.6s] objetivo chamado tráfego no website, o
+[981.8s] que que ele faz? Ele gera acessos no meu
+[983.6s] site. Se eu tenho um objetivo chamado
+[985.7s] promoções de aplicativo, ele divulga o
+[987.5s] meu aplicativo. Se eu tenho um objetivo
+[990.0s] chamado reconhecimento e consideração,
+[992.4s] ele faz as pessoas reconhecerem e
+[994.5s] considerarem a minha marca, tá? Aqui eu
+[996.4s] vou escrever diferente, mas é a mesma
+[998.0s] coisa. Levar conteúdo para as pessoas.
+[1000.7s] As pessoas vão reconhecer quem minha
+[1002.2s] marca é vão começar a criar consideração
+[1004.4s] pela minha marca. E se eu tenho um
+[1006.6s] objetivo que é chamado de promoção e
+[1009.2s] visitas às lojas, ele vai fazer o quê?
+[1012.7s] Ele vai ser bom para fazer as pessoas
+[1014.4s] visitarem a minha loja física, tá? Então
+[1016.8s] é simples. O nome ele diz o que que o
+[1018.9s] objetivo faz. Pedro, mas onde que tá
+[1021.1s] isso dentro da ferramenta? E aí agora eu
+[1022.9s] quero que você preste atenção, porque a
+[1024.7s] gente vai ficar o tempo inteiro fazendo
+[1026.0s] isso daqui, ó. Vou est te explicando
+[1027.4s] aqui no bloco de notas que aqui eu
+[1029.2s] consigo escrever, eu consigo deixar
+[1030.6s] claro para você. E aí a gente vai entrar
+[1032.7s] aqui na poluição visual, que é a
+[1034.6s] ferramenta. Na ferramenta da poluição
+[1037.0s] visual
+[1039.1s] você vai ter que prestar atenção no que
+[1040.6s] eu tô fazendo aqui para não se perder.
+[1042.2s] Mas você vai ter o passo a passo. Você
+[1043.7s] pode ver e rever esse vídeo aqui quantas
+[1045.8s] vezes você quiser. Fechou? Vamos para
+[1048.5s] cima. Como que você vai ter acesso à sua
+[1050.9s] conta do Google Ads? Na descrição desse
+[1053.2s] vídeo vai ter um link onde tem um passo
+[1055.2s] a passo de como que você cria sua conta.
+[1057.3s] Mas é igual criar uma conta no Gmail. É
+[1059.0s] extremamente simples. Qualquer pessoa
+[1060.5s] consegue. É de graça, não custa nada
+[1062.6s] para criar. Não tem risco de você gastar
+[1064.8s] dinheiro sem querer. É só seguir o passo
+[1066.8s] a passo. Beleza? Criou a conta no Google
+[1069.0s] Ads, você vai ter acesso a isso daqui
+[1070.6s] que eu tenho aqui, ó. Só que a sua vai
+[1072.3s] estar vazia, não vai ter nada gasto, não
+[1074.5s] vai ter nenhuma campanha aqui. Aí você
+[1076.4s] vai apertar nesse botãozinho de mais,
+[1078.0s] tá? Às vezes você pode ter sido levado
+[1080.3s] para essa aba aqui, ó, overview. Você
+[1082.6s] pode apertar nesse botão de mais aqui do
+[1084.5s] lado, ó. Esse botão é coloridinho aqui,
+[1087.3s] ó. create. Então vamos apertar nele
+[1088.9s] aqui, ó, create. Aí você vai criar o
+[1091.2s] quê? Uma campanha. O meu tá em inglês,
+[1093.4s] mas é bom que você já se acostume. Por
+[1094.9s] quê? Porque às vezes a a ferramenta ela
+[1096.9s] desconfigura, ela passa por alguma
+[1098.9s] atualização e o seu e o seu idioma ele
+[1101.3s] pode acabar ficando eh em outro idioma,
+[1103.8s] pode acabar ficando em inglês, tá?
+[1105.5s] Então, a gente tem sales, que é venda,
+[1107.6s] leads, que é cadastro, tráfego no site,
+[1110.2s] promoção de aplicativo, reconhecimento e
+[1112.8s] consideração, visitas a lojas locais e
+[1115.4s] promoções e campanha sem meta.
+[1118.0s] Normalmente a gente não vai criar uma
+[1119.6s] campanha sem meta, tá? Tem essa opção
+[1121.7s] aqui, mas a gente não vai utilizar ela.
+[1123.8s] O que que a gente vai escolher aqui? O
+[1125.4s] que for mais pertinente pro momento em
+[1127.2s] que a gente tá, tá? E aí você vai
+[1129.2s] escolher: "Ah, eu quero vender, eu quero
+[1130.6s] gerar cadastro, eu vou fazer uma
+[1132.4s] campanha de venda". Por quê? Porque se
+[1134.5s] você sabe criar uma campanha de venda,
+[1136.0s] você consegue criar qualquer outra,
+[1138.5s] porque é tudo igual, tá? Porque a
+[1139.9s] campanha de venda, ela é a ela é a que
+[1142.2s] mais vai ter
+[1144.9s] opções para você, tá? É a que mais vai
+[1147.7s] ter eh escolhas que eu tenho que fazer
+[1150.9s] no meio do caminho, tá? Então,
+[1153.2s] selecionei aqui a minha campanha de
+[1156.0s] vendas, eu vou lá pro meu passo número
+[1158.3s] dois, ó, deixa eu colocar aqui passo
+[1161.8s] número dois. Eu vou inverter o passo
+[1163.3s] dois e três, tá? Que é o meta de
+[1165.4s] conversão,
+[1168.6s] tá? Meta de conversão é o seguinte, eu
+[1170.8s] vou est aqui na minha campanha,
+[1172.0s] selecionei vendas, vai aparecer isso
+[1173.8s] daqui, ó. Selecione o objetivo de
+[1176.5s] conversão para aumentar as suas vendas.
+[1178.8s] O que que é isso daqui? É o Google me
+[1180.5s] perguntando, Sobral, você quer focar no
+[1183.0s] quê? Você quer que a pessoa compre? Você
+[1186.6s] quer gerar contatos? Você quer gerar
+[1189.2s] visualização na página? Você quer que as
+[1191.8s] pessoas elas enviem o formulário? O que
+[1193.9s] que você quer? Eu quero vendas, no caso,
+[1195.8s] porque eu tô fazendo a minha campanha de
+[1197.0s] venda. Então, eu vou tirar tudo aqui, ó,
+[1199.0s] que não é venda. Vou apertar nos três
+[1200.7s] pontinhos e vou remover tudo que não é
+[1202.8s] venda. Pedro, mas como que eu configuro
+[1205.4s] isso daqui? Como é que eu configuro esse
+[1207.7s] objetivo de venda para ele aparecer aqui
+[1209.7s] para mim? Como é que o Google vai saber
+[1212.3s] que alguém foi no meu site e comprou?
+[1215.1s] Mais importante do que qualquer coisa,
+[1216.9s] né? Porque como eu tô dizendo pro
+[1218.5s] Google, Google, eu quero vender. Como é
+[1220.2s] que o Google sabe que eu vendi? Eu tenho
+[1221.7s] que contar para ele aí que tá. Sim e
+[1224.4s] não. Toda ferramenta de tráfego pago. E
+[1227.5s] agora presta atenção, porque eu tô
+[1228.8s] falando de Google Ads, mas eu quero te
+[1230.4s] ensinar pensar tráfego pago. Quero te
+[1232.4s] ensinar a pensar em qualquer ferramenta
+[1233.8s] que existe. Toda ferramenta de tráfego
+[1236.1s] pago, ela sempre vai ter dentro dela a
+[1240.6s] opção de você gerar um pixel. Pedro, o
+[1243.2s] que que é pixel? É aquele bonequinho da
+[1245.0s] Disney que pula lá da Pixar. Não, pixel
+[1248.5s] é um código. O que que é um código? É um
+[1250.8s] monte de letra e número e símbolos sem
+[1253.5s] sentido que nem eu, nem você, nem
+[1256.6s] ninguém temos que entender. Mas você tem
+[1258.5s] que saber para que que ele serve. É como
+[1260.5s] se eu crio a minha conta no Google Ads
+[1263.2s] ou no Metaads ou no TikTok Ads, LinkedIn
+[1266.2s] Ads, Pinterest Ads, qualquer ads, eu
+[1268.9s] crio a minha conta lá e aí nessa
+[1272.0s] ferramenta vai ter um local onde eu vou
+[1275.1s] clicar lá em configurar o meu pixel.
+[1278.4s] Quando eu clico lá em configurar o meu
+[1280.1s] pixel, a ferramenta vai gerar para mim
+[1282.1s] esse código, um monte de letra, um monte
+[1284.0s] de número, um monte de símbolo sem
+[1285.5s] sentido. Esse código ele é meu, ele é
+[1288.6s] único, é como se fosse a identificação
+[1291.4s] da sua conta de anúncios, tá? Então eu
+[1293.3s] vou pegar esse código e o que que eu vou
+[1295.1s] fazer com esse código? Eu vou instalar
+[1296.8s] ele lá no meu site. Pedro, por que que
+[1299.8s] eu vou instalar esse bendito código no
+[1302.2s] meu site? Porque esse código ele vai
+[1304.4s] fazer algumas atividades importantes,
+[1307.6s] três atividades importantes para ser
+[1309.5s] mais honesto com você. Presta atenção em
+[1312.0s] mim. Primeira atividade importante que
+[1314.2s] esse código faz no meu site, ele
+[1316.4s] funciona como um informante. Então é
+[1319.1s] como se esse código tivesse lá no meu
+[1320.7s] site e ele é a sua vizinha fofoqueira
+[1323.5s] que fica contando o que que tá
+[1325.5s] acontecendo. Aí você não vai acreditar.
+[1328.3s] A Maria acabou de colocar o produto no
+[1330.5s] carrinho, foi embora, deixou o produto
+[1333.1s] no carrinho. Acabou de entrar o João
+[1335.2s] aqui. João é João. João tem 26 anos, tem
+[1339.4s] interesse em moda, em beleza. João, hum,
+[1343.4s] João é viajante internacional frequente.
+[1346.8s] Esse menino viaja, viaja, viaja. Ó, João
+[1350.1s] tá comprando, tá adicionando o produto
+[1352.4s] no carrinho, botou as informações de
+[1354.2s] compra. João comprou, menina. João
+[1357.3s] gastou R$ 563
+[1360.2s] aqui no site. Pedro Pixel tem esse
+[1362.6s] poder. Um código tem esse poder. Sim.
+[1365.0s] Ele vai ler o que acontece no seu site e
+[1367.0s] ele vai mandar essas informações pro
+[1368.8s] Google. Então primeira coisa que o Pixel
+[1370.7s] faz é entender o que tá acontecendo no
+[1373.2s] seu site. Ele vai entender essas
+[1375.3s] informações e ele vai informar isso pro
+[1376.9s] Google. Segunda coisa que o Pixel faz, o
+[1379.8s] Pixel ele é fofoqueiro e ele começa a
+[1382.8s] entender o padrão, ele começa a falar
+[1385.1s] assim: "Hum, tá vendo que todo mundo que
+[1387.6s] compra aqui tem interesse em moda e
+[1389.2s] beleza? Tem mais ou menos entre 20, 25
+[1392.1s] anos. acessa normalmente esse tipo de
+[1394.7s] site. O pixel ele é inteligente. Então,
+[1397.5s] cada vez que o seu pixel começa a gerar
+[1400.8s] informações, ele vai mandando essas
+[1403.2s] informações pro Google e o Google fica
+[1405.5s] mais inteligente. É como se a sua conta
+[1407.8s] fosse mais madura, mais sábia. Ela sabe
+[1410.6s] exatamente para quem que ela tem que
+[1412.1s] anunciar. E a terceira coisa que o Pixel
+[1414.7s] faz é te ajudar a criar os públicos, tá?
+[1417.4s] Então você pode criar o público, por
+[1419.0s] exemplo, de quem adicionou o produto no
+[1421.3s] carrinho, mas não comprou. Você pode
+[1423.5s] criar o público de quem comprou para
+[1425.4s] vender outros produtos para essas
+[1427.0s] pessoas. Você pode criar o público de
+[1429.0s] quem visitou o seu site. Pedro, por que
+[1431.1s] que eu ia querer fazer isso? Ué, lembra
+[1433.1s] que a gente tem quatro principais tipos
+[1434.9s] de campanha no Google? Tem um tipo de
+[1437.1s] campanha do Google que é o remarketing,
+[1439.3s] é aparecer para quem já teve algum
+[1441.8s] contato com você. Então, a pessoa já viu
+[1444.1s] meu anúncio lá na pesquisa do Google.
+[1446.5s] Ela clicou no meu anúncio, ela foi até
+[1449.8s] meu site, ela adicionou o produto no
+[1451.8s] carrinho, o pixel viu tudo e a pessoa
+[1454.9s] não comprou. Que que eu faço? Eu vou
+[1456.9s] criar o público depois de pessoas que
+[1459.4s] adicionaram um produto no carrinho, mas
+[1461.1s] não compraram e vou anunciar para essas
+[1463.2s] pessoas, tá? Pedro, como é que eu faço
+[1465.2s] para criar esse pixel? Porque esse
+[1466.4s] negócio é pixel, tem que instalar no
+[1468.2s] site, é complexo, não é? É muito mais
+[1471.3s] simples do que parece, tá? E a gente tem
+[1473.4s] uma aula que eu explico tudo isso que eu
+[1475.2s] expliquei para você aqui com muitos
+[1477.7s] detalhes sobre como que você cria, onde
+[1480.3s] que clica, como que instala. Tem todo o
+[1483.3s] passo a passo, tá? Essa aula também vai
+[1486.2s] estar na descrição deste vídeo, tá?
+[1489.6s] Estamos todo mundo numa mesma página?
+[1491.8s] Fala comigo aqui no chat.
+[1503.2s] Todo mundo na mesma, tudo na mesma
+[1504.6s] página, né? Estamos aqui na nas
+[1506.0s] analogias, né? Estamos aqui numa
+[1508.4s] explicação que qualquer pessoa consegue
+[1510.0s] entender. Pedro, qualquer pessoa,
+[1512.0s] vírgula, porque eu tô meio confuso. Você
+[1513.9s] tá falando um monte de termo que eu
+[1515.2s] nunca vi na vida. Normal. Primeiro
+[1517.6s] contato com o tráfego é sempre uma coisa
+[1520.7s] meio doída. Parece que você não vai
+[1522.7s] conseguir aprender, mas acredita, todo
+[1524.6s] mundo que aprendeu passou por isso que
+[1526.0s] você passou. Eu falo que a confusão é o
+[1528.6s] primeiro estágio do entendimento. Você
+[1530.8s] tá ali naquela estágio de confusão, pô,
+[1533.8s] um monte de termo novo, um monte de
+[1535.5s] palavra, sua cabeça não consegue
+[1537.2s] assimilar tudo ao mesmo tempo. Mas aí o
+[1538.8s] que que você faz? Você volta, volta na
+[1541.1s] semana que vem pra próxima aula. Volta
+[1543.5s] na outra, volta na outra, volta na
+[1545.3s] outra. Eu não conheço ninguém,
+[1548.4s] ninguém, ninguém que tentou aprender
+[1551.8s] tráfego pago, teve consistência aqui nas
+[1554.7s] aulas e não aprendeu. Não conheço
+[1556.6s] ninguém. 365 semanas fazendo isso, tá?
+[1560.4s] Conheço ninguém, tá? Então vamos
+[1563.2s] seguindo aqui. Pedro, eu preciso ter
+[1566.2s] site porque você tá falando de site. Eu
+[1568.2s] preciso ter site para anunciar no
+[1569.5s] Google. Não precisa, mas o ideal é que
+[1571.5s] você tenha. Hoje, por um preço muito
+[1573.6s] barato, você compra um site aí de
+[1575.6s] alguém, tá? Uma página, não precisa ser
+[1577.8s] um site completo, pode ser uma página
+[1579.5s] onde a pessoa cadastra, onde a pessoa
+[1581.4s] vai contratar o seu serviço, onde a
+[1583.4s] pessoa vai comprar o seu produto. Pode
+[1585.6s] ser para e-commerce, para prestador de
+[1587.5s] serviço, para delivery, para negócio
+[1589.8s] local. Isso aqui funciona para tudo que
+[1591.3s] é tipo de negócio, tá? Você só vai
+[1593.0s] adaptar o site aquilo que você tá
+[1595.0s] vendendo. Ah, mas eu sou psicólogo. A
+[1597.1s] pessoa vai agendar a consulta. Eu não
+[1599.0s] quero que ela compre direto. Eu quero
+[1600.5s] que ela entre em contato. Então você vai
+[1602.9s] selecionar o objetivo de gerar
+[1604.6s] cadastros. A pessoa vai fazer um
+[1606.3s] cadastro. Você vai receber esses dados.
+[1608.4s] O Pixel vai informar o Google: "Ó,
+[1610.5s] acabou de fazer o cadastro aqui. Você
+[1613.2s] vai receber esses dados. Você entra em
+[1614.8s] contato, faz a venda um a um". As
+[1616.6s] possibilidades elas são infinitas, tá?
+[1619.0s] Então, passo número dois, metas de
+[1620.6s] conversão. Passo número três, e aqui que
+[1623.0s] o bicho vai pegar, eu vou confundir sua
+[1624.5s] cabeça, tá? Só que eu preciso que você
+[1626.5s] preste atenção agora, passo número três,
+[1629.9s] tipos de campanha e segmentações
+[1632.4s] indicadas. Porque o que que acontece
+[1634.4s] aqui no Google? A gente acabou, olha só,
+[1636.4s] a gente só selecionou o objetivo e aí
+[1638.9s] apareceram as metas de conversão aqui.
+[1641.6s] Depois que eu selecionar a meta de
+[1643.7s] conversão, eu vou apertar aqui em
+[1645.6s] continuar. E aí vai aparecer o quê para
+[1647.9s] mim? Selecione o tipo de campanha. E
+[1651.8s] isso daqui é a parte, uma das partes
+[1654.2s] mais importantes. Por quê? Porque aqui
+[1656.2s] eu vou selecionar o quê?
+[1659.3s] Qual desses tipos de campanha que eu
+[1662.0s] quero? Se eu quero aquela campanha
+[1664.0s] institucional da pesquisa? Se eu quero a
+[1666.3s] campanha do YouTube, se eu quero a
+[1668.2s] campanha que vai perseguir as pessoas
+[1669.9s] nos sites, se eu quero as campanhas de
+[1672.9s] performance max. É aqui que eu vou fazer
+[1675.3s] essa seleção. Quais são os tipos de
+[1677.8s] campanhas que nós temos e qual
+[1680.9s] segmentação que eu uso em cada uma?
+[1683.0s] Pedro, o que que é uma segmentação?
+[1685.1s] Segmentação é eu escolher para quem que
+[1687.4s] eu vou aparecer. Só que você tem que
+[1689.3s] entender que no Google eu posso escolher
+[1691.2s] para quem que eu vou aparecer de várias
+[1692.7s] maneiras diferentes. Hum. Beleza. Calma
+[1696.2s] que você vai entender agora. Vamos
+[1698.2s] embora. Primeiro tipo de campanha,
+[1700.9s] pesquisa. Qual que é a segmentação
+[1703.3s] indicada aqui? Palavras chave. Pedro, o
+[1706.8s] que que são palavras chave? Eu vou
+[1709.5s] escolher para quais buscas que eu quero
+[1713.0s] aparecer. Então, se alguém vem aqui no
+[1715.4s] Google e a pessoa digita curso de
+[1718.0s] tráfego pago, eu quero aparecer com o
+[1720.7s] meu anúncio. Agora, se a pessoa digita
+[1723.0s] aqui comprar velas aromáticas, eu não
+[1726.9s] quero que o meu anúncio de tráfego pago
+[1728.9s] apareça para essa pessoa. Então eu vou
+[1731.6s] segmentar, escolher quando eu vou
+[1734.0s] aparecer, baseado na pesquisa da pessoa,
+[1736.9s] baseado em palavras-chave. Ponto.
+[1738.9s] Acabou. Segundo tipo de campanha que nós
+[1741.7s] temos aqui, display. O que que é o
+[1744.2s] display? Display é você aparecer nos
+[1747.0s] sites
+[1748.8s] quando que tipo de segmentação que eu
+[1751.0s] vou usar no display? Eu vou utilizar
+[1753.8s] públicos quentes. O que que são públicos
+[1756.5s] quentes? Pessoas que já tiveram um
+[1760.6s] contato
+[1764.0s] com a minha marca. O que que já tiveram
+[1766.6s] contato com a minha marca? Já visitaram
+[1768.5s] meu site? Já pesquisaram meu nome na
+[1770.9s] internet? já se cadastraram no meu site,
+[1775.3s] já são meus clientes, foram até o meu
+[1778.1s] site, mas não finalizaram a compra.
+[1781.2s] Então, eu vou anunciar para quem já teve
+[1782.9s] algum contato comigo. Eu só vou
+[1784.9s] perseguir as pessoas pelos sites da
+[1786.6s] internet depois que elas já tiveram
+[1788.5s] contato comigo. Depois disso, nós temos
+[1791.1s] as a campanha de shopping. Pedro, por
+[1793.2s] que que você não tá fazendo na ordem?
+[1794.4s] Também não sei, tá? Eu sei que eu hora
+[1796.5s] que eu planejei a aula, eu planejei
+[1798.1s] nessa ordem, então vou fazer meio
+[1799.7s] aleatório. Shopping. O que que são as
+[1801.8s] campanhas de shopping? Campanha de
+[1803.7s] shopping é o seguinte, eu vou aparecer
+[1806.2s] para pessoas que já interagiram com a
+[1808.8s] minha loja online. Pedro, e se eu não
+[1810.5s] tenho loja online? Não usa esse
+[1812.2s] objetivo. Pronto, acabou. Vamos pro
+[1813.7s] próximo, tá? Então, campanha de shopping
+[1816.0s] é bom para quem já é ele vai, a gente
+[1818.1s] vai anunciar para quem já interagiu com
+[1820.6s] o nosso e-commerce, pra nossa loja
+[1822.5s] online. Eu deixei um asterisco
+[1824.6s] laranjinha aqui. Já já eu vou falar
+[1827.0s] sobre esse tipo de campanha aqui, porque
+[1829.2s] para você utilizar ela, você vai ter que
+[1831.4s] configurar um carinha que chama Google
+[1834.7s] Merchant Center, tá? Vixe, Pedro, é
+[1838.0s] muita coisa. Eu sei, no começo não tem
+[1840.4s] como dizer que não é. Realmente são
+[1842.4s] muitas coisas, muitos nomes, muitas
+[1844.6s] siglas, muitas palavras diferentes, mas
+[1846.8s] é o que eu falei, vamos aos pouquinhos,
+[1848.6s] o importante é você não desistir e aí a
+[1850.8s] gente vai construindo o conhecimento
+[1852.2s] aqui juntos. Depois da campanha de
+[1854.2s] shopping, nós temos a campanha de vídeo,
+[1857.7s] tá? Então essa daqui é a campanha onde a
+[1859.6s] gente vai anunciar no YouTube, tá?
+[1862.2s] Então, campanha de vídeo é a campanha
+[1864.6s] que a gente vai fazer que tipos de
+[1866.7s] segmentações que a gente vai utilizar
+[1868.4s] nelas mais amplo. Aqui para aparecer
+[1871.4s] pras campanhas de vídeo, eu vou utilizar
+[1874.0s] públicos alvo. Pedro, o que que são
+[1876.3s] públicos alvo? Público alvo é eu
+[1878.4s] escolher. Quero aparecer para pessoas
+[1881.1s] que já visitaram meu canal do YouTube,
+[1884.2s] que já viram algum vídeo do meu YouTube,
+[1886.4s] que já visitaram meu site. Quero
+[1888.6s] aparecer para pessoas que eh têm
+[1891.9s] interesse em moda e beleza. Quero
+[1894.0s] aparecer para pessoas que são viajantes
+[1896.3s] internacionais frequentes. Quero
+[1898.3s] aparecer para pessoas que têm filhos de
+[1901.2s] menos de um ano de idade. Quero aparecer
+[1903.6s] para pessoas que gostam de filmes de
+[1906.1s] terror. quero aparecer. E aí você vai
+[1908.4s] escolher as características desse
+[1911.0s] público. Pode ser um comportamento que
+[1913.4s] esse público teve, pode ser algum dado
+[1916.8s] demográfico que essa pessoa tem, pode
+[1919.5s] ser algum interesse que essa pessoa tem
+[1921.6s] na internet, assuntos que ela tem
+[1923.8s] afinidade, ações que essa essa pessoa já
+[1926.5s] teve com a sua marca. Pedro, é muito,
+[1929.8s] mais uma vez é uma infinidade de
+[1932.6s] possibilidades. Pois é, por isso que a
+[1934.8s] gente tem uma aula específica. E aí eu
+[1937.0s] sei do que eu tô, eu já, eu já dou aula
+[1938.6s] disso há muito tempo, então eu sei a sua
+[1940.5s] capacidade de entender tudo de uma única
+[1942.5s] vez. Ela tem um limite. A gente tem uma
+[1944.5s] aula específica onde a gente fala só
+[1946.3s] sobre público alvo. É uma das aulas mais
+[1948.8s] importantes de Google Ads, porque lá eu
+[1950.8s] falo sobre todos os tipos de
+[1952.3s] segmentação, lá eu apresento tudo que
+[1954.6s] tem de possibilidade do Google. E aí
+[1956.7s] essa outra aula vai conectar 100% com o
+[1959.6s] que você tá vendo aqui. É quase que um
+[1961.7s] passo dois dessa aula de agora aqui.
+[1964.1s] Essa aula, na verdade, ela poderia ser o
+[1965.7s] passo dois da outra, mas enfim. Na
+[1967.8s] descrição desse vídeo, ao final do ao
+[1969.6s] vivo, eu vou colocar o link também aqui
+[1971.7s] para você assistir essa aula de público
+[1973.3s] alvo. E é uma aula que tá sempre
+[1974.9s] disponível, você pode ver, rever. Lá tem
+[1977.4s] todas as explicações de quais são os
+[1979.8s] públicos alvos, como que você cria cada
+[1981.8s] um deles, como que funciona, tá tudo
+[1984.0s] garantido. Só sentar a bunda na cadeira
+[1985.8s] e ver aula, não tem mistério, tá? Mas
+[1988.0s] para anunciar campanhas de vídeo, eu
+[1991.5s] também posso selecionar palavraschave.
+[1994.5s] Por quê? Porque as pessoas elas vão lá
+[1996.6s] no YouTube e aí no YouTube elas fazem
+[1998.8s] buscas. O YouTube é o segundo maior
+[2001.2s] buscador da internet. Então a pessoa
+[2003.3s] chega aqui no YouTube e ela digita curso
+[2005.8s] de tráfego pago.
+[2008.2s] Aí a pessoa vem aqui no YouTube, digitou
+[2010.9s] curso de tráfego pago, pô, vai aparecer
+[2014.3s] meu anúncio para ela. Tem que aparecer
+[2016.1s] meu anúncio para ela. Então as pessoas
+[2018.4s] também fazem pesquisas aqui no Google.
+[2020.9s] Então eu vou anunciar para
+[2021.9s] palavraschaves e vou anunciar para
+[2024.1s] canais. O que que são os canais? É eu
+[2026.8s] selecionar os canais e os vídeos que eu
+[2029.1s] quero aparecer. Então, eu quero aparecer
+[2030.9s] em vídeos que falam sobre esses
+[2032.4s] determinados assuntos, quero aparecer
+[2034.9s] para pessoas que estão vendo vídeos que
+[2037.2s] desse canal aqui específico. Beleza?
+[2039.9s] Então, eu tenho campanha de pesquisa e
+[2043.6s] aqui eu vou segmentar palavra-chave.
+[2045.9s] Tenho campanha de display e aqui eu vou
+[2049.0s] aparecer para públicos quentes. Tenho
+[2051.6s] campanha de vídeo, opa, de shopping. E
+[2054.7s] aí eu vou aparecer para quem já
+[2056.2s] interagiu com o meu site, meu
+[2057.4s] e-commerce. campanha de vídeo, vou
+[2059.8s] aparecer no YouTube e aí vou anunciar
+[2062.4s] para públicos alvo, ou seja, baseado nas
+[2065.6s] características das pessoas, palavras
+[2068.4s] chave igual a pesquisa e canais. São os
+[2071.8s] três tipos de segmentação que eu vou
+[2073.4s] fazer aqui. Aplicativos eu vou anunciar
+[2077.1s] para usuários do seu aplicativo. Então,
+[2079.7s] pessoas que já estão baixaram seu
+[2081.6s] aplicativo, estão usando o seu
+[2083.3s] aplicativo e públicos alvo. É a
+[2085.7s] campanhazinha aqui de apps, tá? Então é
+[2088.7s] o tipo de campanha que eu vou utilizar.
+[2090.8s] E por último, penúltimo, na verdade,
+[2094.1s] penúltimo, penúltimo,
+[2097.4s] campanha de máximo desempenho, que é a
+[2100.7s] campanha de performance max. Campanha de
+[2103.8s] máximo desempenho é o quê? É o X tudo
+[2107.2s] das campanhas. É quando eu vou anunciar
+[2109.6s] em vídeo, quando eu vou anunciar no
+[2111.7s] display, quando eu vou anunciar na
+[2113.7s] pesquisa, tudo junto e misturado ao
+[2115.9s] mesmo tempo, tá? Então eu vou aparecer
+[2117.8s] em todos os lugares. Só que aqui quando
+[2119.7s] eu vou aparecer em todos os lugares, eu
+[2121.4s] não escolho para quem que eu vou
+[2122.7s] aparecer. O Google vai me pedir um
+[2125.7s] indicador de público alvo. Que que é um
+[2128.1s] indicador de público alvo? É o Google me
+[2130.0s] dizendo: "Olha, aqui eu vou tomar conta
+[2132.0s] de tudo, mas se você quiser me dar uma
+[2133.5s] indicação de para quem que a gente vai
+[2135.1s] aparecer, em quem que você quer focar,
+[2137.4s] me dá a sua indicação de público alvo."
+[2139.8s] Então ele vai pedir pra gente configurar
+[2141.5s] esse indicador de público alvo, que é a
+[2143.7s] mesma coisa de configurar um público
+[2145.5s] normal. Eu vou selecionar palavra-chave,
+[2147.8s] vou selecionar público alvo, mas o
+[2150.3s] Google tá vai usar aquilo ali só como
+[2152.2s] uma sugestão para mim, tá? Então esse é
+[2156.2s] o máximo desempenho. E aí temos
+[2160.0s] a geração de demanda, que é as
+[2162.7s] campanhas, ela muda de nome toda hora,
+[2164.8s] mas ela é chamada de Discovery ou
+[2167.8s] demand, a geração de demanda. Essa
+[2171.2s] campanha aqui, ela vai ser utilizada
+[2173.7s] para duas grandes situações. Primeiro,
+[2176.1s] eu vou utilizar ela para anunciar para
+[2178.4s] públicos quentes
+[2181.5s] ou
+[2183.5s] para campanhas de conversão no YouTube,
+[2188.2s] tá? Então aqui eu vou focar muito em
+[2190.0s] público quente ou campanha de conversão
+[2192.1s] no YouTube dentro. E eu não sei porque
+[2194.2s] que o Google fez isso, tá? Mas
+[2196.1s] antigamente, se eu queria fazer anúncios
+[2198.3s] de venda em vídeo, era só selecionar
+[2201.0s] vídeo. Agora, se eu quero fazer
+[2202.8s] campanhas de vendas em vídeo, eu tenho
+[2205.6s] que selecionar a geração de demanda, tá?
+[2207.9s] Mudou? Então, o Google mudou isso daqui
+[2210.3s] e aí eu tenho que selecionar geração de
+[2212.2s] demanda para fazer conversões no
+[2214.0s] YouTube. Então, se eu quero fazer
+[2215.6s] conversões no YouTube, geração de
+[2217.4s] demanda, tá? Uma mudança que teve. E aí,
+[2220.0s] assim,
+[2221.8s] ela funciona para isso, tá? Essa é a
+[2224.0s] verdade. O resto você pode até aparecer
+[2226.5s] no na nos sites da internet com essa
+[2229.0s] campanha, mas ela não funciona tão bem.
+[2231.2s] Demand Jane, se a gente for resumir, é
+[2234.2s] vamos usar,
+[2236.3s] vou até mudar, vamos usar
+[2239.4s] para campanhas de conversão no YouTube,
+[2241.6s] tá? E aí aqui você vai utilizar
+[2243.9s] principalmente
+[2248.0s] públicos alvo como segmentação,
+[2251.0s] tá? Agora, detalhes importantes que que
+[2254.8s] eu falei para você aqui. Primeiro,
+[2257.8s] campanha de shopping, pessoas que já
+[2260.1s] interagiram com a sua loja online. Você
+[2262.1s] tem que configurar. Eu escrevi errado,
+[2264.0s] eu escrevi merhat. É Merchard.
+[2271.4s] Google Merchant Center. É isso, né?
+[2273.6s] Deixa eu ver. Merchante. Não, Merchant.
+[2277.1s] Escrevi errado de novo. Merchant Center.
+[2279.6s] Agora sim. O que que é o Google Merchant
+[2281.7s] Center? Ele é basicamente uma conexão
+[2285.0s] entre a sua loja online e o Google Ads.
+[2287.4s] Para eu fazer essas campanhas de
+[2289.1s] shopping, eu tenho que conectar o Google
+[2291.1s] Ads com a minha loja.
+[2293.6s] E para isso eu tenho que configurar o
+[2295.0s] Google Merchant Center. Para configurar
+[2297.2s] o Google Merchant Center, minha sugestão
+[2299.4s] para você é chame a pessoa que fez seu
+[2304.2s] site para você, tá? Por quê? porque não
+[2306.8s] é o negócio mais fácil do mundo de ser
+[2308.7s] configurado. Então, o ideal é que você
+[2310.8s] chame a pessoa que fez o seu site para
+[2313.0s] fazer essa configuração do Google
+[2314.6s] Merchant Center para você. Ele vai
+[2316.5s] conectar o seu site, o seu estoque ao
+[2318.9s] Google e aí você vai estar anunciando
+[2321.1s] sempre aquilo que está disponível dentro
+[2322.9s] do seu site. Repara que eu coloquei um
+[2325.4s] outro asterisco aqui em vídeo, tá? Eu
+[2328.3s] vou colocar ele tanto em vídeo quanto
+[2330.0s] nas campanhas de geração de demanda. Por
+[2332.4s] quê? Porque a gente tem alguns públicos
+[2335.0s] bons para YouTube que eles são sempre os
+[2337.5s] mesmos, são sempre esses daqui que
+[2339.4s] funcionam e as pessoas teimam e não
+[2341.9s] utilizá-los. Quais são eles? Vamos lá.
+[2344.6s] Primeiro, pessoas que quase converteram,
+[2347.6s] pessoa que chegou até a sua página de
+[2349.5s] captura, sua página de venda, seu
+[2351.4s] carrinho, mas não comprou. sempre tem
+[2353.6s] que anunciar para essas pessoas no
+[2355.0s] YouTube. Segundo o público, pessoas que
+[2358.0s] viram seu anúncio. Então, a pessoa viu
+[2360.0s] seu anúncio em vídeo, clicou no seu
+[2362.2s] anúncio em texto, mas não converteu.
+[2365.8s] Então, a gente sempre vai excluir a
+[2367.6s] pessoa que não converteu, que não
+[2369.0s] comprou. Outro público bom para YouTube,
+[2371.6s] envolvimentos de 1 a 30 dias. pessoas
+[2374.2s] que se envolveram de alguma maneira,
+[2375.8s] viram algum vídeo, eh curtiram,
+[2378.3s] compartilharam, se inscreveram no seu
+[2380.6s] canal do YouTube entre 1 a 30 dias.
+[2384.1s] Sempre é um público que funciona bem.
+[2387.2s] Pessoas que estão inscritas no seu canal
+[2389.6s] nos últimos 540 dias, tá? Então é um
+[2392.2s] público bem amplo, mas ele funciona bem.
+[2395.0s] Listas de leads, que é uma são listas de
+[2397.4s] e-mails ou de telefones, segmentos
+[2400.2s] personalizados. Isso aqui é uma
+[2401.8s] maravilha do Google Ads, que é
+[2403.8s] basicamente o público que eu crio com
+[2405.7s] base nas pesquisas que as pessoas fazem
+[2408.3s] no Google. Presta atenção. Eu crio um
+[2410.4s] público baseado em tudo que já foi
+[2412.3s] pesquisado no Google por um grupo de
+[2414.0s] pessoas, nos sites que a pessoa acessa
+[2418.5s] ou nos aplicativos que a pessoa tem no
+[2421.1s] celular. Presta atenção no que que isso
+[2423.0s] quer dizer. Eu posso pegar o seguinte,
+[2425.2s] todo mundo que já pesquisou alguma vez
+[2427.6s] na vida alguma coisa sobre o meu negócio
+[2430.2s] no Google, eu quero aparecer para essa
+[2432.1s] pessoa lá no YouTube. Você faz isso com
+[2434.3s] esse tipo de segmentação? Ah, eu quero
+[2436.5s] aparecer para todo mundo que já visitou
+[2438.7s] esses sites aqui na vida. Pode ser site
+[2440.9s] que não é meu, pode. Ah, eu quero
+[2443.0s] aparecer para todo mundo que tem esses
+[2445.0s] determinados aplicativos no celular.
+[2447.4s] Você vai aparecer para essas pessoas,
+[2449.1s] tá? Então isso daqui é muito, muito,
+[2451.0s] muito, muito poderoso e eu ensino também
+[2453.2s] lá na aula de segmentações do Google
+[2455.1s] Ads, tá? A aula, o link dessa aula tá lá
+[2457.9s] na descrição para você assistir. Você
+[2459.7s] pode ver ela depois quantas vezes você
+[2461.4s] quiser. Público alvo de mercado, que são
+[2464.9s] listas de interesses prontas que o
+[2466.8s] Google te fornece. Então, pessoas que
+[2468.8s] têm interesse no assunto A, B, C, D, E,
+[2472.4s] F, G, todos esses A, B, C, D, E, E, F,
+[2475.2s] G, o Google tem a lista ali dos
+[2477.4s] possíveis interesses pra gente fazer os
+[2480.0s] nossos anúncios. E por último e não
+[2481.8s] menos importante, palavras chaves ou
+[2483.8s] canais. Eu escolho para quais pesquisas
+[2486.5s] ou canais eu quero aparecer. Então, o
+[2489.0s] que que a pessoa tá pesquisando que vai
+[2490.8s] aparecer meu anúncio para ela no
+[2492.4s] YouTube? Qual canal que ela tá vendo?
+[2494.5s] Qual vídeo que ela tá vendo? que eu
+[2496.2s] quero que o meu anúncio apareça naquele
+[2497.8s] canal, eu quero que o meu anúncio
+[2499.0s] apareça naquele vídeo, tá? Falei para
+[2501.1s] você, essa é a parte mais densa do
+[2503.1s] conteúdo, que são os tipos de campanhas
+[2505.2s] e segmentações, tá? Por quê? Porque aqui
+[2507.5s] a gente vai dizer basicamente para onde
+[2509.2s] que a nossa campanha vai. Pedro, nós
+[2511.1s] vamos criar todas elas? Não, mas você
+[2513.9s] vai ver que a criação de todas elas é
+[2515.8s] muito parecida. Vamos fazer a de
+[2517.7s] pesquisa, porque essa daqui é a campanha
+[2519.7s] que todo mundo deve ter quando vai
+[2521.1s] anunciar no Google, tá? que era é para
+[2523.3s] aparecer para aquilo que as pessoas
+[2525.0s] estão pesquisando. Colocar o nosso
+[2527.0s] anúncio na frente da pesquisa certa é
+[2529.4s] uma habilidade que vai colocar dinheiro
+[2531.0s] no nosso bolso, tá? Então, selecionei
+[2533.1s] pesquisa aqui. Ele vai me perguntar como
+[2536.0s] é que eu quero alcançar o meu objetivo.
+[2538.1s] Você pode ignorar isso daqui ou
+[2540.1s] selecionar, tá? Se a gente for
+[2542.0s] selecionar, a gente vai selecionar site,
+[2544.6s] tá? Então, a gente sempre vai jogar as
+[2546.0s] pessoas para um site para anunciar no
+[2548.1s] Google. Não é essencial que você tenha
+[2550.2s] um site, mas é muito importante, tá?
+[2552.5s] Então vou colocar aqui meu site,
+[2554.9s] pedrosobbral.com.br/ha
+[2560.3s] aulas, tá? Então faz de conta que esse
+[2562.2s] daqui é o link para o qual eu quero
+[2563.4s] enviar as pessoas. E aí eu vou apertar
+[2565.5s] em continuar.
+[2567.9s] Apertei em continuar, ele vai me pedir o
+[2570.0s] nome da minha campanha. E aí a gente vai
+[2572.6s] pro passo número quatro, que é a
+[2575.2s] nomenclatura,
+[2576.8s] tá? Então, o que que a pessoa, qual que
+[2580.6s] é o nome que eu vou colocar que vai
+[2582.2s] identificar a minha campanha? Eu tenho
+[2584.7s] um modelo que eu sempre gosto de
+[2586.4s] utilizar. Eu coloco o objetivo da minha
+[2589.2s] campanha, o tipo da minha campanha, o
+[2592.3s] subtipo e uma descrição. Então, por
+[2594.8s] exemplo, vendas, pesquisa, breve
+[2596.8s] descrição, vendas YouTube, breve
+[2599.5s] descrição, vendas, display, breve
+[2602.2s] descrição. Subtipo raramente você vai
+[2604.8s] utilizar, tá? ou visitas à loja Pemex.
+[2608.4s] Aqui poderia ser eh
+[2611.6s] cadastros, né, leads, cadastros,
+[2614.9s] display e uma breve descrição da minha
+[2618.0s] campanha, tá? Então eu vou colocar um
+[2619.9s] nomezinho aqui que identifique a minha
+[2622.7s] campanha, tá? Usa um padrãozinho. Quanto
+[2625.6s] melhor for esse padrão, quanto mais você
+[2627.6s] utilizar, mais fácil vai ser. Beleza?
+[2630.4s] Vou apertar em continuar. Só isso, esse
+[2632.6s] passo. Só isso, esse passo, tá? Isso
+[2634.7s] aqui não vai aparecer para você, tá? Mas
+[2637.1s] eu vou apertar aqui em começar uma
+[2638.6s] campanha nova paraa
+[2641.9s] gente seguir o processo aqui. Beleza?
+[2644.6s] Agora vai aparecer aqui para mim a o
+[2647.2s] passo número cinco, que é a estratégia
+[2650.0s] de lance, deixa eu voltar aqui pro meu
+[2651.3s] cantinho, que é a estratégia de lance e
+[2654.0s] o orçamento. O que que é a estratégia de
+[2656.6s] lance? É basicamente o Google me fazendo
+[2659.0s] a seguinte pergunta: "Em qual resultado
+[2662.0s] você quer focar e quanto que você quer
+[2664.6s] pagar por esse resultado?" É isso. Que
+[2667.9s] que você tá buscando? Ah, eu tô buscando
+[2670.5s] conversões. Conversão. Ah, eu tô
+[2673.1s] buscando cliqus. Cliqus. Ah, eu tô
+[2676.1s] buscando impressões.
+[2678.4s] O que que eu estou buscando de
+[2680.3s] resultado? Quando a gente tá falando de
+[2682.5s] campanhas para quem tá começando, ou a
+[2685.1s] gente vai focar em conversão ou eu vou
+[2687.3s] focar em clique, tá? E na maioria das
+[2689.9s] vezes a gente vai focar em conversão,
+[2691.5s] dinheiro no bolso. E aí ele vai me
+[2693.4s] perguntar: "Quanto que você quer pagar
+[2695.5s] por uma conversão? Quanto que vale
+[2697.9s] alguém ir no seu site e converter?" Aí
+[2699.9s] você vai botar, vou botar 1 centavo, né?
+[2702.5s] Aí que tá. Qual que é o problema? Se eu
+[2705.1s] botar um valor muito baixo, o Google não
+[2707.1s] vai gastar o meu dinheiro. Por quê?
+[2709.6s] Quanto maior é o meu lance, o que que é
+[2712.0s] o lance? Sou eu dizendo pro Google:
+[2713.8s] "Olha, isso daqui é o que eu tô disposto
+[2715.8s] a gastar. Isso é o lance. Quanto maior o
+[2718.6s] meu lance, mais eu gasto, mas mais eu
+[2722.0s] pago por resultado. Quanto menor o meu
+[2725.5s] lance, menos eu gasto, mas menos eu pago
+[2728.9s] por resultado. Eu sei que isso pode
+[2730.9s] parecer confuso, mas aí é só você pensar
+[2733.4s] num leilão de quadros. Como assim um
+[2735.6s] leilão de quadros? Imagina o seguinte,
+[2737.5s] vai acontecer um leilão de quadros. Se
+[2739.7s] eu chego lá e cada vez que que alguém
+[2741.5s] fala assim: "Eu dou 2.000", eu falo: "Eu
+[2742.8s] dou trê". A pessoa fala: "Eu dou 4.000".
+[2744.9s] Eu falo: "Eu dou cinco." Eu a pessoa
+[2746.6s] falou: "Eu dou seis". Eu falo: "Eu dou
+[2747.9s] 7.000. Eu dou 8.000, dou 9.000." A
+[2750.6s] pessoa fala: "Eu dou 10.000, eu dou
+[2752.0s] 20.000". Que que tá acontecendo? Eu tô
+[2754.8s] dando um lance maior, só que eu vou
+[2757.5s] gastar mais, mas eu vou pagar mais caro
+[2760.8s] também por cada quadro que eu comprar.
+[2763.1s] No Google é a mesma coisa, só que no
+[2765.1s] Google a gente não tá leiloando quadro,
+[2767.3s] a gente tá leiloando conversão. Então eu
+[2769.9s] vou dizer pro Google: "Olha, eu tô
+[2771.2s] disposto a pagar R$ 5 por uma conversão,
+[2773.9s] beleza? Você vai aparecer x vezes, mas
+[2776.8s] se eu botar que eu tô disposto a pagar
+[2778.2s] 10, eu vou aparecer mais vezes, mas eu
+[2780.4s] vou pagar mais caro também. Então isso
+[2782.8s] daqui é o seu acelerador do Google.
+[2785.8s] Quanto maior é o lance, mais eu tô
+[2788.0s] pisando no acelerador. Quanto menor é o
+[2790.2s] lance, eu tô tirando o pé do freio. Se
+[2792.0s] eu tô anunciando no Google e eu tô
+[2793.7s] pagando muito caro, o que que eu faço?
+[2796.4s] Tiro o pé do acelerador. Se eu tô
+[2798.7s] anunciando no Google e não tá gastando
+[2800.7s] dinheiro ou o custo, o resultado tá
+[2803.3s] barato e eu quero gastar mais, pisa no
+[2805.6s] acelerador. Então, pisei no acelerador,
+[2808.3s] eu vou aumentar meu lance para 11, para
+[2810.8s] 12, para 13, para 14, para 15. Opa,
+[2814.5s] ficou caro. Ah, vamos voltar para 13,
+[2818.4s] tá? E aí você e aí eu não sei quanto que
+[2820.1s] você vai pagar por conversão, porque
+[2822.2s] depende do seu negócio. Quanto que você
+[2824.2s] pode pagar por uma venda? Essa é uma
+[2826.5s] resposta que você tem que ter ou se você
+[2829.0s] é gestor de tráfego que o dono do
+[2831.1s] negócio tem que ter, tá? E aí a gente
+[2833.4s] tem algumas alguns tipos de estratégias
+[2836.2s] de lance. Eu não vou entrar nesse nível
+[2838.5s] de detalhe aqui com você, tá? Porque
+[2842.4s] para quem tá começando, não vai fazer
+[2845.0s] sentido você aprender isso, mas a
+[2847.2s] questão aqui é quando vou aí essa esse
+[2850.0s] Google eu não posso deixar muito pequeno
+[2851.9s] porque senão vocês não enxergam, mas
+[2853.4s] quando a gente vai anunciar no Google, a
+[2855.4s] gente tem que escolher em que tipo de
+[2857.3s] resultado que a gente quer focar. Então
+[2859.1s] você vai selecionar sua estratégia de
+[2860.6s] lance. Pedro, você colocou estratégia de
+[2862.8s] lance e orçamento? Sim. Na maioria das
+[2866.1s] campanhas que você for criar aqui, você
+[2868.6s] já vai ter que escolher o quanto de
+[2870.0s] dinheiro você quer gastar por dia. No
+[2872.1s] caso da campanha de pesquisa, a gente
+[2874.0s] vai escolher isso só no final, tá? Por
+[2876.0s] quê? Sei lá, o Google é meio louco às
+[2878.0s] vezes, tá? Mas na maioria das campanhas
+[2880.2s] vai ser aqui que a gente vai selecionar.
+[2882.1s] Nesse caso específico que estamos
+[2884.4s] simulando a criação de uma campanha de
+[2886.4s] pesquisa, a gente seleciona isso daqui
+[2888.4s] lá no final. Passo número seis, que que
+[2891.4s] a gente vai fazer? A gente vai pular
+[2893.4s] essa parte aqui de aquisição, tá? Pode
+[2895.6s] ignorar isso daqui, não vai fazer
+[2897.6s] diferença nenhuma para você que tá
+[2899.2s] começando agora. E aí a gente vai
+[2900.8s] apertar aqui em próximo. Apertei em
+[2903.0s] próximo, vai aparecer aqui, vão aparecer
+[2905.4s] as redes. O que que são as redes? As
+[2908.4s] redes é o passo número seis, que é onde
+[2912.0s] que eu quero aparecer, que é redes e ou
+[2916.5s] formato, tá? Então aqui vai aparecer
+[2918.8s] redes ou vai aparecer formato ou vai
+[2921.3s] aparecer os dois. Redes é eu dizer: "Eu
+[2923.9s] quero aparecer só no Google, eu quero
+[2927.0s] aparecer só no YouTube". Se eu for
+[2930.6s] aparecer no YouTube, qual que é o
+[2932.4s] formato do meu vídeo? É um vídeo
+[2936.0s] vertical? É um vídeo horizontal? É um
+[2939.2s] vídeo que vai aparecer na pesquisa do
+[2943.0s] YouTube? Qual que é o formato do vídeo
+[2945.2s] que vai aparecer pras pessoas? Se eu vou
+[2948.0s] anunciar na eu quero aparecer na rede de
+[2950.3s] display, então qual que é a rede que eu
+[2952.4s] quero aparecer? Quando a gente tá
+[2954.1s] falando de Google Ads, a gente vai só
+[2956.0s] selecionar o Google e os parceiros da
+[2959.9s] pesquisa do Google, tá? Que são sites
+[2962.8s] que não são o Google, mas que são
+[2964.8s] parceiros do Google e o seu anúncio vai
+[2967.3s] ser mostrado lá quando alguém fizer
+[2969.2s] pesquisas lá. Não vamos selecionar essa
+[2971.8s] opção do display. Por quê? Porque ela é
+[2973.6s] uma bosta e não funciona. Simples assim,
+[2976.1s] tá? Então isso daqui é o o configuração
+[2978.5s] padrão da rede de pesquisa. Selecionado
+[2981.2s] isso, vamos pro passo sete. Lembra? São
+[2983.3s] 10 passos. A gente tá chegando no final.
+[2985.2s] Passo sete,
+[2987.1s] localização e idiomas, que é onde que o
+[2990.2s] nosso anúncio vai aparecer, onde que
+[2992.1s] está a pessoa que está vendo o meu
+[2993.4s] anúncio. Então, essa pessoa que vai ver
+[2995.3s] o meu anúncio, ela tá em qualquer país e
+[2997.1s] qualquer território? Ela tá no Brasil ou
+[2999.8s] ela tá numa localização específica? Se
+[3002.4s] ela tá numa localização específica, eu
+[3004.7s] quero aparecer para alguém que tá em
+[3006.4s] todo o estado do Paraná, por exemplo.
+[3009.3s] Não, eu não quero. Eu quero aparecer
+[3010.7s] para as pessoas que estão numa cidade,
+[3012.5s] por exemplo, do Paraná, como por
+[3014.3s] exemplo, a cidade de Londrina. Não, eu
+[3016.2s] não quero. Eu quero aparecer num CEP do
+[3019.0s] de Londrina, no CEP 86015. Só os cinco
+[3023.0s] primeiros dígitos do CEP, ó. 86015.
+[3027.2s] incluir. Quero aparecer somente neste
+[3030.0s] local aqui.
+[3032.1s] Ou eu quero aqui a gente tem a pesquisa
+[3034.4s] avançada, né, onde eu consigo ver eh
+[3037.0s] onde que tá o meu onde que tá o o o
+[3040.6s] local onde eu tô aparecendo aqui na na
+[3042.9s] cidade de Londrina. Então, eu tenho
+[3045.3s] várias opções. Eu posso anunciar para
+[3046.8s] vários CPs, para várias cidades, para um
+[3048.8s] estado, vários estados, um país, vários
+[3051.6s] países. Você vai selecionar aqui a sua
+[3053.6s] localização. Importante aqui tem as
+[3056.7s] opções de localização, location options.
+[3060.0s] Aqui você vai colocar presença, porque o
+[3063.1s] o aqui é presença ou interesse. Aqui eu
+[3065.3s] vou aparecer para todo mundo que está
+[3067.7s] nesse CP ou tem interesse nesse CEP.
+[3070.6s] Vamos dizer que eu não vou anunciar no
+[3071.9s] CEP, vamos dizer que eu vou anunciar
+[3073.4s] para Londrina mesmo, na cidade de
+[3075.6s] Londrina, no Paraná. Então tô anunciando
+[3077.8s] para Londrina aqui. Se uma pessoa tem
+[3080.0s] interesse em Londrina, eu já vou
+[3081.5s] aparecer, mas ela pode morar no Maranhão
+[3086.0s] e eu tenho um delivery e aí eu vou
+[3088.3s] aparecer o meu anúncio de delivery pro
+[3090.0s] cara que tá no Maranhão. Não. Então por
+[3091.8s] isso que eu vou selecionar presença.
+[3093.7s] Aqui eu vou aparecer para quem está na
+[3095.6s] cidade de Londrina. Aí depois vamos pro
+[3098.0s] idioma. Qual que é o idioma dessa
+[3100.0s] pessoa? Normalmente o idioma do
+[3101.9s] navegador. Perceba o meu navegador aqui,
+[3104.6s] o Google Chrome. O seu pode ser o
+[3106.6s] Mozilla Firefox, o Aura, o o Internet
+[3110.2s] Ed, o Explorer. Cada um tem. Hoje em dia
+[3113.1s] tem 1000 navegadores, tá? Mas o Safari,
+[3115.8s] mas qual que é o idioma do navegador da
+[3117.7s] pessoa? Aqui você sempre vai colocar
+[3119.9s] inglês, português e espanhol.
+[3124.1s] Sempre português, English, Spanish.
+[3128.5s] Português, inglês e espanhol. Sempre
+[3130.2s] esses três. Passo sete, check. Passo
+[3135.1s] oito, início e programação. Você vai vir
+[3139.2s] aqui, ó, em mais configurações, tá,
+[3141.5s] Pedro? E essas políticas, ignora
+[3144.4s] segmentos de audiência, ignora mais
+[3147.4s] configurações. Aqui em mais
+[3149.3s] configurações, você tem a data de início
+[3151.9s] e a data de término. Quando que a
+[3153.9s] campanha começa? Quando que a campanha
+[3156.2s] termina? Então, começa no dia 23 de
+[3158.5s] dezembro de 2025. Quando que ela
+[3160.3s] termina? Ah, ela termina daqui a duas
+[3162.7s] semanas. Ela termina no dia 6 de
+[3164.4s] janeiro, no dia que a gente vai estar
+[3166.4s] fazendo aula ao vivo também. Data de
+[3169.6s] início, data de término, mais
+[3171.4s] configurações.
+[3173.0s] Aqui você tem a programação
+[3176.1s] schedule, programação dos anúncios.
+[3178.4s] Quais são os horários e os dias que os
+[3180.4s] meus anúncios vão aparecer? Ah, então
+[3182.5s] meu anúncio vai aparecer segunda, terça,
+[3187.0s] quarta,
+[3190.4s] quinta
+[3192.0s] e sexta. Só que ele vai aparecer só das
+[3195.4s] 8 horas da manhã. Opa.
+[3201.6s] Vai aparecer só das 8 até às
+[3206.2s] 18. Por quê? Porque eu tenho um
+[3208.6s] comércio, um eu sou psicólogo, eu presto
+[3211.9s] serviço e é só nesse horário aqui que eu
+[3214.3s] atendo. Então, seus anúncios vão
+[3216.0s] aparecer só de segunda a sexta nesses
+[3218.2s] horários. Você vai escolher a a agenda
+[3221.3s] dos seus anúncios aqui. Aí, se eu quiser
+[3223.2s] aparecer todos os dias, aí é só
+[3224.6s] selecionar aqui. Tem, ó, todos os dias,
+[3226.8s] tá? Você seleciona aqui os dias da
+[3228.4s] semana que você quer aparecer. Feito
+[3230.8s] isso, passo nove, são 10 passos. Você
+[3233.7s] tá, você tá vendo? A gente tá criando a
+[3235.2s] campanha, é rapidinho, é só ir
+[3237.2s] selecionando. Você tem que entender o
+[3239.0s] seguinte, o Google, eu sei que é um
+[3240.5s] monte de informação nova, mas o Google
+[3242.6s] ele quer que você saiba criar a
+[3244.2s] campanha. É só você seguir o passo a
+[3246.2s] passo e vai acompanhando a aula. Ah, mas
+[3248.4s] eu não vou me sentir pronto para fazer
+[3250.1s] sozinho. Você e nem ninguém que tá
+[3251.8s] começando. Nem eu quando comecei, muito
+[3254.7s] menos eu. Eu quando comecei ficava vendo
+[3256.7s] 1 milhão de tutorial para conseguir
+[3258.4s] criar as minhas campanhas. O ano era
+[3261.2s] 2015, não tinha esse tanto de informação
+[3263.0s] na internet, não tinha esse tanto de
+[3264.6s] live. Mas, pô, se eu conseguir numa
+[3267.0s] época sem informação, hoje em dia com o
+[3268.8s] passo a passo aqui bonitinho, pô, você
+[3270.7s] vai voar, tá? Finalizei isso daqui, eu
+[3274.1s] vou paraa próxima etapa aqui. Na próxima
+[3276.4s] etapa, a meta vai, a meta não, desculpa,
+[3278.7s] o Google vai me sugerir as opções de
+[3281.2s] inteligência artificial do Google, tá?
+[3283.8s] Isso daqui é o quê? Vamos otimizar sua
+[3286.4s] campanha com a nossa IA. Não tá legal
+[3289.4s] ainda, tá? No futuro pode ser que
+[3292.2s] melhore. Não é nem que pode ser. No
+[3293.5s] futuro vai ficar bom. E aí quando ficar
+[3295.9s] bom vai ter aula sobre isso daqui aqui,
+[3298.0s] tá? Mas agora não tá legal. Então, a
+[3300.1s] gente só vai deixarelecionado
+[3302.9s] essa opção, tá? Só vamos tirar essa
+[3305.4s] opção aqui e vamos apertar em próxima.
+[3309.6s] E aí o Google vai agora paraa próxima
+[3311.7s] etapa, que é, mais uma vez ele tá
+[3314.5s] tentando fazer com que eu crie as minhas
+[3316.9s] palavras-chaves de maneira automática.
+[3319.2s] Ainda não tá legal. Eu vou pular essa
+[3321.6s] etapa aqui. Então vai ter um botão aqui.
+[3323.4s] Se o seu estiver em português, vai tá
+[3325.4s] escrito pular. Eu vou pular essa etapa.
+[3328.0s] E agora eu vou vir aqui, ó, para criação
+[3331.9s] do meu grupo de anúncio, paraa criação
+[3334.0s] da próxima etapa da minha campanha, que
+[3336.4s] é eu selecionar para quem que eu vou
+[3339.0s] aparecer, tá? No nosso caso aqui, por
+[3341.8s] isso que eu coloquei aqui segmentação,
+[3344.6s] no nosso caso aqui do Google, a gente tá
+[3347.6s] criando uma campanha de pesquisa. Como
+[3350.1s] eu tô criando uma campanha de pesquisa,
+[3352.2s] a segmentação que eu vou utilizar aqui
+[3354.5s] são as palavraschave,
+[3357.4s] tá? Então essa é uma campanha de
+[3358.8s] pesquisa, essa é a segmentação que a
+[3360.5s] gente vai utilizar aqui. Quando a gente
+[3362.9s] tá falando de anunciar no Google, para
+[3365.5s] te trazer uma explicação de uma maneira
+[3367.1s] um pouquinho mais aprofundada, o Google
+[3369.5s] ele nos dá três tipos de segmentação. Eu
+[3373.0s] posso segmentar as minhas campanhas por
+[3375.8s] público alvo, tá? O que que é o público
+[3378.1s] alvo? Eu, como eu falei para você, eu
+[3379.9s] vou escolher as características de quem
+[3381.8s] vai ver o meu anúncio demográficas, os
+[3384.5s] interesses, as interações que ela já
+[3387.2s] teve comigo, com a minha marca, as
+[3389.0s] pesquisas que essa pessoa já fez, os
+[3390.8s] aplicativos que ela tem no celular, isso
+[3393.0s] é público alvo. Só que eu também posso
+[3395.6s] segmentar as pessoas com base em
+[3398.4s] conteúdo que eu vou escolher aparecer
+[3401.2s] pra pessoa com base no que ela está
+[3404.2s] pesquisando, acessando ou vendo. Quando
+[3408.2s] a gente vai fazer anúncios no Google, eu
+[3410.9s] vou segmentar com base em conteúdo e não
+[3413.8s] em característica, porque eu quero
+[3415.8s] aparecer quando a pessoa está fazendo
+[3417.9s] uma pesquisa de um determinado assunto.
+[3420.2s] Se eu tenho uma loja que vende vela
+[3421.7s] aromática, eu quero aparecer quando a
+[3423.6s] pessoa digitar comprar vela aromática.
+[3426.6s] Então, se eu pesquisar comprar vela
+[3428.2s] aromática, vão aparecer anúncios para
+[3430.1s] mim aqui no Google, ó. Resultados
+[3432.9s] patrocinados. Tudo isso aqui é anúncio.
+[3436.1s] Entregamos em todo o Brasil. Site candle
+[3439.1s] e co velas com aromas elegantes. The
+[3441.8s] minimalist candle. Velas de alta
+[3444.0s] performance. Cara, até a vela é de alta
+[3445.8s] performance agora. Mas a questão a vela
+[3448.6s] coach, né? [risadas]
+[3451.7s] Que que sua vela é uma vela normal? Não,
+[3454.0s] essa aqui é uma vela de alta
+[3455.2s] performance. você acende ela e ela te
+[3458.9s] traz uma mensagem positiva pro seu dia.
+[3463.1s] Mas a segmentação com base no conteúdo,
+[3465.7s] a pessoa que colocou esse anúncio no ar
+[3467.7s] aqui, ela não escolheu aparecer para
+[3472.2s] homens que moram em São Paulo, que tem
+[3475.8s] 30 anos, que tem interesse sobre de
+[3478.9s] marketing digital. Essa pessoa não
+[3480.9s] escolheu isso. Ela não escolheu aparecer
+[3483.2s] para mim com base nas minhas
+[3484.3s] características. ela escolheu aparecer
+[3486.6s] para mim com base na minha pesquisa, no
+[3488.6s] meu conteúdo, no que a pessoa está
+[3491.1s] pesquisando, acessando ou vendo. No
+[3493.3s] nosso caso aqui, a gente vai focar no
+[3494.8s] que a pessoa está pesquisando, tá? E aí
+[3497.2s] tem o último tipo de segmentação que é o
+[3499.8s] indicador de público alvo que eu vou
+[3501.9s] usar lá na minha campanha X Tudo na
+[3504.1s] Performance Max, que eu vou dar pistas
+[3506.5s] da minha segmentação pro Google. Eu vou
+[3508.6s] dar sugestões para ele da minha
+[3510.6s] segmentação. Quando a gente tá falando
+[3513.1s] de pesquisa, eu tenho que selecionar as
+[3516.0s] palavraschaves. Aqui eu vou escrever as
+[3517.9s] palavras-chaves, uma embaixo
+[3523.1s] da outra, tá? Então, para quais termos
+[3526.0s] que eu quero que o Google anuncie para
+[3528.2s] mim? O que que você vai fazer para
+[3530.9s] descobrir as suas palavras chaves, tá?
+[3533.4s] Você tem que se perguntar o que que o
+[3535.1s] seu cliente ideal pesquisa, tá? Que tipo
+[3538.5s] de pesquisa que ele faz no Google? Ah,
+[3540.3s] como é que eu vou descobrir isso? Tem
+[3542.5s] sites como Ans the Public
+[3546.6s] also Asked que te ajudam nisso daqui,
+[3549.4s] tá? Então, só para te mostrar o answer
+[3551.4s] the public, eu posso botar o link na
+[3552.8s] descrição depois. Eu vou digitar aqui,
+[3555.4s] por exemplo, ah, eu quero saber é o que
+[3557.4s] que as pessoas estão digitando sobre
+[3558.9s] vela aromática,
+[3561.4s] tá? Vou botar aqui, ó, vela aromática e
+[3564.4s] vou botar aqui o meu idioma português,
+[3566.8s] Brasil,
+[3568.6s] e vou pesquisar que que vai acontecer.
+[3572.6s] O sistema ele vai procurar para mim, ele
+[3575.1s] vai entender tudo aquilo que as pessoas
+[3577.4s] pesquisam no Google sobre vela
+[3580.0s] aromática, tá? Aí ele vai ficar
+[3581.8s] aparecendo aqui nesse nesse formato. Aí
+[3585.2s] mudou essa ferramenta aqui. Eu queria
+[3587.8s] muito ver no outro formato, ó. Mas ele
+[3590.8s] mostra aqui para mim, ó. É vela
+[3593.1s] aromática, lembrancinha, vela aromática
+[3595.8s] de lavanda, vela aromática lembrancinha
+[3598.4s] chá de bebê, é vela aromática de
+[3601.0s] latinha, vela aromática lata, vela
+[3604.0s] aromática lembrancinha 15 anos. Ó, já vi
+[3606.7s] que tem muita gente que pesquisa vela
+[3608.0s] aromática em latinha, não sabia. Aí ele
+[3610.8s] faz pesquisas nas mídias sociais, enfim,
+[3613.7s] ele vai, ó, fazer todas as pesquisas
+[3616.9s] para mim aqui de tipos de pesquisas que
+[3619.6s] as pessoas estão fazendo de vela
+[3621.0s] aromática. E aqui você vai ter várias
+[3623.3s] ideias, ó. Aqui eu tenho, ó, a lista em
+[3625.9s] ordem alfabética aqui, ó.
+[3629.9s] Ó, como apagar, como fazer.
+[3633.3s] Vela aromática, como acender,
+[3635.7s] personalizada,
+[3637.6s] vela infinita aromática. Pô, uma vela
+[3640.0s] infinita. Isso aí nem eu sabia que
+[3641.2s] existia. Aqui você vai ter assim, ó,
+[3643.0s] toneladas e toneladas de ideias, tá? Aí
+[3645.8s] você vai se perguntar, você tem que
+[3647.3s] entender o seu público alvo. Depois que
+[3649.8s] você descobriu essas palavras-chaves,
+[3651.4s] você vai anotando elas e aí a gente vai
+[3654.0s] colocar correspondência nessas
+[3656.0s] palavras-chaves. Pedro, o que que é uma
+[3657.8s] correspondência? É o seguinte, tem três
+[3660.1s] tipos de palavras-chaves. Tem as amplas,
+[3662.8s] tem as de frase e tem as exatas, tá?
+[3667.2s] ampla é quando eu só coloco a
+[3668.8s] palavra-chave aqui, por exemplo,
+[3671.5s] curso de anúncio online.
+[3674.4s] Frase é quando eu coloco ela entre
+[3676.2s] aspas, curso de anúncio online,
+[3680.5s] entre aspas, tá vendo que eu botei aqui
+[3682.3s] uma
+[3684.0s] uma aspinha? Deixa eu fechar isso aqui.
+[3686.0s] Coloquei aqui uma aspinha do lado da
+[3687.9s] palavra-chave e exata é quando eu coloco
+[3690.8s] ela com o colchete,
+[3694.3s] tá? No começo vai ser um pouco confuso,
+[3696.0s] mas você vai pegar rápido. Ampla. Eu tô
+[3698.7s] dizendo pro Google, Google, anuncia para
+[3701.2s] mim, para quem tá procurando por curso
+[3703.7s] de anúncios online ou coisas similares.
+[3706.8s] Então, a pessoa pode pesquisar curso de
+[3709.1s] anúncios online e eu vou aparecer. A
+[3711.7s] pessoa pode pesquisar curso de anúncios
+[3713.8s] e eu vou aparecer. A pessoa pode
+[3715.6s] pesquisar como aprender anunciar online
+[3717.6s] e eu vou aparecer. A pessoa pode
+[3719.4s] pesquisar comprar um curso de anúncio
+[3721.2s] online e eu vou aparecer. A pessoa pode
+[3723.6s] pesquisar, comprar um curso de anúncio
+[3725.2s] online barato e eu vou aparecer. Agora
+[3727.9s] frase é quando eu tô dizendo Google, eu
+[3730.4s] quero que na pesquisa da pessoa tenham
+[3733.6s] essas palavras nesta ordem.
+[3737.2s] Tem que ter essas palavras nessa ordem.
+[3739.5s] Então se a pessoa pesquisar curso de
+[3742.8s] anúncios online, eu posso aparecer,
+[3745.0s] porque tem essas palavras nessa ordem.
+[3747.0s] Se a pessoa pesquisar cursos de
+[3748.7s] anúncios, não vou aparecer, porque não
+[3751.2s] tem todas essas palavras nesta ordem. Só
+[3753.9s] tem curso de anúncios, mas não tem o
+[3755.8s] online. Se a pessoa pesquisar como
+[3759.0s] aprender a anunciar online, também não
+[3760.9s] vou aparecer,
+[3762.6s] tá, Pedro? E se a pessoa pesquisar
+[3764.1s] comprar curso de anúncios online? Aí eu
+[3766.2s] posso aparecer. Por quê? Porque tem
+[3768.1s] curso de anúncios online nesta mesma
+[3770.8s] ordem
+[3773.1s] na pesquisa da pessoa. Aí se a pessoa
+[3775.7s] pesquisar comprar um curso de anúncios
+[3777.9s] online barato, muito legal. Posso
+[3781.5s] aparecer? Posso aparecer. Por quê?
+[3783.8s] Porque tem curso de anúncios online no
+[3786.0s] meio da pesquisa da pessoa.
+[3788.7s] E aí, por último e não menos importante,
+[3790.7s] temos a exata. A exata é o quê? Só vou
+[3793.5s] aparecer quando a pessoa pesquisar isso
+[3795.3s] daqui, tá? que é
+[3799.2s] curso de anúncio online. Todo o resto
+[3801.6s] não vou aparecer. Por quê? Porque não é
+[3803.8s] exatamente aquilo que eu coloquei para
+[3806.0s] aparecer pra pessoa. Pedro, qual que eu
+[3808.6s] uso? Eu uso a ampla
+[3812.1s] que tá aqui em azul, eu uso a defrase,
+[3816.3s] que tá aqui em roxo ou eu uso a exata
+[3819.9s] que tá aqui em laranja.
+[3822.4s] você vai fazer um mix delas, não tem
+[3824.9s] regra, mas quer dizer, tem uma regra. Se
+[3827.8s] você tá começando, foca mais na de
+[3830.3s] frase, na exata. Por quê? Porque você
+[3832.4s] vai ter mais controle, tá? E aí você vai
+[3835.4s] encontrar várias palavras que t a ver
+[3837.6s] com aquilo que você tá divulgando. Não
+[3839.6s] pode ser coisas completamente
+[3840.9s] aleatórias, tem que est tudo dentro do
+[3842.6s] mesmo tema. Então, por exemplo, eu vou
+[3845.4s] anunciar para quem quer trabalhar em
+[3848.2s] casa. Então, eu posso pegar essas
+[3850.6s] palavraschaves aqui, ó. Trabalho home
+[3852.5s] office, trabalho online, trabalho de
+[3855.3s] casa, trabalhar na internet, trabalhar
+[3857.7s] em casa, quero trabalhar como home
+[3859.7s] office, trabalhar online. Como trabalhar
+[3861.6s] em casa, como trabalhar home office,
+[3863.4s] trabalho na internet, como trabalhar em
+[3865.4s] casa, como trabalhar home office. Então,
+[3867.6s] é um conjunto de palavraschaves que
+[3869.3s] estão falando todas sobre o mesmo tema.
+[3871.2s] E aí eu vou colocar todas elas aqui, ó,
+[3873.3s] uma embaixo da outra, tá? Coloquei todas
+[3876.2s] as palavras aqui bonitinhas, ó. uma
+[3878.8s] embaixo da outra. Deixa eu tirar esses
+[3880.4s] espaços. Eu vou tá anunciando para essas
+[3883.4s] palavraschaves. E aí eu vou fazer o quê?
+[3886.0s] Eu vou pro último passo. O último passo,
+[3889.4s] sim, passo 10. Falei para você que ia
+[3891.8s] demorar 1 horinha 20, vai dar certinho.
+[3894.0s] Passo 10, anúncio. Eu vou configurar o
+[3897.1s] meu anúncio. E aqui no meu anúncio, o
+[3899.8s] Google vai pedir para mim para que eu
+[3901.9s] coloque títulos no meu anúncio, tá?
+[3904.6s] Então, quais são os títulos que vão
+[3906.2s] estar no meu anúncio? Por exemplo, quais
+[3908.1s] são os títulos desse anúncio aqui? Site
+[3910.8s] candle e co é um título. Velas com
+[3913.6s] aromas elegantes é outro título. Aqui
+[3917.0s] the minimalist candle é um título aqui.
+[3920.5s] Velas de alta performance é outro
+[3922.8s] título. E eu vou colocar vários títulos
+[3926.2s] e o Google vai descobrir para mim o que
+[3927.8s] funciona melhor. Então eu vou colocar
+[3929.8s] aqui o nome da minha marca Pedro Sobral.
+[3932.0s] Eu vou colocar coisas que t a ver com
+[3934.4s] aquilo que eu tô coloquei nas minhas
+[3935.9s] palavras-chaves. Então, ó, tráfego pago,
+[3938.3s] 100% home office. Fature com tráfego
+[3941.4s] pago, um benefício. Sua renda extra com
+[3944.5s] anúncios. Trabalhe online sem aparecer.
+[3949.3s] Domine a gestão de tráfego. Aulas ao
+[3952.8s] vivo e gratuitas. Como ser gestor de
+[3955.9s] tráfego? Tá vendo? Eu vou colocar, ó,
+[3957.7s] deixa eu apertar no mais aqui.
+[3961.4s] São 20 títulos. Coloca todos. Coloca
+[3965.3s] pequenas variações. Trabalhe em casa com
+[3968.0s] tráfego pago, o profissional mais bem
+[3971.3s] pago. Tráfego pago, sua renda extra.
+[3974.8s] Trabalhe 100% home office. Trabalhe em
+[3978.0s] casa do seu PC, trabalho sem
+[3980.6s] pré-requisitos. Vou colocar aqui todas
+[3983.2s] as palavras, vou preencher tudo. Depois,
+[3986.2s] descrição. São 90 caracteres que eu vou
+[3989.1s] descrever o que eu tô divulgando. Então,
+[3990.8s] vou colocar aqui: "Descubra tudo sobre a
+[3993.5s] gestão de tráfego e como fazer dela sua
+[3995.6s] nova profissão. Se cadastre e seja
+[3997.8s] avisado das melhores aulas de gestão de
+[3999.7s] tráfego pago. Quer descobrir como
+[4001.8s] trabalhar de casa e com anúncios online
+[4005.0s] sem aparecer e ser bem pago? passo a
+[4007.3s] passo para você conquistar um trabalho
+[4009.7s] home office, onde você é bem remunerado.
+[4012.2s] Então, tudo isso aqui vai compor o meu
+[4014.1s] anúncio, ó. E aí ele vai montar para mim
+[4016.4s] aqui, ó. Eu posso ver vários exemplos,
+[4018.1s] ó. Fature com tráfego pago, trabalho sem
+[4020.5s] pré-requisitos.
+[4022.7s] Trabalhe de casa com tráfego, trabalhe
+[4024.8s] de casa do seu PC. O profissional mais
+[4027.2s] bem pago trabalha online sem aparecer.
+[4029.7s] Descubro como fazer da gestão de tráfego
+[4031.7s] pago e como fazer dela só. Vai aparecer
+[4034.0s] tudo aqui para mim bonitinho. Tudo isso
+[4036.6s] daqui. Agora vou e tá vendo que é só
+[4039.3s] seguir o passo a passo. Imagens, ele vai
+[4041.6s] me pedir imagens para colocar meu
+[4043.2s] anúncio. Daqui para baixo nada é
+[4045.0s] obrigado, é tudo extra, tá? Tá? Então eu
+[4047.1s] posso colocar imagens aqui, ó, que tem a
+[4050.3s] ver com aquilo que eu tô divulgando.
+[4058.9s] E aí eu salvo, vou subir essas imagens
+[4060.8s] aqui que são a que tem a ver com o meu
+[4062.7s] anúncio. Nome do meu negócio, vou
+[4065.0s] colocar aqui, ó, Pedro Sobral.
+[4068.2s] nome da empresa que eu tô divulgando,
+[4071.0s] logo do meu negócio. Então eu vou
+[4072.6s] colocar aqui a logo do meu curso, no
+[4074.4s] caso, posso apertar em editar aqui,
+[4076.8s] posso subir uma outra logo pro para ser
+[4079.1s] anunciada. Site links são outros sites
+[4083.0s] do meu domínio que eu quero enviar as
+[4085.8s] pessoas. Então eu posso mandar as
+[4087.4s] pessoas pro meu canal do YouTube, posso
+[4089.4s] enviar as pessoas para uma página de
+[4091.0s] depoimentos. É só apertar em mais aqui,
+[4093.2s] ó. E aí você vai colocar aqui, ó, eh,
+[4096.0s] veja.
+[4097.6s] outras histórias de sucesso ou sei lá,
+[4100.8s] vela aromática de latinha, depoimentos
+[4104.8s] eh de alunos. E aí eu vou colocar aqui,
+[4107.5s] ó, veja os depoimentos
+[4112.8s] de outras pessoas
+[4116.6s] pessoas
+[4118.1s] como você. Aí eu vou botar aqui, opa,
+[4122.2s] pedros.com.br/depoimento.
+[4125.1s] br/depoimentos.
+[4127.3s] Aí eu vou enviar a pessoa para esse site
+[4129.2s] aqui. Pera aí. H
+[4131.8s] h h h h h h h h h h h ht h https
+[4135.7s] 2/p.
+[4137.7s] Opa,
+[4141.0s] deu. Vou colocar meu site aqui. Então
+[4143.2s] vai ficar assim, ó. Depoimento de
+[4144.6s] alunos. Aqui eu posso clicar para ver
+[4146.6s] como é que vai ficar no computador, ó.
+[4148.4s] Aí eu vejo como é que vai ficar no
+[4149.8s] computador. Aqui ó, o preview. Então eu
+[4152.1s] vou colocar esses outros elementos aqui
+[4154.3s] que vão compor e deixar o meu anúncio
+[4156.8s] ainda mais completo, tá? Tudo isso daqui
+[4159.8s] são elementos extras que eu tô colocando
+[4162.0s] no meu anúncio, tá? Que vão deixar o meu
+[4164.2s] anúncio cada vez mais completo, cada vez
+[4167.2s] mais eh bem preenchido, cada vez mais ah
+[4173.6s] chamativo. No final das contas, é isso
+[4175.4s] daqui que a gente quer fazer a a gente
+[4177.2s] quer fazer no final. Mas o que que eu
+[4179.0s] quero que você perceba aqui?
+[4181.8s] Tem 1 milhão de tipos de campanha do
+[4183.5s] Google, tá? Tem vários tipos. A gente
+[4186.0s] criou a campanha da rede de pesquisa.
+[4188.4s] Perceba que o Google ele não te pede
+[4190.7s] tudo ao mesmo tempo. Ele não chega para
+[4192.1s] você e fala assim: "Ah, me dá aí o que
+[4193.6s] você precá aí o que eu preciso para
+[4196.2s] criar sua campanha". Não, ele vai te
+[4198.0s] pedindo passo a passo, item por item,
+[4201.0s] item por item, item por item, item por
+[4204.0s] item, item por item. Como que você vai
+[4206.7s] dominar isso daqui? Como é que você vai
+[4208.4s] se sentir seguro de criar campanhas no
+[4210.4s] Google? Cria a sua primeira campanha.
+[4214.7s] Até aqui o momento onde eu tô, eu não
+[4217.4s] apertei em salvar aqui, ó, que é o
+[4219.2s] final, tá? O último passo é apertar em
+[4221.0s] salvar. Aí ele vai abrir a parte da
+[4223.6s] revisão da campanha, que eu vou apertar
+[4225.4s] em próximo, e ele vai me pedir agora o
+[4227.6s] meu orçamento, que é a última coisa que
+[4229.4s] falta, que é o quanto que eu vou gastar
+[4231.1s] por dia, tá? E aqui eu gosto de colocar
+[4234.4s] um orçamento customizado e você escolhe
+[4237.0s] o quanto que você vai gastar por dia,
+[4238.4s] tá? Posso botar 10, posso botar cinco.
+[4241.5s] Google vai recomendar sempre que você
+[4243.0s] coloque mais, tá? Botei 10. Aí agora eu
+[4246.2s] vou apertar aqui em próximo. Aí ele vai
+[4248.1s] revisar a minha campanha com todas as
+[4250.0s] informações, com tudo aquilo que eu
+[4252.0s] coloquei aqui na minha campanha. Vai ver
+[4253.8s] se tá tudo certo. Ele vai dar uma uma
+[4256.0s] carregada aqui pra gente dar os próximos
+[4257.9s] passos, ó. E aí, agora eu vou publicar
+[4260.3s] minha campanha. Só corre o risco de eu
+[4263.0s] gastar dinheiro quando eu apertar nesse
+[4264.6s] botão aqui. Qual que é a minha sugestão
+[4267.0s] para você? Mesmo que você não tenha um
+[4270.5s] cliente, mesmo que você não vá criar
+[4273.0s] campanha, mesmo que você seja o seu
+[4275.0s] próprio cliente, mas você tá com medo,
+[4277.4s] você tá inseguro, faz o processo, faz
+[4280.8s] todo o passo a passo, deixa a campanha
+[4282.7s] pronta, só não aperta no publicar.
+[4286.7s] Apertou no publicar, a campanha vai
+[4288.3s] rodar. Se você fez tudo certo, vai dar
+[4290.2s] certo, vai dar resultado, tá? E aí a
+[4293.0s] minha grande sugestão aqui é: cria a sua
+[4295.9s] primeira campanha institucional,
+[4299.8s] tá? Cria sua primeira campanha
+[4301.5s] institucional. O que que é
+[4302.3s] institucional? Anuncia pros termos da
+[4304.5s] sua marca. Então, no meu caso, eu vou
+[4306.3s] anunciar para Pedro Sobral, comunidade
+[4309.5s] subido, subido, curso subido,
+[4314.6s] eh, Sobral, tráfego pago. Vou anunciar
+[4319.3s] para termos que t a ver com a minha
+[4321.1s] marca, Comunidade Sobral. Vou anunciar
+[4324.5s] para várias palavraschaves que tem a ver
+[4326.2s] com a minha marca. Isso é a campanha
+[4328.0s] institucional. Faz a campanha mais
+[4330.1s] segura de todas. Bota R$ 5 por dia para
+[4332.4s] gastar nela, tá? Isso daqui é a minha
+[4334.6s] grande sugestão para você. Faz o negócio
+[4336.9s] acontecer. Ah, Pedro e os outros tipos
+[4339.1s] de campanha. Eventualmente aqui no canal
+[4341.1s] do YouTube a gente dá aulas onde eu
+[4342.9s] aprofundo sobre um tipo de campanha
+[4344.7s] específica. Hoje eu dei uma aula geral
+[4347.3s] do Google Ads, mas que você sai daqui
+[4349.5s] sabendo todos os passo a todo o passo a
+[4351.4s] passo de uma campanha. Ah, mas eu não
+[4353.3s] entendi tudo, eu não tô 100% seguro.
+[4355.2s] Tudo bem, você tá exatamente onde você
+[4357.4s] deveria est, mas você tá saindo daqui
+[4359.8s] muito melhor do que você chegou no
+[4361.3s] início da aula. Isso daí você tem que
+[4363.0s] ter certeza absoluta disso, tá, Pedro?
+[4367.0s] Mas e se eu quiser um passo a passo mais
+[4369.2s] próximo? E se eu quiser um negócio mais
+[4371.9s] estruturadinho,
+[4373.6s] mais no passo a passo do detalhinho? Aí
+[4377.4s] a gente tem a comunidade subido de
+[4379.0s] tráfego. Eu sabia, ele só queria me
+[4380.8s] vender. Não, não quero te vender nada.
+[4382.0s] Se você acha que eu só quero te vender,
+[4383.1s] não compra nada, meu. Você consegue
+[4385.1s] aprender de graça com o que tem aqui no
+[4386.5s] canal do YouTube, mas você vai ter que
+[4387.9s] fazer sua parte. Agora aqui dentro do
+[4390.6s] universo subido, você tem aqui o nosso
+[4392.7s] curso de tráfego pago, que é a
+[4394.1s] comunidade subido de tráfego, tá? A
+[4396.0s] gente não tá com as inscrições abertas
+[4397.8s] agora, mas se você tem interesse em
+[4399.9s] participar, em saber mais, na descrição
+[4402.4s] deste vídeo tem um link, ó, vou te
+[4404.7s] mostrar aqui onde você tá agora, ó. Você
+[4407.0s] está aqui neste vídeo
+[4411.2s] aqui, ó. Você tá vendo essa aula aqui,
+[4413.2s] ó? Vou entrar nela aqui. Você tá vendo
+[4414.8s] essa aula aqui, tá? Aqui na descrição
+[4418.2s] deste vídeo, você tem aqui, ó, primeiro
+[4423.1s] o link para você receber a amostra
+[4425.2s] grátis da comunidade subido. Você vai
+[4427.6s] clicar nesse link aqui, ó. Você vai cair
+[4429.2s] nessa página, faz o cadastro aqui e você
+[4432.1s] vai poder acessar a plataforma de aulas
+[4434.1s] aqui. Só que não tão as aulas
+[4435.8s] disponíveis, disponíveis, é óbvio, tem
+[4438.0s] uma aula que tá disponível para você ver
+[4439.6s] como funciona, mas aí você consegue ver,
+[4441.7s] você consegue clicar, você consegue ver
+[4443.9s] a lista das aulas, dos temas das aulas
+[4446.2s] que tem aqui dentro, tá tudo bonitinho
+[4448.4s] lá para você navegar pelo portal, tá? Só
+[4451.2s] clicar no primeiro link que tá aqui na
+[4453.0s] descrição.
+[4454.5s] Se você quiser fazer parte da nossa
+[4456.0s] lista de espera, tá no segundo link da
+[4458.2s] descrição. E nós temos também a lista de
+[4461.2s] presença da nossa live de hoje, tá? O
+[4463.1s] que que é a lista de presença? É o
+[4465.0s] seguinte, toda terça-feira, 3 horas da
+[4467.1s] tarde, a gente tem uma live, tá? Toda
+[4469.2s] terça-feira. E aí, uma vez por mês, a
+[4472.7s] gente faz um sorteio. Na última
+[4474.0s] terça-feira, inclusive, a gente fez três
+[4475.5s] sorteios. E aí, quanto mais aulas você
+[4478.3s] assiste, melhores são os prêmios que
+[4480.5s] você ganha. E como é que você faz para
+[4482.4s] marcar sua presença? Simples. Você vai
+[4484.7s] vir aqui, ó, vai colocar o seu nome, o
+[4487.1s] seu e-mail, seu WhatsApp e aí você vai
+[4489.4s] escolher a palavra-chave da aula, tá? A
+[4492.2s] palavra da chave da aula de hoje é
+[4493.8s] domine o topo. Para você dominar o topo
+[4496.0s] lá da rede de pesquisa. Seleciona aqui a
+[4498.3s] palavra-chave da aula de hoje, que é
+[4499.8s] domínio o topo, e confirma sua presença.
+[4502.6s] Se quiser, quiser dar alguma sugestão de
+[4504.6s] tema pra próxima aula, pode colocar
+[4506.2s] aqui. Eu uso ela para uso essas
+[4508.3s] sugestões para planejar várias das
+[4510.4s] próximas aulas que vão acontecer e
+[4512.4s] confirma a sua presença aqui embaixo,
+[4514.2s] tá? Agora, para você que tá curioso, a
+[4516.6s] gente tem aqui o nosso portal de
+[4518.4s] conteúdo, né, onde nós temos não só um
+[4520.1s] curso, mas nós temos vários cursos aqui
+[4522.3s] dentro. Basicamente a gente divide os
+[4524.3s] conteúdos aqui da comunidade subido em
+[4526.1s] seis grandes blocos. Nós temos o curso
+[4528.4s] subido de tráfego, que aqui você vai
+[4530.4s] aprender tudo sobre o meu método de
+[4532.2s] tráfego, tudo sobre MetaS, tudo sobre
+[4535.1s] Google Ads, tudo sobre otimização de
+[4537.0s] campanhas, sobre estruturar estratégias
+[4539.3s] de tráfego pago, TikTok ads, LinkedIn
+[4542.1s] Ads, bloqueios e contingência. Tá? Você
+[4545.2s] vai dominar tudo sobre esses assuntos
+[4547.4s] aqui dentro do curso subido do 00
+[4551.5s] até o mais avançado, que é elaborar
+[4553.2s] estratégias, otimizar campanhas. Se você
+[4556.0s] for ser gestor de tráfego, tem o curso
+[4557.8s] subido de prospecção e vendas. Aqui você
+[4560.2s] vai entender tudo sobre o serviço de
+[4561.9s] tráfego pago, para quem que você vende,
+[4563.8s] quando que você tá pronto para vender.
+[4565.6s] Vou te ensinar como é que você se
+[4567.0s] prepara para vender, como que você
+[4568.8s] escolhe para quem que você vai vender,
+[4570.8s] que que você tem que melhorar no seu
+[4572.1s] perfil, no seu WhatsApp para vender pras
+[4574.0s] pessoas, como que você prospecta,
+[4576.4s] scripts de prospecções, proposta
+[4578.8s] comercial e fechamento. Aqui eu te
+[4580.3s] explico tudo sobre como que você faz uma
+[4582.3s] proposta, como que você cria, faz uma
+[4584.5s] reunião, quebra objeção, tá? Isso aqui é
+[4586.7s] um módulo, ó. Se eu abrir aqui, ó, você
+[4589.5s] vai ter as aulas desse módulo. São todas
+[4591.7s] aulas mais curtinhas, 10, 15 minutos por
+[4594.6s] aula, mas aulas extremamente práticas e
+[4597.3s] passo a passo para você aprender o que
+[4599.0s] que você precisa para vender, tá? Então,
+[4601.1s] como é que precifica, como que cobra,
+[4603.7s] como que oferece o serviço, para quem
+[4605.8s] que você tem que oferecer, como que eu
+[4607.5s] sei que eu vou conseguir gerar resultado
+[4609.0s] pro cliente, tudo isso tá aqui, tá? Aí
+[4611.4s] te explico como é que você faz tráfego
+[4613.0s] pago. Se você já tem dinheiro para
+[4614.6s] fechar clientes no futuro, você vai usar
+[4616.8s] esse módulo aqui, como que você escala o
+[4619.1s] seu negócio? E a gente tem um módulo de
+[4621.4s] ferramentas aqui de tráfego paco. Temos
+[4624.3s] o curso de especialização de tráfego,
+[4626.2s] onde você vai aprender tráfego para
+[4627.8s] negócio local, tráfego para e-commerce,
+[4630.6s] tráfego para infoprodutos. Temos o curso
+[4633.0s] de habilidades complementares, que já
+[4634.7s] tem as aulas de automações e CRM. Já
+[4637.7s] estamos com as aulas de copywriting para
+[4639.6s] gestores de tráfego gravadas que vão
+[4641.5s] entrar na comunidade subito. Temos
+[4643.8s] também o curso de dados, traqueamentos e
+[4645.9s] relatórios, que são os nossos cursos de
+[4648.1s] Google Analytics, Google Tag Manager,
+[4649.9s] Google Locker Studio, que é para criação
+[4651.6s] de dashboards e relatórios
+[4653.7s] automatizados, e a gravação das lives e
+[4656.4s] eventos, essas lives que você tá vendo
+[4658.2s] aqui, e não só essas lives que você tá
+[4660.1s] vendo, como nós também temos as lives
+[4662.0s] comunitárias, que são aulas exclusivas
+[4664.1s] para quem é da comunidade. Nessas aulas
+[4666.4s] exclusivas, você vai ter aulas com
+[4669.0s] especialistas em determinados nichos de
+[4671.6s] mercado. Então, imagina o seguinte, na
+[4673.8s] comunidade subido, nosso produto, nós
+[4676.2s] temos mais de 50.000 gestores de
+[4678.7s] tráfego. Lá dentro tem um gestor de
+[4681.6s] tráfego que é especialista em tráfego
+[4683.6s] para petshop. Tem um gestor de tráfego
+[4685.9s] que é especialista em tráfego para
+[4687.7s] distribuidora de bebida. Tem um gestor
+[4690.6s] de tráfego que é especialista em tráfego
+[4692.6s] pro agro. Tem um gestor de tráfego que é
+[4694.7s] especialista em tráfego para marmitaria
+[4696.6s] congelada, tráfego para sexy shop,
+[4699.4s] tráfego para médico, para advogado, para
+[4701.9s] dentista, ótica, clínica de estética,
+[4704.4s] imobiliária, para eh adestramento de
+[4708.4s] cães, para venda de vasos ornamentais.
+[4712.5s] Tem um especialista de tráfego para cada
+[4714.4s] um dos nichos, tá? E aí você consegue
+[4716.8s] através dessas aulas assistir uma aula
+[4719.2s] com esse especialista que vai dar uma
+[4721.0s] aula específica sobre esse nicho,
+[4723.2s] específica sobre esse negócio
+[4725.2s] específico, com estratégias,
+[4727.5s] recomendações, ideias de anúncios, tudo
+[4730.3s] pronto para você simplesmente chegar,
+[4732.7s] copiar, colar, implementar pro seu
+[4735.1s] cliente de tráfego pago ou então pro seu
+[4737.0s] próprio negócio. Dessas lives
+[4739.2s] comunitárias já são 118, tá? São 118
+[4743.3s] lives comunitárias. A gente tem ela
+[4745.2s] sobre todos os nichos que você pode
+[4747.5s] imaginar, hotelaria, lead de alta renda,
+[4750.6s] agência de modelo, eh, imobiliária, para
+[4755.2s] ótica, para advogado, para psicólogo,
+[4757.8s] para personal trainer, concessionária,
+[4759.8s] fisioterapeuta, tatuador, estúdio de
+[4761.5s] pilates, nicho de educação de cães,
+[4764.6s] escola de idiomas, para show, para
+[4768.3s] contador, para tudo, tá? tudo que é tipo
+[4771.1s] de nicho tem aqui você. E aí você vai
+[4773.6s] falar assim: "Putz, Pedro, mas é muito
+[4774.9s] conteúdo". Pois é, mas aqui a comunidade
+[4777.0s] ela funciona como um estudo sobre
+[4779.0s] demanda. Você vai assistir as principais
+[4781.4s] aulas, tá? E aí para isso você tem a
+[4783.1s] rota de estudos aqui em que você vai
+[4785.4s] responder um questionário e o sistema
+[4787.5s] vai dizer para você o que que você tem
+[4789.1s] que consumir de conteúdo e o resto do
+[4791.3s] conteúdo ele funciona sob demanda.
+[4793.1s] Então, putz, preciso. Tem um cliente,
+[4795.4s] esse cliente quer que eu configure o CRM
+[4798.0s] dele. Eu não sei configurar. Vai clicar
+[4801.2s] aqui, vai ter as aulas, vai assistir as
+[4803.9s] aulas. Pronto, acabou. Ah, Pedro, mas é
+[4806.6s] só aula, é só vídeo. Não, não é. Porque
+[4809.4s] dentro, e aí você pode ver isso quando
+[4811.0s] você for testar o sistema. Dentro do
+[4813.9s] sistema, você tem aqui, ó, recursos para
+[4816.1s] criar anúncios na meta. Você tem a aula,
+[4818.6s] tá, que é onde você vai assistir ao
+[4820.4s] conteúdo, tá? Então, tô aqui assistindo
+[4822.4s] conteúdo, alta edição, tudo bonitinho.
+[4825.9s] Aí, além da aula, eu tenho a Aa, que é o
+[4828.5s] quê? Embaixo da aula você tem um
+[4830.8s] professor particular, que é uma
+[4832.2s] inteligência artificial treinada
+[4834.3s] exclusivamente para essa aula aqui. E
+[4837.2s] ela domina os assuntos dessa aula. Aí
+[4839.4s] você pode pedir para ela avaliar o seu
+[4841.0s] conhecimento, você pode fazer perguntas
+[4843.0s] sobre essa aula e ela vai responder você
+[4845.5s] da maneira mais didática que você já viu
+[4847.4s] na sua vida, tá? Então assim, putz, não
+[4850.1s] entendi a diferença entre um perfil e
+[4854.9s] uma página.
+[4856.8s] Mandar para ela aqui, pô, o Pedro
+[4858.3s] explicou na aula, eu não entendi. Aí ela
+[4860.7s] vai digitar enquanto ela tá comendo os
+[4862.4s] biscoitos
+[4870.3s] e vai me explicar. Ótima pergunta. Eu
+[4872.3s] vou te explicar a diferença de forma
+[4873.8s] simples. Perfil do Facebook é o seu RG
+[4876.6s] digital, representa uma pessoa, você
+[4879.5s] usado para interagir com amigos, entrar
+[4881.4s] em grupos, comentar, curtir, se
+[4882.8s] relacionar. É obrigatório para criar
+[4885.2s] anúncios, porque a meta quer saber que
+[4887.2s] quem tá fazendo anúncio é uma pessoa
+[4888.6s] real. Você deve adicionar amigos,
+[4890.6s] colocar foto e fazer parecer um perfil
+[4892.4s] normal para passar confiança. Página no
+[4894.8s] Facebook é o seu perfil profissional,
+[4896.6s] representa o seu negócio, sua marca. Tá
+[4898.4s] vendo? A explicação é simples, não são
+[4900.3s] termos complexos. Ela foi treinada para
+[4902.3s] ser didática. Então você tem a aula,
+[4905.5s] você tem a aí depois você tem um
+[4907.6s] tutorial prático, que a gente chama isso
+[4909.7s] de ABC. Que que é o tutorial prático?
+[4911.9s] Você vai clicar aqui no próximo
+[4913.2s] itenzinho do menu e aí eu vou pro
+[4916.3s] tutorial prático. Ao invés de assistir
+[4918.5s] um vídeo onde eu te ensino a criar sua
+[4920.3s] conta de anúncio, você vai clicar aí nos
+[4923.1s] todos os botões de criar uma conta de
+[4924.8s] anúncio. Então, ó, você vai acessar nas
+[4927.5s] ferramentas, você vai clicar em se
+[4929.3s] cadastrar, você vai colocar suas
+[4931.1s] informações, você vai colocar o código
+[4933.7s] aqui, vai apertar em OK, depois você vai
+[4936.7s] apertar em enviar, depois você vai
+[4938.4s] selecionar sua conta, depois você vai
+[4940.6s] selecionar configurações. Eu tô clicando
+[4942.6s] nos botões aqui, ó. Você vai clicar
+[4944.8s] aqui, ó, nesse menuzinho. Aí você vai
+[4947.0s] apertar aqui, ó, em conta de anúncio.
+[4949.1s] Depois você vai adicionar. Você vai
+[4951.0s] clicar nesse botão, então você vai fazer
+[4952.8s] todo o passo a passo de forma
+[4954.6s] interativa. Então não é uma plataforma
+[4956.5s] em que você fica só passivamente
+[4958.2s] assistindo aula, não. Você tem a aula
+[4960.2s] onde você assiste passivamente, mas
+[4962.3s] depois você tem um tutorial mão na
+[4963.8s] massa, onde você vai botar a mão na
+[4965.2s] massa para fazer todo o processo junto
+[4967.4s] com a plataforma e aí depois você
+[4969.3s] replica isso dentro do dentro do seu
+[4972.3s] gerenciador de anúncios quando você for
+[4974.3s] criar suas campanhas, tá? Tem muito mais
+[4976.4s] por trás, mas eu não tô aqui para ficar
+[4977.7s] te mostrando toda a comunidade subido. É
+[4979.5s] só para você que tem interesse, tá
+[4981.0s] certeza aí que você tem certeza que você
+[4982.8s] quer fazer tráfego pago, quer virar
+[4984.6s] gestor de tráfego, quer cuidar dos
+[4986.2s] anúncios do seu próprio negócio. Não
+[4987.8s] existe um treinamento mais completo e
+[4990.0s] que tem absolutamente tudo o que você
+[4992.6s] precisa para se tornar um gestor de
+[4994.1s] tráfego profissional do zero, como na
+[4996.6s] comunidade subito de tráfego. Se você
+[4998.4s] tem interesse, mais uma vez, você pode
+[4999.8s] experimentar no link da descrição ou já
+[5002.3s] se cadastrar na nossa lista de espera
+[5004.7s] para quando a gente abrir as inscrições
+[5006.2s] na próxima vez, tá? Já falei a
+[5008.8s] palavra-chave aqui para vocês da aula de
+[5010.4s] hoje, que é domine o topo. Meus
+[5014.1s] queridos, essa foi a nossa live número
+[5016.0s] 365. A gente se vê agora na próxima
+[5019.4s] terça-feira, 3 horas da tarde, na nossa
+[5021.8s] live número 366.
+[5024.5s] Não sei quando você tá vendo esse
+[5025.6s] conteúdo, mas próxima terça-feira, 3 da
+[5027.9s] tarde, tenha certeza que eu estarei aqui
+[5029.7s] neste canal com você, te entregando o
+[5032.3s] melhor conteúdo de tráfego pago da
+[5033.9s] internet. Não esquece de curtir esse
+[5036.2s] vídeo, se cadastrar no canal, mandar
+[5037.7s] para alguém que você gosta, que você
+[5039.2s] acha que vai se interessar por esse tipo
+[5041.0s] de conteúdo que vai, pô, bombar no
+[5043.0s] tráfego pago em 2026. Fechou? Tamo junto
+[5045.6s] e a gente se vê na próxima terça-feira.
+[5047.4s] Valeu, fui.

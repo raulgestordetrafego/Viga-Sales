@@ -1,0 +1,214 @@
+--- Página 1 ---
+AULA 1
+Como funciona o
+Google Ads
+
+--- Página 2 ---
+Como funciona o Google Ads
+Índice
+Introdução…………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….…… Pág. 2
+Conexões importantes no Google Ads………………………………………….…………………………………………………………………………………………………………… Pág. 3
+As redes do Google Ads…………………………………………………………….……………………………………………………………………………………………….…………………………………….…. Pág. 4
+Estrutura da campanha: as caixinhas organizadoras…………………………………………………………….…………………………………….… Pág. 6
+Objetivos de campanha………………………………………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 7
+Tipos de campanha………………………………………………………….……………………………………………………………………………………………….…………………………………….……………….. Pág. 8
+00’01’’
+Introdução
+Para conseguir dominar o Google, é preciso entender como funciona o Google
+Ads. E você, como anunciante, não tem que ter medo do Google Ads, pois este é
+um sintoma de pessoas que aprenderam a anunciar na Meta e, normalmente,
+estão procrastinando para começar a anunciar no Google Ads.
+Isso acontece porque as pessoas pensam que é preciso aprender a operar uma
+plataforma completamente nova. Calma! Os botões são praticamente iguais. E se
+você ainda não dominou a lógica por trás de uma fonte de tráfego, certamente já
+está começando a dominar.
+Na relação Google versus Meta, a Meta Ads é uma ferramenta que permite fazer
+anúncios em muitos posicionamentos dentro de poucos aplicativos (Facebook e
+Instagram).
+Por exemplo: no Instagram, é possível anunciar na aba “Explorar”, nos stories, no
+feed e até no Reels. São posicionamentos diferentes dentro de um mesmo
+aplicativo.
+A principal diferença entre a Meta e o Google é que, no Google, existem opções
+para fazer anúncios em diversos locais diferentes, desde uma ferramenta de
+vídeos (YouTube), até uma ferramenta de e-mail (Gmail). Também dá para fazer
+anúncios na pesquisa do Google, nos parceiros do Google, nos sites parceiros do
+Google e nos aplicativos parceiros do Google.
+Pág. 2
+
+--- Página 3 ---
+Como funciona o Google Ads
+Todas essas plataformas são importantíssimas para você fazer os seus anúncios.
+Bora entender mais sobre essas ferramentas?
+02’36’’
+Conexões importantes
+no Google Ads
+O Google Ads funciona integrado com outras ferramentas. Se liga
+nas conexões que você vai precisar fazer:
+● YouTube: para criar públicos com base em quem viu, curtiu ou interagiu
+com seus vídeos.
+● Google Analytics: entender o que a galera faz no seu site.
+● Google Merchant Center: obrigatório pra lojas online (puxa os produtos
+direto da sua loja).
+● Google Meu Negócio (Business Profile): essencial se você tem ponto
+físico.
+Dica do Subido:
+Mesmo que você não publique vídeos no YouTube, crie um canal. É por lá
+que você sobe os vídeos que serão usados nos anúncios. Você precisa
+subir os vídeos no canal, mesmo que eles estejam no modo não listado.
+O vídeo não listado é aquele que as pessoas não conseguem ver quando
+entram no seu canal do YouTube. Você só usa aquele vídeo não listado
+para fazer anúncios.
+Pág. 3
+
+--- Página 4 ---
+Como funciona o Google Ads
+06’49’
+As redes do Google Ads
+Assim como a Meta tem seus recursos de anúncios por meio de feed, stories,
+etc., no Google, a gente tem as redes, também chamadas de locais. Entre elas,
+estão:
+1. Rede de Pesquisa (Search)
+É o Google clássico que conhecemos. Quando alguém pesquisa por algo, você
+aparece ali no topo, com base nas palavras-chave escolhidas.
+Todo anunciante deve anunciar por aqui, pelo menos com o nome da própria
+marca.
+2. Rede de Display (GDN)
+No Google Display Network (GDN), o Google opera com banners que aparecem
+em sites parceiros.
+Sabe aquele site de receitas com um banner de curso online? Isso é GDN!
+É o meio ideal para fazer remarketing, ou seja, aparecer para quem já interagiu
+com você antes.
+3. YouTube
+Nesta popular plataforma de vídeos, você pode anunciar:
+● Antes dos vídeos;
+● Nos resultados de busca do YouTube;
+● Ou como recomendação em vídeos relacionados.
+Pág. 4
+
+--- Página 5 ---
+Como funciona o Google Ads
+O YouTube conecta atenção e relação como poucas plataformas fazem. Dá
+para gerar reconhecimento, consideração e até conversão de público.
+4. Google Shopping
+Aqui, o foco é em e-commerce. A rede mostra produtos direto na busca,
+contendo foto, preço e nome da loja. Exige integração com o Merchant Center.
+5. Google Maps
+Usado em campanhas locais, é muito eficaz para atrair visitas físicas.
+6. Gmail e Discover
+São os anúncios que aparecem direto na caixa de entrada ou no feed de
+notícias do Google.
+Pág. 5
+
+--- Página 6 ---
+Como funciona o Google Ads
+12’06’
+Estrutura da campanha: as
+caixinhas organizadoras
+Quando falamos em anunciar no Google Ads, temos os mesmos três tipos de
+estruturas da Meta:
+1. Campanha — responsável por definir:
+● Objetivo (ex: vendas, leads, tráfego, etc.);
+● Tipo de campanha (pesquisa, vídeo, display, etc.);
+● Orçamento;
+● Configurações gerais (datas, idioma, local, etc.).
+2. Grupo de anúncio — responsável por definir:
+● Segmentações (pra quem vai aparecer);
+● Lances (quanto você está disposto a pagar).
+Importante:
+No Google, você pode escolher entre lances manuais e automáticos. Os manuais
+são os mais indicados, mas exigem mais controle e atenção. São configurados
+no grupo de anúncio. Já na Meta, esses lances são automáticos, totalmente
+atrelados ao orçamento.
+3. Anúncio
+Aqui, você define:
+● O conteúdo do anúncio em si (texto, título, vídeo, imagem);
+● As extensões (telefone, local, links e outros recursos extras para
+incrementar o anúncio);
+● E o destino (pra onde a pessoa vai depois do clique).
+Pág. 6
+
+--- Página 7 ---
+Como funciona o Google Ads
+15’10’’
+Objetivos de campanha
+“Tá, Pedro, e quais são os possíveis objetivos
+de campanha que eu tenho dentro do Google?”
+Quando você cria uma campanha, o Google te pergunta: “o que você quer
+alcançar?”. A resposta pode ser:
+1. 2. 3.
+Vendas: Leads: para gerar Tráfego no site: para
+para e-commerce cadastros ou contatos quando você quiser enviar as
+ou infoprodutos. por meio de formulários. pessoas para uma URL por
+meio do clique, mas sem fazer
+questão que elas realizem
+alguma ação no seu site.
+4. Reconhecimento e 5. Promoção de 6. Visitas a lojas locais e
+consideração: para aplicativo: para promoções: para negócios
+quando você quiser quando você quiser físicos. Para este objetivo, a
+aparecer muitas vezes e que as pessoas gente vai precisar que o
+gerar engajamento (na instalem ou interajam nosso perfil no Google
+Meta, é como se com o seu aplicativo. Business Profile (em
+juntássemos o objetivo português, Google Meu
+de reconhecimento e o Negócio) esteja
+objetivo de extremamente bem
+engajamento). configurado.
+Pág. 7
+
+--- Página 8 ---
+Como funciona o Google Ads
+7.
+Campanha sem meta: para recursos mais avançados, usados em testes e betas. A
+gente não vai utilizar muito esse objetivo de campanha. Às vezes, o Google lança alguns
+recursos beta e testa nessa campanha sem meta, mas normalmente, não é um tipo de
+campanha, e nem um objetivo de campanha com o qual você tenha que se preocupar.
+17’03’’
+Tipos de campanha
+Depois de definir o objetivo, você escolhe o tipo de campanha (ou rede), que
+pode ser:
+Pesquisa (Search) - É quando você quer aparecer nos
+resultados de pesquisa do Google ou nos sites parceiros do
+Google.
+Performance Max (PMax) - É a campanha mais automatizada
+do Google. Aqui, você não tem tantas opções de escolher para
+quem vai aparecer, mas apenas faz sugestões para que ele
+realize o trabalho.
+Geração de demanda (Demand Gen) - A campanha de
+geração de demanda é aquela que faz você aparecer em
+muitos lugares. É indicada para quando você quiser fazer
+vendas através de vídeos no YouTube.
+No passado, esse tipo de campanha não funcionava muito
+bem. Hoje em dia, as campanhas de conversão de vídeo estão
+nela, o que pode parecer meio maluco.
+Pág. 8
+
+--- Página 9 ---
+Como funciona o Google Ads
+Display - É a campanha que faz você aparecer nos sites
+parceiros do Google.
+Shopping - Como o próprio nome sugere, é o tipo de
+campanha utilizada para e-commerces aparecerem no
+Google Shopping quando as pessoas estiverem fazendo
+pesquisas no Google.
+Vídeo - É a campanha em que nós vamos aparecer no
+YouTube.
+Aplicativos - Vai servir para a gente fazer a divulgação dos
+nossos aplicativos através das plataformas dentro do Google
+Ads.
+Pág. 9
+
+--- Página 10 ---
+Como funciona o Google Ads
+Dica do Subido : se você quer começar no Google Ads com o pé direito:
+● Comece pela rede de pesquisa (com seu nome e da sua marca);
+● Integre as ferramentas do Google (Analytics, Merchant, etc.);
+● Entenda os objetivos e tipos de campanha antes de sair clicando;
+● Use lances manuais nas campanhas mais estratégicas;
+● Capriche nos anúncios e nas extensões;
+● Segmente com inteligência (lugar certo, na hora certa).
+Você não precisa aprender tudo de uma vez. Mas precisa começar.
+O Google Ads é simples na superfície, mas poderoso na profundidade.
+Com as caixinhas organizadas, os objetivos claros e as redes bem escolhidas,
+você vai entender que essa ferramenta é uma mina de ouro pra quem quer
+escalar resultados.
+Tamo junto!
+Pág. 10

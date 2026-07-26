@@ -1,0 +1,438 @@
+{
+  "name": "Prime Barber - Notificação Grupo v2 - Sheets Trigger",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1t6ydoHHbormBr_mc0qGifGtK7Qh7H-NXZXd9OqSv5iI",
+          "mode": "list",
+          "cachedResultName": "Dados Formulários Prime Essence Barber",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6ydoHHbormBr_mc0qGifGtK7Qh7H-NXZXd9OqSv5iI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Baixa Intensão",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6ydoHHbormBr_mc0qGifGtK7Qh7H-NXZXd9OqSv5iI/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "trigger-sheets",
+      "name": "NOVO LEAD",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -48
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "0KQK85JSO8YgFxMT",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "e3",
+              "name": "created_time",
+              "value": "={{ $json.created_time }}",
+              "type": "string"
+            },
+            {
+              "id": "e4",
+              "name": "nome_completo",
+              "value": "={{ $json.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "e5",
+              "name": "telefone",
+              "value": "={{ (() => { let t = String($json.phone_number || '').replace(/\\D/g,''); if (t && !t.startsWith('55')) t = '55' + t; return t; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "e6",
+              "name": "servico",
+              "value": "={{ $json['quais_serviços_te_interessam?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e7",
+              "name": "frequencia",
+              "value": "={{ $json['qual_é_a_sua_frequência_na_barbearia?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e8",
+              "name": "incomodo",
+              "value": "={{ $json['o_que_mais_te_incomoda_no_seu_barbeiro_atual?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e9",
+              "name": "investimento",
+              "value": "={{ $json['quanto_você_costuma_investir_por_visita?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e10",
+              "name": "campaign_name",
+              "value": "={{ $json.campaign_name || $json.form_name || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "e11",
+              "name": "lead_status",
+              "value": "={{ $json.lead_status }}",
+              "type": "string"
+            },
+            {
+              "id": "c_grupo",
+              "name": "grupo_notificado",
+              "value": "={{ $json.grupo_notificado }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "converter-wf2",
+      "name": "CONVERTER HORARIO DA PLANILHA",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst rows = items\n  .filter(i => typeof i.json.created_time === 'string' && i.json.created_time.trim() !== '')\n  .filter(i => {\n    const status = String(i.json.grupo_notificado || '').trim().toLowerCase();\n    return status !== 'notificado';\n  })\n  .map(i => i.json);\nreturn [{ json: { exists: rows.length > 0, rowsInLastMinute: rows } }];"
+      },
+      "id": "code-wf2",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-wf2",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-wf2",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        -48
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "noop-wf2",
+      "name": "FAZ NADA",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        208,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json;\nconst nome = String(lead.nome_completo || 'Não informado');\nconst rawPhone = String(lead.telefone || '');\nconst tel = rawPhone.replace(/\\D/g, '');\nconst telefone = tel ? (tel.startsWith('55') ? tel : '55' + tel) : 'Não informado';\nconst servico = String(lead.servico || 'Não informado').replaceAll('_', ' ');\nconst freq = String(lead.frequencia || 'Não informado').replaceAll('_', ' ');\nconst incomodo = String(lead.incomodo || 'Não informado').replaceAll('_', ' ');\nconst invest = String(lead.investimento || 'Não informado').replaceAll('_', ' ');\nconst campanha = String(lead.campaign_name || 'orgânico');\nlet horario = 'Não informado';\ntry {\n  const d = new Date(lead.created_time);\n  const br = new Date(d.getTime() - 3*60*60*1000);\n  const iso = br.toISOString();\n  const m = iso.match(/(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})/);\n  if (m) horario = m[3]+'/'+m[2]+'/'+m[1]+' às '+m[4]+':'+m[5];\n} catch(e) {}\nconst msg = `🔔 *Novo lead — Prime Essence Barber!*\\n\\n👤 *Nome:* ${nome}\\n📱 *Telefone:* ${telefone}\\n✂️ *Serviço:* ${servico}\\n📅 *Frequência:* ${freq}\\n😤 *Incômodo:* ${incomodo}\\n💰 *Investe por visita:* ${invest}\\n📣 *Campanha:* ${campanha}\\n🕐 *Horário:* ${horario}\\n\\n_Automação Viga Sales 🤖_`;\nreturn [{ json: { mensagem: msg } }];"
+      },
+      "id": "montar-wf2",
+      "name": "MONTAR MENSAGEM GRUPO",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Prime",
+        "remoteJid": "120363425208726484@g.us",
+        "messageText": "={{ $json.mensagem }}",
+        "options_message": {}
+      },
+      "id": "enviar-wf2",
+      "name": "ENVIAR GRUPO",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -64
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "h2RPTAscCjAmIrf1",
+          "name": "Prime"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "o1",
+              "name": "row_number",
+              "value": "={{ $json.rowsInLastMinute[0].row_number }}",
+              "type": "string"
+            },
+            {
+              "id": "o2",
+              "name": "id",
+              "value": "={{ $json.rowsInLastMinute[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "o3",
+              "name": "nome_completo",
+              "value": "={{ $json.rowsInLastMinute[0].nome_completo }}",
+              "type": "string"
+            },
+            {
+              "id": "o4",
+              "name": "telefone",
+              "value": "={{ $json.rowsInLastMinute[0].telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "o5",
+              "name": "servico",
+              "value": "={{ $json.rowsInLastMinute[0].servico }}",
+              "type": "string"
+            },
+            {
+              "id": "o6",
+              "name": "frequencia",
+              "value": "={{ $json.rowsInLastMinute[0].frequencia }}",
+              "type": "string"
+            },
+            {
+              "id": "o7",
+              "name": "investimento",
+              "value": "={{ $json.rowsInLastMinute[0].investimento }}",
+              "type": "string"
+            },
+            {
+              "id": "o8",
+              "name": "campaign_name",
+              "value": "={{ $json.rowsInLastMinute[0].campaign_name }}",
+              "type": "string"
+            },
+            {
+              "id": "o9",
+              "name": "created_time",
+              "value": "={{ $json.rowsInLastMinute[0].created_time }}",
+              "type": "string"
+            },
+            {
+              "id": "o10",
+              "name": "incomodo",
+              "value": "={{ $json.rowsInLastMinute[0].incomodo }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "org-grupo-1",
+      "name": "ORGANIZAR DADOS",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://prime.vigasales.com.br/api/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "73b798964b3c6cd7bf2c30063662a9476934e03e75c9706b8e0c4b0a26ad46f5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ name: $json.nome_completo, phone: $json.telefone, source: 'Meta Ads - ' + ($json.campaign_name || 'campanha'), notes: [ $json.servico ? 'Serviço: ' + $json.servico.replaceAll('_',' ') : null, $json.frequencia ? 'Frequência: ' + $json.frequencia.replaceAll('_',' ') : null, $json.investimento ? 'Investe: ' + $json.investimento.replaceAll('_',' ') : null, $json.incomodo ? 'Incômodo: ' + $json.incomodo.replaceAll('_',' ') : null ].filter(Boolean).join(' | ') }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "crm-criar-lead",
+      "name": "CRIAR LEAD CRM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        96
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "CONVERTER HORARIO DA PLANILHA": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "ORGANIZAR DADOS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FAZ NADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MONTAR MENSAGEM GRUPO": {
+      "main": [
+        [
+          {
+            "node": "ENVIAR GRUPO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIAR GRUPO": {
+      "main": [
+        []
+      ]
+    },
+    "ORGANIZAR DADOS": {
+      "main": [
+        [
+          {
+            "node": "MONTAR MENSAGEM GRUPO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CRIAR LEAD CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NOVO LEAD": {
+      "main": [
+        [
+          {
+            "node": "CONVERTER HORARIO DA PLANILHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "1f5ceb56-5f76-4d0f-9725-21877d672dfd",
+  "meta": {
+    "instanceId": "27a0f0cf7d5676928b5afd4c5c952b919499dd5c2b6ca77de9a9d3eaefe04fce"
+  },
+  "id": "AY9d4DOo9EUEEuko",
+  "tags": []
+}

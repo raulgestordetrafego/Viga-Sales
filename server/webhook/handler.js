@@ -3,6 +3,36 @@ import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
 import axios from 'axios';
 
+const EVO_URL = process.env.EVOLUTION_API_URL || 'https://evolution.vigasales.shop';
+const EVO_KEY = process.env.EVOLUTION_API_KEY || '';
+const AGENTS_GROUP = process.env.AGENTS_GROUP_ID || '120363428115495870@g.us';
+
+async function notifyRaulEvolution(fromPhone, prospect, resposta) {
+  const name = prospect.name || 'Lead';
+  const phone = prospect.phone?.replace(/^55/, '') || fromPhone;
+  const company = prospect.company || '';
+  const segment = prospect.segment || '';
+
+  let msg = `🔔 *${name} respondeu!*\n📞 +55 ${phone}\n`;
+  if (company) msg += `🏢 ${company}\n`;
+  if (segment) msg += `📐 ${segment}\n`;
+  msg += `\n💬 _${resposta.substring(0, 300)}_`;
+
+  try {
+    await axios.post(`${EVO_URL}/message/sendText/Raul%20Santos`, {
+      number: AGENTS_GROUP,
+      text: msg,
+      delay: 1200,
+    }, {
+      headers: { 'apikey': EVO_KEY, 'Content-Type': 'application/json' },
+      timeout: 15000,
+    });
+    console.log(`[Notify Evo] Alerta enviado para Raul: ${name}`);
+  } catch (e) {
+    console.error(`[Notify Evo] Falha:`, e.response?.status || e.message);
+  }
+}
+
 /**
  * Processa eventos recebidos da Evolution API via webhook
  */
@@ -53,6 +83,26 @@ async function handleIncomingMessage(msg, io) {
     return;
   }
 
+  // ═══ BOSS MODE ═══ intercepta antes de processar como mensagem normal
+  const BOSS_PHONES = (process.env.BOSS_PHONES || '').split(',').map(p => p.trim()).filter(Boolean);
+  const rawPhone = (msg.phone || '').replace(/\D/g, '');
+  // Normaliza: remove 9º dígito se presente (55XX9XXXX → 55XXXXXX)
+  const normalize = (p) => p.length === 13 && p.startsWith('55') ? p.slice(0,4) + p.slice(5) : p;
+  const senderNorm = normalize(rawPhone);
+  const isBoss = BOSS_PHONES.some(bp => normalize(bp.replace(/\D/g,'')) === senderNorm);
+  
+  if (isBoss && msg.content) {
+    console.log('[BOSS] Comando de ' + rawPhone + ': ' + (msg.content||'').substring(0,80));
+    try {
+      const { handleBossCommand } = await import('../services/bossMode.js');
+      const metaApi = await import('../services/metaWhatsapp.js');
+      await handleBossCommand(rawPhone, msg.content, msg.pushName || 'Chefe', metaApi);
+      return;
+    } catch (e) {
+      console.error('[BOSS] Erro:', e.message);
+    }
+  }
+
   // Process both inbound and outbound messages
   const direction = msg.fromMe ? 'outbound' : 'inbound';
 
@@ -70,7 +120,12 @@ async function handleIncomingMessage(msg, io) {
     
     // 1) Encontrar ou criar contato
     // Try to find by exact match, or by matching the last 8 digits (more flexible)
-    let contact = await queryOne('SELECT * FROM contacts WHERE phone = ? OR phone LIKE ?', [cleanPhone, `%${cleanPhone.slice(-8)}`]);
+    let contact = await queryOne('SELECT * FROM contacts WHERE phone = ?', [cleanPhone]);
+    // Fallback: match pelos ultimos 8 digitos (sem o 55) se nao encontrou exato
+    if (!contact && cleanPhone.length >= 10) {
+      const short = cleanPhone.replace(/^55/, '').slice(-8);
+      contact = await queryOne("SELECT * FROM contacts WHERE REPLACE(phone, '55', '') LIKE ?", [`%${short}`]);
+    }
     const now = new Date().toISOString();
 
     // Buscar nome real do contato na Evolution API quando:
@@ -199,7 +254,7 @@ async function handleIncomingMessage(msg, io) {
 
         const placeholders = phoneVariants.map(() => '?').join(', ');
         const prospect = await queryOne(
-          `SELECT id, status, notes FROM prospects WHERE phone IN (${placeholders}) AND status = 'enviado' LIMIT 1`,
+          `SELECT id, name, phone, company, segment, status, notes FROM prospects WHERE phone IN (${placeholders}) AND status = 'enviado' LIMIT 1`,
           phoneVariants
         );
 
@@ -213,6 +268,8 @@ async function handleIncomingMessage(msg, io) {
             [notesAtual, prospect.id]
           );
           console.log(`[Webhook] Prospect ${prospect.id} atualizado para 'respondeu'. Resposta: "${resposta.substring(0, 60)}"`);
+          // Notifica Raul no WhatsApp via Evolution
+          notifyRaulEvolution(msg.phone, prospect, resposta).catch(e => console.error('[Notify Evo] Erro:', e.message));
         }
       } catch (err) {
         console.error('[Webhook] Erro ao atualizar status do prospect:', err.message);
@@ -257,7 +314,11 @@ async function handleContactsUpsert(contacts, io) {
     if (cleanPhone.length === 11 && !cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
     else if (cleanPhone.length === 10 && !cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
 
-    const contact = await queryOne('SELECT * FROM contacts WHERE phone = ? OR phone LIKE ?', [cleanPhone, `%${cleanPhone.slice(-8)}`]);
+    let contact = await queryOne('SELECT * FROM contacts WHERE phone = ?', [cleanPhone]);
+    if (!contact && cleanPhone.length >= 10) {
+      const short = cleanPhone.replace(/^55/, '').slice(-8);
+      contact = await queryOne("SELECT * FROM contacts WHERE REPLACE(phone, '55', '') LIKE ?", [`%${short}`]);
+    }
     if (!contact) continue;
 
     const nameIsGeneric = !contact.name || contact.name === contact.phone || contact.name === cleanPhone || /^\d+$/.test(contact.name);

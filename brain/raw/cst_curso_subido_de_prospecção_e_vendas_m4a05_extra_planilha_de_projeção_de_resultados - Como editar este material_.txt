@@ -1,0 +1,22 @@
+--- Página 1 ---
+Crie sua cópia editável da planilha
+Existem 2 maneiras de criar uma cópia de planilha. Caso queira utilizar a planilha no Google Sheets, utilize o passo 1. Caso queira editar no
+Excel, use o passo 2.
+1. Com o documento aberto, no canto superior esquerdo da tela, clique em “Arquivo” e, em seguida, clique em “Fazer uma cópia”, para
+criar uma cópia editável no próprio Google.
+2. Já para salvar o arquivo direto no seu computador, para editar no Excel, clique novamente em “Arquivo”, depois em “Baixar”, e
+selecione a opção "Microsoft Excel".
+
+
+[ Tabela 1 na página 1 ]
+
+Crie sua cópia editável da planilha
+
+Existem 2 maneiras de criar uma cópia de planilha. Caso queira utilizar a planilha no Google Sheets, utilize o passo 1. Caso queira editar no
+Excel, use o passo 2.
+
+1. Com o documento aberto, no canto superior esquerdo da tela, clique em “Arquivo” e, em seguida, clique em “Fazer uma cópia”, para
+criar uma cópia editável no próprio Google.
+
+2. Já para salvar o arquivo direto no seu computador, para editar no Excel, clique novamente em “Arquivo”, depois em “Baixar”, e
+selecione a opção "Microsoft Excel".

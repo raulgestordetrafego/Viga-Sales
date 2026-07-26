@@ -1,0 +1,256 @@
+--- Página 1 ---
+AULA 2
+Lances: como
+acelerar ou frear
+seus resultados?
+
+--- Página 2 ---
+Lances: como acelerar ou frear seus resultados?
+Índice
+Introdução …………………………………………………………………………………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 2
+Tipos de lances: automático ou manual?………………………………………………………………………………………………………………………………………….….. Pág. 3
+Estratégias de lances por objetivo………………………….……………………………………………………………………………………………….…………………………………….….. Pág. 5
+00’02’’
+Introdução
+Sabe aquele momento em que você quer colocar seu anúncio pra voar?
+Ou dar uma segurada no orçamento?
+O nome disso dentro do Google Ads é: lance.
+O lance é um dos 3 pilares do leilão do Google Ads:
+1. Lance (quanto você está disposto a pagar);
+2. Taxa de ação estimada (probabilidade da pessoa converter);
+3. Qualidade do seu anúncio (relevância + experiência do
+usuário).
+O lance é seu acelerador!
+Imagine que sua campanha é um carro, em que:
+● o orçamento é o motor;
+● e o lance é o pedal do acelerador.
+Pág. 2
+
+--- Página 3 ---
+Lances: como acelerar ou frear seus resultados?
+No Meta Ads, em 99% dos casos, o lance está conectado ao
+orçamento. Ou seja: quanto maior for seu orçamento, maior também
+vai ser o seu lance. Só que, no Google Ads, isso é diferente.
+Se você tiver um motor potente (muito orçamento), mas pisar pouco no
+acelerador (lance baixo), o carro vai devagar. O Google funciona igual:
+você pode ter 1 milhão por dia de orçamento, mas se o lance for baixo, a
+campanha não decola.
+Se o meu lance está baixo, é como se o meu pedal do acelerador pudesse
+ir somente até determinado lugar. Ou seja: se o meu lance está baixo, eu
+estou freando a minha campanha. Mas, como eu falei para você, no
+Google Ads nós temos as duas opções. Veremos a seguir.
+02’52’’
+Tipos de lances:
+automático ou manual?
+Quando o assunto é lance no Google Ads, você pode escolher entre
+dois caminhos: o automático ou o manual.
+🤖
+Lance automático
+Nesse caso, tanto seu orçamento quanto seu lance andam juntos.
+Ou seja: quanto mais dinheiro você coloca, mais o Google vai tentar
+gastar — mas você não controla quanto paga por resultado. É tipo
+dizer pro Google:
+Pág. 3
+
+--- Página 4 ---
+Lances: como acelerar ou frear seus resultados?
+Isso garante que o investimento vai ser usado, mas sem limite por
+conversão, clique, impressão ou visualização.
+✋
+Lance manual
+Aqui é diferente: você separa o que vai investir do quanto quer pagar
+por resultado. Se você define, por exemplo: “quero pagar no máximo
+R$ 10,00 por conversão”, o Google vai tentar manter esse valor. Mas se
+o lance for muito baixo, pode ser que você nem apareça no leilão — e
+aí não gasta nada.
+Qual deles escolher?
+Se você quer escalar com força, provavelmente vai precisar subir o
+lance junto com o orçamento.
+Agora, se quer investir menos, dá pra usar um lance menor — com
+mais cautela e controle.
+No final, o lema é: lance bom é lance testado!
+Entendendo as siglas
+Pra não se perder no meio de tanta sigla, aqui vai um glossário rápido:
+Sigla Significado Foco
+CPA Custo por Ação Conversão
+CPC Custo por Clique Cliques
+CPM Custo por Mil Visualização do
+Impressões anúncio
+CPV Custo por Vídeos
+Visualização
+ROAS Retorno sobre Lucro obtido
+investimento
+Pág. 4
+
+
+[ Tabela 1 na página 4 ]
+
+Sigla | Significado |  | Foco
+
+CPA | Custo por Ação |  | Conversão
+
+CPC | Custo por Clique |  | Cliques
+
+CPM | Custo por Mil
+Impressões |  | Visualização do
+anúncio
+
+CPV | Custo por
+Visualização |  | Vídeos
+
+ROAS | Retorno sobre
+investimento |  | Lucro obtido
+
+--- Página 5 ---
+Lances: como acelerar ou frear seus resultados?
+“Então é só isso? Eu só tenho que escolher ser automático ou
+manual?”
+A verdade é que não. Tem que ter estratégias e usar a favor do seu
+objetivo. Vamos conferir a seguir.
+03’06’’
+Estratégias de lances
+por objetivo
+O Google organiza as estratégias de lance de acordo com o que você
+quer alcançar com seu anúncio:
+1. Estratégias de CPA: foco em conversões
+São para quando você quer gerar leads, vendas ou qualquer ação
+específica no seu site.
+As principais estratégias são:
+● CPA desejado:
+Aqui, você define manualmente o valor que quer pagar por cada
+conversão. Não é garantido que o Google vai gastar todo o seu
+investimento, mas ele vai tentar manter o valor da conversão que foi
+estipulado por você.
+● ROAS desejado
+Se tem a palavra “desejado”, é uma estratégia manual. Aqui, você
+define o retorno sobre investimento que espera. Não é garantido
+gastar todo o seu investimento, mas o Google vai tentar manter o
+Pág. 5
+
+--- Página 6 ---
+Lances: como acelerar ou frear seus resultados?
+ROAS que você estipulou.
+● Maximizar conversões
+Aqui, você garante ao Google que vai gastar seu investimento em prol
+do máximo de conversões possíveis, mas não tem o poder de
+estipular o valor da conversão. Portanto, é uma estratégia automática.
+● Maximizar valor da conversão
+Esta estratégia é parecida com a anterior, mas aqui, o foco é no valor
+total das vendas, e não apenas na quantidade.
+● Custo por clique otimizado (ECPC):
+Essa é daquelas estratégias com nome que engana: parece uma
+estratégia de clique, mas funciona como uma ponte entre CPC e CPA.
+O Google ajusta automaticamente os lances com base na
+probabilidade de conversão. Ou seja, ele tenta manter o custo por
+clique razoável, mas prioriza cliques com maior chance de gerar
+resultado.
+O ponto é: não há garantia de que todo o orçamento será gasto. O
+foco está em converter, não em gastar por gastar. Por isso, apesar de
+parecer uma estratégia de clique, o eCPC se encaixa melhor entre as
+estratégias de ação (CPA), já que visa atrair cliques mais qualificados.
+O termo “otimizado” aqui faz toda a diferença — mostra que o objetivo
+final não é o clique em si, e sim o que vem depois dele.
+Para fixar:
+● Estratégias automáticas têm sempre no nome algo como
+"maximizar".
+● Estratégias manuais usam palavras como "desejado".
+Pág. 6
+
+--- Página 7 ---
+Lances: como acelerar ou frear seus resultados?
+● Maximizar conversões = gasta tudo, sem limite por ação.
+● CPA desejado = tenta bater o custo que você determinou.
+Dica do Subido:
+Se você quer controle absoluto, vá com o CPA ou ROAS
+desejado.Se você quer volume, vai de maximizar
+conversões.
+2. Estratégias de CPC: foco nos cliques
+Quer levar mais pessoas pro seu site? Estas são as opções:
+● Lance de CPC manual:
+Aqui, você escolhe quanto quer pagar por clique. Pode
+economizar, mas talvez não consiga escalar para gastar
+todo o dinheiro.
+● Maximizar cliques:
+Aqui, o Google vai tentar trazer o maior número de cliques
+possível, sem se preocupar com o custo por clique. Pode
+gastar todo o seu dinheiro, mas não será você quem vai
+definir quanto quer pagar por clique.
+🚨
+Se você quer apenas tráfego, este é o grupo ideal! .
+3. Estratégias de CPM: foco na visibilidade
+Aqui, o foco não é clicar, nem converter. É ver. Ideal para campanhas
+de reconhecimento e branding. Esse tipo de estratégia vai ser utilizada
+na rede de pesquisa. O foco dessa estratégia é aparecer no topo da
+rede de pesquisa. Mesmo que ninguém clique, significa estar no topo.
+Pág. 7
+
+--- Página 8 ---
+Lances: como acelerar ou frear seus resultados?
+● Parcela de impressões desejadas
+Usada principalmente na rede de pesquisa, o foco é
+aparecer no topo, mesmo sem clique.
+● CPM desejado
+Você define quanto quer pagar para aparecer mil vezes.
+Pode ser em qualquer posição, desde que imprima.
+● vCPM (CPM visível)
+Aqui, você tira 100% do foco de gerar cliques, e o único foco
+passa a ser aparecer o máximo possível.
+4. Estratégias de CPV: foco em visualização
+Estas estratégias são perfeitas para campanhas de vídeo,
+especialmente no YouTube.
+● CPV desejado
+Aqui, você define quanto quer pagar por cada visualização.
+● CPV máximo
+Aqui, o Google gasta o orçamento todo para alcançar o máximo
+de visualizações possíveis — sem você definir o custo por
+visualização.
+Pág. 8
+
+--- Página 9 ---
+Lances: como acelerar ou frear seus resultados?
+Cada tipo de campanha e objetivo vai ter uma estratégia que se
+adapta melhor. Por isso, na Comunidade Subido de Tráfego, a gente
+sempre te dá a sugestão mais recomendada em cada situação
+específica.
+Como escolher?
+Aqui vai um resumão pra te ajudar a decidir:
+Objetivo Melhor estratégia inicial
+Vendas diretas CPA desejado ou ROAS desejado
+Cadastros CPA desejado
+Tráfego CPC manual ou maximizar cliques
+Visibilidade CPM desejado ou parcela de
+impressões
+Vídeos CPV desejado (se quiser controle)
+O segredo é simples: TESTAR.
+Não existe fórmula mágica. Existe campanha bem planejada,
+analisada, ajustada e re-testada. Por isso,
+● faça testes com diferentes estratégias;
+● analise o que performa melhor;
+● ajuste e escale com segurança.
+Você não precisa entender tudo agora. Mas precisa continuar em
+contato com esse conteúdo. Quanto mais revisar e testar, mais
+natural isso vai ficar.
+Respira, segue o plano e bora pro campo de batalha!
+Pág. 9
+
+
+[ Tabela 1 na página 9 ]
+
+Objetivo | Melhor estratégia inicial
+
+Vendas diretas | CPA desejado ou ROAS desejado
+
+Cadastros | CPA desejado
+
+Tráfego | CPC manual ou maximizar cliques
+
+Visibilidade | CPM desejado ou parcela de
+impressões
+
+Vídeos | CPV desejado (se quiser controle)
+
+--- Página 10 ---
+Lances: como acelerar ou frear seus resultados?
+🚀
+Tamo junto!
+Pág. 10

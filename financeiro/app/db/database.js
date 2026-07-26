@@ -41,6 +41,19 @@ export async function run(sql, params = []) {
   return { lastInsertRowid: info.lastInsertRowid, changes: info.changes };
 }
 
+export async function transaction(fn) {
+  const d = getDb();
+  d.exec('BEGIN');
+  try {
+    const result = await fn();
+    d.exec('COMMIT');
+    return result;
+  } catch (err) {
+    d.exec('ROLLBACK');
+    throw err;
+  }
+}
+
 async function hashPwd(pwd) {
   const bcrypt = await import('bcrypt');
   return bcrypt.default.hash(pwd, 12);
@@ -146,6 +159,15 @@ async function initializeSchema() {
     created_at TEXT DEFAULT (datetime('now'))
   )`);
 
+  // ── Recebimentos de contratos ──────────────────────────────────────────────
+  db.exec(`CREATE TABLE IF NOT EXISTS vs_recebimentos (
+    id TEXT PRIMARY KEY,
+    contrato_id TEXT REFERENCES vs_contratos(id),
+    valor REAL NOT NULL,
+    data_pagamento TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  )`);
+
   // ── Migrações incrementais (verificação robusta) ──────────────────────────────
   function addColumnIfNotExists(table, column, definition) {
     try {
@@ -169,6 +191,55 @@ async function initializeSchema() {
   addColumnIfNotExists('vs_clientes', 'cnpj', 'TEXT');
   addColumnIfNotExists('vs_clientes', 'cpf', 'TEXT');
   addColumnIfNotExists('vs_contratos', 'recorrente', 'INTEGER DEFAULT 1');
+  addColumnIfNotExists('vs_clientes', 'user_id', 'TEXT');
+  addColumnIfNotExists('vs_custos', 'user_id', 'TEXT');
+
+  // ── Migrar dados antigos sem user_id para o master ──────────────────────────
+  try {
+    const masterUser = db.prepare("SELECT id FROM vs_users WHERE role = 'master' LIMIT 1").get();
+    if (masterUser) {
+      const masterId = masterUser.id;
+      const r1 = db.prepare('UPDATE vs_clientes SET user_id = ? WHERE user_id IS NULL').run(masterId);
+      if (r1.changes > 0) console.log(`[DB Migration] ${r1.changes} clientes atribuídos ao master.`);
+      const r2 = db.prepare('UPDATE vs_custos SET user_id = ? WHERE user_id IS NULL').run(masterId);
+      if (r2.changes > 0) console.log(`[DB Migration] ${r2.changes} custos atribuídos ao master.`);
+      const r3 = db.prepare('UPDATE vs_extratos SET created_by = ? WHERE created_by IS NULL').run(masterId);
+      if (r3.changes > 0) console.log(`[DB Migration] ${r3.changes} extratos atribuídos ao master.`);
+    }
+  } catch (err) {
+    console.error('[DB Migration Error] Erro ao migrar dados para master:', err.message);
+  }
+
+  // ── Seed: recebimentos históricos ─────────────────────────────────────────────
+  try {
+    const [{ count }] = db.prepare("SELECT COUNT(*) as count FROM vs_recebimentos").all();
+    if (count === 0) {
+      const contracts = db.prepare("SELECT id, comissao_recebida, data_adesao, administradora FROM vs_contratos").all();
+      const { v4: uuidv4 } = await import('uuid');
+      for (const c of contracts) {
+        if (c.comissao_recebida > 0) {
+          let date = c.data_adesao ? c.data_adesao.split('T')[0] : new Date().toISOString().split('T')[0];
+          
+          if (c.administradora === 'Tráfego Pago' && c.comissao_recebida === 1000) {
+            date = '2026-05-18';
+          } else if (c.administradora === 'Outro') {
+            date = '2026-05-20';
+          } else if (c.comissao_recebida === 1600) {
+            date = '2026-06-04';
+          } else if (c.comissao_recebida === 200) {
+            date = '2026-06-05';
+          }
+
+          db.prepare(`INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`).run(
+            uuidv4(), c.id, c.comissao_recebida, date
+          );
+        }
+      }
+      console.log('[DB Migration] Recebimentos históricos populados.');
+    }
+  } catch (err) {
+    console.error('[DB Migration Error] Erro ao popular recebimentos históricos:', err.message);
+  }
 
   // ── Seed: usuário master ──────────────────────────────────────────────────────
   const seedUsers = [

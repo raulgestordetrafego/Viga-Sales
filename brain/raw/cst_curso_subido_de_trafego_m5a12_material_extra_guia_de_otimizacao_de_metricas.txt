@@ -1,0 +1,530 @@
+--- Página 1 ---
+AULA 12
+Guia de
+otimização
+de métricas
+1
+
+--- Página 2 ---
+Guia de otimização de métricas
+Índice
+Como otimizar as 19 métricas fundamentais do tráfego pago…………………………………………..………………………………….. Pág. 3
+CPM (Custo por mil impressões) ………………………………………………………………………………………………………….………………………………………………………………… Pág. 4
+CPC (Custo por click-link)………………………………………………………………………………………………………….……………………………………………………………………………………….. Pág. 4
+CTR (Click-Through Rate)………………………………………………………………………………………………………….………………………………………………………………………………………… Pág. 5
+Hook Rate (Taxa de Engajamento Inicial)………………………………………………………………………………………………….……………………………………………… Pág. 6
+Custo por Seguidor no Instagram / Custo por Inscrito no YouTube………………………………………………………………... Pág. 7
+Connect Rate………………………………………………………………………………………………….………………………………………………………………………………………………………………………………………….. Pág. 8
+Frequência…………………………………………………………………………………………….………………………………………………………………………………………………………………………………………………………. Pág. 9
+CPC x Ação (Muitos cliques e poucas mensagens ou ligações)………………………………………………………………………….. Pág. 9
+Taxa de Visualização de Produto (Poucas visualizações de produto)………………………………………………………. Pág. 10
+Taxa de Adição ao Carrinho (Poucas adições ao carrinho)………………….…………………………………………………………………….. Pág. 11
+Taxa de Abandono de Carrinho (Adições ao carrinho e poucos checkouts)………………………………… Pág. 12
+Taxa de Conversão no Checkout (Muitas pessoas no checkout e poucas compras)……… Pág. 13
+Ticket Médio Baixo (AOV - Average Order Value)………………………………………………………………………………………………………………………… Pág. 14
+Taxa de Conversão da Landing Page (Baixa Conversão)……………………………………………………………………………………………… Pág. 15
+Qualidade de Leads (Leads Desqualificados)…………………………………………………………………………………………………………………………………….. Pág. 16
+Taxa de Comparecimento a Webinar (Baixo comparecimento)……………………………………………………………………….. Pág. 17
+CPA (Custo por Aquisição)…………………………………………………………………………………….…………………………………………………………………………………………………………… Pág. 19
+ROAS (Retorno Sobre o Investimento em Anúncios)……………………………………………………………………………………………………………….. Pág. 20
+LTV (Lifetime Value)…………………………………………………………………………………….…………………………………………………………………………………………………………………………………. Pág. 20
+Pág. 2
+
+--- Página 3 ---
+Guia de otimização de métricas
+Como otimizar as 19 métricas
+fundamentais do tráfego pago
+Mas não apenas isto. Este é um guia definitivo para que você entenda como
+cada métrica funciona e nunca mais tenha dúvidas na hora de fazer a
+otimização de cada uma delas. Ao ler as páginas a seguir, você descobrirá um
+raio-X das suas estratégias, tendo em vista que as métricas têm a função de
+detalhar o que pode estar dando errado ou certo em suas campanhas.
+Então, leia este material com muita atenção e não demore muito para colocar
+em prática tudo o que aprender a seguir.
+Quanto mais cedo você aplicar esse conteúdo, melhores serão seus resultados.
+Tamo junto, Subido(a)!
+Pág. 3
+
+--- Página 4 ---
+Guia de otimização de métricas
+1. CPM (Custo por mil impressões)
+● O que é? É o valor pago a cada mil impressões do anúncio. Ou seja, é
+quanto você paga para que mil pessoas vejam sua publicidade.
+Esta métrica indica a competitividade do leilão e da sua segmentação e
+impacta diretamente o alcance dos seus anúncios, pois um CPM alto
+significa menos pessoas alcançadas com o mesmo orçamento.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Ganhe mais leilões: otimize a qualidade do anúncio (relevância, copy,
+criativo) para ser priorizado no leilão;
+● Faça a otimização de segmentação: combine interesses, idades ou
+regiões para encontrar brechas menos concorridas (ou direcione seu
+anúncio para públicos mais estratégicos, a depender do objetivo da
+campanha);
+● Expanda seu público: considere que públicos muito pequenos tendem
+a encarecer o CPM;
+● Faça a rotação de criativos: anúncios novos ou atualizados podem
+reduzir a saturação e baixar o CPM;
+● Teste diferentes objetivos de campanha.
+2. CPC (Custo por click-link)
+● O que é? É o valor médio pago por cada clique no link do seu anúncio.
+Esta métrica é importante porque mostra quanto custa levar um usuário até o
+site ou a página de destino. Além disso, ela afeta diretamente a viabilidade
+econômica da sua campanha, já que, se o CPC for alto, você gasta mais para
+cada visita.
+Pág. 4
+
+--- Página 5 ---
+Guia de otimização de métricas
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Aumente a relevância dos anúncios: escreva uma copy mais atrativa
+e faça criativos competitivos. Dessa forma, você pode elevar o CTR
+(Click-Through Rate) e, com isso, reduzir o CPC;
+● Refine (ou amplie) a audiência: se o público estiver muito amplo, o
+CTR tende a cair; se estiver muito restrito, o leilão pode ficar caro.
+Ajuste esses aspectos para otimizar o CPC;
+● Teste lances diferentes: em plataformas que permitem lances
+manuais ou automáticos, encontre o ponto ideal de custo.
+3. CTR (Click-Through Rate)
+● O que é? É a taxa de cliques em relação às impressões, ou seja,
+quantas pessoas clicaram no anúncio de todas as que o visualizaram
+(cliques ÷ impressões).
+Esta métrica mede a relevância e a atratividade do anúncio (tanto o criativo
+como a mensagem). Um CTR baixo pode aumentar CPC e CPM, pois o sistema
+da fonte de tráfego entende que seu anúncio tem baixa relevância.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Faça testes de novos Hooks: um hook forte (pergunta, afirmação
+ousada, história rápida) pode aumentar significativamente o CTR;
+● Melhore seus anúncios: foque em headlines claras, benefícios
+palpáveis e visuais chamativos;
+● Melhore a copy: use gatilhos de curiosidade e chame a atenção para a
+dor do usuário em alinhamento com o benefício do seu produto ou
+serviço;
+Pág. 5
+
+--- Página 6 ---
+Guia de otimização de métricas
+● Teste vídeos com CTAs no início: faça chamadas de ação logo nos
+primeiros segundos para prender a atenção;
+● Anuncie para quem já viu outros anúncios com outros estímulos:
+públicos aquecidos costumam ter CTR maior;
+● Teste outros formatos: carrossel, vídeo, imagem única, Stories, entre
+outros;
+● Faça chamadas que estimulem o primeiro clique do usuário em um
+anúncio seu: por exemplo: “desconto de primeira compra”, “bônus pelo
+primeiro cadastro”.
+4. Hook Rate (Taxa de Engajamento Inicial)
+● O que é? É a taxa que mede quantas pessoas continuam assistindo ou
+lendo seu anúncio após o primeiro contato (especialmente em vídeos,
+quantos usuários assistem aos primeiros segundos).
+Esta métrica determina se a sua mensagem inicial está “fisgando” a atenção
+do público, como também influencia diretamente o CTR e o custo, uma vez que
+os anúncios que perdem a atenção do público-alvo rápido tendem a ter
+resultados piores nos leilões.
+Na hora de otimizar, considere esta ação:
+● Faça novos ganchos (hooks): crie aberturas mais impactantes e
+personalizadas para seu público-alvo.
+Pág. 6
+
+--- Página 7 ---
+Guia de otimização de métricas
+5. Custo por Seguidor no Instagram / Custo por Inscrito no
+YouTube
+● O que é? O valor médio pago para adquirir um novo seguidor no
+Instagram ou um novo inscrito no YouTube, por meio de anúncios
+pagos.
+Esta métrica indica a eficiência da campanha de crescimento da audiência.
+Um custo muito alto pode sinalizar baixa atratividade do conteúdo ou
+segmentação ineficiente. Da mesma forma, ela impacta diretamente a
+escalabilidade das estratégias de crescimento orgânico e pago.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Segmente públicos que já demonstram interesse: use a estratégia do
+remarketing para aumentar a conversão de pessoas que engajaram
+com posts, visitaram o perfil ou assistiram seus vídeos;
+● Melhore o criativo e a copy: use chamadas diretas como “Siga para
+receber dicas diárias de [tema]” ou “Se inscreva para aprender
+[benefício específico] toda semana”, por exemplo;
+● Crie incentivo para seguir ou se inscrever: ofereça materiais
+exclusivos, faça sorteios ou desafios para aumentar a taxa de
+conversão do anúncio;
+● Use colaborações estratégicas: faça parcerias com criadores do
+mesmo nicho para impulsionar seguidores com públicos qualificados;
+● Teste diferentes formatos de anúncio: Stories, Reels, Shorts, carrosséis,
+anúncios de engajamento e vídeo costumam gerar melhores
+resultados;
+● Otimize o posicionamento dos anúncios: experimente deixar apenas
+em plataformas com melhor desempenho (Instagram Stories, Feed,
+Shorts do YouTube, etc.);
+Pág. 7
+
+--- Página 8 ---
+Guia de otimização de métricas
+● Use provas sociais: se já tem engajamento, mencione seguidores,
+comentários ou o impacto da sua comunidade;
+● Analise a retenção e engajamento: não adianta ter um custo baixo se
+os seguidores/inscritos não interagem ou deixam de seguir logo
+depois.
+6. Connect Rate
+● O que é? É a taxa de conexão efetiva após o clique no anúncio. Por
+exemplo, quantas pessoas realmente chegam a visualizar
+corretamente a página de destino ou quantas têm seus dados
+registrados no pixel/API de conversão.
+Esta métrica mostra se há problemas técnicos ou de carregamento que fazem
+o usuário “desistir” antes mesmo de a página abrir. Dessa forma, ela assegura
+que as métricas de cliques e conversões estejam sendo capturadas de forma
+correta.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Melhore a velocidade de carregamento do site: otimize imagens, use
+servidores rápidos e layouts leves;
+● Otimização para dispositivos móveis: considere que muitas falhas de
+conexão acontecem em smartphones mal adaptados;
+● Verifique scripts de rastreamento: lembre-se que scripts em excesso
+podem travar o carregamento;
+● Instale a API de conversões: dessa forma, você vai garantir que os
+dados de conversão sejam recebidos mesmo se o pixel falhar.
+Pág. 8
+
+--- Página 9 ---
+Guia de otimização de métricas
+7. Frequência
+● O que é? Número médio de vezes que cada pessoa vê o seu anúncio
+em determinado período.
+Esta métrica é importante porque, se a frequência for muito alta, pode causar
+fadiga no público e aumentar o feedback negativo dos anúncios. Se ela for
+muito baixa, pode indicar que o público está se renovando ou que seu
+orçamento é baixo para a segmentação.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Renove criativos: mude o anúncio para evitar saturação;
+● Expanda ou refine a audiência: ajuste o tamanho do público para
+equilibrar melhor a rotação dos anúncios;
+● Defina um limite de frequência: nas plataformas que permitem, limite
+a quantidade de vezes que cada usuário vê o anúncio. Ao fazer isso,
+tenha em mente que essa iniciativa pode melhorar a frequência, mas
+atrapalhar a métrica principal.
+8. CPC x Ação (Muitos cliques e poucas mensagens ou ligações)
+● O que é? Não é exatamente uma métrica padrão, mas uma situação
+onde há um alto volume de cliques no anúncio, porém poucas
+conversões em mensagem, ligação ou contato.
+Esta métrica indica que seu anúncio pode estar atraindo “curiosos” ou pessoas
+que não entendem bem o que acontece após o clique. Além disso, pode
+sinalizar falta de clareza ou de congruência entre o anúncio e o que a pessoa
+encontra na página/destino.
+Pág. 9
+
+--- Página 10 ---
+Guia de otimização de métricas
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Seja claro no anúncio sobre o que acontecerá após o clique: se é para
+entrar em contato, diga “Clique e fale conosco agora pelo WhatsApp”,
+por exemplo;
+● Crie congruência: se o anúncio promete “consulta gratuita”, a página
+de destino deve logo evidenciar esse benefício;
+● Adicione CTAs explícitas: exemplos: “Fale agora com um especialista”,
+“Agende sua chamada”.
+● Use gatilhos de urgência ou escassez: exemplo: “Somente X vagas
+para este mês”.
+9. Taxa de Visualização de Produto (Poucas visualizações de
+produto)
+● O que é? Percentual de usuários que, ao entrar no site, realmente
+chegam à página do produto (em plataformas como Meta Ads, pode
+ser o evento “ViewContent”).
+Esta métrica mostra se o fluxo do usuário está bem direcionado para conhecer
+o produto. Considere que, se a maioria das pessoas não chega a ver o produto,
+dificilmente haverá compras.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Melhore a segmentação: certifique-se de falar com o público-alvo
+certo;
+● Melhore a comunicação dos anúncios: explique melhor o valor do
+produto e insira links diretos para ele;
+Pág. 10
+
+--- Página 11 ---
+Guia de otimização de métricas
+● Use links diretos: se o anúncio é sobre um produto específico,
+direcione o clique direto para a página dele;
+● Melhore a experiência do usuário no site: o seu site deve ter uma
+navegação fácil, menus claros e páginas leves.
+10. Taxa de Adição ao Carrinho (Poucas adições ao carrinho)
+● O que é? Proporção de visitantes que adicionam ao carrinho em
+relação ao total de usuários que visualizam o produto.
+Esta métrica indica o quão convincente ou atrativo é o produto (ou a oferta)
+para que o usuário se sinta pronto para avançar. Por isso, ela representa um
+passo crucial no funil de e-commerce ou vendas online, por exemplo.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Organize melhor seu site: mantenha um layout limpo, informações
+claras e o botão de “Adicionar ao carrinho” visível;
+● Melhore a qualidade de fotos e vídeos: apresente o produto de forma
+profissional e atrativa;
+● Transparência de preços: evite surpresas no checkout (impostos ou
+informações sobre fretes) que inibem a adição ao carrinho;
+● Adicione mais informações sobre o produto: coloque as dimensões, os
+materiais, as garantias, os prazos de entrega e outras informações;
+● Verifique disponibilidade: tenha opções de tamanho, cor e modelo em
+estoque.
+Pág. 11
+
+--- Página 12 ---
+Guia de otimização de métricas
+11. Taxa de Abandono de Carrinho (Adições ao carrinho e poucos
+checkouts)
+● O que é? Porcentagem de usuários que adicionam produtos ao
+carrinho, mas não iniciam ou concluem o checkout.
+Esta métrica revela pontos de fricção que fazem o cliente desistir antes mesmo
+de chegar ao pagamento. Essa desistência pode estar ligada ao preço final, à
+falta de confiança ou às etapas complicadas, etc.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Simplifique as etapas: quanto menos cliques e formulários, melhor;
+● Analise o valor do frete: fretes muito altos ou inesperados são
+campeões de abandono;
+● Melhore sua oferta: crie combos, descontos ou facilidades para
+incentivar a finalização;
+● Ofereça suporte: chat ou canal rápido para tirar dúvidas sobre
+produtos ou entrega;
+● Use a estratégia de retargeting: faça anúncios focados em pessoas
+que abandonaram o carrinho, lembrando-as da compra.
+Pág. 12
+
+--- Página 13 ---
+Guia de otimização de métricas
+12. Taxa de Conversão no Checkout (Muitas pessoas no checkout
+e poucas compras)
+● O que é? Proporção de usuários que iniciam o processo de checkout e
+realmente finalizam a compra.
+Esta métrica é um dos indicadores mais diretos de receita. Se muita gente
+entra no checkout, mas não compra, há falhas críticas na etapa final.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Verifique o gateway de pagamento: problemas técnicos ou falta de
+credibilidade podem espantar clientes;
+● Aumente a confiança do seu site: configure o checkout no próprio
+domínio, selos de segurança e acrescente provas sociais;
+● Adicione mais formas de pagamento: cartão, boleto, Pix, PayPal entre
+outras;
+● Teste o parcelamento: se o preço for alto, ofereça parcelamento ou
+leve a pessoa direto para uma página onde o valor está parcelado.
+Essas iniciativas podem elevar a conversão.
+● Faça remarketing para públicos que abandonaram a compra do
+produto: ofereça um incentivo extra para que a compra seja finalizada;
+● Adicione um chat ou atendimento on-line: ajude clientes que tenham
+dúvidas de última hora.
+Pág. 13
+
+--- Página 14 ---
+Guia de otimização de métricas
+13. Ticket Médio Baixo (AOV - Average Order Value)
+● O que é? Valor médio gasto pelo cliente em cada pedido (somatório
+do faturamento dividido pelo número de pedidos).
+Esta métrica impacta diretamente o faturamento. Aumentar o ticket médio do
+produto pode trazer mais lucro sem precisar de novos clientes.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Implemente um upsell e cross-sell: sugira produtos complementares
+ou versões premium após adicionar algo ao carrinho;
+● Ofereça kits de produtos: vender combos com desconto para elevar o
+valor por transação;
+● Promova produtos mais caros: direcione o tráfego para páginas de
+produtos de maior valor agregado;
+● Ofereça benefícios para compras acima de X reais: ofereça também
+frete grátis, brinde ou desconto progressivo;
+● Crie clubes de assinatura: se fizer sentido, oferecer produtos e
+vantagens recorrentes, visto que essa iniciativa pode aumentar o valor
+ao longo do tempo.
+Pág. 14
+
+--- Página 15 ---
+Guia de otimização de métricas
+14. Taxa de Conversão da Landing Page (Baixa Conversão)
+● O que é? Porcentagem de visitantes que realizam a ação desejada
+(cadastro, compra, download, etc.) na página de destino.
+Esta métrica é o indicador-chave de eficiência de uma página de captura ou
+venda. Saiba que, se a taxa é baixa, todo o orçamento de tráfego é pouco
+aproveitado.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Teste diferentes headlines: lembre-se que a manchete precisa
+comunicar um benefício claro;
+● Peça menos informações: faça um formulário mais curto; esse tipo de
+formato tende a converter mais leads;
+● Coloque o botão de compra na primeira dobra: facilite a vida de quem
+está pronto para converter rápido;
+● CTAs ao longo da página: não faça o usuário rolar muito para
+encontrar um botão de compra;
+● Página com e sem vídeo: verifique se o vídeo aumenta ou distrai da
+conversão.
+● Teste páginas curtas vs. longas: essa iniciativa pode apresentar
+diferentes resultados a depender do público e da complexidade da
+oferta;
+● Adicione provas sociais e depoimentos: dessa forma, você conseguirá
+quebrar objeções e gerar confiança no público-alvo;
+● Adicione seção de benefícios, seção “quem somos nós”, “garantia”,
+“FAQ” e “bônus”;
+● Faça um remarketing específico: faça anúncios para quem visitou a
+página, mas não converteu, e reforce os benefícios ou resolva as
+objeções;
+Pág. 15
+
+--- Página 16 ---
+Guia de otimização de métricas
+● Analise através dos mapas de calor: veja onde as pessoas clicam ou
+abandonam o produto no seu site.
+15. Qualidade de Leads (Leads Desqualificados)
+● O que é? Indicador de quantos dos leads capturados realmente têm
+perfil ou intenção de compra alinhados ao seu negócio.
+Esta métrica garante que o time de vendas gastará tempo com leads
+relevantes. Da mesma forma, através dela é possível evitar o desperdício de
+verba com campanhas que trazem volume, mas pouco resultado real.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Crie eventos de conversão para leads qualificados: dessa forma, você
+conseguirá ajudar o pixel a otimizar qualidade e não apenas
+quantidade;
+● Melhore as perguntas do formulário: filtre melhor os leads com
+campos que identifiquem as necessidades do público, pedido de
+orçamento, entre outras informações;
+● Use uma página em vez de formulário instantâneo: crie contexto e
+“prepare” melhor o lead antes da conversão;
+● Seja claro no anúncio: especifique com quem você quer falar para
+atrair só o público adequado;
+● Melhore a segmentação dos seus anúncios, focando em públicos que
+trazem leads mais qualificados: use um lead scoring e os parâmetros
+de UTM em suas campanhas para identificar os melhores públicos;
+● Foque em segmentações quentes;
+● Use re-segmentação: exemplos: faixa de renda, idade, interesses
+específicos, dentre outros aspectos;
+Pág. 16
+
+--- Página 17 ---
+Guia de otimização de métricas
+● Avalie a qualidade do lead por fonte de tráfego e o posicionamento
+dos anúncios: identifique de onde vêm os leads bons e coloque sua
+atenção nesses aspectos (fonte de tráfego e posicionamento dos
+anúncios);
+● Implemente uma automação de marketing: tenha em mente que
+fluxos de nutrição ajudam a filtrar e educar leads antes do contato
+humano;
+● Faça pesquisas com os leads qualificados sobre as principais
+dúvidas deles: use essas perguntas nos seus anúncios (lembre-se que
+seu cliente é o seu melhor copywriter);
+● Melhore a captura de leads orgânicos: a qualidade desse tipo de
+público tende a ser muito melhor.
+16. Taxa de Comparecimento a Webinar (Baixo
+comparecimento)
+● O que é? Porcentagem de inscritos que efetivamente compareceram
+ao evento ao vivo.
+Tenha em mente que, sem audiência em um evento on-line, não há conversão
+ou engajamento durante o webinar. Webinars costumam ser fortes geradores
+de venda e relacionamento. Por isso, a baixa presença significa uma
+oportunidade desperdiçada.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Melhore o aquecimento pré-webinário: envie conteúdo de valor,
+depoimentos ou benefícios para estimular o interesse do público-alvo;
+● Tenha multicanais de comunicação: e-mail, Telegram, WhatsApp,
+grupos no Facebook, por exemplo;
+Pág. 17
+
+--- Página 18 ---
+Guia de otimização de métricas
+● Use anúncios de lembrete: eles devem estar em todas as plataformas
+(Facebook, Instagram, YouTube, Google Display) um pouco antes do
+evento;
+● Faça anúncios bumper e no Display: aumente a lembrança do público
+sobre o evento com pequenos lembretes em vídeo ou banner;
+● Faça anúncios como “Estamos ao vivo agora”: considere que, às
+vezes, a pessoa só precisa saber que o evento começou para
+comparecer;
+● Ofereça bônus exclusivos ao vivo: você deve apresentar algo que só
+quem comparecer receberá;
+● Envie convites para calendário: envie o link do evento para as contas
+do Google Calendar ou iCal, facilitando a organização dos
+participantes;
+● Use ligações automatizadas ou até mesmo com um time 1:1;
+● Monte um time de telemarketing que faz RSVP com todos os
+cadastrados no evento;
+● Faça a segmentação das suas listas de e-mail por prioridade de
+qualidade: leads qualificados devem receber e-mails primeiro.
+● Crie um Agente de IA e disponibilize alguns dias antes do evento
+através de alguma plataforma de conversa;
+● Tenha canais em que o lead pode receber notificações: YouTube,
+calendário, aplicativo próprio, Wallet, por exemplo;
+● Selecione as melhores partes do Webinário e envie os usuários para
+este material.
+Pág. 18
+
+--- Página 19 ---
+Guia de otimização de métricas
+17. CPA (Custo por Aquisição)
+● O que é? É o custo médio para cada conversão (seja venda, lead ou
+outra ação).
+Esta métrica indica o quão eficiente seu investimento em tráfego está, através
+da geração de resultados efetivos (vendas ou leads). Além disso, ela direciona
+decisões orçamentárias: se o CPA estiver acima da margem, pode inviabilizar a
+operação.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Desenhe seu funil, identifique o problema e siga as instruções deste
+guia para melhorar seu CPM, CTR, Connect Rate e Conversão da
+Landing Page;
+● Aprimore a oferta: ofertas mais claras e atrativas melhoram a taxa de
+conversão e reduzem o CPA;
+● Melhore a segmentação e qualificação: foque em públicos mais
+alinhados, tende a reduzir desperdícios;
+● Teste criativos e copies: pequenas mudanças podem aumentar a
+conversão e diminuir o custo por aquisição;
+● Otimização de lances: ajuste estratégias de bidding (automáticas ou
+manuais) para encontrar o melhor equilíbrio de custo;
+● Teste formulários nativos dentro das fontes de tráfego;
+● Teste outros tipos de objetivos de campanha.
+Pág. 19
+
+--- Página 20 ---
+Guia de otimização de métricas
+18. ROAS (Retorno Sobre o Investimento em Anúncios)
+● O que é? Receita gerada dividida pelo valor gasto em anúncios. Ex.: se
+você investiu R$1.000 e faturou R$5.000, seu ROAS é 5 (ou 500%).
+Esta métrica mede o lucro (ou prejuízo) das campanhas de forma clara.Se o
+ROAS não está cobrindo seus custos e a margem de lucro, você precisa
+otimizar ou repensar a campanha.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+● Otimize a segmentação: concentre o investimento em públicos e
+produtos mais rentáveis;
+● Aumente o valor do ticket médio do produto: ofereça pacotes, upsells
+ou cross-sells.
+● Reduza custos de aquisição (CPA): otimize seus anúncios para ter
+conversões mais baratas;
+● Upsell e cross-sell pós-conversão: mesmo após a compra, ofereça
+upgrades para elevar a receita total.
+19. LTV (Lifetime Value)
+● O que é? Valor total que o cliente gera ao longo de todo o
+relacionamento com a marca (compras repetidas, indicações, etc.).
+Esta métrica permite entender quanto vale, em média, cada cliente no longo
+prazo. Através dela, você terá a definição de quanto é necessário investir para
+adquirir um novo cliente e ainda ter lucro no futuro.
+Na hora de otimizar, considere estas ações, nesta ordem de
+importância:
+Pág. 20
+
+--- Página 21 ---
+Guia de otimização de métricas
+● Implemente a retenção e fidelização dos seus clientes: programas de
+pontos, clube de vantagens, atendimento pós-venda de qualidade são
+estratégias para essa iniciativa;
+● Implemente estratégias de cross-sell e upsell: ofereça produtos
+complementares ou versões premium ao longo do ciclo de vida do
+cliente;
+● Faça a otimização do funil de recompra: envie e-mails de remarketing
+para clientes inativos, reativando-os com ofertas específicas.
+Tranquilo até aqui?
+Leia este guia quantas vezes precisar, só não adie o campo de batalha.
+Lembre-se que ele é seu maior professor.
+Pág. 21

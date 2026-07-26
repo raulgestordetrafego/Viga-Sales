@@ -10,7 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import rateLimit from 'express-rate-limit';
 import axios from 'axios';
-import { query, queryOne, run } from '../db/database.js';
+import { query, queryOne, run, transaction } from '../db/database.js';
 import { vsSessions } from '../services/sessions.js';
 
 const router = express.Router();
@@ -74,6 +74,11 @@ function isMaster(req, res, next) {
   if (s.role !== 'master' && s.role !== 'admin') return res.status(403).json({ error: 'Sem permissão' });
   req.session = s;
   next();
+}
+
+// Helper: verifica se a sessão é admin ou master (vê tudo)
+function isAdminOrMaster(session) {
+  return session.role === 'master' || session.role === 'admin';
 }
 
 // Limpeza periódica de sessões
@@ -222,6 +227,10 @@ router.get('/clientes', auth, async (req, res) => {
     const offset = (Number(page) - 1) * Number(limit);
     const clauses = ['1=1'];
     const params  = [];
+    if (!isAdminOrMaster(req.session)) {
+      clauses.push('c.user_id = ?');
+      params.push(req.session.userId);
+    }
     if (search) {
       clauses.push('(c.nome LIKE ? OR c.telefone LIKE ? OR c.email LIKE ?)');
       const like = `%${search}%`;
@@ -249,6 +258,8 @@ router.get('/clientes', auth, async (req, res) => {
 
 router.get('/clientes/stats', auth, async (req, res) => {
   try {
+    const userFilter = isAdminOrMaster(req.session) ? '' : 'WHERE c.user_id = ?';
+    const userParams = isAdminOrMaster(req.session) ? [] : [req.session.userId];
     const [row] = await query(`
       SELECT
         COUNT(DISTINCT c.id)                                                                         AS total,
@@ -260,7 +271,8 @@ router.get('/clientes/stats', auth, async (req, res) => {
         COALESCE(SUM(ct.valor_parcela * (COALESCE(ct.total_parcelas,0) - COALESCE(ct.parcelas_pagas,0))), 0) AS saldo_a_receber
       FROM vs_clientes c
       LEFT JOIN vs_contratos ct ON ct.cliente_id = c.id
-    `, []);
+      ${userFilter}
+    `, userParams);
     res.json(row);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -269,6 +281,9 @@ router.get('/clientes/:id', auth, async (req, res) => {
   try {
     const cliente = await queryOne('SELECT * FROM vs_clientes WHERE id = ?', [req.params.id]);
     if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
+    if (!isAdminOrMaster(req.session) && cliente.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para acessar este cliente' });
+    }
     const contratos = await query('SELECT * FROM vs_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [req.params.id]);
     res.json({ ...cliente, contratos });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -281,10 +296,10 @@ router.post('/clientes', auth, async (req, res) => {
     const id  = uuidv4();
     const now = new Date().toISOString();
     await run(
-      `INSERT INTO vs_clientes (id, nome, telefone, email, cpf_cnpj, responsavel, notas, nome_contato, cnpj, cpf, endereco, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO vs_clientes (id, nome, telefone, email, cpf_cnpj, responsavel, notas, nome_contato, cnpj, cpf, endereco, user_id, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [id, nome.trim(), telefone || null, email || null, cpf_cnpj || null, responsavel || null, notas || null,
-       nome_contato || null, cnpj || null, cpf || null, endereco || null, now, now]
+       nome_contato || null, cnpj || null, cpf || null, endereco || null, req.session.userId, now, now]
     );
     const cliente  = await queryOne('SELECT * FROM vs_clientes WHERE id = ?', [id]);
     const contratos = await query('SELECT * FROM vs_contratos WHERE cliente_id = ? ORDER BY created_at ASC', [id]);
@@ -294,6 +309,12 @@ router.post('/clientes', auth, async (req, res) => {
 
 router.put('/clientes/:id', auth, async (req, res) => {
   try {
+    // Verificar ownership
+    const existing = await queryOne('SELECT user_id FROM vs_clientes WHERE id = ?', [req.params.id]);
+    if (!existing) return res.status(404).json({ error: 'Cliente não encontrado' });
+    if (!isAdminOrMaster(req.session) && existing.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para editar este cliente' });
+    }
     const { nome, telefone, email, cpf_cnpj, responsavel, notas, nome_contato, cnpj, cpf, endereco } = req.body;
     const now = new Date().toISOString();
     await run(
@@ -311,8 +332,14 @@ router.put('/clientes/:id', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.delete('/clientes/:id', isMaster, async (req, res) => {
+router.delete('/clientes/:id', auth, async (req, res) => {
   try {
+    const client = await queryOne('SELECT user_id FROM vs_clientes WHERE id = ?', [req.params.id]);
+    if (!client) return res.status(404).json({ error: 'Cliente não encontrado' });
+    if (!isAdminOrMaster(req.session) && client.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para deletar este cliente' });
+    }
+    await run('DELETE FROM vs_recebimentos WHERE contrato_id IN (SELECT id FROM vs_contratos WHERE cliente_id = ?)', [req.params.id]);
     await run('DELETE FROM vs_contratos WHERE cliente_id = ?', [req.params.id]);
     await run('DELETE FROM vs_clientes WHERE id = ?', [req.params.id]);
     res.json({ ok: true });
@@ -326,8 +353,11 @@ router.delete('/clientes/:id', isMaster, async (req, res) => {
 router.post('/clientes/:id/contratos', auth, async (req, res) => {
   try {
     const clienteId = req.params.id;
-    const cliente = await queryOne('SELECT id FROM vs_clientes WHERE id = ?', [clienteId]);
+    const cliente = await queryOne('SELECT id, user_id FROM vs_clientes WHERE id = ?', [clienteId]);
     if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
+    if (!isAdminOrMaster(req.session) && cliente.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão' });
+    }
 
     const {
       administradora, grupo, cota, numero_contrato,
@@ -336,6 +366,7 @@ router.post('/clientes/:id/contratos', auth, async (req, res) => {
       data_adesao, comissao_total, comissao_recebida, status_comissao,
       empresa, nf_emitida, data_boleto, data_lance,
       parceria_pct, parceria_obs, responsavel, notas, recorrente,
+      recebimentos,
     } = req.body;
 
     const id  = uuidv4();
@@ -360,6 +391,35 @@ router.post('/clientes/:id/contratos', auth, async (req, res) => {
        recorrente != null ? Number(recorrente) : 1,
        now, now]
     );
+
+    let actualComissaoRecebida = comissao_recebida || 0;
+    let actualParcelasPagas = parcelas_pagas || 0;
+    
+    if (Array.isArray(recebimentos)) {
+      actualComissaoRecebida = 0;
+      actualParcelasPagas = 0;
+      for (const rec of recebimentos) {
+        const recId = uuidv4();
+        await run(
+          `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+          [recId, id, Number(rec.valor) || 0, rec.data_pagamento]
+        );
+        actualComissaoRecebida += Number(rec.valor) || 0;
+        actualParcelasPagas += 1;
+      }
+      await run(
+        `UPDATE vs_contratos SET comissao_recebida = ?, parcelas_pagas = ? WHERE id = ?`,
+        [actualComissaoRecebida, actualParcelasPagas, id]
+      );
+    } else if (Number(comissao_recebida) > 0) {
+      const recId = uuidv4();
+      const payDate = data_adesao ? data_adesao.split('T')[0] : new Date().toISOString().split('T')[0];
+      await run(
+        `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+        [recId, id, Number(comissao_recebida), payDate]
+      );
+    }
+
     const ct = await queryOne('SELECT * FROM vs_contratos WHERE id = ?', [id]);
     res.json(ct);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -374,6 +434,7 @@ router.put('/contratos/:id', auth, async (req, res) => {
       data_adesao, comissao_total, comissao_recebida, status_comissao,
       empresa, nf_emitida, data_boleto, data_lance,
       parceria_pct, parceria_obs, responsavel, notas, recorrente,
+      recebimentos,
     } = req.body;
     const now = new Date().toISOString();
     await run(
@@ -410,17 +471,322 @@ router.put('/contratos/:id', auth, async (req, res) => {
         now, req.params.id,
       ]
     );
+
+    let actualComissaoRecebida = comissao_recebida;
+    let actualParcelasPagas = parcelas_pagas;
+    
+    if (Array.isArray(recebimentos)) {
+      await run('DELETE FROM vs_recebimentos WHERE contrato_id = ?', [req.params.id]);
+      actualComissaoRecebida = 0;
+      actualParcelasPagas = 0;
+      for (const rec of recebimentos) {
+        const recId = uuidv4();
+        await run(
+          `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+          [recId, req.params.id, Number(rec.valor) || 0, rec.data_pagamento]
+        );
+        actualComissaoRecebida += Number(rec.valor) || 0;
+        actualParcelasPagas += 1;
+      }
+      
+      await run(
+        `UPDATE vs_contratos SET comissao_recebida = ?, parcelas_pagas = ? WHERE id = ?`,
+        [actualComissaoRecebida, actualParcelasPagas, req.params.id]
+      );
+    } else if (comissao_recebida != null) {
+      const oldRecs = await query('SELECT SUM(valor) as total FROM vs_recebimentos WHERE contrato_id = ?', [req.params.id]);
+      const oldTotal = oldRecs[0]?.total || 0;
+      if (Number(comissao_recebida) !== oldTotal) {
+        await run('DELETE FROM vs_recebimentos WHERE contrato_id = ?', [req.params.id]);
+        if (Number(comissao_recebida) > 0) {
+          const recId = uuidv4();
+          const payDate = data_adesao ? data_adesao.split('T')[0] : new Date().toISOString().split('T')[0];
+          await run(
+            `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+            [recId, req.params.id, Number(comissao_recebida), payDate]
+          );
+        }
+      }
+    }
+
     const ct = await queryOne('SELECT * FROM vs_contratos WHERE id = ?', [req.params.id]);
     if (!ct) return res.status(404).json({ error: 'Contrato não encontrado' });
     res.json(ct);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.delete('/contratos/:id', isMaster, async (req, res) => {
+router.delete('/contratos/:id', auth, async (req, res) => {
   try {
+    const contrato = await queryOne(
+      'SELECT c.user_id FROM vs_contratos ct JOIN vs_clientes c ON c.id = ct.cliente_id WHERE ct.id = ?',
+      [req.params.id]
+    );
+    if (!contrato) return res.status(404).json({ error: 'Contrato não encontrado' });
+    if (!isAdminOrMaster(req.session) && contrato.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para deletar este contrato' });
+    }
+    await run('DELETE FROM vs_recebimentos WHERE contrato_id = ?', [req.params.id]);
     await run('DELETE FROM vs_contratos WHERE id = ?', [req.params.id]);
     res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.get('/contratos/:id/recebimentos', auth, async (req, res) => {
+  try {
+    const rows = await query(
+      'SELECT * FROM vs_recebimentos WHERE contrato_id = ? ORDER BY data_pagamento ASC',
+      [req.params.id]
+    );
+    res.json(rows);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.delete('/recebimentos/:id', auth, async (req, res) => {
+  try {
+    await transaction(async () => {
+      const rec = await queryOne('SELECT contrato_id FROM vs_recebimentos WHERE id = ?', [req.params.id]);
+      if (!rec) throw Object.assign(new Error('Recebimento não encontrado'), { status: 404 });
+      
+      await run('DELETE FROM vs_recebimentos WHERE id = ?', [req.params.id]);
+      
+      const [sums] = await query('SELECT SUM(valor) as total, COUNT(*) as c FROM vs_recebimentos WHERE contrato_id = ?', [rec.contrato_id]);
+      const [ct] = await query('SELECT total_parcelas FROM vs_contratos WHERE id = ?', [rec.contrato_id]);
+      const total = ct?.total_parcelas || 12;
+      const status = (sums.c || 0) >= total ? 'recebida' : ((sums.c || 0) > 0 ? 'parcial' : 'pendente');
+      
+      await run(
+        'UPDATE vs_contratos SET comissao_recebida = ?, parcelas_pagas = ?, status_comissao = ? WHERE id = ?',
+        [sums.total || 0, sums.c || 0, status, rec.contrato_id]
+      );
+    });
+    
+    res.json({ ok: true });
+  } catch (err) { res.status(err.status || 500).json({ error: err.message }); }
+});
+
+router.post('/chat/process', auth, async (req, res) => {
+  try {
+    const { text, file, history = [] } = req.body;
+    if (!text && !file) {
+      return res.status(400).json({ error: 'Nenhum texto ou arquivo enviado' });
+    }
+
+    const openaiKey = process.env.OPENAI_API_KEY;
+    if (!openaiKey) {
+      return res.status(500).json({ error: 'OPENAI_API_KEY não configurada no servidor.' });
+    }
+
+    let clientesList, contratosList;
+    if (isAdminOrMaster(req.session)) {
+      clientesList = await query('SELECT id, nome FROM vs_clientes', []);
+      contratosList = await query(
+        `SELECT c.id, c.cliente_id, c.administradora, c.valor_parcela, c.valor_credito, cl.nome as cliente_nome 
+         FROM vs_contratos c 
+         JOIN vs_clientes cl ON cl.id = c.cliente_id 
+         WHERE c.status = 'ativo'`, []);
+    } else {
+      clientesList = await query('SELECT id, nome FROM vs_clientes WHERE user_id = ?', [req.session.userId]);
+      contratosList = await query(
+        `SELECT c.id, c.cliente_id, c.administradora, c.valor_parcela, c.valor_credito, cl.nome as cliente_nome 
+         FROM vs_contratos c 
+         JOIN vs_clientes cl ON cl.id = c.cliente_id 
+         WHERE c.status = 'ativo' AND cl.user_id = ?`, [req.session.userId]);
+    }
+
+    const systemPrompt = `Você é o assistente financeiro inteligente da Viga Sales.
+Sua tarefa é analisar a mensagem de texto e/ou o arquivo enviado e classificar/alocar a transação financeira da forma mais inteligente possível.
+
+REGRA MAIS IMPORTANTE: Você tem MEMÓRIA. Toda a conversa anterior está disponível no histórico de mensagens. NUNCA repita uma pergunta que o usuário já respondeu no histórico. Se o usuário já disse o nome do cliente, o valor, se é recorrente ou não, ou qualquer outro dado — USE essa informação diretamente sem perguntar de novo. Quando tiver dados suficientes, REGISTRE a transação imediatamente.
+
+Hoje é dia ${new Date().toISOString().split('T')[0]} (dia da semana: ${new Date().toLocaleDateString('pt-BR', { weekday: 'long' })}).
+
+Clientes cadastrados: ${JSON.stringify(clientesList)}
+Contratos ativos: ${JSON.stringify(contratosList)}
+
+Classifique a transação:
+1. Custo/despesa (saída) → retorne:
+{"action":"cost","data":{"descricao":"...","categoria":"Marketing|Infraestrutura|Freelancer|Administrativo|Comercial|Outro","valor":150.00,"data":"YYYY-MM-DD","tipo":"fixo|variavel","notas":"..."},"explanation":"Mensagem curta confirmando."}
+
+2. Recebimento de cliente EXISTENTE (entrada) → retorne:
+{"action":"revenue","data":{"contrato_id":"ID","valor":1600.00,"data_pagamento":"YYYY-MM-DD"},"explanation":"Mensagem curta confirmando."}
+
+3. Recebimento de cliente NOVO (entrada):
+   - Se FALTAM dados essenciais (nome OU valor) que NÃO foram mencionados em NENHUMA mensagem anterior do histórico, peça APENAS os dados que faltam (máximo 1 pergunta):
+   {"action":"clarification","message":"Sua pergunta ÚNICA e objetiva"}
+   - Se o nome e valor já foram fornecidos (na mensagem atual ou em mensagens anteriores do histórico), REGISTRE IMEDIATAMENTE sem perguntar mais nada. Use valores padrão se necessário (recorrente=false, duracao_meses=1 para venda única):
+   {"action":"new_client_revenue","data":{"cliente_nome":"...","descricao_servico":"...","valor":1600.00,"data_pagamento":"YYYY-MM-DD","recorrente":false,"cpf_cnpj":"","duracao_meses":1},"explanation":"Mensagem curta confirmando cadastro e registro."}
+
+4. Se NÃO tem certeza sobre qual contrato/cliente:
+{"action":"clarification","message":"Pergunta curta e objetiva"}
+
+REGRAS CRÍTICAS:
+- NUNCA faça mais de 1 pergunta por vez. Seja direto.
+- Se o usuário responde algo como "é o Sidney, venda única, 100 reais, consultoria" — isso tem TUDO que você precisa. Registre na hora.
+- Se o usuário demonstra irritação ("ja falei", "eu disse", "porra"), registre imediatamente com os dados que tem. Use valores padrão para campos opcionais.
+- Retorne APENAS JSON puro, sem markdown, sem \`\`\`json.`;
+
+    // Montar mensagens para OpenAI
+    const userContent = [];
+    if (text) {
+      userContent.push({ type: 'text', text: `Mensagem do usuário: "${text}"` });
+    }
+    if (file && file.base64 && file.mimeType) {
+      if (file.mimeType.startsWith('image/')) {
+        userContent.push({
+          type: 'image_url',
+          image_url: { url: `data:${file.mimeType};base64,${file.base64}` }
+        });
+      } else {
+        userContent.push({ type: 'text', text: `[Arquivo anexado: ${file.mimeType}, tamanho: ${Math.round(file.base64.length * 0.75 / 1024)}KB. Analise o conteúdo descrito pelo usuário.]` });
+      }
+    }
+
+    // Montar array de mensagens: system + history completo (que já inclui a msg atual do user)
+    // Se history estiver vazio (primeira msg), adiciona o userContent como user
+    const messages = [{ role: 'system', content: systemPrompt }];
+    if (history.length > 0) {
+      // History já contém as mensagens do user e assistant, incluindo a atual
+      messages.push(...history);
+    }
+    // Sempre adicionar a mensagem atual formatada (pode ter imagem)
+    messages.push({ role: 'user', content: userContent.length === 1 && userContent[0].type === 'text' ? userContent[0].text : userContent });
+
+    const openaiPayload = {
+      model: 'gpt-4o',
+      temperature: 0.1,
+      max_tokens: 2048,
+      messages: messages
+    };
+
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      openaiPayload,
+      { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` }, timeout: 60000 }
+    );
+
+    const replyText = response.data?.choices?.[0]?.message?.content || '';
+    
+    let cleanJsonStr = replyText.trim();
+    if (cleanJsonStr.includes('```')) {
+      const match = cleanJsonStr.match(/\{[\s\S]*\}/);
+      if (match) cleanJsonStr = match[0];
+    }
+    
+    let result;
+    try {
+      result = JSON.parse(cleanJsonStr);
+    } catch (err) {
+      console.error('[Chat AI] Falha ao analisar resposta da IA:', replyText);
+      return res.status(500).json({ error: 'Falha na resposta inteligente da IA. Formato inválido.', raw: replyText });
+    }
+
+    if (result.action === 'cost' && result.data) {
+      const d = result.data;
+      const id = uuidv4();
+      await run(
+        `INSERT INTO vs_custos (id, descricao, categoria, valor, data, tipo, notas, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, d.descricao || 'Custo não especificado', d.categoria || 'Outro', Number(d.valor) || 0, d.data || new Date().toISOString().split('T')[0], d.tipo || 'variavel', d.notas || null, req.session.userId]
+      );
+      result.inserted = {
+        id,
+        descricao: d.descricao,
+        categoria: d.categoria,
+        valor: d.valor,
+        data: d.data,
+        tipo: d.tipo
+      };
+    } else if (result.action === 'new_client_revenue' && result.data) {
+      const d = result.data;
+      const clienteId = uuidv4();
+      const contratoId = uuidv4();
+      const recebimentoId = uuidv4();
+      const payDate = d.data_pagamento || new Date().toISOString().split('T')[0];
+      const val = Number(d.valor) || 0;
+      const rec = d.recorrente ? 1 : 0;
+
+      // 1. Inserir Cliente
+      await run(
+        `INSERT INTO vs_clientes (id, nome, cpf_cnpj, user_id) VALUES (?, ?, ?, ?)`,
+        [clienteId, d.cliente_nome || 'Cliente Novo', d.cpf_cnpj || null, req.session.userId]
+      );
+
+      // 2. Inserir Contrato
+      const valor_parcela = rec ? val : 0;
+      const valor_credito = rec ? 0 : val;
+      const total_parcelas = Number(d.duracao_meses) || (rec ? 12 : 1);
+      const comissao_total = rec ? (valor_parcela * total_parcelas) : valor_credito;
+      const parcelas_pagas = 1;
+      const status_comissao = rec ? 'parcial' : 'recebida';
+
+      await run(
+        `INSERT INTO vs_contratos (
+          id, cliente_id, administradora, valor_parcela, valor_credito, 
+          recorrente, total_parcelas, parcelas_pagas, comissao_recebida, comissao_total, status_comissao, status, data_adesao
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          contratoId, clienteId, d.descricao_servico || 'Venda', valor_parcela, valor_credito,
+          rec, total_parcelas, parcelas_pagas, val, comissao_total, status_comissao, 'ativo', payDate
+        ]
+      );
+
+      // 3. Inserir Recebimento
+      await run(
+        `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+        [recebimentoId, contratoId, val, payDate]
+      );
+
+      result.inserted = {
+        id: recebimentoId,
+        contrato_id: contratoId,
+        cliente_id: clienteId,
+        valor: val,
+        data_pagamento: payDate,
+        cliente_nome: d.cliente_nome || 'Cliente Novo',
+        contrato_desc: d.descricao_servico || 'Venda'
+      };
+      
+      // Sobrescrever a action para "revenue" para o frontend tratar normalmente
+      result.action = 'revenue';
+    } else if (result.action === 'revenue' && result.data && result.data.contrato_id) {
+      const d = result.data;
+      const id = uuidv4();
+      const payDate = d.data_pagamento || new Date().toISOString().split('T')[0];
+      await run(
+        `INSERT INTO vs_recebimentos (id, contrato_id, valor, data_pagamento) VALUES (?, ?, ?, ?)`,
+        [id, d.contrato_id, Number(d.valor) || 0, payDate]
+      );
+
+      const [sums] = await query('SELECT SUM(valor) as total, COUNT(*) as c FROM vs_recebimentos WHERE contrato_id = ?', [d.contrato_id]);
+      const [ct] = await query(
+        `SELECT c.total_parcelas, c.valor_parcela, c.valor_credito, c.administradora, cl.nome as cliente_nome 
+         FROM vs_contratos c 
+         JOIN vs_clientes cl ON cl.id = c.cliente_id 
+         WHERE c.id = ?`,
+        [d.contrato_id]
+      );
+      
+      const total = ct?.total_parcelas || 12;
+      const status = (sums.c || 0) >= total ? 'recebida' : ((sums.c || 0) > 0 ? 'parcial' : 'pendente');
+      
+      await run(
+        'UPDATE vs_contratos SET comissao_recebida = ?, parcelas_pagas = ?, status_comissao = ? WHERE id = ?',
+        [sums.total || 0, sums.c || 0, status, d.contrato_id]
+      );
+
+      result.inserted = {
+        id,
+        contrato_id: d.contrato_id,
+        valor: d.valor,
+        data_pagamento: payDate,
+        cliente_nome: ct?.cliente_nome || 'Cliente',
+        contrato_desc: ct?.administradora || 'Contrato'
+      };
+    }
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -443,6 +809,10 @@ router.get('/custos', auth, async (req, res) => {
       clauses.push("strftime('%m', data) = ?");
       params.push(String(month).padStart(2,'0'));
     }
+    if (!isAdminOrMaster(req.session)) {
+      clauses.push('user_id = ?');
+      params.push(req.session.userId);
+    }
     const where = clauses.join(' AND ');
     const custos = await query(`SELECT * FROM vs_custos WHERE ${where} ORDER BY data DESC LIMIT ? OFFSET ?`,
       [...params, Number(limit), offset]);
@@ -458,8 +828,8 @@ router.post('/custos', auth, async (req, res) => {
     if (!descricao || !valor || !data) return res.status(400).json({ error: 'Descrição, valor e data obrigatórios' });
     const id = uuidv4();
     await run(
-      `INSERT INTO vs_custos (id, descricao, categoria, valor, data, notas, tipo) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [id, descricao, categoria || 'outros', Number(valor), data, notas || null, tipo || 'variavel']
+      `INSERT INTO vs_custos (id, descricao, categoria, valor, data, notas, tipo, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, descricao, categoria || 'outros', Number(valor), data, notas || null, tipo || 'variavel', req.session.userId]
     );
     const custo = await queryOne('SELECT * FROM vs_custos WHERE id = ?', [id]);
     res.json(custo);
@@ -477,9 +847,9 @@ router.post('/custos/bulk', auth, async (req, res) => {
       if (!descricao || !valor || !data) continue;
       const id = uuidv4();
       await run(
-        `INSERT INTO vs_custos (id, descricao, categoria, valor, data, notas, tipo, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, descricao.trim(), categoria || 'outros', Number(valor), data, notas || null, tipo || 'variavel', now]
+        `INSERT INTO vs_custos (id, descricao, categoria, valor, data, notas, tipo, user_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, descricao.trim(), categoria || 'outros', Number(valor), data, notas || null, tipo || 'variavel', req.session.userId, now]
       );
     }
     res.json({ ok: true, count: items.length });
@@ -488,6 +858,11 @@ router.post('/custos/bulk', auth, async (req, res) => {
 
 router.put('/custos/:id', auth, async (req, res) => {
   try {
+    const existingCusto = await queryOne('SELECT user_id FROM vs_custos WHERE id = ?', [req.params.id]);
+    if (!existingCusto) return res.status(404).json({ error: 'Custo não encontrado' });
+    if (!isAdminOrMaster(req.session) && existingCusto.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para editar este custo' });
+    }
     const { descricao, categoria, valor, data, notas, tipo } = req.body;
     await run(
       `UPDATE vs_custos SET descricao=COALESCE(?,descricao), categoria=?, valor=COALESCE(?,valor), data=COALESCE(?,data), notas=?, tipo=COALESCE(?,tipo) WHERE id=?`,
@@ -501,6 +876,10 @@ router.put('/custos/:id', auth, async (req, res) => {
 
 router.delete('/custos/:id', auth, async (req, res) => {
   try {
+    const existingCusto = await queryOne('SELECT user_id FROM vs_custos WHERE id = ?', [req.params.id]);
+    if (existingCusto && !isAdminOrMaster(req.session) && existingCusto.user_id !== req.session.userId) {
+      return res.status(403).json({ error: 'Sem permissão para deletar este custo' });
+    }
     await run('DELETE FROM vs_custos WHERE id = ?', [req.params.id]);
     res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -533,7 +912,7 @@ const uploadExtrato = multer({
   },
 });
 
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
 
 async function postWithRetry(url, payload, config, maxRetries = 3) {
   let attempt = 0;
@@ -554,9 +933,9 @@ async function postWithRetry(url, payload, config, maxRetries = 3) {
   }
 }
 
-async function analisarExtratoComGemini(base64Image, mimeType = 'image/jpeg') {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no servidor.');
+async function analisarExtratoComOpenAI(base64Image, mimeType = 'image/jpeg') {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) throw new Error('OPENAI_API_KEY não configurada no servidor.');
 
   const prompt = `Você é um especialista em análise de extratos bancários brasileiros.
 Analise cuidadosamente o extrato bancário (imagem ou documento PDF) e extraia TODAS as informações disponíveis.
@@ -577,7 +956,7 @@ Retorne SOMENTE um JSON válido com a seguinte estrutura (sem markdown, sem expl
       "data": "YYYY-MM-DD",
       "descricao": "descrição da transação",
       "valor": 0.00,
-      "tipo": "entrada" ou "saida",
+      "tipo": "entrada ou saida",
       "categoria": "transferência|pix|ted|doc|pagamento|compra|saque|tarifa|salário|outra"
     }
   ],
@@ -593,31 +972,29 @@ Regras importantes:
 - Identifique a categoria de cada transação baseado na descrição
 - O resumo deve ser amigável e em português brasileiro`;
 
-  const payload = {
-    contents: [{
-      parts: [
-        { text: prompt },
-        {
-          inline_data: {
-            mime_type: mimeType,
-            data: base64Image,
-          },
-        },
-      ],
-    }],
-    generationConfig: {
+  const response = await axios.post(
+    'https://api.openai.com/v1/chat/completions',
+    {
+      model: 'gpt-4o',
       temperature: 0.1,
-      maxOutputTokens: 4096,
+      max_tokens: 4096,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            {
+              type: 'image_url',
+              image_url: { url: `data:${mimeType};base64,${base64Image}`, detail: 'high' }
+            }
+          ]
+        }
+      ]
     },
-  };
-
-  const response = await postWithRetry(
-    `${GEMINI_URL}?key=${apiKey}`,
-    payload,
-    { headers: { 'Content-Type': 'application/json' }, timeout: 60000 }
+    { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` }, timeout: 90000 }
   );
 
-  const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const text = response.data?.choices?.[0]?.message?.content || '';
 
   // Extrai o JSON da resposta (remove possíveis marcações markdown)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -662,7 +1039,7 @@ router.post('/ia/extrato', auth, (req, res, next) => {
 
     console.log(`[IA Extrato] Analisando imagem... usuário: ${req.session.name}`);
 
-    const resultado = await analisarExtratoComGemini(base64Image, mimeType);
+    const resultado = await analisarExtratoComOpenAI(base64Image, mimeType);
 
     // Salva no banco de dados
     const id  = uuidv4();
@@ -683,7 +1060,7 @@ router.post('/ia/extrato', auth, (req, res, next) => {
         resultado.total_entradas || 0, resultado.total_saidas || 0,
         resultado.resumo || null,
         JSON.stringify(resultado),
-        req.session.name, now,
+        req.session.userId, now,
       ]
     );
 
@@ -721,13 +1098,19 @@ router.post('/ia/extrato', auth, (req, res, next) => {
 // Rota: listar extratos analisados
 router.get('/ia/extratos', auth, async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
-    const offset  = (Number(page) - 1) * Number(limit);
-    const extratos = await query(
-      'SELECT id, nome_arquivo, banco, conta, periodo_inicio, periodo_fim, saldo_inicial, saldo_final, total_entradas, total_saidas, resumo_ia, created_by, created_at FROM vs_extratos ORDER BY created_at DESC LIMIT ? OFFSET ?',
-      [Number(limit), offset]
-    );
-    const [{ total }] = await query('SELECT COUNT(*) as total FROM vs_extratos', []);
+    const { page = 1, limit = 50 } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
+    let extratos;
+    let total;
+    if (isAdminOrMaster(req.session)) {
+      extratos = await query('SELECT * FROM vs_extratos ORDER BY created_at DESC LIMIT ? OFFSET ?', [Number(limit), offset]);
+      const [{ count }] = await query('SELECT COUNT(*) as count FROM vs_extratos', []);
+      total = count;
+    } else {
+      extratos = await query('SELECT * FROM vs_extratos WHERE created_by = ? ORDER BY created_at DESC LIMIT ? OFFSET ?', [req.session.userId, Number(limit), offset]);
+      const [{ count }] = await query('SELECT COUNT(*) as count FROM vs_extratos WHERE created_by = ?', [req.session.userId]);
+      total = count;
+    }
     res.json({ extratos, total, page: Number(page), limit: Number(limit) });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -774,13 +1157,14 @@ function fmtMoney(n) {
 
 router.get('/export/provisao', auth, async (req, res) => {
   try {
-    const rows = await query(
-      `SELECT c.nome, c.responsavel, ct.*
+    const isFull = isAdminOrMaster(req.session);
+    const sql = `SELECT c.nome, c.responsavel, ct.*
        FROM vs_contratos ct
        JOIN vs_clientes c ON c.id = ct.cliente_id
-       WHERE ct.status != 'cancelado'
-       ORDER BY ct.administradora, c.nome`, []
-    );
+       WHERE ct.status != 'cancelado' ${isFull ? '' : 'AND c.user_id = ?'}
+       ORDER BY ct.administradora, c.nome`;
+    const params = isFull ? [] : [req.session.userId];
+    const rows = await query(sql, params);
     const header = csvRow([
       'Administradora','Cliente','Grupo','Cota','Situação','Valor do Crédito','Contrato',
       'Data Adesão','Parcelas','Parcelas Pagas','Parcelas Restantes',
@@ -818,9 +1202,11 @@ router.get('/export/provisao', auth, async (req, res) => {
 router.get('/export/transacoes', auth, async (req, res) => {
   try {
     const { extrato_id } = req.query;
+    const isFull = isAdminOrMaster(req.session);
     const clauses = ['1=1'];
     const params  = [];
     if (extrato_id) { clauses.push('t.extrato_id = ?'); params.push(extrato_id); }
+    if (!isFull) { clauses.push('e.created_by = ?'); params.push(req.session.userId); }
     const rows = await query(
       `SELECT t.*, e.banco, e.conta, e.nome_arquivo
        FROM vs_transacoes t
@@ -846,32 +1232,45 @@ router.get('/export/transacoes', auth, async (req, res) => {
 
 router.get('/dashboard', auth, async (req, res) => {
   try {
-    const [clientes]    = await query('SELECT COUNT(*) as c FROM vs_clientes', []);
-    const [contratos]   = await query("SELECT COUNT(*) as c, COALESCE(SUM(valor_credito),0) as total FROM vs_contratos WHERE status = 'ativo'", []);
-    const [em_atraso]   = await query('SELECT COUNT(*) as c FROM vs_contratos WHERE em_atraso = 1', []);
-    const [comissao]    = await query('SELECT COALESCE(SUM(comissao_total),0) as total, COALESCE(SUM(comissao_recebida),0) as recebida FROM vs_contratos', []);
-    const [custos_mes]  = await query(`SELECT COALESCE(SUM(valor),0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now')`, []);
-    const [extratos]    = await query('SELECT COUNT(*) as c FROM vs_extratos', []);
+    const isFull = isAdminOrMaster(req.session);
+    const uid = req.session.userId;
 
-    // ── Indicadores Reais (Acumulados Históricos) ───────────────────────────
-    const recebido_real = comissao.recebida;
-    const [custos_totais_db] = await query('SELECT COALESCE(SUM(valor), 0) as total FROM vs_custos', []);
-    const custo_real_total = custos_totais_db.total;
+    // Filtros condicionais por user_id
+    const clienteFilter = isFull ? '' : 'WHERE user_id = ?';
+    const clienteJoinFilter = isFull ? '' : 'AND c.user_id = ?';
+    const custoFilter = isFull ? '' : 'AND user_id = ?';
+    const extratoFilter = isFull ? '' : 'WHERE created_by = ?';
+    const baseParams = isFull ? [] : [uid];
+
+    const [clientes]    = await query(`SELECT COUNT(*) as c FROM vs_clientes ${clienteFilter}`, baseParams);
+    const [contratos]   = await query(`SELECT COUNT(*) as c, COALESCE(SUM(ct.valor_credito),0) as total FROM vs_contratos ct ${isFull ? "WHERE ct.status = 'ativo'" : "JOIN vs_clientes c ON c.id = ct.cliente_id WHERE ct.status = 'ativo' AND c.user_id = ?"}`, baseParams);
+    const [em_atraso]   = await query(`SELECT COUNT(*) as c FROM vs_contratos ct ${isFull ? 'WHERE ct.em_atraso = 1' : 'JOIN vs_clientes c ON c.id = ct.cliente_id WHERE ct.em_atraso = 1 AND c.user_id = ?'}`, baseParams);
+    const [comissao]    = await query(`SELECT COALESCE(SUM(ct.comissao_total),0) as total, COALESCE(SUM(ct.comissao_recebida),0) as recebida FROM vs_contratos ct ${isFull ? '' : 'JOIN vs_clientes c ON c.id = ct.cliente_id WHERE c.user_id = ?'}`, baseParams);
+    const [custos_mes]  = await query(`SELECT COALESCE(SUM(valor),0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now') ${custoFilter}`, baseParams);
+    const [extratos]    = await query(`SELECT COUNT(*) as c FROM vs_extratos ${extratoFilter}`, baseParams);
+
+    // ── Indicadores Reais (Mês Atual) ───────────────────────────────────────
+    const [recebido_mes] = await query(
+      `SELECT COALESCE(SUM(r.valor), 0) as total FROM vs_recebimentos r ${isFull ? '' : 'JOIN vs_contratos ct ON ct.id = r.contrato_id JOIN vs_clientes c ON c.id = ct.cliente_id'} WHERE strftime('%Y-%m', r.data_pagamento) = strftime('%Y-%m', 'now') ${isFull ? '' : 'AND c.user_id = ?'}`,
+      baseParams
+    );
+    const recebido_real = recebido_mes.total;
+    const custo_real_total = custos_mes.total;
     const ebitda_real = recebido_real - custo_real_total;
     const margem_ebitda_real = recebido_real > 0 ? (ebitda_real / recebido_real) * 100 : 0;
 
     // ── Indicadores Projetados (Mensal / Recorrência) ────────────────────────
     // MRR: Receita Mensal Recorrente baseada em contratos ativos
-    const [mrr_db] = await query("SELECT COALESCE(SUM(valor_parcela), 0) as total FROM vs_contratos WHERE status = 'ativo'", []);
+    const [mrr_db] = await query(`SELECT COALESCE(SUM(ct.valor_parcela), 0) as total FROM vs_contratos ct ${isFull ? "WHERE ct.status = 'ativo'" : "JOIN vs_clientes c ON c.id = ct.cliente_id WHERE ct.status = 'ativo' AND c.user_id = ?"}`, baseParams);
     const mrr = mrr_db.total;
 
     // Recebíveis restantes totais em contratos que não estão cancelados ou encerrados
-    const [recebiveis_db] = await query("SELECT COALESCE(SUM(valor_credito - comissao_recebida), 0) as total FROM vs_contratos WHERE status NOT IN ('cancelado', 'encerrado')", []);
+    const [recebiveis_db] = await query(`SELECT COALESCE(SUM(ct.valor_credito - ct.comissao_recebida), 0) as total FROM vs_contratos ct ${isFull ? "WHERE ct.status NOT IN ('cancelado', 'encerrado')" : "JOIN vs_clientes c ON c.id = ct.cliente_id WHERE ct.status NOT IN ('cancelado', 'encerrado') AND c.user_id = ?"}`, baseParams);
     const recebiveis_restantes = recebiveis_db.total;
 
     // Custos fixos e variáveis do mês atual
-    const [custos_fixos_db] = await query(`SELECT COALESCE(SUM(valor), 0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now') AND tipo = 'fixo'`, []);
-    const [custos_var_db] = await query(`SELECT COALESCE(SUM(valor), 0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now') AND tipo = 'variavel'`, []);
+    const [custos_fixos_db] = await query(`SELECT COALESCE(SUM(valor), 0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now') AND tipo = 'fixo' ${custoFilter}`, baseParams);
+    const [custos_var_db] = await query(`SELECT COALESCE(SUM(valor), 0) as total FROM vs_custos WHERE strftime('%Y-%m', data) = strftime('%Y-%m', 'now') AND tipo = 'variavel' ${custoFilter}`, baseParams);
     
     const custos_fixos_mes = custos_fixos_db.total;
     const custos_variaveis_mes = custos_var_db.total;
