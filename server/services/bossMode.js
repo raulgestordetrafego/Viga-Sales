@@ -231,27 +231,76 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
   if (!process.env.DEEPSEEK_API_KEY) return metaApi.sendText(phone, '🤖 IA offline.');
 
   const intel = await getIntel();
-  const tasks = await query("SELECT title, priority FROM chief_tasks WHERE status='pendente' LIMIT 5").catch(()=>[]);
-  const sysPrompt = `Voce e o Chefe/CEO da Viga Sales, uma empresa de automacao comercial B2B (WhatsApp, CRM, trafego pago, sites) para construtoras e engenheiros. O Raul e o DONO da empresa — voce trabalha PRA ELE, obedece ordens, reporta com clareza. Seu tom: direto, competente, sem puxa-saquismo. Dados atuais: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas pendentes: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Responda em ate 400 chars.`;
+  const tasks = await query("SELECT title, priority, category FROM chief_tasks WHERE status='pendente' LIMIT 8").catch(()=>[]);
+  const okrs = await query("SELECT objetivo, key_result, progresso_atual FROM chief_okrs WHERE status='ativo' LIMIT 5").catch(()=>[]);
+  const lastBriefing = await queryOne("SELECT panorama, acao_principal, created_at FROM chief_briefings ORDER BY created_at DESC LIMIT 1").catch(()=>null);
+  const memory = await query("SELECT role, content FROM boss_memory WHERE phone=$1 ORDER BY created_at DESC LIMIT 6", [phone]).catch(()=>[]);
+
+  let chiefBrain = '';
+  try {
+    const { execSync } = await import('child_process');
+    const result = execSync(`python3 scripts/query_chief_brain.py "${cmd.replace(/"/g, '\\"').substring(0, 200)}"`, {
+      encoding: 'utf-8', maxBuffer: 1024 * 1024, timeout: 10000,
+    });
+    const data = JSON.parse(result);
+    if (data.results?.length) {
+      chiefBrain = 'CONHECIMENTO DO CEO:\n' + data.results.slice(0, 2).map(r => `[${r.topico}] ${r.summary?.substring(0, 300) || r.descricao}`).join('\n\n');
+    }
+  } catch (e) { /* brain offline, continua sem */ }
+
+  const pipelineTotal = (intel.pipeline || []).reduce((s, p) => s + (p.valor || 0), 0);
+  const pipelineStr = (intel.pipeline || []).map(p => `${p.etapa}: ${p.total} leads (R$${p.valor?.toLocaleString?.('pt-BR') || 0})`).join(', ') || 'vazio';
+  const tasksStr = tasks.map(t => `${t.priority==='alta'?'🔴':'🟡'} ${t.title} [${t.category}]`).join(' | ') || 'nenhuma';
+  const okrsStr = okrs.map(o => `${o.objetivo} → ${o.key_result} (${o.progresso_atual || '0%'})`).join(' | ') || 'nenhum';
+  const memStr = memory.reverse().map(m => `${m.role==='user'?'Raul':'Chief'}: ${m.content?.substring(0, 80)}`).join('\n');
+
+  const sysPrompt = `Voce e o CHIEF — CEO da Viga Sales, empresa de automacao B2B (WhatsApp, CRM, trafego pago, sites) focada em construtoras e engenheiros.
+
+QUEM E VOCE:
+- CEO competente, direto, sem enrolacao. Nada de "otimo!" ou "excelente pergunta!".
+- O Raul e o DONO. Voce trabalha PRA ELE. Obedece ordens. Reporta com clareza.
+- Se ele perguntar algo que voce nao sabe, diga que nao sabe e sugira como descobrir.
+- Se ele der uma ordem, confirme e execute (ou diga como executar).
+- Use dados REAIS sempre que possivel. Nao invente numeros.
+
+DADOS ATUAIS DA OPERACAO:
+📱 WPP: ${intel.wpp.hoje} envios hj | ${intel.wpp.semana} na semana | ${intel.wpp.rate}% taxa resposta
+📧 Email: ${intel.email} enviados
+📝 Blog: ${intel.blog} artigos
+🤝 Reunioes: ${intel.reunioes?.hoje || 0} hj | ${intel.reunioes?.semana || 0} semana
+📦 Fila: ${intel.fila} leads novos
+💼 Pipeline: R$ ${pipelineTotal.toLocaleString('pt-BR')} — ${pipelineStr}
+📋 Tarefas: ${tasksStr}
+🎯 OKRs: ${okrsStr}
+📌 Ultimo briefing: ${lastBriefing?.acao_principal || 'nenhum'}
+
+${chiefBrain ? `\n${chiefBrain}\n` : ''}
+${memStr ? `\nHISTORICO RECENTE:\n${memStr}\n` : ''}
+
+REGRAS:
+- Maximo 600 caracteres (WhatsApp) ou 1500 (Telegram). Seja conciso.
+- Use emojis com moderacao (so para dados, nao pra enfeitar).
+- NUNCA invente metricas. Se nao tiver o dado, diga "nao tenho esse numero agora".
+- Se o Raul perguntar "o que fazer", priorize acoes da matriz Eisenhower (urgente/importante primeiro).`;
 
   try {
     console.log('[BOSS] chamando DeepSeek...');
     const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
-    const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 600);
+    const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 1000);
     console.log('[BOSS] DeepSeek respondeu');
-    const resp = r.choices?.[0]?.message?.content || 'Pode repetir?';
-    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
-    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
+    const resp = r.choices?.[0]?.message?.content || 'Pode repetir, chefe?';
+    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0, 500)||'']).catch(()=>{});
+    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0, 1500)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
   } catch(e) {
-    const details = e.response ? `${e.response.status} ${JSON.stringify(e.response.data).substring(0,300)}` : e.message;
+    const details = e.response ? `${e.response.status} ${JSON.stringify(e.response.data).substring(0, 300)}` : e.message;
     console.error('[BOSS] chat ERROR:', details);
     await metaApi.sendText(phone, '⚠️ Erro ao processar.');
   }
 }
 
 async function getIntel() {
-  const [a,b,c,d,e,f,g] = await Promise.all([
+  const [a, b, c, d, e, f, g, pipeline, reunioesHj, reunioesSem] = await Promise.all([
     queryOne("SELECT COUNT(*) as cnt FROM prospecting_logs WHERE action='enviado_meta' AND DATE(created_at)=CURRENT_DATE"),
     queryOne("SELECT COUNT(*) as cnt FROM prospecting_logs WHERE action='enviado_meta' AND created_at>=NOW()-INTERVAL'7 days'"),
     queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='respondeu' AND responded_at::timestamp>=NOW()-INTERVAL'7 days'"),
@@ -259,9 +308,19 @@ async function getIntel() {
     queryOne("SELECT COUNT(*) as cnt FROM email_send_logs WHERE status='opened'"),
     queryOne("SELECT COUNT(*) as cnt FROM blog_posts WHERE status='published'"),
     queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='novo'"),
+    query("SELECT ps.name as etapa, COUNT(*) as total, COALESCE(SUM(c.pipeline_value),0) as valor FROM contacts c LEFT JOIN pipeline_stages ps ON c.pipeline_stage = ps.id WHERE c.pipeline_stage IS NOT NULL AND c.pipeline_stage != '' GROUP BY ps.name, ps.position ORDER BY ps.position").catch(()=>[]),
+    queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='reuniao_agendada' AND DATE(updated_at::timestamp)=CURRENT_DATE"),
+    queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='reuniao_agendada' AND updated_at::timestamp>=NOW()-INTERVAL'7 days'"),
   ]);
-  const C=v=>parseInt(v?.cnt||'0');
-  return {wpp:{hoje:C(a),semana:C(b),rate:C(b)>0?((C(c)/C(b))*100).toFixed(1):'0'},email:C(d),blog:C(e),fila:C(g)};
+  const C = v => parseInt(v?.cnt || '0');
+  return {
+    wpp: { hoje: C(a), semana: C(b), rate: C(b) > 0 ? ((C(c) / C(b)) * 100).toFixed(1) : '0' },
+    email: C(d),
+    blog: C(e),
+    fila: C(g),
+    pipeline: (pipeline || []).map(p => ({ etapa: p.etapa, total: parseInt(p.total), valor: parseFloat(p.valor || '0') })),
+    reunioes: { hoje: C(reunioesHj), semana: C(reunioesSem) },
+  };
 }
 
 // Whisper transcription
