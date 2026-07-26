@@ -39,7 +39,7 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
     maria:'agente_sdr',sdr:'agente_sdr',vendedora:'agente_sdr',
     tobias:'agente_agendador',agendador:'agente_agendador',agendinha:'agente_agendador',
     ivone:'insightsAgent',analista:'insightsAgent',general:'strategyAgent',estrategista:'strategyAgent',
-    carmem:'coachAgent',coach:'coachAgent',traffic:'trafficAgent',trafego:'trafficAgent',tráfego:'trafficAgent',cérebro:'trafficAgent',cerebro:'trafficAgent',
+    carmem:'chiefAgent',coach:'chiefAgent',traffic:'trafficAgent',trafego:'trafficAgent',tráfego:'trafficAgent',cérebro:'trafficAgent',cerebro:'trafficAgent',
     ela:null,ele:null
   };
 
@@ -200,7 +200,7 @@ async function createDelegationTask(phone, cmd, agentId, metaApi) {
     },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:10000});
     const t = JSON.parse(r.data?.choices?.[0]?.message?.content||'{}');
     if (t.titulo) {
-      const cats={metaDispatcher:'prospeccao',emailDispatcher:'prospeccao',blogAgent:'conteudo',securityAgent:'tecnico',agente_sdr:'vendas',agente_agendador:'vendas',insightsAgent:'estrategia',strategyAgent:'estrategia',coachAgent:'estrategia'};
+      const cats={metaDispatcher:'prospeccao',emailDispatcher:'prospeccao',blogAgent:'conteudo',securityAgent:'tecnico',chiefAgent:'coaching',agente_sdr:'vendas',agente_agendador:'vendas',insightsAgent:'estrategia',strategyAgent:'estrategia'};
       await run("INSERT INTO chief_tasks (id, title, description, category, priority, status, week_start) VALUES ($1,$2,$3,$4,$5,'pendente',CURRENT_DATE)",
         [uuidv4(), t.titulo, t.descricao||'', cats[agentId]||'geral', t.prioridade||'media']);
       await metaApi.sendText(phone, `✅ Tarefa criada!\n📋 ${t.titulo}\n📂 ${cats[agentId]||'geral'}`);

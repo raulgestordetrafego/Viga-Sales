@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "name": "Cérebro do Chief — Viga Sales CEO Knowledge Base",
+    "version": "2.0",
+    "topicos": 8,
+    "fontes": "14 videos ROI Hunters + documentacao interna",
+    "ultima_atualizacao": "2026-07-26"
+  },
+  "topicos": {
+    "fundamento": {
+      "arquivo": "brain/chief/topics/fundamento.md",
+      "descricao": "Proposta de valor, ICP, diferencial competitivo, serviços e precificação da Viga Sales",
+      "keywords": ["ICP", "proposta de valor", "diferencial", "concorrente", "serviço", "precificação", "preço", "cliente ideal", "construtora", "engenheiro", "automação WhatsApp", "CRM", "tráfego pago", "site", "posicionamento", "B2B", "construção civil", "dor do cliente", "gatilho de compra"],
+      "quando_usar": ["precisa definir o ICP", "quer entender os serviços da Viga", "vai posicionar a oferta", "precisa argumentar contra objeções", "quer entender o diferencial competitivo"]
+    },
+    "playbooks-vendas": {
+      "arquivo": "brain/chief/topics/playbooks-vendas.md",
+      "descricao": "Roteiros de abordagem, scripts de qualificação, objeções, cases de negócios fechados e perdidos",
+      "keywords": ["vendas", "abordagem", "script", "qualificação", "discovery call", "reunião", "proposta", "fechamento", "objeção", "negociação", "case", "SPIN", "Challenger", "BANT", "objeção preço", "objeção concorrência", "follow-up", "não", "perdi", "ganhei", "contrato", "onboarding", "pós-venda"],
+      "quando_usar": ["vai abordar um lead", "precisa de script de qualificação", "enfrentou uma objeção", "quer revisar por que perdeu um negócio", "vai enviar uma proposta", "precisa de referência de case fechado"]
+    },
+    "financas": {
+      "arquivo": "brain/chief/topics/financas.md",
+      "descricao": "MRR, clientes ativos, custos operacionais, margens, projeções e break-even por canal",
+      "keywords": ["MRR", "receita", "faturamento", "cliente ativo", "ticket médio", "custo operacional", "margem", "lucro", "projeção", "meta", "break-even", "CAC", "LTV", "payback", "ROI", "churn", "servidor", "API", "assinatura", "ferramenta", "custo fixo", "custo variável", "fluxo de caixa"],
+      "quando_usar": ["vai analisar saúde financeira", "precisa projetar crescimento", "quer calcular CAC por canal", "vai definir meta de MRR", "precisa avaliar custo de ferramentas", "quer saber se um canal está dando ROI"]
+    },
+    "historico-decisoes": {
+      "arquivo": "brain/chief/topics/historico-decisoes.md",
+      "descricao": "Registro de experimentos, estratégias tentadas, decisões do Raul e seus desfechos",
+      "keywords": ["experimento", "decisão", "histórico", "tentativa", "resultado", "aprendizado", "erro", "acerto", "mudança", "teste", "AB", "pivot", "estratégia abandonada", "o que funcionou", "o que não funcionou", "limite diário", "template", "horário", "canal", "campanha"],
+      "quando_usar": ["vai repetir uma estratégia passada", "quer saber o que já foi tentado", "precisa decidir entre opções", "quer evitar repetir erros", "vai avaliar um experimento"]
+    },
+    "processos-internos": {
+      "arquivo": "brain/chief/topics/processos-internos.md",
+      "descricao": "Fluxo completo lead-to-revenue, papel de cada agente, SLAs e gargalos conhecidos",
+      "keywords": ["processo", "fluxo", "lead", "Dante", "Rita", "Clarice", "Nascimento", "Ivone", "SDR", "agendador", "BossMode", "onboarding", "entrega", "SLA", "tempo", "gargalo", "etapa", "funil", "prospecção", "disparo", "resposta", "qualificação", "reunião", "proposta", "contrato", "meta dispatcher", "email dispatcher", "Chief"],
+      "quando_usar": ["precisa entender o fluxo completo", "quer identificar gargalo", "vai otimizar um processo", "precisa saber SLA de uma etapa", "vai delegar para um agente específico"]
+    },
+    "mercado-concorrencia": {
+      "arquivo": "brain/chief/topics/mercado-concorrencia.md",
+      "descricao": "Concorrentes diretos, precificação do mercado, tendências do setor de automação para construção",
+      "keywords": ["concorrente", "mercado", "tendência", "automação", "construção civil", "WhatsApp Business", "API", "IA", "chatbot", "CRM construção", "HubSpot", "RD Station", "Zenvia", "Take Blip", "ManyChat", "feira", "evento", "Feicon", "Construtech", "inovação", "digitalização", "setor", "posicionamento concorrente", "preço concorrente"],
+      "quando_usar": ["vai analisar um concorrente", "precisa ajustar preço", "quer saber tendências do setor", "vai participar de evento", "precisa de argumento contra concorrente", "quer inovar na oferta"]
+    },
+    "estrategia-marketing": {
+      "arquivo": "brain/chief/topics/estrategia-marketing.md",
+      "descricao": "Frameworks de marketing, growth, branding, estrutura de agência e gestão — ROI Hunters com G4, Cariani, Nubank",
+      "keywords": ["marketing", "estratégia", "growth", "agência", "branding", "marca", "funil", "posicionamento", "escala", "captação", "ROI", "autoridade", "gestão", "empresário", "liderança", "Cariani", "Alfredo Soares", "Nubank", "máquina de vendas", "conselhos", "contratar", "sócio", "cultura", "pricing", "nicho"],
+      "quando_usar": ["vai planejar estratégia de marketing", "quer construir autoridade", "precisa de conselhos de gestão", "vai estruturar a agência", "quer escalar o negócio", "precisa definir branding e posicionamento"]
+    },
+    "ia-negocios": {
+      "arquivo": "brain/chief/topics/ia-negocios.md",
+      "descricao": "IA generativa aplicada a negócios, agentes autônomos, automação inteligente e tendências tech",
+      "keywords": ["IA", "inteligência artificial", "agente", "automação", "ChatGPT", "GPT", "OpenAI", "LLM", "prompt engineering", "AI agent", "automação inteligente", "tecnologia", "tendência IA", "produtividade", "modelo de linguagem", "DALL-E", "GPT-4o", "GPT-4o-mini", "custo IA", "agente autônomo"],
+      "quando_usar": ["vai implementar IA em algum processo", "quer criar um novo agente", "precisa otimizar custos de IA", "quer saber tendências tech", "vai automatizar uma tarefa", "precisa decidir stack de tecnologia"]
+    }
+  },
+  "rotas_inteligentes": {
+    "quero_melhorar_vendas": ["playbooks-vendas", "processos-internos"],
+    "preciso_cortar_custos": ["financas", "processos-internos"],
+    "vou_lancar_servico_novo": ["fundamento", "mercado-concorrencia", "financas"],
+    "cliente_nao_esta_fechando": ["playbooks-vendas", "fundamento", "historico-decisoes"],
+    "resposta_caiu_muito": ["processos-internos", "playbooks-vendas", "historico-decisoes"],
+    "quero_escalar_a_agencia": ["financas", "processos-internos", "mercado-concorrencia"],
+    "vou_contratar_alguem": ["processos-internos", "financas"],
+    "preciso_aumentar_mrr": ["financas", "playbooks-vendas", "fundamento"],
+    "concorrente_apareceu": ["mercado-concorrencia", "fundamento", "playbooks-vendas"],
+    "quero_revisar_estrategia": ["historico-decisoes", "estrategia-marketing", "mercado-concorrencia"],
+    "quero_usar_ia_na_operacao": ["ia-negocios", "processos-internos"],
+    "quero_melhorar_marketing": ["estrategia-marketing", "fundamento", "mercado-concorrencia"],
+    "vou_criar_um_agente_novo": ["ia-negocios", "processos-internos"],
+    "preciso_melhorar_minha_agencia": ["estrategia-marketing", "financas", "processos-internos"]
+  }
+}

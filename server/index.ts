@@ -4,6 +4,8 @@ import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -36,12 +38,11 @@ import { startStrategyAgent } from "./services/strategyAgent.js";
 import { startSecurityAgent, runSecurityAgent } from "./services/securityAgent.js";
 import { startFocusAgent } from "./services/focusAgent.js";
 import { startTrafficAgent } from "./services/trafficAgent.js";
+import { startChiefAgent } from "./services/chiefAgent.js";
 import { initDb, queryOne, run, query, hashPwd } from "./db/database.js";
 import { handleBossCommand, transcribeAudio } from "./services/bossMode.js";
 import crypto from "crypto";
 import axios from "axios";
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -601,12 +602,16 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   }
 
   // Security Agent: roda sempre, independente de Meta API
-  console.log('[Security] Iniciando agente de segurança 24/7...');
+  console.log('[Security] Iniciando agente de seguranca 24/7...');
   startSecurityAgent();
 
-  // Focus Agent: cutuca o Raul a cada 30min pra focar em prospecção
+  // Focus Agent: cutuca o Raul a cada 30min pra focar em prospeccao
   console.log('[Foco] Iniciando agente de foco...');
   startFocusAgent();
+
+  // Chief Agent: CEO autonomo — briefings 8h/20h + planejamento semanal dom 20h (v4)
+  console.log('[Chief] Iniciando CEO autonomo...');
+  startChiefAgent();
 
   // Traffic Agent: cérebro especialista em tráfego pago com atualização semanal
   console.log('[Traffic] Iniciando agente especialista de tráfego...');

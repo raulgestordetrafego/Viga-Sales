@@ -692,6 +692,31 @@ async function initializeSchema() {
       content TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS chief_briefings (
+      id TEXT PRIMARY KEY,
+      type TEXT NOT NULL DEFAULT 'daily',
+      panorama TEXT,
+      alerta TEXT,
+      estrategia TEXT,
+      acao_principal TEXT,
+      coaching TEXT,
+      financeiro TEXT,
+      score INTEGER,
+      tarefas JSONB DEFAULT '[]',
+      intel JSONB DEFAULT '{}',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS chief_okrs (
+      id TEXT PRIMARY KEY,
+      objetivo TEXT NOT NULL,
+      key_result TEXT NOT NULL,
+      meta_numerica TEXT,
+      progresso_atual TEXT,
+      semana_referencia DATE NOT NULL,
+      status TEXT DEFAULT 'ativo',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      completed_at TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS login_attempts (
       id TEXT PRIMARY KEY,
       ip TEXT NOT NULL,
@@ -701,6 +726,10 @@ async function initializeSchema() {
     )`,
     `CREATE INDEX IF NOT EXISTS idx_login_attempts_ip ON login_attempts(ip)`,
     `CREATE INDEX IF NOT EXISTS idx_login_attempts_created ON login_attempts(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_chief_briefings_type ON chief_briefings(type)`,
+    `CREATE INDEX IF NOT EXISTS idx_chief_briefings_created ON chief_briefings(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_chief_okrs_semana ON chief_okrs(semana_referencia)`,
+    `CREATE INDEX IF NOT EXISTS idx_chief_okrs_status ON chief_okrs(status)`,
 
   ];
 

@@ -1,6 +1,7 @@
 /**
- * Coach Agent — Teu estrategista pessoal todo dia às 6h
- * Analisa operação, finanças, clientes e dá direções do que fazer
+ * DEPRECATED — Coach Agent absorvido pelo ChiefAgent v4
+ * O coaching matinal agora faz parte do CEO Briefing das 8h.
+ * Mantido como fallback. Para descontinuar: remover import em index.ts.
  */
 
 import { query, queryOne } from '../db/database.js';

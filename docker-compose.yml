@@ -66,6 +66,7 @@ services:
       - APP_URL=${APP_URL}
       - N8N_AUTH_TOKEN=${N8N_AUTH_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - SENDER_NAME=${SENDER_NAME:-Raul}
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
@@ -89,6 +90,10 @@ services:
       - GROUP_OPERACOES_ID=${GROUP_OPERACOES_ID}
       - GROUP_CONTEUDO_ID=${GROUP_CONTEUDO_ID}
       - GTM_CONTAINER_ID=${GTM_CONTAINER_ID}
+      - CHIEF_MODEL=${CHIEF_MODEL:-deepseek-chat}
+      - CHIEF_WEEKLY_MODEL=${CHIEF_WEEKLY_MODEL:-deepseek-chat}
+      - USD_TO_BRL=${USD_TO_BRL:-5.5}
+      - COST_PER_MSG=${COST_PER_MSG:-0.071}
       - DATABASE_URL=postgresql://vigasales:VigaSales2024!@postgres-crm:5432/vigasales?sslmode=disable
     volumes:
       - ./public/audio:/app/public/audio:ro
