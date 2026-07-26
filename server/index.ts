@@ -39,6 +39,7 @@ import { startSecurityAgent, runSecurityAgent } from "./services/securityAgent.j
 import { startFocusAgent } from "./services/focusAgent.js";
 import { startTrafficAgent } from "./services/trafficAgent.js";
 import { startChiefAgent } from "./services/chiefAgent.js";
+import { startTelegramBoss } from "./services/telegramBoss.js";
 import { initDb, queryOne, run, query, hashPwd } from "./db/database.js";
 import { handleBossCommand, transcribeAudio } from "./services/bossMode.js";
 import crypto from "crypto";
@@ -612,6 +613,10 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
   // Chief Agent: CEO autonomo — briefings 8h/20h + planejamento semanal dom 20h (v4)
   console.log('[Chief] Iniciando CEO autonomo...');
   startChiefAgent();
+
+  // Telegram Boss: chat com o Raul via Telegram (fallback do WhatsApp)
+  console.log('[Telegram] Iniciando bot do Telegram...');
+  startTelegramBoss();
 
   // Traffic Agent: cérebro especialista em tráfego pago com atualização semanal
   console.log('[Traffic] Iniciando agente especialista de tráfego...');
