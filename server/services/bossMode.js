@@ -7,7 +7,6 @@ import { query, queryOne, run } from '../db/database.js';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-const OPENAI_KEY = process.env.OPENAI_API_KEY || '';
 const pendingActions = new Map();
 
 export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = null) {
@@ -194,10 +193,10 @@ async function executeAction(action, data, phone, metaApi) {
 
 async function createDelegationTask(phone, cmd, agentId, metaApi) {
   try {
-    const r = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o-mini', max_tokens:200,
+    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
+      model:'deepseek-chat', max_tokens:200,
       messages:[{role:'user',content:`JSON: {"titulo":"título","descricao":"detalhes","prioridade":"alta/media/baixa"}. Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:10000});
+    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:10000});
     const t = JSON.parse(r.data?.choices?.[0]?.message?.content||'{}');
     if (t.titulo) {
       const cats={metaDispatcher:'prospeccao',emailDispatcher:'prospeccao',blogAgent:'conteudo',securityAgent:'tecnico',chiefAgent:'coaching',agente_sdr:'vendas',agente_agendador:'vendas',insightsAgent:'estrategia',strategyAgent:'estrategia'};
@@ -209,23 +208,22 @@ async function createDelegationTask(phone, cmd, agentId, metaApi) {
 }
 
 async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
-  if (!OPENAI_KEY) return metaApi.sendText(phone, '🤖 IA offline.');
+  const deepseekKey = process.env.DEEPSEEK_API_KEY || '';
+  if (!deepseekKey) return metaApi.sendText(phone, '🤖 IA offline.');
 
   const intel = await getIntel();
   const tasks = await query("SELECT title, priority FROM chief_tasks WHERE status='pendente' LIMIT 5").catch(()=>[]);
-  const sysPrompt = `Hub Viga Sales. Dados: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Máx 400 chars. Natural, como colega de trabalho.`;
+  const sysPrompt = `Hub Viga Sales. Dados: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Max 400 chars. Natural, como colega de trabalho.`;
 
   try {
-    const msgs = [{role:'system',content:sysPrompt}];
-    if (imageUrl) msgs.push({role:'user',content:[{type:'text',text:cmd||'Descreva esta imagem'},{type:'image_url',image_url:{url:imageUrl}}]});
-    else msgs.push({role:'user',content:cmd});
+    const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
+    const msgs = [{role:'system',content:sysPrompt},{role:'user',content:userMsg}];
 
-    const r = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:imageUrl?'gpt-4o':'gpt-4o-mini', messages:msgs, temperature:0.8, max_tokens:600,
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:20000});
+    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
+      model:'deepseek-chat', messages:msgs, temperature:0.8, max_tokens:600,
+    },{headers:{'Authorization':`Bearer ${deepseekKey}`,'Content-Type':'application/json'},timeout:20000});
 
     const resp = r.data?.choices?.[0]?.message?.content || 'Pode repetir?';
-    // Save memory
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
