@@ -235,9 +235,10 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
   const sysPrompt = `Hub Viga Sales. Dados: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Max 400 chars. Natural, como colega de trabalho.`;
 
   try {
+    console.log('[BOSS] chamando DeepSeek...');
     const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
     const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 600);
-    const resp = r.choices?.[0]?.message?.content || 'Pode repetir?';
+    console.log('[BOSS] DeepSeek respondeu');
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
