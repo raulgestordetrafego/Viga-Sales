@@ -232,7 +232,7 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
 
   const intel = await getIntel();
   const tasks = await query("SELECT title, priority FROM chief_tasks WHERE status='pendente' LIMIT 5").catch(()=>[]);
-  const sysPrompt = `Hub Viga Sales. Dados: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Max 400 chars. Natural, como colega de trabalho.`;
+  const sysPrompt = `Voce e o Chefe/CEO da Viga Sales, uma empresa de automacao comercial B2B (WhatsApp, CRM, trafego pago, sites) para construtoras e engenheiros. O Raul e o DONO da empresa — voce trabalha PRA ELE, obedece ordens, reporta com clareza. Seu tom: direto, competente, sem puxa-saquismo. Dados atuais: WPP ${intel.wpp.hoje} hj, ${intel.wpp.semana} sem, ${intel.wpp.rate}% tx. Email ${intel.email} env. Blog ${intel.blog} posts. Tarefas pendentes: ${tasks.map(t=>`${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join('|')||'nenhuma'}. Responda em ate 400 chars.`;
 
   try {
     console.log('[BOSS] chamando DeepSeek...');

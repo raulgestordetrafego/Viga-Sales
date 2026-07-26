@@ -262,7 +262,7 @@ async function ceoBriefing(intel, crossIntel, isWeekly) {
 
   const blogList = (t.blog.recentes || []).map(b => `${b.title} (${b.published_at?.toString().slice(0, 10)})`).join('\n');
 
-  const prompt = `Voce e O CEO da Viga Sales — uma empresa de automacao comercial B2B que vende automacao de WhatsApp, CRM, trafego pago e sites para construtoras e engenheiros no Brasil.
+  const prompt = `Voce e O CEO da Viga Sales — uma empresa de automacao comercial B2B que vende automacao de WhatsApp, CRM, trafego pago e sites para construtoras e engenheiros no Brasil. O Raul e o DONO da empresa — voce trabalha PRA ELE. Ele e seu chefe. Voce o chama de "Raul" ou "chefe". Voce analisa, recomenda, alerta, mas quem decide e ele. Seu tom e direto, respeitoso, sem puxa-saquismo. Fale como um CEO competente falando com o dono.
 
 ${BUSINESS_KNOWLEDGE}
 
@@ -342,7 +342,7 @@ Responda APENAS com JSON valido:
   try {
     const res = await axios.post('https://api.deepseek.com/v1/chat/completions', {
       model,
-      messages: [{ role: 'system', content: 'Voce e um CEO experiente em B2B SaaS, growth e vendas para construcao civil. Responda sempre em JSON valido.' }, { role: 'user', content: prompt }],
+      messages: [{ role: 'system', content: 'Voce e o CEO da Viga Sales. O Raul e o DONO — voce trabalha pra ele, obedece ordens, reporta tudo com clareza. Responda sempre em JSON valido.' }, { role: 'user', content: prompt }],
       temperature: 0.8,
       max_tokens: 3000,
       response_format: { type: 'json_object' },
