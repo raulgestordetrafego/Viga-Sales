@@ -32,4 +32,4 @@ USER appuser
 
 EXPOSE 3000
 
-CMD ["npx", "tsx", "server.ts"]
+CMD ["npx", "tsx", "server/index.ts"]
