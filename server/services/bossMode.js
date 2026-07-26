@@ -239,6 +239,7 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
     const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
     const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 600);
     console.log('[BOSS] DeepSeek respondeu');
+    const resp = r.choices?.[0]?.message?.content || 'Pode repetir?';
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
