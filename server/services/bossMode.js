@@ -129,10 +129,10 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
 async function confirmBlogCreate(phone, cmd, metaApi) {
   let topic = null;
   try {
-    const r = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o-mini', max_tokens:50,
+    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
+      model:'deepseek-chat', max_tokens:50,
       messages:[{role:'user',content:`Título do artigo. Se não houver tema, "null". Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:8000});
+    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:8000});
     topic = r.data?.choices?.[0]?.message?.content?.trim().replace(/["']/g,'');
     if (topic === 'null' || !topic || topic.length < 5) topic = null;
   } catch {}
@@ -147,10 +147,10 @@ async function confirmBlogCreate(phone, cmd, metaApi) {
 async function confirmBlogAction(phone, cmd, metaApi, action) {
   const isDelete = action === 'blogDelete';
   try {
-    const r = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o-mini', max_tokens:150,
+    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
+      model:'deepseek-chat', max_tokens:150,
       messages:[{role:'user',content:`JSON: {"slug":"slug","instrucoes":"o que fazer"}. ${isDelete?'EXCLUIR artigo.':''} Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:8000});
+    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:8000});
     const data = JSON.parse(r.data?.choices?.[0]?.message?.content||'{}');
     if (data.slug) {
       pendingActions.set(phone, {action, data, expires:Date.now()+120000});
@@ -227,7 +227,11 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
-  } catch(e) { console.error('[BOSS] chat:', e.message); await metaApi.sendText(phone, '⚠️ Erro.'); }
+  } catch(e) {
+    const details = e.response ? `${e.response.status} ${JSON.stringify(e.response.data).substring(0,300)}` : e.message;
+    console.error('[BOSS] chat ERROR:', details);
+    await metaApi.sendText(phone, '⚠️ Erro ao processar.');
+  }
 }
 
 async function getIntel() {
@@ -246,7 +250,8 @@ async function getIntel() {
 
 // Whisper transcription
 export async function transcribeAudio(audioUrl, metaToken) {
-  if (!OPENAI_KEY) return null;
+  const openaiKey = process.env.OPENAI_API_KEY || '';
+  if (!openaiKey) return null;
   try {
     const r = await axios.get(audioUrl, {responseType:'arraybuffer',timeout:30000,headers:{'Authorization':`Bearer ${metaToken}`}});
     const buf = Buffer.from(r.data);
@@ -254,7 +259,7 @@ export async function transcribeAudio(audioUrl, metaToken) {
     const h = `--${b}\r\nContent-Disposition: form-data; name="model"\r\n\r\nwhisper-1\r\n--${b}\r\nContent-Disposition: form-data; name="language"\r\n\r\npt\r\n--${b}\r\nContent-Disposition: form-data; name="file"; filename="audio.ogg"\r\nContent-Type: audio/ogg\r\n\r\n`;
     const body = Buffer.concat([Buffer.from(h), buf, Buffer.from(`\r\n--${b}--\r\n`)]);
     const res = await axios.post('https://api.openai.com/v1/audio/transcriptions', body, {
-      headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':`multipart/form-data; boundary=${b}`},timeout:30000});
+      headers:{'Authorization':`Bearer ${openaiKey}`,'Content-Type':`multipart/form-data; boundary=${b}`},timeout:30000});
     return res.data?.text || null;
   } catch(e) { console.error('[BOSS] Whisper:', e.message); return null; }
 }
