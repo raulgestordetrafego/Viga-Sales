@@ -124,7 +124,7 @@ async function poll() {
         }
 
         if (lower === '/cerebro' || lower === 'cerebro') {
-          const question = msg.text.replace(/^\/?cerebro\s*/i, '') || 'otimizacao campanhas';
+          const question = msg.text.replace(/^\/?cerebro\s*/i, '').trim() || 'estratégia vendas funil conversão taxa resposta';
           try {
             const { queryBrain } = await import('./trafficAgent.js');
             const result = queryBrain(question);
