@@ -6,8 +6,37 @@
 import { query, queryOne, run } from '../db/database.js';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import https from 'https';
 
 const pendingActions = new Map();
+
+function deepseek(messages, maxTokens = 600) {
+  const key = process.env.DEEPSEEK_API_KEY || '';
+  if (!key) return Promise.reject(new Error('No API key'));
+  const body = JSON.stringify({ model: 'deepseek-chat', messages, max_tokens: maxTokens, temperature: 0.8 });
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'api.deepseek.com',
+      path: '/v1/chat/completions',
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      timeout: 20000,
+    }, res => {
+      let data = '';
+      res.on('data', c => data += c);
+      res.on('end', () => {
+        try {
+          if (res.statusCode !== 200) reject(new Error(`DeepSeek ${res.statusCode}: ${data.substring(0, 200)}`));
+          else resolve(JSON.parse(data));
+        } catch (e) { reject(e); }
+      });
+    });
+    req.on('error', e => reject(e));
+    req.on('timeout', () => { req.destroy(); reject(new Error('DeepSeek timeout')); });
+    req.write(body);
+    req.end();
+  });
+}
 
 export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = null) {
   console.log(`[BOSS] ${name}: "${(cmd || '').substring(0, 80)}"`);
@@ -129,11 +158,8 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
 async function confirmBlogCreate(phone, cmd, metaApi) {
   let topic = null;
   try {
-    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
-      model:'deepseek-chat', max_tokens:50,
-      messages:[{role:'user',content:`Título do artigo. Se não houver tema, "null". Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:8000});
-    topic = r.data?.choices?.[0]?.message?.content?.trim().replace(/["']/g,'');
+    const r = await deepseek([{role:'user',content:`Título do artigo. Se não houver tema, "null". Pedido: "${cmd}"`}], 50);
+    topic = r.choices?.[0]?.message?.content?.trim().replace(/["']/g,'');
     if (topic === 'null' || !topic || topic.length < 5) topic = null;
   } catch {}
 
@@ -147,11 +173,8 @@ async function confirmBlogCreate(phone, cmd, metaApi) {
 async function confirmBlogAction(phone, cmd, metaApi, action) {
   const isDelete = action === 'blogDelete';
   try {
-    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
-      model:'deepseek-chat', max_tokens:150,
-      messages:[{role:'user',content:`JSON: {"slug":"slug","instrucoes":"o que fazer"}. ${isDelete?'EXCLUIR artigo.':''} Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:8000});
-    const data = JSON.parse(r.data?.choices?.[0]?.message?.content||'{}');
+    const r = await deepseek([{role:'user',content:`JSON: {"slug":"slug","instrucoes":"o que fazer"}. ${isDelete?'EXCLUIR artigo.':''} Pedido: "${cmd}"`}], 150);
+    const data = JSON.parse(r.choices?.[0]?.message?.content||'{}');
     if (data.slug) {
       pendingActions.set(phone, {action, data, expires:Date.now()+120000});
       const msg = isDelete
@@ -193,11 +216,8 @@ async function executeAction(action, data, phone, metaApi) {
 
 async function createDelegationTask(phone, cmd, agentId, metaApi) {
   try {
-    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
-      model:'deepseek-chat', max_tokens:200,
-      messages:[{role:'user',content:`JSON: {"titulo":"título","descricao":"detalhes","prioridade":"alta/media/baixa"}. Pedido: "${cmd}"`}],
-    },{headers:{'Authorization':`Bearer ${process.env.DEEPSEEK_API_KEY || ''}`,'Content-Type':'application/json'},timeout:10000});
-    const t = JSON.parse(r.data?.choices?.[0]?.message?.content||'{}');
+    const r = await deepseek([{role:'user',content:`JSON: {"titulo":"título","descricao":"detalhes","prioridade":"alta/media/baixa"}. Pedido: "${cmd}"`}], 200);
+    const t = JSON.parse(r.choices?.[0]?.message?.content||'{}');
     if (t.titulo) {
       const cats={metaDispatcher:'prospeccao',emailDispatcher:'prospeccao',blogAgent:'conteudo',securityAgent:'tecnico',chiefAgent:'coaching',agente_sdr:'vendas',agente_agendador:'vendas',insightsAgent:'estrategia',strategyAgent:'estrategia'};
       await run("INSERT INTO chief_tasks (id, title, description, category, priority, status, week_start) VALUES ($1,$2,$3,$4,$5,'pendente',CURRENT_DATE)",
@@ -208,8 +228,7 @@ async function createDelegationTask(phone, cmd, agentId, metaApi) {
 }
 
 async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
-  const deepseekKey = process.env.DEEPSEEK_API_KEY || '';
-  if (!deepseekKey) return metaApi.sendText(phone, '🤖 IA offline.');
+  if (!process.env.DEEPSEEK_API_KEY) return metaApi.sendText(phone, '🤖 IA offline.');
 
   const intel = await getIntel();
   const tasks = await query("SELECT title, priority FROM chief_tasks WHERE status='pendente' LIMIT 5").catch(()=>[]);
@@ -217,13 +236,8 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
 
   try {
     const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
-    const msgs = [{role:'system',content:sysPrompt},{role:'user',content:userMsg}];
-
-    const r = await axios.post('https://api.deepseek.com/v1/chat/completions', {
-      model:'deepseek-chat', messages:msgs, temperature:0.8, max_tokens:600,
-    },{headers:{'Authorization':`Bearer ${deepseekKey}`,'Content-Type':'application/json'},timeout:20000});
-
-    const resp = r.data?.choices?.[0]?.message?.content || 'Pode repetir?';
+    const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 600);
+    const resp = r.choices?.[0]?.message?.content || 'Pode repetir?';
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0,500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0,1000)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
