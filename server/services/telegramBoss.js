@@ -7,7 +7,7 @@ import { handleBossCommand } from './bossMode.js';
 import https from 'https';
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const BOSS_IDS = (process.env.TELEGRAM_BOSS_IDS || '').split(',').map(s => s.trim());
+const BOSS_IDS = (process.env.TELEGRAM_BOSS_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 
 let lastUpdateId = 0;
 
