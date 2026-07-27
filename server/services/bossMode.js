@@ -144,7 +144,7 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
     return;
   }
 
-  if (/artigo\s*(sobre|de)\s+|cria\s*artigo|novo\s*artigo|escreve\s*artigo/.test(lower) || /blog\s*(sobre|de)\s+/.test(lower)) {
+  if (/artigo\s*(sobre|de)\s+|cri[ae]r?\s+(?:um\s+|uma\s+|o\s+|a\s+)?(?:novo\s+|nova\s+)?artigo|escreve\s+(?:um\s+|uma\s+)?artigo|vamos\s+criar\s+artigo/.test(lower) || /blog\s*(sobre|de)\s+/.test(lower)) {
     return confirmBlogCreate(phone, cmd, metaApi);
   }
 
@@ -270,6 +270,7 @@ ${memStr ? `\nULTIMAS MENSAGENS:\n${memStr}\n` : ''}
 
 VOÇE TEM FERRAMENTAS. Use-as quando o Raul pedir algo acionavel. Nao prometa — execute.
 VOCE TEM SKILLS (habilidades especiais). Aplique-as em cada resposta.
+NUNCA invente eventos passados. NUNCA diga que o Raul "interrompeu", "cancelou" ou "desistiu" de algo — a menos que ele tenha dito isso EXPLICITAMENTE. Se nao sabe o que aconteceu, pergunte.
 
 ${loadSkills('chief')}
 ${loadSkills('chat')}`;
