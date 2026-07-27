@@ -1,6 +1,7 @@
 /**
- * Blog Agent v4 — Artigo semanal de alta qualidade (gpt-4o)
+ * Blog Agent v5 — Artigo semanal de alta qualidade (DeepSeek)
  * + Editar e excluir artigos (via Boss Mode)
+ * v5: DeepSeek pra texto + skills + OpenAI so pra imagens (DALL-E)
  */
 
 import { query, queryOne, run } from '../db/database.js';
@@ -9,6 +10,8 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { chatContent } from './llm.js';
+import { loadSkills } from './skillLoader.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OPENAI_KEY = process.env.OPENAI_API_KEY || '';
@@ -17,13 +20,14 @@ const BLOG_INTERVAL = 7 * 24 * 60 * 60_000;
 let running = false;
 
 async function researchTopic() {
-  if (!OPENAI_KEY) return null;
-  const prompt = `Você é um estrategista de conteúdo B2B. Empresa: Viga Sales (automação de atendimento, CRM, tráfego pago para construtoras). Pesquise 1 tema em alta para artigo de blog. Responda JSON: {"topic":"Título SEO","mainKeyword":"palavra-chave","painPoint":"dor do cliente","angle":"ângulo único"}`;
+  const prompt = `Voce e um estrategista de conteudo B2B. Empresa: Viga Sales (automacao de atendimento, CRM, trafego pago para construtoras). Pesquise 1 tema em alta para artigo de blog. Responda JSON: {"topic":"Titulo SEO","mainKeyword":"palavra-chave","painPoint":"dor do cliente","angle":"angulo unico"}`;
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o-mini', messages:[{role:'user',content:prompt}], temperature:0.9, max_tokens:300,
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'}});
-    return JSON.parse(res.data?.choices?.[0]?.message?.content||'{}');
+    const content = await chatContent({
+      model: 'deepseek-chat',
+      messages: [{ role: 'system', content: loadSkills('blog') }, { role: 'user', content: prompt }],
+      temperature: 0.9, max_tokens: 300,
+    });
+    return JSON.parse(content || '{}');
   } catch(e) { console.error('[Blog] research:', e.message); return null; }
 }
 
@@ -44,40 +48,43 @@ async function generateImage(topic, painPoint) {
 }
 
 async function writeArticle(research, imageUrl) {
-  if (!OPENAI_KEY||!research) return null;
+  if (!research) return null;
   const prompt = `Escreva um artigo de blog completo em HTML (tags <h2>, <h3>, <p>, <ul>, <strong>). 
 Tema: ${research.topic}
 Palavra-chave: ${research.mainKeyword}
 Dor do cliente: ${research.painPoint}
-Ângulo: ${research.angle}
+Angulo: ${research.angle}
 Requisitos:
 - 3000-5000 palavras
-- 6-8 seções com H2
-- Exemplos do mercado brasileiro de construção civil
-- Dados e estatísticas quando relevante
+- 6-8 secoes com H2
+- Exemplos do mercado brasileiro de construcao civil
+- Dados e estatisticas quando relevante
 - Sem micro-CTAs no meio do texto
 - Um CTA final natural
-- Sem markdown, APENAS HTML (não use code blocks)
+- Sem markdown, APENAS HTML (nao use code blocks)
 Retorne apenas o corpo do artigo em HTML.`;
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o', messages:[{role:'user',content:prompt}], temperature:0.7, max_tokens:6000,
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'}});
-    const body = res.data?.choices?.[0]?.message?.content||'';
+    const body = await chatContent({
+      model: 'deepseek-chat',
+      messages: [{ role: 'system', content: loadSkills('blog') }, { role: 'user', content: prompt }],
+      temperature: 0.7, max_tokens: 6000,
+    });
+    if (!body) return null;
     const title = research.topic;
     const subtitle = `${research.painPoint}. ${research.angle}.`;
-    const tags = [research.mainKeyword, 'construção civil', 'automação', '2026'];
+    const tags = [research.mainKeyword, 'construcao civil', 'automacao', '2026'];
     return {title, subtitle, body, tags, cover_image:imageUrl, slug:null};
   } catch(e) { console.error('[Blog] write:', e.message); return null; }
 }
 
 async function generateFAQ(title, body) {
-  if (!OPENAI_KEY) return '[]';
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o-mini', messages:[{role:'user',content:`Gere 3-5 perguntas frequentes (FAQ) com respostas curtas sobre este artigo: "${title}". Retorne JSON: [{"question":"...","answer":"..."}]`}], temperature:0.5, max_tokens:500,
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'}});
-    return res.data?.choices?.[0]?.message?.content||'[]';
+    const content = await chatContent({
+      model: 'deepseek-chat',
+      messages: [{ role: 'user', content: `Gere 3-5 perguntas frequentes (FAQ) com respostas curtas sobre este artigo: "${title}". Retorne JSON: [{"question":"...","answer":"..."}]` }],
+      temperature: 0.5, max_tokens: 500,
+    });
+    return content || '[]';
   } catch(e) { return '[]'; }
 }
 
@@ -88,7 +95,6 @@ async function publish(article, faqJson) {
   const existing = await queryOne("SELECT id FROM blog_posts WHERE slug = ?", [slug]).catch(()=>null);
   if (existing) slug = slug.substring(0,75)+'-'+Date.now().toString(36);
 
-  // Garante que faqJson é JSON válido
   let safeFaq = '[]';
   try { safeFaq = JSON.stringify(JSON.parse(faqJson)); } catch { safeFaq = '[]'; }
 
@@ -105,10 +111,10 @@ export async function generateAndPublish(userTopic = null) {
   try {
     let research;
     if (userTopic) {
-      research = {topic:userTopic, mainKeyword:userTopic.toLowerCase(), painPoint:'Solicitado pelo gestor', angle:'Abordagem prática para construção civil'};
+      research = {topic:userTopic, mainKeyword:userTopic.toLowerCase(), painPoint:'Solicitado pelo gestor', angle:'Abordagem pratica para construcao civil'};
       console.log(`[Blog] Tema via Chefe: "${userTopic}"`);
     } else {
-      console.log('[Blog] 🔍 Pesquisando keyword + tendência...');
+      console.log('[Blog] 🔍 Pesquisando keyword + tendencia...');
       research = await researchTopic();
       if (!research) { running = false; return null; }
       console.log(`[Blog] Tema: ${research.topic} | KW: ${research.mainKeyword}`);
@@ -116,7 +122,7 @@ export async function generateAndPublish(userTopic = null) {
     console.log('[Blog] 🎨 DALL-E 3...');
     const imageUrl = await generateImage(research.topic, research.painPoint);
     console.log(`[Blog] 🖼️ Imagem salva: ${imageUrl?.split('/').pop()}`);
-    console.log('[Blog] ✍️ Escrevendo artigo estratégico...');
+    console.log('[Blog] ✍️ Escrevendo artigo estrategico...');
     const article = await writeArticle(research, imageUrl);
     if (!article) { running = false; return null; }
     console.log('[Blog] ❓ Gerando FAQ schema...');
@@ -131,40 +137,36 @@ export async function generateAndPublish(userTopic = null) {
   }
 }
 
-// ── EDITAR artigo ──
 export async function editArticle(slug, instructions) {
   if (!slug) return null;
   const article = await queryOne("SELECT * FROM blog_posts WHERE slug = ? OR slug LIKE ?", [slug, `%${slug}%`]).catch(() => null);
   if (!article) return null;
   console.log(`[Blog] ✏️ Editando: "${article.title}"`);
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model:'gpt-4o', temperature:0.5, max_tokens:6000,
-      messages:[{role:'system',content:'Editor de artigos. Reescreva o artigo conforme instruções. Retorne APENAS HTML do corpo.'},{role:'user',content:`ARTIGO:\n${article.body||''}\n\nINSTRUÇÕES:\n${instructions}\n\nRetorne o artigo completo revisado em HTML.`}],
-    },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:120000});
-    const newBody = res.data?.choices?.[0]?.message?.content;
+    const newBody = await chatContent({
+      model: 'deepseek-chat', temperature: 0.5, max_tokens: 6000,
+      messages: [{ role: 'system', content: 'Editor de artigos. Reescreva o artigo conforme instrucoes. Retorne APENAS HTML do corpo.' }, { role: 'user', content: `ARTIGO:\n${article.body||''}\n\nINSTRUCOES:\n${instructions}\n\nRetorne o artigo completo revisado em HTML.` }],
+    });
     if (!newBody) return null;
     await run("UPDATE blog_posts SET body = ? WHERE id = ?", [newBody, article.id]);
     console.log(`[Blog] ✅ Editado: "${article.title}"`);
     return {...article, body:newBody};
-  } catch(e) { console.error('[Blog] Erro edição:', e.message); return null; }
+  } catch(e) { console.error('[Blog] Erro edicao:', e.message); return null; }
 }
 
-// ── EXCLUIR artigo ──
 export async function deleteArticle(slug) {
   if (!slug) return null;
   const article = await queryOne("SELECT * FROM blog_posts WHERE slug = ? OR slug LIKE ?", [slug, `%${slug}%`]).catch(() => null);
   if (!article) return null;
   await run("DELETE FROM blog_posts WHERE id = ?", [article.id]);
-  console.log(`[Blog] 🗑️ Excluído: "${article.title}"`);
+  console.log(`[Blog] 🗑️ Excluido: "${article.title}"`);
   return article;
 }
 
-// ── Inicialização ──
 export function startBlogAgent() {
-  if (!OPENAI_KEY) { console.log('[Blog] OpenAI não configurada — offline'); return; }
+  if (!process.env.DEEPSEEK_API_KEY) { console.log('[Blog] DeepSeek nao configurada — offline'); return; }
   const run = async () => { if (!running) await generateAndPublish(); };
   setTimeout(run, 5*60_000);
   setInterval(run, BLOG_INTERVAL);
-  console.log('[Blog] Agente v4 — 1 artigo/semana, gpt-4o, 3k-5k palavras, sem micro-CTAs');
+  console.log('[Blog] Agente v5 — 1 artigo/semana, DeepSeek, 3k-5k palavras, sem micro-CTAs');
 }
