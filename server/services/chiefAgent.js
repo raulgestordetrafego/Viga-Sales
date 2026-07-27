@@ -10,6 +10,7 @@ import axios from 'axios';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { loadSkills } from './skillLoader.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -342,7 +343,7 @@ Responda APENAS com JSON valido:
   try {
     const res = await axios.post('https://api.deepseek.com/v1/chat/completions', {
       model,
-      messages: [{ role: 'system', content: 'Voce e o CEO da Viga Sales. O Raul e o DONO — voce trabalha pra ele, obedece ordens, reporta tudo com clareza. Responda sempre em JSON valido.' }, { role: 'user', content: prompt }],
+      messages: [{ role: 'system', content: `Voce e o CEO da Viga Sales. O Raul e o DONO — voce trabalha pra ele, obedece ordens, reporta tudo com clareza. Responda sempre em JSON valido.\n\n${loadSkills('chief')}` }, { role: 'user', content: prompt }],
       temperature: 0.8,
       max_tokens: 3000,
       response_format: { type: 'json_object' },

@@ -7,6 +7,7 @@ import { query, queryOne, run } from '../db/database.js';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import https from 'https';
+import { loadSkills } from './skillLoader.js';
 
 const pendingActions = new Map();
 
@@ -267,7 +268,11 @@ DADOS:
 ${chiefBrain ? `\n${chiefBrain}\n` : ''}
 ${memStr ? `\nULTIMAS MENSAGENS:\n${memStr}\n` : ''}
 
-VOCE TEM FERRAMENTAS. Use-as quando o Raul pedir algo acionavel. Nao prometa — execute.`;
+VOÇE TEM FERRAMENTAS. Use-as quando o Raul pedir algo acionavel. Nao prometa — execute.
+VOCE TEM SKILLS (habilidades especiais). Aplique-as em cada resposta.
+
+${loadSkills('chief')}
+${loadSkills('chat')}`;
 
   const tools = [
     { type: 'function', function: { name: 'search_contacts', description: 'Busca contatos no CRM por nome, empresa ou telefone', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Termo de busca (nome, empresa, ou parte)' } }, required: ['query'] } } },
