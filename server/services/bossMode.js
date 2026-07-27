@@ -152,8 +152,9 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
     return confirmBlogAction(phone, cmd, metaApi, 'blogNewImage');
   }
 
-  if (/cri[ae]r?\s+(?:uma\s+)?(?:imagem|arte|figura|ilustracao)\s+(?:de|sobre|do|da)\s+(.+)/i.test(cmd) || /gera[r]?\s+(?:uma\s+)?(?:imagem|arte|figura)\s+(?:de|sobre|do|da)\s+(.+)/i.test(cmd)) {
-    const prompt = RegExp.$1 || cmd;
+  if (/cri[ae]r?\s+(?:uma\s+)?(?:imagem|arte|figura|ilustracao|capa)\s+(?:de|sobre|do|da|para|pro)\s+(.+)/i.test(cmd) || /gera[r]?\s+(?:uma\s+)?(?:imagem|arte|figura|capa)\s+(?:de|sobre|do|da|para|pro)\s+(.+)/i.test(cmd)) {
+    const prompt = (RegExp.$1 || cmd).trim();
+    if (prompt.length < 10) return metaApi.sendText(phone, '🎨 Me descreva a imagem. Ex: "cria uma imagem de um dashboard azul com metricas subindo"');
     await metaApi.sendText(phone, '🎨 Gerando imagem... (~10s)');
     const { generateOnDemand } = await import('./mediaAgent.js');
     const imgPath = await generateOnDemand(prompt);
