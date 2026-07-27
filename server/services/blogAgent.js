@@ -35,7 +35,7 @@ async function generateImage(topic, painPoint) {
   if (!OPENAI_KEY) return null;
   try {
     const res = await axios.post('https://api.openai.com/v1/images/generations', {
-      model:'gpt-image-1-mini', prompt:`Professional blog header image for construction industry article about "${topic}". Brazilian market. ${painPoint}. Clean, modern, dark navy background with orange accents. No text.`, n:1, size:'1536x1024',
+      model:'gpt-image-1-mini', prompt:`Crie uma imagem de capa para artigo de blog sobre "${topic}". Mercado brasileiro de construcao civil. ${painPoint}. Estilo limpo e moderno, fundo azul marinho escuro com detalhes em laranja. IMPORTANTE: se houver texto na imagem, DEVE estar em portugues. NUNCA use texto em ingles. Proporcao 3:2. Sem marcas d'agua.`, n:1, size:'1536x1024',
     },{headers:{'Authorization':`Bearer ${OPENAI_KEY}`,'Content-Type':'application/json'},timeout:120000});
     const b64 = res.data?.data?.[0]?.b64_json;
     if (!b64) return null;
