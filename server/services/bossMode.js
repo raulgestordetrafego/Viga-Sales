@@ -283,12 +283,39 @@ REGRAS:
 - NUNCA invente metricas. Se nao tiver o dado, diga "nao tenho esse numero agora".
 - Se o Raul perguntar "o que fazer", priorize acoes da matriz Eisenhower (urgente/importante primeiro).`;
 
+  // Pre-processa pedidos de dados do CRM
+  let extraData = '';
+  const lowerCmd = cmd?.toLowerCase() || '';
+  if (/contato|cliente|lead|prospect|crm|whatsapp dele|telefone|procura|busca|ache|encontra|lista|quem/.test(lowerCmd)) {
+    try {
+      const searchTerm = cmd.replace(/.*?(?:contato|cliente|lead|prospect|crm|procura|busca|ache|encontra|lista|quem)\s*(?:do|da|de|dos|das|no|na|os|as|o|a)?\s*/i, '').trim() || '';
+      const contacts = searchTerm
+        ? await query("SELECT name, company, phone, status, notes FROM contacts WHERE name ILIKE $1 OR company ILIKE $1 OR phone LIKE $1 ORDER BY name LIMIT 10", [`%${searchTerm}%`]).catch(()=>[])
+        : await query("SELECT name, company, phone, status FROM contacts ORDER BY name LIMIT 10").catch(()=>[]);
+      if (contacts?.length) {
+        extraData = `RESULTADO DA BUSCA NO CRM (${contacts.length} contatos):\n` +
+          contacts.map(c => `${c.name} | ${c.company || 'sem empresa'} | ${c.phone || 'sem tel'} | status: ${c.status || 'N/A'}`).join('\n');
+      } else {
+        extraData = 'BUSCA NO CRM: Nenhum contato encontrado.';
+      }
+    } catch(e) { /* silencioso */ }
+  }
+  if (/pipeline|funil|negócio|negocio|venda|proposta|ganho|perdido/.test(lowerCmd)) {
+    const pipe = intel.pipeline || [];
+    if (pipe.length) {
+      const total = pipe.reduce((s, p) => s + (p.valor || 0), 0);
+      extraData += `\n\nPIPELINE ATUAL (R$ ${total.toLocaleString('pt-BR')}):\n` +
+        pipe.map(p => `${p.etapa}: ${p.total} leads — R$ ${(p.valor || 0).toLocaleString('pt-BR')}`).join('\n');
+    }
+  }
+
   try {
     console.log('[BOSS] chamando DeepSeek...');
-    const userMsg = imageUrl ? `${cmd || 'Descreva esta imagem'}\n[imagem: ${imageUrl}]` : cmd;
+    const userMsg = (extraData ? `[DADOS DO CRM]\n${extraData}\n\n[PERGUNTA DO RAUL]\n` : '') + cmd;
     const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 1000);
     console.log('[BOSS] DeepSeek respondeu');
     const resp = r.choices?.[0]?.message?.content || 'Pode repetir, chefe?';
+    console.log('[BOSS] Resposta:', resp.substring(0, 200));
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0, 500)||'']).catch(()=>{});
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0, 1500)||'']).catch(()=>{});
     await metaApi.sendText(phone, resp);
