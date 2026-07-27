@@ -292,10 +292,14 @@ ${loadSkills('chat')}`;
 
     if (msg?.tool_calls?.length) {
       await metaApi.sendText(phone, '👔 Executando...');
+      const toolResults = [];
       for (const tc of msg.tool_calls) {
         const result = await executeTool(tc.function.name, JSON.parse(tc.function.arguments || '{}'), phone, metaApi);
-        messages.push(msg);
-        messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
+        toolResults.push({ id: tc.id, result });
+      }
+      messages.push(msg);
+      for (const tr of toolResults) {
+        messages.push({ role: 'tool', tool_call_id: tr.id, content: JSON.stringify(tr.result) });
       }
       const r2 = await deepseekWithTools(messages, tools);
       const resp2 = r2.choices?.[0]?.message?.content || 'Feito, chefe.';
