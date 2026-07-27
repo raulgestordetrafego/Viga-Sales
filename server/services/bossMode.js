@@ -246,7 +246,7 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
     if (data.results?.length) {
       chiefBrain = 'CONHECIMENTO DO CEO:\n' + data.results.slice(0, 2).map(r => `[${r.topico}] ${r.summary?.substring(0, 300) || r.descricao}`).join('\n\n');
     }
-  } catch (e) { /* brain offline, continua sem */ }
+  } catch (e) { /* brain offline */ }
 
   const pipelineTotal = (intel.pipeline || []).reduce((s, p) => s + (p.valor || 0), 0);
   const pipelineStr = (intel.pipeline || []).map(p => `${p.etapa}: ${p.total} leads (R$${p.valor?.toLocaleString?.('pt-BR') || 0})`).join(', ') || 'vazio';
@@ -254,76 +254,142 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
   const okrsStr = okrs.map(o => `${o.objetivo} → ${o.key_result} (${o.progresso_atual || '0%'})`).join(' | ') || 'nenhum';
   const memStr = memory.reverse().map(m => `${m.role==='user'?'Raul':'Chief'}: ${m.content?.substring(0, 80)}`).join('\n');
 
-  const sysPrompt = `Voce e o CHIEF — CEO da Viga Sales, empresa de automacao B2B (WhatsApp, CRM, trafego pago, sites) focada em construtoras e engenheiros.
+  const sysPrompt = `Voce e o CHIEF — CEO da Viga Sales, empresa de automacao B2B (WhatsApp, CRM, trafego pago, sites) para construtoras.
+O Raul e o DONO. Voce TRABALHA PRA ELE. Obedece ordens. Executa acoes. Reporta resultados.
+Seja DIRETO, sem enrolacao. Nada de "otimo!" ou "excelente pergunta!".
 
-QUEM E VOCE:
-- CEO competente, direto, sem enrolacao. Nada de "otimo!" ou "excelente pergunta!".
-- O Raul e o DONO. Voce trabalha PRA ELE. Obedece ordens. Reporta com clareza.
-- Se ele perguntar algo que voce nao sabe, diga que nao sabe e sugira como descobrir.
-- Se ele der uma ordem, confirme e execute (ou diga como executar).
-- Use dados REAIS sempre que possivel. Nao invente numeros.
-
-DADOS ATUAIS DA OPERACAO:
-📱 WPP: ${intel.wpp.hoje} envios hj | ${intel.wpp.semana} na semana | ${intel.wpp.rate}% taxa resposta
-📧 Email: ${intel.email} enviados
-📝 Blog: ${intel.blog} artigos
-🤝 Reunioes: ${intel.reunioes?.hoje || 0} hj | ${intel.reunioes?.semana || 0} semana
-📦 Fila: ${intel.fila} leads novos
-💼 Pipeline: R$ ${pipelineTotal.toLocaleString('pt-BR')} — ${pipelineStr}
-📋 Tarefas: ${tasksStr}
-🎯 OKRs: ${okrsStr}
-📌 Ultimo briefing: ${lastBriefing?.acao_principal || 'nenhum'}
-
+DADOS:
+📱 WPP: ${intel.wpp.hoje} hj | ${intel.wpp.semana} sem | ${intel.wpp.rate}% tx
+📧 Email: ${intel.email} env | 📝 Blog: ${intel.blog} posts
+🤝 Reunioes: ${intel.reunioes?.hoje || 0} hj | ${intel.reunioes?.semana || 0} sem
+📦 Fila: ${intel.fila} leads | 💼 Pipeline: R$ ${pipelineTotal.toLocaleString('pt-BR')} — ${pipelineStr}
+📋 Tarefas: ${tasksStr} | 🎯 OKRs: ${okrsStr}
 ${chiefBrain ? `\n${chiefBrain}\n` : ''}
-${memStr ? `\nHISTORICO RECENTE:\n${memStr}\n` : ''}
+${memStr ? `\nULTIMAS MENSAGENS:\n${memStr}\n` : ''}
 
-REGRAS:
-- Maximo 600 caracteres (WhatsApp) ou 1500 (Telegram). Seja conciso.
-- Use emojis com moderacao (so para dados, nao pra enfeitar).
-- NUNCA invente metricas. Se nao tiver o dado, diga "nao tenho esse numero agora".
-- Se o Raul perguntar "o que fazer", priorize acoes da matriz Eisenhower (urgente/importante primeiro).`;
+VOCE TEM FERRAMENTAS. Use-as quando o Raul pedir algo acionavel. Nao prometa — execute.`;
 
-  // Pre-processa pedidos de dados do CRM
-  let extraData = '';
-  const lowerCmd = cmd?.toLowerCase() || '';
-  if (/contato|cliente|lead|prospect|crm|whatsapp dele|telefone|procura|busca|ache|encontra|lista|quem/.test(lowerCmd)) {
-    try {
-      const searchTerm = cmd.replace(/.*?(?:contato|cliente|lead|prospect|crm|procura|busca|ache|encontra|lista|quem)\s*(?:do|da|de|dos|das|no|na|os|as|o|a)?\s*/i, '').trim() || '';
-      const contacts = searchTerm
-        ? await query("SELECT name, company, phone, status, notes FROM contacts WHERE name ILIKE $1 OR company ILIKE $1 OR phone LIKE $1 ORDER BY name LIMIT 10", [`%${searchTerm}%`]).catch(()=>[])
-        : await query("SELECT name, company, phone, status FROM contacts ORDER BY name LIMIT 10").catch(()=>[]);
-      if (contacts?.length) {
-        extraData = `RESULTADO DA BUSCA NO CRM (${contacts.length} contatos):\n` +
-          contacts.map(c => `${c.name} | ${c.company || 'sem empresa'} | ${c.phone || 'sem tel'} | status: ${c.status || 'N/A'}`).join('\n');
-      } else {
-        extraData = 'BUSCA NO CRM: Nenhum contato encontrado.';
-      }
-    } catch(e) { /* silencioso */ }
-  }
-  if (/pipeline|funil|negócio|negocio|venda|proposta|ganho|perdido/.test(lowerCmd)) {
-    const pipe = intel.pipeline || [];
-    if (pipe.length) {
-      const total = pipe.reduce((s, p) => s + (p.valor || 0), 0);
-      extraData += `\n\nPIPELINE ATUAL (R$ ${total.toLocaleString('pt-BR')}):\n` +
-        pipe.map(p => `${p.etapa}: ${p.total} leads — R$ ${(p.valor || 0).toLocaleString('pt-BR')}`).join('\n');
-    }
-  }
+  const tools = [
+    { type: 'function', function: { name: 'search_contacts', description: 'Busca contatos no CRM por nome, empresa ou telefone', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Termo de busca (nome, empresa, ou parte)' } }, required: ['query'] } } },
+    { type: 'function', function: { name: 'create_task', description: 'Cria uma tarefa no sistema', parameters: { type: 'object', properties: { title: { type: 'string', description: 'Titulo da tarefa' }, description: { type: 'string', description: 'Descricao detalhada' }, priority: { type: 'string', enum: ['alta', 'media', 'baixa'], description: 'Prioridade' }, category: { type: 'string', enum: ['prospeccao', 'conteudo', 'vendas', 'tecnico', 'estrategia', 'coaching'], description: 'Categoria' } }, required: ['title'] } } },
+    { type: 'function', function: { name: 'run_briefing', description: 'Gera um briefing estrategico completo com tarefas e OKRs', parameters: { type: 'object', properties: { weekly: { type: 'boolean', description: 'true para planejamento semanal, false para diario' } } } } },
+    { type: 'function', function: { name: 'run_security_scan', description: 'Executa varredura de seguranca no sistema', parameters: { type: 'object', properties: {} } } },
+    { type: 'function', function: { name: 'run_sql', description: 'Executa uma consulta SQL no banco de dados (somente SELECT)', parameters: { type: 'object', properties: { question: { type: 'string', description: 'O que voce quer saber? Ex: "quantos leads novos hoje", "templates com taxa de resposta < 1%"' } }, required: ['question'] } } },
+  ];
+
+  const messages = [{ role: 'system', content: sysPrompt }, { role: 'user', content: cmd }];
 
   try {
-    console.log('[BOSS] chamando DeepSeek...');
-    const userMsg = (extraData ? `[DADOS DO CRM]\n${extraData}\n\n[PERGUNTA DO RAUL]\n` : '') + cmd;
-    const r = await deepseek([{role:'system',content:sysPrompt},{role:'user',content:userMsg}], 1000);
-    console.log('[BOSS] DeepSeek respondeu');
-    const resp = r.choices?.[0]?.message?.content || 'Pode repetir, chefe?';
-    console.log('[BOSS] Resposta:', resp.substring(0, 200));
+    console.log('[BOSS] chamando DeepSeek (com tools)...');
+    const r = await deepseekWithTools(messages, tools);
+    const msg = r.choices?.[0]?.message;
+
+    if (msg?.tool_calls?.length) {
+      await metaApi.sendText(phone, '👔 Executando...');
+      for (const tc of msg.tool_calls) {
+        const result = await executeTool(tc.function.name, JSON.parse(tc.function.arguments || '{}'), phone, metaApi);
+        messages.push(msg);
+        messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
+      }
+      const r2 = await deepseekWithTools(messages, tools);
+      const resp2 = r2.choices?.[0]?.message?.content || 'Feito, chefe.';
+      console.log('[BOSS] Resposta final:', resp2.substring(0, 200));
+      await metaApi.sendText(phone, resp2);
+    } else {
+      const resp = msg?.content || 'Pode repetir, chefe?';
+      console.log('[BOSS] Resposta:', resp.substring(0, 200));
+      await metaApi.sendText(phone, resp);
+    }
+
     await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'user',$3)", [uuidv4(), phone, cmd?.substring(0, 500)||'']).catch(()=>{});
-    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, resp?.substring(0, 1500)||'']).catch(()=>{});
-    await metaApi.sendText(phone, resp);
+    await run("INSERT INTO boss_memory (id, phone, role, content) VALUES ($1,$2,'assistant',$3)", [uuidv4(), phone, (msg?.content || 'acao executada')?.substring(0, 1500)||'']).catch(()=>{});
   } catch(e) {
     const details = e.response ? `${e.response.status} ${JSON.stringify(e.response.data).substring(0, 300)}` : e.message;
     console.error('[BOSS] chat ERROR:', details);
     await metaApi.sendText(phone, '⚠️ Erro ao processar.');
   }
+}
+
+async function executeTool(name, args, phone, metaApi) {
+  console.log('[BOSS] Tool:', name, JSON.stringify(args).substring(0, 100));
+  try {
+    if (name === 'search_contacts') {
+      const contacts = await query(
+        "SELECT name, company, phone, status, email FROM contacts WHERE name ILIKE $1 OR company ILIKE $1 OR phone LIKE $1 LIMIT 10",
+        [`%${args.query || ''}%`]
+      ).catch(() => []);
+      return { found: contacts?.length || 0, contacts: contacts || [] };
+    }
+    if (name === 'create_task') {
+      const { v4: uuidv4 } = await import('uuid');
+      await run("INSERT INTO chief_tasks (id, title, description, category, priority, status, week_start) VALUES ($1,$2,$3,$4,$5,'pendente',CURRENT_DATE)",
+        [uuidv4(), args.title, args.description || '', args.category || 'geral', args.priority || 'media']);
+      return { ok: true, task: args.title };
+    }
+    if (name === 'run_briefing') {
+      const { runChiefAgent } = await import('./chiefAgent.js');
+      setTimeout(() => runChiefAgent().catch(()=>{}), 100);
+      return { ok: true, message: 'Briefing iniciado. Tarefas em ~30s.' };
+    }
+    if (name === 'run_security_scan') {
+      const { runSecurityAgent } = await import('./securityAgent.js');
+      setTimeout(() => runSecurityAgent().catch(()=>{}), 100);
+      return { ok: true, message: 'Scan de seguranca iniciado.' };
+    }
+    if (name === 'run_sql') {
+      const q = args.question?.toLowerCase() || '';
+      if (/templates|template/.test(q)) {
+        const temps = await query("SELECT name, sent_count, max_sends, paused FROM meta_templates ORDER BY sent_count DESC LIMIT 10");
+        return { result: temps };
+      }
+      if (/leads?\s*novos|fila|prospects/.test(q)) {
+        const r = await queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='novo'");
+        return { novos: parseInt(r?.cnt || '0') };
+      }
+      if (/resposta|taxa|response/.test(q)) {
+        const sent = await queryOne("SELECT COUNT(*) as cnt FROM prospecting_logs WHERE action='enviado_meta' AND created_at>=NOW()-INTERVAL'7 days'");
+        const resp = await queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='respondeu' AND responded_at::timestamp>=NOW()-INTERVAL'7 days'");
+        const s = parseInt(sent?.cnt || '0'), r2 = parseInt(resp?.cnt || '0');
+        return { sent: s, responses: r2, rate: s > 0 ? ((r2/s)*100).toFixed(1)+'%' : '0%' };
+      }
+      if (/reuniao|meeting|agendada/.test(q)) {
+        const r = await queryOne("SELECT COUNT(*) as cnt FROM prospects WHERE status='reuniao_agendada'");
+        return { reunioes_agendadas: parseInt(r?.cnt || '0') };
+      }
+      if (/blog|artigo|post/.test(q)) {
+        const r = await queryOne("SELECT COUNT(*) as cnt FROM blog_posts WHERE status='published'");
+        return { artigos_publicados: parseInt(r?.cnt || '0') };
+      }
+      return { error: 'Nao entendi a consulta. Tente: templates, leads novos, taxa de resposta, reunioes, artigos' };
+    }
+    return { error: 'Ferramenta nao encontrada' };
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+function deepseekWithTools(messages, tools) {
+  const key = process.env.DEEPSEEK_API_KEY || '';
+  const body = JSON.stringify({ model: 'deepseek-chat', messages, tools, temperature: 0.7, max_tokens: 800 });
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'api.deepseek.com', path: '/v1/chat/completions', method: 'POST',
+      headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      timeout: 30000,
+    }, res => {
+      let data = '';
+      res.on('data', c => data += c);
+      res.on('end', () => {
+        try {
+          if (res.statusCode !== 200) reject(new Error(`API ${res.statusCode}`));
+          else resolve(JSON.parse(data));
+        } catch (e) { reject(e); }
+      });
+    });
+    req.on('error', e => reject(e));
+    req.write(body);
+    req.end();
+  });
 }
 
 async function getIntel() {
