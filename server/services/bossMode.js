@@ -159,15 +159,15 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
 async function confirmBlogCreate(phone, cmd, metaApi) {
   let topic = null;
   try {
-    const r = await deepseek([{role:'user',content:`Título do artigo. Se não houver tema, "null". Pedido: "${cmd}"`}], 50);
+    const r = await deepseek([{role:'user',content:`Titulo do artigo. Se nao houver tema, "null". Pedido: "${cmd}"`}], 50);
     topic = r.choices?.[0]?.message?.content?.trim().replace(/["']/g,'');
     if (topic === 'null' || !topic || topic.length < 5) topic = null;
   } catch {}
 
-  pendingActions.set(phone, {action:'blogCreate', data:{topic}, expires:Date.now()+120000});
+  pendingActions.set(phone, {action:'blogCreate', data:{topic}, expires:Date.now()+300000});
   const msg = topic
-    ? `✍️ *Confirmar artigo?*\nTema: "${topic}"\n\nResponda "sim" ou "não".`
-    : '✍️ *Confirmar artigo?*\nPesquisarei um tema.\n\nResponda "sim" ou "não".';
+    ? `✍️ *Confirmar artigo?*\nTema: "${topic}"\n\nResponda "sim" ou "nao".`
+    : '✍️ *Sobre o que quer o artigo?*\nMe diga o tema.';
   await metaApi.sendText(phone, msg);
 }
 
@@ -189,28 +189,63 @@ async function confirmBlogAction(phone, cmd, metaApi, action) {
 async function executeAction(action, data, phone, metaApi) {
   try {
     if (action === 'blogCreate') {
-      const { generateAndPublish } = await import('./blogAgent.js');
-      if (data.topic) await metaApi.sendText(phone, `✍️ Criando artigo sobre: "${data.topic}"\n⏳ Isso leva ~2 minutos...`);
+      const { writeArticle, generateImage, publish, generateFAQ } = await import('./blogAgent.js');
+      let research = data.research;
       
-      // Espera o artigo ficar pronto
-      const article = await generateAndPublish(data.topic);
-      if (article) {
-        await metaApi.sendText(phone, `✅ *Artigo publicado!*\n📝 ${article.title}\n🔗 https://blog.vigasales.com.br/${article.slug||''}`);
-        console.log(`[BOSS] Artigo criado: ${article.title}`);
-      } else {
-        await metaApi.sendText(phone, '❌ Falha ao gerar artigo. Tente novamente.');
-        console.error('[BOSS] generateAndPublish retornou null');
+      // Etapa 1: gerar copy
+      if (!research) {
+        research = { topic: data.topic, mainKeyword: data.topic?.toLowerCase() || '', painPoint: 'Solicitado pelo gestor', angle: 'Abordagem pratica para construcao civil' };
+        await metaApi.sendText(phone, `✍️ Escrevendo artigo sobre:\n"${research.topic}"...`);
+        const article = await writeArticle(research, null);
+        if (!article) return metaApi.sendText(phone, '❌ Erro ao escrever artigo.');
+
+        // Envia a copy pro usuario revisar
+        const preview = article.body?.replace(/<[^>]+>/g, '').substring(0, 800) || '';
+        await metaApi.sendText(phone, `📝 *COPY DO ARTIGO*\n\n${preview}...\n\n👍 Se estiver bom, responda "ok" ou "publicar".\n✏️ Se quiser ajustar, diga "muda X".`);
+        
+        pendingActions.set(phone, { action: 'blogApproveDraft', data: { research, article }, expires: Date.now() + 600000 });
+        return;
       }
+    }
+
+    if (action === 'blogApproveDraft') {
+      const { generateImage, publish, generateFAQ } = await import('./blogAgent.js');
+      // Etapa 2: gerar imagem
+      await metaApi.sendText(phone, '🎨 Gerando imagem de capa...');
+      const imageUrl = await generateImage(data.research.topic, data.research.painPoint);
+      if (imageUrl) {
+        await metaApi.sendText(phone, `🖼️ *IMAGEM DE CAPA*\nhttps://vigasales.shop${imageUrl}\n\n👍 Se estiver boa, responda "ok" ou "publicar".\n🎨 Se quiser refazer, diga "nova imagem".`);
+        data.article.cover_image = imageUrl;
+        pendingActions.set(phone, { action: 'blogApproveImage', data, expires: Date.now() + 600000 });
+      } else {
+        await metaApi.sendText(phone, '⚠️ Imagem falhou. Continuando sem capa...');
+        data.article.cover_image = null;
+        pendingActions.set(phone, { action: 'blogApproveImage', data, expires: Date.now() + 600000 });
+      }
+      return;
+    }
+
+    if (action === 'blogApproveImage') {
+      const { publish, generateFAQ } = await import('./blogAgent.js');
+      // Etapa 3: publicar
+      const faqJson = await generateFAQ(data.article.title, data.article.body);
+      const result = await publish(data.article, faqJson);
+      if (result) {
+        await metaApi.sendText(phone, `✅ *ARTIGO PUBLICADO!*\n📝 ${result.title}\n🔗 https://blog.vigasales.com.br/${result.slug || ''}`);
+      } else {
+        await metaApi.sendText(phone, '❌ Erro ao publicar.');
+      }
+      return;
     } else if (action === 'blogEdit') {
       await metaApi.sendText(phone, `✏️ Editando "${data.slug}"...`);
       const { editArticle } = await import('./blogAgent.js');
       const r = await editArticle(data.slug, data.instrucoes);
-      await metaApi.sendText(phone, r ? `✅ ${r.title}\n🔗 https://blog.vigasales.com.br/${r.slug||data.slug}` : '❌ Não encontrado.');
+      await metaApi.sendText(phone, r ? `✅ ${r.title}\n🔗 https://blog.vigasales.com.br/${r.slug||data.slug}` : '❌ Nao encontrado.');
     } else if (action === 'blogDelete') {
       await metaApi.sendText(phone, `🗑️ Excluindo "${data.slug}"...`);
       const { deleteArticle } = await import('./blogAgent.js');
       const r = await deleteArticle(data.slug);
-      await metaApi.sendText(phone, r ? `✅ Excluído: ${r.title}` : '❌ Não encontrado.');
+      await metaApi.sendText(phone, r ? `✅ Excluido: ${r.title}` : '❌ Nao encontrado.');
     }
   } catch(e) { console.error('[BOSS] executeAction:', e.message); }
 }
