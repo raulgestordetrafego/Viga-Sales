@@ -17,17 +17,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OPENAI_KEY = process.env.OPENAI_API_KEY || '';
 const BLOG_INTERVAL = 7 * 24 * 60 * 60_000;
 
+function cleanJSON(str) {
+  return (str || '').replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+}
+
 let running = false;
 
 async function researchTopic() {
-  const prompt = `Voce e um estrategista de conteudo B2B. Empresa: Viga Sales (automacao de atendimento, CRM, trafego pago para construtoras). Pesquise 1 tema em alta para artigo de blog. Responda JSON: {"topic":"Titulo SEO","mainKeyword":"palavra-chave","painPoint":"dor do cliente","angle":"angulo unico"}`;
+  const prompt = `Voce e um estrategista de conteudo B2B. Empresa: Viga Sales (automacao de atendimento, CRM, trafego pago para construtoras). Pesquise 1 tema em alta para artigo de blog. Responda APENAS o JSON, sem marcadores markdown: {"topic":"Titulo SEO","mainKeyword":"palavra-chave","painPoint":"dor do cliente","angle":"angulo unico"}`;
   try {
     const content = await chatContent({
       model: 'deepseek-chat',
       messages: [{ role: 'system', content: loadSkills('blog') }, { role: 'user', content: prompt }],
       temperature: 0.9, max_tokens: 300,
     });
-    return JSON.parse(content || '{}');
+    return JSON.parse(cleanJSON(content));
   } catch(e) { console.error('[Blog] research:', e.message); return null; }
 }
 
@@ -81,10 +85,10 @@ async function generateFAQ(title, body) {
   try {
     const content = await chatContent({
       model: 'deepseek-chat',
-      messages: [{ role: 'user', content: `Gere 3-5 perguntas frequentes (FAQ) com respostas curtas sobre este artigo: "${title}". Retorne JSON: [{"question":"...","answer":"..."}]` }],
+      messages: [{ role: 'user', content: `Gere 3-5 perguntas frequentes (FAQ) com respostas curtas sobre este artigo: "${title}". Retorne APENAS o JSON, sem marcadores: [{"question":"...","answer":"..."}]` }],
       temperature: 0.5, max_tokens: 500,
     });
-    return content || '[]';
+    return cleanJSON(content) || '[]';
   } catch(e) { return '[]'; }
 }
 
