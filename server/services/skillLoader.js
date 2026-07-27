@@ -24,10 +24,10 @@ export function loadSkills(agent) {
   if (!files.length) { cache[agent] = ''; return ''; }
 
   const skills = files.map(f => {
-    const content = fs.readFileSync(path.join(dir, f), 'utf-8');
-    const name = f.replace('.md', '');
-    return `[SKILL: ${name}]\n${content}`;
-  }).join('\n\n---\n\n');
+    let content = fs.readFileSync(path.join(dir, f), 'utf-8');
+    content = content.replace(/^---[\s\S]*?---\n*/m, '').trim();
+    return `\n[SKILL: ${f.replace('.md', '')}]\n${content}`;
+  }).join('\n');
 
   cache[agent] = skills;
   return skills;
