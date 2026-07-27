@@ -24,6 +24,7 @@
 
 import { query } from '../db/database.js';
 import { chatContent } from './llm.js';
+import { loadSkills } from './skillLoader.js';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -513,8 +514,8 @@ Responda em JSON:
 }`;
 
     const content = await chatContent({
-      model: 'qwen-plus',
-      messages: [{ role: 'user', content: prompt }],
+      model: 'deepseek-chat',
+      messages: [{ role: 'system', content: loadSkills('security') }, { role: 'user', content: prompt }],
       temperature: 0.3,
       max_tokens: 1000,
       response_format: { type: 'json_object' },

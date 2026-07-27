@@ -20,6 +20,7 @@ const { Pool } = pg;
 const LEADS_DB_URL = process.env.DATABASE_LEADS_URL;
 
 let running = false;
+let lastRun = 0;  // timestamp da ultima execucao (cooldown 30min)
 let leadsPool = null;
 
 function getLeadsPool() {
@@ -439,6 +440,13 @@ async function sendToWhatsApp(intel, plan, isWeekly) {
   const evoKey = process.env.EVOLUTION_API_KEY || '';
   if (!evoKey || !evoUrl) return;
 
+  // So envia se houve atividade (evita spam de "zero envios")
+  const hasActivity = t.wpp.semana.sent > 0 || t.email.sent > 0 || t.reunioes.semana > 0 || (t.pipeline || []).some(p => p.valor > 0);
+  if (!isWeekly && !hasActivity) {
+    console.log('[Chief] Sem atividade — pulando envio WhatsApp');
+    return;
+  }
+
   const t = intel;
   const icon = isWeekly ? '📅' : '☀️';
   const title = isWeekly ? 'PLANEJAMENTO SEMANAL' : 'CEO BRIEFING';
@@ -523,7 +531,13 @@ async function sendToWhatsApp(intel, plan, isWeekly) {
 // ═══════════════════════════════════════════════════════════════════════════════
 export async function runChiefAgent() {
   if (running) return;
+  const now = Date.now();
+  if (now - lastRun < 30 * 60_000) {  // cooldown 30 minutos
+    console.log('[Chief] Cooldown — ultimo briefing foi ha', Math.round((now - lastRun)/60000), 'min');
+    return;
+  }
   running = true;
+  lastRun = now;
   try {
     const now = new Date();
     const brHour = (now.getUTCHours() - 3 + 24) % 24;
@@ -564,18 +578,31 @@ export async function runChiefAgent() {
 export function startChiefAgent() {
   if (!process.env.DEEPSEEK_API_KEY) { console.log('[Chief] DeepSeek nao configurada'); return; }
 
+  let lastDaily = '';    // 'YYYY-MM-DD-HH' da ultima execucao diaria
+  let lastWeekly = '';   // 'YYYY-MM-DD' do ultimo planejamento semanal
+
   const check = () => {
     const now = new Date();
     const brHour = (now.getUTCHours() - 3 + 24) % 24;
     const brMin = now.getUTCMinutes();
+    const today = now.toISOString().slice(0, 10);
+    const slot = `${today}-${brHour}`;
 
-    // 8:00 e 20:00 BRT — briefing diario
-    if ((brHour === 8 || brHour === 20) && brMin < 5) runChiefAgent();
-    // Domingo 20:00 BRT — planejamento semanal (isWeekly detectado dentro de runChiefAgent)
+    // Domingo 18h+ BRT — planejamento semanal (max 1x/semana)
+    if (now.getUTCDay() === 0 && brHour >= 18 && brMin < 5 && lastWeekly !== today) {
+      lastWeekly = today;
+      console.log('[Chief] Planejamento semanal...');
+      return runChiefAgent();
+    }
+
+    // 8:00 e 20:00 BRT — briefing diario (max 1x por slot)
+    if ((brHour === 8 || brHour === 20) && brMin < 5 && lastDaily !== slot) {
+      lastDaily = slot;
+      console.log('[Chief] Briefing diario...');
+      return runChiefAgent();
+    }
   };
 
   setInterval(check, 300_000);
-  // Executa no startup para ter o primeiro briefing
-  setTimeout(runChiefAgent, 15000);
-  console.log('[Chief] CEO ativo — briefings 8h/20h | Planejamento: dom 20h | Coach integrado');
+  console.log('[Chief] CEO ativo — briefing 8h/20h (max 2/dia) | Planejamento: dom 18h+ (max 1/sem) | Sem spam');
 }

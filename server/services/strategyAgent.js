@@ -1,17 +1,17 @@
 /**
- * Strategy Agent — Analisa tudo e gera relatório estratégico semanal
+ * Strategy Agent v2 — Analisa tudo e gera relatório estratégico semanal
  * Roda domingo às 18h. Chief of Staff autônomo.
+ * v2: DeepSeek + skills oficiais Owl-Listener
  */
 
 import { query, queryOne } from '../db/database.js';
 import axios from 'axios';
+import { chatContent } from './llm.js';
+import { loadSkills } from './skillLoader.js';
 
-const OPENAI_KEY = process.env.OPENAI_API_KEY || '';
 const EVO_URL = process.env.EVOLUTION_API_URL || 'https://evolution.vigasales.shop';
 const EVO_KEY = process.env.EVOLUTION_API_KEY || '';
 const AGENTS_GROUP = process.env.GROUP_COMANDO_ID || "120363428115495870@g.us";
-const USD_TO_BRL = 5.5;
-const COST_PER_MSG = 0.071;
 
 let running = false;
 
@@ -45,8 +45,8 @@ async function getFullStats() {
   return {
     week: { sent: weekSent, responses: weekResp, discarded: weekDesk, 
             responseRate: weekSent > 0 ? (weekResp/weekSent*100).toFixed(1) : '0',
-            cost: (weekSent * COST_PER_MSG * USD_TO_BRL).toFixed(2) },
-    month: { sent: monthSent, cost: (monthSent * COST_PER_MSG * USD_TO_BRL).toFixed(2) },
+            cost: (weekSent * parseFloat(process.env.COST_PER_MSG || '0.071') * parseFloat(process.env.USD_TO_BRL || '5.5')).toFixed(2) },
+    month: { sent: monthSent, cost: (monthSent * parseFloat(process.env.COST_PER_MSG || '0.071') * parseFloat(process.env.USD_TO_BRL || '5.5')).toFixed(2) },
     allTime: { responses: allResp, prospects: allProsp, 
                overallRate: allProsp > 0 ? (allRespTotal/allProsp*100).toFixed(1) : '0' },
     templates,
@@ -100,16 +100,15 @@ TAREFA:
 Responda em português, tom executivo mas direto, adequado pra WhatsApp. Use emojis com moderação. Máximo 800 caracteres.`;
 
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
+    const content = await chatContent({
+      model: 'deepseek-chat',
+      messages: [{ role: 'system', content: loadSkills('strategy') }, { role: 'user', content: prompt }],
       temperature: 0.7,
       max_tokens: 1000,
-    }, { headers: { 'Authorization': `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' } });
-
-    return res.data?.choices?.[0]?.message?.content || null;
+    });
+    return content || null;
   } catch (err) {
-    console.error('[StrategyAgent] OpenAI error:', err.message);
+    console.error('[StrategyAgent] Erro:', err.message);
     return null;
   }
 }

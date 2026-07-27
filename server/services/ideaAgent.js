@@ -1,12 +1,14 @@
 /**
- * Idea Agent — Analisa performance dos templates e gera novas ideias de mensagem
+ * Idea Agent v2 — Analisa performance dos templates e gera novas ideias de mensagem
  * Roda 2x por semana (segunda e quinta) e envia sugestões pro grupo de notificações
+ * v2: DeepSeek + skills oficiais Owl-Listener
  */
 
 import { query } from '../db/database.js';
 import axios from 'axios';
+import { chatContent } from './llm.js';
+import { loadSkills } from './skillLoader.js';
 
-const OPENAI_KEY = process.env.OPENAI_API_KEY || '';
 const EVO_URL = process.env.EVOLUTION_API_URL || 'https://evolution.vigasales.shop';
 const EVO_KEY = process.env.EVOLUTION_API_KEY || '';
 const AGENTS_GROUP = process.env.AGENTS_GROUP_ID || '120363428115495870@g.us';
@@ -38,8 +40,6 @@ async function getTemplateStats() {
 }
 
 async function generateIdeas(stats) {
-  if (!OPENAI_KEY) return null;
-
   const templateList = stats.templates
     .map(t => `"${t.name}": ${t.sent_count} envios, pausado=${t.paused ? 'sim' : 'não'}`)
     .join('\n');
@@ -64,16 +64,15 @@ TAREFA:
 Responda em português, formato WhatsApp-friendly, tom direto e acionável.`;
 
   try {
-    const res = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
+    const content = await chatContent({
+      model: 'deepseek-chat',
+      messages: [{ role: 'system', content: loadSkills('idea') }, { role: 'user', content: prompt }],
       temperature: 0.9,
       max_tokens: 1500,
-    }, { headers: { 'Authorization': `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' } });
-
-    return res.data?.choices?.[0]?.message?.content || null;
+    });
+    return content || null;
   } catch (err) {
-    console.error('[IdeaAgent] OpenAI error:', err.message);
+    console.error('[IdeaAgent] Erro:', err.message);
     return null;
   }
 }
