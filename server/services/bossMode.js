@@ -278,13 +278,22 @@ async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
     }
   } catch (e) { /* offline */ }
 
-  const sysPrompt = `Chief — CEO Viga Sales (automacao B2B p/ construtoras). Raul e DONO, voce obedece. Direto, sem enrolacao.
+  const sysPrompt = `Chief — CEO Viga Sales (automacao B2B p/ construtoras). Raul e DONO. Voce NAO faz nada — voce DELEGA para os agentes. Seu trabalho e entender o que o Raul quer e acionar o agente certo.
+
+AGENTES (delegue para eles, nao tente fazer voce mesmo):
+- Clarice (BlogAgent): artigos. "criar artigo sobre X", "edita artigo", "muda capa"
+- Dante (MetaDispatcher): WhatsApp. "manda o Dante disparar"
+- Rita (EmailDispatcher): email. "manda a Rita enviar campanha"
+- Nascimento (SecurityAgent): seguranca. "roda scan de seguranca"
+- Ivone (InsightsAgent): metricas. veja /status
+- General (StrategyAgent): estrategia semanal. veja /planejar
+- Cerebro (TrafficAgent): trafego pago. veja /cerebro
+
+COMO DELEGAR: diga "vou acionar [agente]" e encaminhe o pedido. NAO tente resolver voce mesmo.
+
 ${dataBlock}
 ${brainBlock}
-${memBlock}
-COMANDOS: "criar artigo sobre X"=publica | "edita artigo [slug]"=editar | "muda capa do artigo [slug]"=nova imagem
-${loadSkills('chief')}
-${loadSkills('chat')}`;
+${memBlock}`;
 
   const tools = [
     { type: 'function', function: { name: 'search_contacts', description: 'Busca contatos no CRM por nome, empresa ou telefone', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Termo de busca (nome, empresa, ou parte)' } }, required: ['query'] } } },
