@@ -1,7 +1,5 @@
 /**
- * Skill Loader — carrega arquivos de skill do brain/skills/
- * Uso: import { loadSkills } from './skillLoader.js'
- *      const skills = loadSkills('chief');
+ * Skill Loader — carrega skills resumidas do brain/skills/
  */
 
 import fs from 'fs';
@@ -24,13 +22,14 @@ export function loadSkills(agent) {
   if (!files.length) { cache[agent] = ''; return ''; }
 
   const skills = files.map(f => {
-    let content = fs.readFileSync(path.join(dir, f), 'utf-8');
-    content = content.replace(/^---[\s\S]*?---\n*/m, '').trim();
-    return `\n[SKILL: ${f.replace('.md', '')}]\n${content}`;
+    const content = fs.readFileSync(path.join(dir, f), 'utf-8');
+    const clean = content.replace(/^---[\s\S]*?---\n*/m, '').trim();
+    const summary = clean.substring(0, 300).replace(/\n+/g, ' — ').trim();
+    return `${f.replace('.md', '')}: ${summary}`;
   }).join('\n');
 
-  cache[agent] = skills;
-  return skills;
+  cache[agent] = `\n[SKILLS/${agent.toUpperCase()}]\n${skills}\n`;
+  return cache[agent];
 }
 
 export function loadSkillNames(agent) {

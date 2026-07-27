@@ -148,6 +148,10 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
     return confirmBlogCreate(phone, cmd, metaApi);
   }
 
+  if (/muda[r]?\s+(?:a\s+)?(?:imagem|capa)\s+(?:do\s+)?artigo|refaz\s+(?:a\s+)?capa|nova\s+(?:imagem|capa)/.test(lower)) {
+    return confirmBlogAction(phone, cmd, metaApi, 'blogNewImage');
+  }
+
   // ── CONVERSA NATURAL ──
   return chatResponse(phone, cmd, name, metaApi, imageUrl);
 }
@@ -213,6 +217,11 @@ async function executeAction(action, data, phone, metaApi) {
       const { deleteArticle } = await import('./blogAgent.js');
       const r = await deleteArticle(data.slug);
       await metaApi.sendText(phone, r ? `✅ Excluido: ${r.title}` : '❌ Nao encontrado.');
+    } else if (action === 'blogNewImage') {
+      await metaApi.sendText(phone, `🎨 Refazendo capa de "${data.slug}"...`);
+      const { editArticleImage } = await import('./blogAgent.js');
+      const r = await editArticleImage(data.slug);
+      await metaApi.sendText(phone, r ? `✅ Nova capa gerada!\n🖼️ https://vigasales.shop${r}` : '❌ Nao encontrado.');
     }
   } catch(e) { console.error('[BOSS] executeAction:', e.message); }
 }
@@ -233,62 +242,47 @@ async function createDelegationTask(phone, cmd, agentId, metaApi) {
 async function chatResponse(phone, cmd, name, metaApi, imageUrl) {
   if (!process.env.DEEPSEEK_API_KEY) return metaApi.sendText(phone, '🤖 IA offline.');
 
-  const intel = await getIntel();
-  const tasks = await query("SELECT title, priority, category FROM chief_tasks WHERE status='pendente' LIMIT 8").catch(()=>[]);
-  const okrs = await query("SELECT objetivo, key_result, progresso_atual FROM chief_okrs WHERE status='ativo' LIMIT 5").catch(()=>[]);
-  const lastBriefing = await queryOne("SELECT panorama, acao_principal, created_at FROM chief_briefings ORDER BY created_at DESC LIMIT 1").catch(()=>null);
-  const memory = await query("SELECT role, content FROM boss_memory WHERE phone=$1 ORDER BY created_at DESC LIMIT 6", [phone]).catch(()=>[]);
+  const lower = cmd?.toLowerCase() || '';
 
-  let chiefBrain = '';
+  // Só carrega dados pesados se a conversa pedir
+  let dataBlock = '';
+  if (/status|metricas|numero|quantos|quantas|pipeline|fila|enviou|resposta|wpp|email|blog|artigo|publicado|reuniao|venda/.test(lower)) {
+    const intel = await getIntel();
+    const tasks = await query("SELECT title, priority FROM chief_tasks WHERE status='pendente' LIMIT 5").catch(()=>[]);
+    const tasksStr = tasks.map(t => `${t.priority==='alta'?'🔴':'🟡'} ${t.title}`).join(' | ') || 'nenhuma';
+    const pipeTotal = (intel.pipeline || []).reduce((s, p) => s + (p.valor || 0), 0);
+    dataBlock = `📊 WPP ${intel.wpp.hoje}hj/${intel.wpp.semana}s(${intel.wpp.rate}%) | Email ${intel.email} | Blog ${intel.blog} | Fila ${intel.fila} | Reunioes ${intel.reunioes?.hoje||0}hj | Pipeline R$${pipeTotal.toLocaleString('pt-BR')} | Tarefas: ${tasksStr}`;
+  }
+
+  // Só carrega cerebro se for pergunta de negocio/estrategia
+  let brainBlock = '';
+  if (/estrategia|venda|cliente|concorrente|mercado|precificacao|processo|marketing|growth|captacao|prospeccao|financas/.test(lower)) {
+    try {
+      const { execSync } = await import('child_process');
+      const result = execSync(`python3 scripts/query_chief_brain.py "${cmd.substring(0, 150).replace(/"/g, '\\"')}"`, {
+        encoding: 'utf-8', maxBuffer: 256 * 1024, timeout: 8000,
+      });
+      const d = JSON.parse(result);
+      if (d.results?.length) {
+        brainBlock = '\n[CEREBRO]\n' + d.results.slice(0, 2).map(r => `${r.topico}: ${r.summary?.substring(0, 250)}`).join('\n');
+      }
+    } catch (e) { /* offline */ }
+  }
+
+  // Memoria da conversa (so ultimas 3)
+  let memBlock = '';
   try {
-    const { execSync } = await import('child_process');
-    const result = execSync(`python3 scripts/query_chief_brain.py "${cmd.replace(/"/g, '\\"').substring(0, 200)}"`, {
-      encoding: 'utf-8', maxBuffer: 1024 * 1024, timeout: 10000,
-    });
-    const data = JSON.parse(result);
-    if (data.results?.length) {
-      chiefBrain = 'CONHECIMENTO DO CEO:\n' + data.results.slice(0, 2).map(r => `[${r.topico}] ${r.summary?.substring(0, 300) || r.descricao}`).join('\n\n');
+    const mem = await query("SELECT role, content FROM boss_memory WHERE phone=$1 ORDER BY created_at DESC LIMIT 4", [phone]).catch(()=>[]);
+    if (mem.length) {
+      memBlock = '\n[CHAT]\n' + mem.reverse().map(m => `${m.role==='user'?'Raul':'Chief'}: ${m.content?.substring(0, 60)}`).join('\n');
     }
-  } catch (e) { /* brain offline */ }
+  } catch (e) { /* offline */ }
 
-  const pipelineTotal = (intel.pipeline || []).reduce((s, p) => s + (p.valor || 0), 0);
-  const pipelineStr = (intel.pipeline || []).map(p => `${p.etapa}: ${p.total} leads (R$${p.valor?.toLocaleString?.('pt-BR') || 0})`).join(', ') || 'vazio';
-  const tasksStr = tasks.map(t => `${t.priority==='alta'?'🔴':'🟡'} ${t.title} [${t.category}]`).join(' | ') || 'nenhuma';
-  const okrsStr = okrs.map(o => `${o.objetivo} → ${o.key_result} (${o.progresso_atual || '0%'})`).join(' | ') || 'nenhum';
-  const memStr = memory.reverse().map(m => `${m.role==='user'?'Raul':'Chief'}: ${m.content?.substring(0, 80)}`).join('\n');
-
-  const sysPrompt = `Voce e o CHIEF — CEO da Viga Sales, empresa de automacao B2B (WhatsApp, CRM, trafego pago, sites) para construtoras.
-O Raul e o DONO. Voce TRABALHA PRA ELE. Obedece ordens. Executa acoes. Reporta resultados.
-Seja DIRETO, sem enrolacao. Nada de "otimo!" ou "excelente pergunta!".
-
-DADOS:
-📱 WPP: ${intel.wpp.hoje} hj | ${intel.wpp.semana} sem | ${intel.wpp.rate}% tx
-📧 Email: ${intel.email} env | 📝 Blog: ${intel.blog} posts
-🤝 Reunioes: ${intel.reunioes?.hoje || 0} hj | ${intel.reunioes?.semana || 0} sem
-📦 Fila: ${intel.fila} leads | 💼 Pipeline: R$ ${pipelineTotal.toLocaleString('pt-BR')} — ${pipelineStr}
-📋 Tarefas: ${tasksStr} | 🎯 OKRs: ${okrsStr}
-${chiefBrain ? `\n${chiefBrain}\n` : ''}
-${memStr ? `\nULTIMAS MENSAGENS:\n${memStr}\n` : ''}
-
-VOÇE TEM FERRAMENTAS. Use-as quando o Raul pedir algo acionavel. Nao prometa — execute.
-VOCE TEM SKILLS (habilidades especiais). Aplique-as em cada resposta.
-NUNCA invente eventos passados. NUNCA diga que o Raul "interrompeu", "cancelou" ou "desistiu" de algo — a menos que ele tenha dito isso EXPLICITAMENTE. Se nao sabe o que aconteceu, pergunte.
-
-AGENTES QUE VOCE PODE ACIONAR:
-- Dante (MetaDispatcher): envia templates WhatsApp, 400/dia
-- Rita (EmailDispatcher): envia campanhas de email
-- Clarice (BlogAgent): escreve e publica artigos. Para criar artigo: "criar artigo sobre [tema]". Imagem de capa via DALL-E.
-- Nascimento (SecurityAgent): varredura de seguranca
-- Ivone (InsightsAgent): metricas diarias
-- General (StrategyAgent): diagnostico semanal
-- Cerebro (TrafficAgent): conhecimento de trafego pago
-
-FLUXO PARA CRIAR ARTIGO:
-1. Raul diz "criar artigo sobre X" → confirme tema, espere "sim"
-2. Raul diz "sim" → Clarice escreve a copy, envie o texto para revisao
-3. Raul diz "sim" → Clarice gera imagem de capa, envie a imagem
-4. Raul diz "sim" → Clarice publica, envie o link
-
+  const sysPrompt = `Chief — CEO Viga Sales (automacao B2B p/ construtoras). Raul e DONO, voce obedece. Direto, sem enrolacao.
+${dataBlock}
+${brainBlock}
+${memBlock}
+COMANDOS: "criar artigo sobre X"=publica | "edita artigo [slug]"=editar | "muda capa do artigo [slug]"=nova imagem
 ${loadSkills('chief')}
 ${loadSkills('chat')}`;
 
