@@ -154,7 +154,6 @@ export function startMediaAgent() {
     const brHour = (now.getUTCHours() - 3 + 24) % 24;
     const brDay = now.getUTCDay();
     const brMin = now.getMinutes();
-    // Sábado, 11:00
     if (brDay === 6 && brHour === 11 && brMin < 5) {
       runMediaAgent();
     }
@@ -162,4 +161,25 @@ export function startMediaAgent() {
 
   setInterval(check, 300_000);
   console.log('[MediaAgent] Agente iniciado — sáb às 11h');
+}
+
+export async function generateOnDemand(userPrompt) {
+  if (!OPENAI_KEY) return null;
+  try {
+    const res = await axios.post('https://api.openai.com/v1/images/generations', {
+      model: 'dall-e-3',
+      prompt: `${userPrompt}. Brazilian market. Clean, professional style. No watermarks.`,
+      n: 1, size: '1024x1024',
+    }, { headers: { 'Authorization': `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' }, timeout: 60000 });
+    const imageUrl = res.data?.data?.[0]?.url;
+    if (!imageUrl) return null;
+
+    // Download and save locally
+    const imgRes = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    const fn = `ondemand_${Date.now()}.png`;
+    const dir = path.join(__dirname,'..','..','public','templates');
+    if(!fs.existsSync(dir)) fs.mkdirSync(dir,{recursive:true});
+    fs.writeFileSync(path.join(dir,fn), Buffer.from(imgRes.data));
+    return `/templates/${fn}`;
+  } catch(e) { console.error('[MediaAgent] on-demand:', e.message); return null; }
 }

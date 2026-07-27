@@ -152,6 +152,22 @@ export async function handleBossCommand(phone, cmd, name, metaApi, imageUrl = nu
     return confirmBlogAction(phone, cmd, metaApi, 'blogNewImage');
   }
 
+  if (/cri[ae]r?\s+(?:uma\s+)?(?:imagem|arte|figura|ilustracao)\s+(?:de|sobre|do|da)\s+(.+)/i.test(cmd) || /gera[r]?\s+(?:uma\s+)?(?:imagem|arte|figura)\s+(?:de|sobre|do|da)\s+(.+)/i.test(cmd)) {
+    const prompt = RegExp.$1 || cmd;
+    await metaApi.sendText(phone, '🎨 Gerando imagem... (~10s)');
+    const { generateOnDemand } = await import('./mediaAgent.js');
+    const imgPath = await generateOnDemand(prompt);
+    if (imgPath) {
+      return metaApi.sendText(phone, `✅ Imagem gerada!\n🖼️ https://vigasales.shop${imgPath}`);
+    } else {
+      return metaApi.sendText(phone, '❌ Falha ao gerar. OpenAI ok?');
+    }
+  }
+
+  if (/agente\s+designer|media\s*agent/.test(lower)) {
+    return metaApi.sendText(phone, '🎨 Sou eu, o Chief. Me diga "cria uma imagem de [descricao]" que eu delego pro MediaAgent.');
+  }
+
   // ── CONVERSA NATURAL ──
   return chatResponse(phone, cmd, name, metaApi, imageUrl);
 }
@@ -222,6 +238,20 @@ async function executeAction(action, data, phone, metaApi) {
       const { editArticleImage } = await import('./blogAgent.js');
       const r = await editArticleImage(data.slug);
       await metaApi.sendText(phone, r ? `✅ Nova capa gerada!\n🖼️ https://vigasales.shop${r}` : '❌ Nao encontrado.');
+    } else if (action === 'mediaGenerate') {
+      // Usuario ja deu o prompt na mensagem anterior
+      await metaApi.sendText(phone, 'Fala o prompt da imagem. Ex: "dashboard de vendas com graficos azuis estilo corporativo"');
+      pendingActions.set(phone, {action:'mediaPrompt', data:{}, expires:Date.now()+120000});
+    } else if (action === 'mediaPrompt') {
+      // O texto da confirmacao e o prompt (vem do cmd)
+      await metaApi.sendText(phone, '🎨 Gerando imagem... (~10s)');
+      const { generateOnDemand } = await import('./mediaAgent.js');
+      const imgPath = await generateOnDemand(cmd);
+      if (imgPath) {
+        await metaApi.sendText(phone, `✅ Imagem gerada!\n🖼️ https://vigasales.shop${imgPath}`);
+      } else {
+        await metaApi.sendText(phone, '❌ Falha ao gerar imagem. OpenAI key ok?');
+      }
     }
   } catch(e) { console.error('[BOSS] executeAction:', e.message); }
 }
