@@ -56,7 +56,7 @@ async function getFullStats() {
 }
 
 async function generateStrategy(stats) {
-  if (!OPENAI_KEY) return null;
+  if (!process.env.DEEPSEEK_API_KEY) return null;
 
   const topTemplates = (stats.templates || [])
     .slice(0, 5)
@@ -147,8 +147,8 @@ export async function runStrategyAgent() {
 }
 
 export function startStrategyAgent() {
-  if (!OPENAI_KEY) {
-    console.log('[StrategyAgent] OpenAI não configurada — offline');
+  if (!process.env.DEEPSEEK_API_KEY) {
+    console.log('[StrategyAgent] DeepSeek nao configurada — offline');
     return;
   }
 

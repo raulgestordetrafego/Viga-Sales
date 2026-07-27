@@ -105,8 +105,8 @@ export async function runIdeaAgent() {
 }
 
 export function startIdeaAgent() {
-  if (!OPENAI_KEY) {
-    console.log('[IdeaAgent] OpenAI não configurada — offline');
+  if (!process.env.DEEPSEEK_API_KEY) {
+    console.log('[IdeaAgent] DeepSeek nao configurada — offline');
     return;
   }
 
