@@ -50,7 +50,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=n8n_default
 
-      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`) || Host(`equipe.vigasales.shop`) || Host(`blog.vigasales.com.br`)
+      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`) || Host(`equipe.vigasales.shop`) || Host(`blog.vigasales.com.br`) || Host(`proposta124.vigasales.com.br`)
       - traefik.http.routers.vigasales.tls=true
       - traefik.http.routers.vigasales.entrypoints=web,websecure
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge

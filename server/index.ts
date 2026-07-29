@@ -1070,6 +1070,14 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     res.sendFile(path.join(__dirname, '..', 'public', 'case-construtora.html'));
   });
 
+  // Proposta Comercial — Universal Distribuidora (subdomínio: proposta124.vigasales.com.br)
+  app.use((req, res, next) => {
+    if (req.hostname === 'proposta124.vigasales.com.br') {
+      return res.sendFile(path.join(__dirname, '..', 'public', 'proposta-universal.html'));
+    }
+    next();
+  });
+
   // ── Meta WhatsApp Cloud API Webhook ──────────────────────────────────────────
   const META_VERIFY_TOKEN = process.env.META_VERIFY_TOKEN || '';
   const META_ACCESS_TOKEN = process.env.META_ACCESS_TOKEN || '';
