@@ -140,10 +140,9 @@
     .hero__right { position: relative; overflow: hidden; }
     .hero__bg-img {
       position: absolute; inset: 0;
-      background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gJkSUNDX1BST0ZJTEUAAQEAAAJUbGNtcwQwAABtbnRyUkdCIFhZWiAH6gAFAA0ADwA0AB5hY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWxjbXMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtkZXNjAAABCAAAAD5jcHJ0AAABSAAAAEx3dHB0AAABlAAAABRjaGFkAAABqAAAACxyWFlaAAAB1AAAABRiWFlaAAAB6AAAABRnWFlaAAAB/AAAABRyVFJDAAACEAAAACBnVFJDAAACEAAAACBiVFJDAAACEAAAACBjaHJtAAACMAAAACRtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACIAAAAcAHMAUgBHAEIAIABJAEUAQwA2ADEAOQA2ADYALQAyAC4AMQAAbWx1YwAAAAAAAAABAAAADGVuVVMAAAAwAAAAHABOAG8AIABjAG8AcAB5AHIAaQBnAGgAdAAsACAAdQBzAGUAIABmAHIAZQBlAGwAeVhZWiAAAAAAAAD21gABAAAAANMtc2YzMgAAAAAAAQxCAAAF3v//8yUAAAeTAAD9kP//+6H///2iAAAD3AAAwG5YWVogAAAAAAAAb6AAADj1AAADkFhZWiAAAAAAAAAknwAAD4QAALbDWFlaIAAAAAAAAGKXAAC3hwAAGNlwYXJhAAAAAAADAAAAAmZmAADypwAADVkAABPQAAAKW2Nocm0AAAAAAAMAAAAAo9cAAFR7AABMzQAAmZoAACZmAAAPXP/bAEMAEgwNEA0LEhAOEBQTEhUbLB0bGBgbNicpICxAOURDPzk+PUdQZldHS2FNPT5ZeVphaW1yc3JFVX2GfG+FZnBybv/bAEMBExQUGxcbNB0dNG5JPklubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubv/AABEIA8IGYwMBIgACEQEDEQH/xAAbAAEBAAMBAQEAAAAAAAAAAAAAAQIDBAUGB//EAEoQAAIBAgQCBwQHBgMGBgMBAQABAgMRBBIhMUFRBRMiMmFxgXKRobEUIzNCUsHRBiQ0YnOCkrLhFSVDU2PwNYOTosLxRFR0s2T/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAQIDBAX/xAAyEQEBAAICAgEEAgADBwUBAAAAAQIRAzESIUEEIjJRE2EjM3EUQoGRobHwBUPB0eFS/9oADAMBAAIRAxEAPwD4sAHVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAKBAAAKAAAAAAAQFAAAAAAAAAAAAAAAAAAAAAAAAAAAAQFAAAAAAAAAAAAAAAIUAQAoEAAFAAAhQBAAFAChAgAAAoAAACFIAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAQAAUAAAAAAABSFAQIUFEBQQQFAEBQUCFAAAAAAAAAAAAAAAAKBAAAAKBAAABQBAAAAAAAAAAABSAAUAQFAEBQBAUgFIUAQAAAAAAKBAAAAAAAAAAAAAAAAAAAAAAAAQFBBACgAABAAFAAAAAAAAAAAAAAAAAAAAAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAUgAAoEBSAAAAAKBAUAQoAEBQBCgAAAAIUFEKABCgAAAAAAAAAAAAAAAFAEBQBCgAQoAAhQBCgAAAUAAAABBCgFAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALcCFAIqAoAhQAAAAgKAICkAAAAAAAAAAACAoAgKCCAAKAAAAAAAAAAAAAAAAAAAAAigAAAA... (line truncated to 2000 chars)');
-      background-size: cover;
-      background-position: right center;
-      opacity: 1;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: right center;
     }
     .hero__right::before {
       content: '';
@@ -479,35 +478,6 @@
     }
     .faq__item.open .faq__a { max-height: 400px; }
 
-    /* ═══ CTA FINAL ═══ */
-    .cta-section {
-      padding: 120px 0;
-      position: relative; overflow: hidden;
-      background-image: url('https://vigasales.shop/public/sessao-cta-desktop.jpg');
-      background-size: cover;
-      background-position: center;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to right, rgba(8,17,31,0.88) 0%, rgba(8,17,31,0.70) 40%, rgba(8,17,31,0.20) 60%, transparent 100%);
-      pointer-events: none;
-    }
-    .cta-section__content { position: relative; max-width: 560px; }
-    .cta-section__title { font-size: clamp(28px, 3.5vw, 48px); font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
-    .cta-section__title span { color: var(--orange); }
-    .cta-section__sub { font-size: 16px; color: var(--muted); max-width: 460px; margin-bottom: 36px; line-height: 1.7; }
-    .cta-section__note { margin-top: 16px; font-size: 12px; color: var(--muted2); }
-    @media (max-width: 768px) {
-      .cta-section {
-        background-image: url('https://vigasales.shop/public/sessao-cta-mobile.jpg');
-        background-position: top center;
-      }
-      .cta-section::before {
-        background: linear-gradient(to bottom, rgba(8,17,31,0.85) 0%, rgba(8,17,31,0.70) 100%);
-      }
-    }
-
     /* ═══ FOOTER ═══ */
     .footer {
       border-top: 1px solid var(--border);
@@ -647,7 +617,7 @@
         <li><a href="#faq">FAQ</a></li>
       </ul>
 
-      <a href="#" onclick="openModal();return false;" class="btn btn--orange nav__cta">SESSÃO ESTRATÉGICA →</a>
+      
     </div>
   </div>
 </nav>
@@ -669,7 +639,6 @@
         Atraia mecânicos, frotistas e transportadoras que realmente compram — com campanhas inteligentes no Google e Meta, funil de vendas de alta conversão e acompanhamento próximo. Sem desperdício. Sem achismo.
       </p>
       <div class="hero__actions">
-        <a href="#" onclick="openModal();return false;" class="btn btn--orange">QUERO ATRAIR CLIENTES QUALIFICADOS AGORA →</a>
       </div>
       <div class="hero__note">
         <div class="hero__note-icon">📅</div>
@@ -679,7 +648,7 @@
   </div>
   </div>
   <div class="hero__right">
-    <div class="hero__bg-img"></div>
+    <img class="hero__bg-img" src="/public/hero-universal.jpg" alt="Dona de loja de peças" />
   </div>
 </section>
 
@@ -946,21 +915,6 @@
           <div class="faq__a-inner">O valor de mídia (Google + Meta) é separado da taxa de gestão. Recomendamos um investimento inicial em torno de R$ 2.000/mês para ter volume de dados suficiente para otimização, mas não é uma regra — podemos começar com um valor menor e escalar conforme os resultados aparecerem.</div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ CTA FINAL ═══ -->
-<section class="cta-section" id="sessao">
-  <div class="container">
-    <div class="cta-section__content">
-      <div class="section-label">Pronto para Escalar?</div>
-      <h2 class="cta-section__title">Sua loja merece os clientes que já estão <span>procurando por você.</span></h2>
-      <p class="cta-section__sub">Agende uma sessão estratégica gratuita e descubra o caminho mais rápido para encher sua loja de clientes qualificados.</p>
-      <a href="#" onclick="openModal();return false;" class="btn btn--orange" style="font-size:14px;padding:18px 40px;">
-        📅 Quero Minha Sessão Estratégica Grátis →
-      </a>
-      <p class="cta-section__note">Sessão 100% gratuita · Sem compromisso · Resposta em até 24h</p>
     </div>
   </div>
 </section>
