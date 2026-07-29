@@ -216,17 +216,49 @@
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       padding: 22px 0;
+      overflow: hidden;
     }
-    .strip__inner { display: flex; align-items: center; gap: 28px; overflow: hidden; }
+    .strip__inner { display: flex; align-items: center; gap: 28px; }
     .strip__label {
       font-size: 10px; font-weight: 700; letter-spacing: 2px;
       text-transform: uppercase; color: var(--muted2);
       white-space: nowrap; flex-shrink: 0;
     }
-    .strip__items { display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+    .strip__track {
+      overflow: hidden;
+      flex: 1;
+    }
+    .strip__items {
+      display: flex; align-items: center; gap: 48px;
+      animation: strip-scroll 20s linear infinite;
+      animation-play-state: paused;
+      width: max-content;
+    }
+    .strip__items.paused { animation-play-state: paused; }
+    @keyframes strip-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .strip__items.playing { animation-play-state: running; }
     .strip__item {
       font-size: 12px; font-weight: 700; letter-spacing: 1px;
       text-transform: uppercase; color: var(--muted2);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .strip__items {
+        gap: 0;
+        animation: none;
+      }
+      .strip__item {
+        flex: 0 0 100%;
+        text-align: center;
+      }
+      .strip__items.mobile-scroll {
+        display: flex;
+        transition: transform 0.4s ease;
+      }
     }
 
     /* ═══ PROBLEM ═══ */
@@ -657,16 +689,23 @@
 </section>
 
 <!-- ═══ STRIP ═══ -->
-<div class="strip">
+<div class="strip" id="techStrip">
   <div class="container">
     <div class="strip__inner">
       <span class="strip__label">Tecnologias</span>
-      <div class="strip__items">
-        <span class="strip__item">Google Ads</span>
-        <span class="strip__item">Meta Ads</span>
-        <span class="strip__item">Páginas de Alta Conversão</span>
-        <span class="strip__item">Funil de Vendas</span>
-        <span class="strip__item">Relatórios Semanais</span>
+      <div class="strip__track">
+        <div class="strip__items" id="stripItems">
+          <span class="strip__item">Google Ads</span>
+          <span class="strip__item">Meta Ads</span>
+          <span class="strip__item">Páginas de Alta Conversão</span>
+          <span class="strip__item">Funil de Vendas</span>
+          <span class="strip__item">Relatórios Semanais</span>
+          <span class="strip__item">Google Ads</span>
+          <span class="strip__item">Meta Ads</span>
+          <span class="strip__item">Páginas de Alta Conversão</span>
+          <span class="strip__item">Funil de Vendas</span>
+          <span class="strip__item">Relatórios Semanais</span>
+        </div>
       </div>
     </div>
   </div>
@@ -976,6 +1015,38 @@
     document.querySelectorAll('.faq__item.open').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // ── STRIP SCROLL ──
+  (function() {
+    const strip = document.getElementById('techStrip');
+    const items = document.getElementById('stripItems');
+    if (!strip || !items) return;
+
+    const isMobile = window.innerWidth <= 640;
+    let mobileIndex = 0;
+
+    if (isMobile) {
+      items.classList.add('mobile-scroll');
+      const itemEls = items.querySelectorAll('.strip__item');
+      itemEls.forEach(el => el.style.minWidth = '100%');
+      function slideMobile() {
+        mobileIndex = (mobileIndex + 1) % itemEls.length;
+        items.style.transform = `translateX(-${mobileIndex * 100}%)`;
+      }
+      setInterval(slideMobile, 2000);
+    } else {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            items.classList.add('playing');
+          } else {
+            items.classList.remove('playing');
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(strip);
+    }
+  })();
 
   function openModal() {
     document.getElementById('modalOverlay').classList.add('open');
