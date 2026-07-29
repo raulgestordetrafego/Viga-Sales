@@ -240,16 +240,21 @@
 
     @media (max-width: 640px) {
       .strip__items {
-        gap: 0;
-        animation: none;
+        gap: 60px;
+        animation: strip-scroll-mobile 10s linear infinite;
+      }
+      @keyframes strip-scroll-mobile {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(0); }
+        30% { transform: translateX(-100%); }
+        55% { transform: translateX(-100%); }
+        60% { transform: translateX(-200%); }
+        85% { transform: translateX(-200%); }
+        90% { transform: translateX(-300%); }
+        100% { transform: translateX(-300%); }
       }
       .strip__item {
-        flex: 0 0 100%;
-        text-align: center;
-      }
-      .strip__items.mobile-scroll {
-        display: flex;
-        transition: transform 0.4s ease;
+        flex: 0 0 calc(100vw - 56px);
       }
     }
 
@@ -1027,18 +1032,8 @@
     if (!strip || !items) return;
 
     const isMobile = window.innerWidth <= 640;
-    let mobileIndex = 0;
 
-    if (isMobile) {
-      items.classList.add('mobile-scroll');
-      const itemEls = items.querySelectorAll('.strip__item');
-      itemEls.forEach(el => el.style.minWidth = '100%');
-      function slideMobile() {
-        mobileIndex = (mobileIndex + 1) % itemEls.length;
-        items.style.transform = `translateX(-${mobileIndex * 100}%)`;
-      }
-      setInterval(slideMobile, 2000);
-    } else {
+    if (!isMobile) {
       const obs = new IntersectionObserver((entries) => {
         entries.forEach(e => {
           if (e.isIntersecting) {
