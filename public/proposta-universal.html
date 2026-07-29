@@ -240,21 +240,11 @@
 
     @media (max-width: 640px) {
       .strip__items {
-        gap: 0;
-        animation: strip-scroll-mobile 8s ease-in-out infinite;
-      }
-      @keyframes strip-scroll-mobile {
-        0%, 20% { transform: translateX(0); }
-        25%, 45% { transform: translateX(-100vw); }
-        50%, 70% { transform: translateX(-200vw); }
-        75%, 95% { transform: translateX(-300vw); }
-        100% { transform: translateX(0); }
+        gap: 24px;
+        animation: strip-scroll 15s linear infinite;
       }
       .strip__item {
-        flex: 0 0 100vw;
-        padding: 0 28px;
-        text-align: center;
-        box-sizing: border-box;
+        flex: 0 0 auto;
       }
     }
 
@@ -1028,20 +1018,16 @@
     const items = document.getElementById('stripItems');
     if (!strip || !items) return;
 
-    const isMobile = window.innerWidth <= 640;
-
-    if (!isMobile) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            items.classList.add('playing');
-          } else {
-            items.classList.remove('playing');
-          }
-        });
-      }, { threshold: 0.3 });
-      obs.observe(strip);
-    }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          items.classList.add('playing');
+        } else {
+          items.classList.remove('playing');
+        }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(strip);
   })();
 
   function openModal() {
