@@ -1078,6 +1078,14 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     next();
   });
 
+  // Proposta Comercial — Doutor Açaí (subdomínio: proposta125.vigasales.com.br)
+  app.use((req, res, next) => {
+    if (req.hostname === 'proposta125.vigasales.com.br') {
+      return res.sendFile(path.join(__dirname, '..', 'public', 'proposta-doutor-acai.html'));
+    }
+    next();
+  });
+
   // ── Meta WhatsApp Cloud API Webhook ──────────────────────────────────────────
   const META_VERIFY_TOKEN = process.env.META_VERIFY_TOKEN || '';
   const META_ACCESS_TOKEN = process.env.META_ACCESS_TOKEN || '';
