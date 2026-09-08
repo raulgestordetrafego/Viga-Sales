@@ -20,10 +20,10 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.error) {
       return (
-        <div style={{padding:40,textAlign:'center',color:'#ef4444',background:'#07101e',minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16}}>
+        <div style={{padding:40,textAlign:'center',color:'#ef4444',background:'#0a1c38',minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16}}>
           <div style={{fontSize:32}}>⚠️</div>
           <div style={{fontSize:16,fontWeight:700,color:'#fff'}}>Erro na tela</div>
-          <div style={{fontSize:13,color:'#f87171',maxWidth:500,wordBreak:'break-all',background:'#0c1829',padding:'12px 16px',borderRadius:10,border:'1px solid #ef444430'}}>
+          <div style={{fontSize:13,color:'#f87171',maxWidth:500,wordBreak:'break-all',background:'#0a1c38',padding:'12px 16px',borderRadius:10,border:'1px solid #ef444430'}}>
             {this.state.error?.message || String(this.state.error)}
           </div>
           <button onClick={()=>this.setState({error:null})} style={{marginTop:8,padding:'8px 20px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontWeight:600}}>
@@ -46,13 +46,13 @@ const socket = io(window.location.origin, {
 
 // ─── Design tokens — Viga Identity ───────────────────────────────────────────
 const C = {
-  bg:      '#07101e',          // Fundo principal navy-black
-  surface: '#0c1829',          // Superfícies / painéis
-  card:    '#101f34',          // Cards
-  border:  '#1a3050',          // Bordas navy
+  bg:      '#0e2448',          // Fundo principal azul marinho (igual menu do Viga Hub)
+  surface: '#0a1c38',          // Superfícies / painéis (mais escuro p/ contraste)
+  card:    '#10294d',          // Cards
+  border:  '#1c3f70',          // Bordas navy
   text:    '#e8edf5',          // Texto principal
-  muted:   '#7a90b0',          // Texto secundário
-  dim:     '#3a5270',          // Texto apagado
+  muted:   '#a8bcdb',          // Texto secundário
+  dim:     '#6a86ad',          // Texto apagado
   primary: '#E67E22',          // Laranja Industrial — CTAs / destaques
   accent:  '#F97316',          // Laranja Viga — destaque do dia atual
   navy:    '#1A365D',          // Azul Marinho — identidade de marca
@@ -628,7 +628,7 @@ function DrawerSection({ title, icon, action, children }) {
   );
 }
 
-function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversation, onRefreshList, canEdit }) {
+function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversation, onRefreshList, canEdit, stages }) {
   const [contact, setContact]           = useState(null);
   const [loading, setLoading]           = useState(true);
   const [notes, setNotes]               = useState('');
@@ -638,6 +638,17 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
   const [savingNotes, setSavingNotes]   = useState(false);
   const [showFollowUp, setShowFollowUp] = useState(false);
   const [showBriefing, setShowBriefing] = useState(false);
+  const [stageList, setStageList]       = useState(stages || []);
+  const [markingPersonal, setMarkingPersonal] = useState(false);
+
+  useEffect(() => { if (stages && stages.length) setStageList(stages); }, [stages]);
+  useEffect(() => {
+    if (!stages || !stages.length) {
+      pipelineApi.stages().then(s => setStageList(Array.isArray(s) ? s : [])).catch(() => {});
+    }
+  }, []);
+
+  const stageOptions = stageList.length > 0 ? stageList : Object.entries(STAGE_LABELS).map(([id, name]) => ({ id, name, color: STAGE_COLORS[id] }));
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -679,12 +690,25 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
 
   const handleDelete = () => { onClose(); onDelete(contactId); };
 
+  const handleMarkPersonal = async () => {
+    if (markingPersonal) return;
+    if (!confirm('Marcar como PESSOAL?\n\nO SDR nunca mais atenderá este número e o lead sairá da pipeline (o histórico/conversa é mantido).')) return;
+    setMarkingPersonal(true);
+    try {
+      await contactsApi.markPersonal(contactId);
+      toast.success('Marcado como pessoal — SDR não atende mais');
+      onClose();
+      onRefreshList && onRefreshList();
+    } catch { toast.error('Erro ao marcar como pessoal'); }
+    setMarkingPersonal(false);
+  };
+
   const inputStyle = { width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'8px 12px', color:C.text, fontSize:13, outline:'none', fontFamily:'inherit', boxSizing:'border-box' };
 
   return (
     <>
       <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.55)', zIndex:800, backdropFilter:'blur(2px)' }} />
-      <div style={{ position:'fixed', top:0, right:0, bottom:0, width:580, background:C.card, borderLeft:`1px solid ${C.border}`, zIndex:801, display:'flex', flexDirection:'column', boxShadow:'-12px 0 40px rgba(0,0,0,0.5)', animation:'slideInRight .2s ease-out' }}>
+      <div style={{ position:'fixed', top:0, right:0, bottom:0, width:'min(580px, 100%)', background:C.card, borderLeft:`1px solid ${C.border}`, zIndex:801, display:'flex', flexDirection:'column', boxShadow:'-12px 0 40px rgba(0,0,0,0.5)', animation:'slideInRight .2s ease-out', maxWidth:'100vw' }}>
         {loading ? (
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', flex:1, color:C.dim, fontSize:14 }}>Carregando ficha...</div>
         ) : !contact ? null : (
@@ -732,7 +756,7 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
                     <div style={{ fontSize:11, fontWeight:700, color:C.dim, textTransform:'uppercase', letterSpacing:'.08em', marginBottom:7 }}>Etapa</div>
                     <select value={contact.pipeline_stage||'stage_lead'} onChange={e => handleStageChange(e.target.value)}
                       style={{ width:'100%', background:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:'9px 12px', color:C.text, fontSize:13, outline:'none', fontFamily:'inherit' }}>
-                      {Object.entries(STAGE_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+                      {stageOptions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
                   </div>
                   <div>
@@ -803,6 +827,10 @@ function ContactDrawer({ contactId, onClose, onEdit, onDelete, onOpenConversatio
 
             {/* ── Footer ── */}
             <div style={{ padding:'14px 24px', borderTop:`1px solid ${C.border}`, display:'flex', gap:10, background:C.surface, flexShrink:0, flexWrap:'wrap' }}>
+              <Btn variant="outline" size="sm" onClick={handleMarkPersonal} disabled={markingPersonal}
+                style={{ borderColor:`${C.pink}60`, color:C.pink }} title="O SDR nunca atende este número e o lead sai da pipeline">
+                {markingPersonal ? '...' : '👤 Pessoal (SDR ignora)'}
+              </Btn>
               <Btn variant="danger" size="sm" onClick={handleDelete} style={{ marginRight:'auto' }}>🗑 Excluir</Btn>
               <Btn variant="secondary" size="sm" onClick={onClose}>Fechar</Btn>
               <Btn variant="outline" size="sm" onClick={() => setShowFollowUp(true)}>📅 Lembrete</Btn>
@@ -1076,7 +1104,7 @@ function FollowUpModal({ contact, onClose }) {
   const [loading, setLoading] = useState(false);
   const [suggesting, setSugg] = useState(false);
 
-  const inputStyle = { width:'100%', background:'#0a0d14', border:'1px solid #232840', borderRadius:8, padding:'9px 12px', color:'#e8edf5', fontSize:13, outline:'none', fontFamily:'inherit', boxSizing:'border-box' };
+  const inputStyle = { width:'100%', background:'#0a1c38', border:'1px solid #1c3f70', borderRadius:8, padding:'9px 12px', color:'#e8edf5', fontSize:13, outline:'none', fontFamily:'inherit', boxSizing:'border-box' };
 
   const suggest = async () => {
     setSugg(true);
@@ -1115,29 +1143,29 @@ function FollowUpModal({ contact, onClose }) {
   return (
     <>
       <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:900, backdropFilter:'blur(3px)' }} />
-      <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'min(460px,94vw)', background:'#1a1f2e', borderRadius:18, padding:28, zIndex:901, boxShadow:'0 20px 60px rgba(0,0,0,0.7)', border:'1px solid #232840' }}>
+      <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'min(460px,94vw)', background:'#10294d', borderRadius:18, padding:28, zIndex:901, boxShadow:'0 20px 60px rgba(0,0,0,0.7)', border:'1px solid #1c3f70' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:22 }}>
           <div>
             <div style={{ fontSize:17, fontWeight:800, color:'#e8edf5' }}>📅 Agendar Lembrete</div>
-            <div style={{ fontSize:12, color:'#8b95b0', marginTop:2 }}>para {contact.name}</div>
+            <div style={{ fontSize:12, color:'#a8bcdb', marginTop:2 }}>para {contact.name}</div>
           </div>
-          <button onClick={onClose} style={{ background:'#232840', border:'none', color:'#8b95b0', borderRadius:8, width:32, height:32, cursor:'pointer', fontSize:16, fontWeight:700 }}>✕</button>
+          <button onClick={onClose} style={{ background:'#1c3f70', border:'none', color:'#a8bcdb', borderRadius:8, width:32, height:32, cursor:'pointer', fontSize:16, fontWeight:700 }}>✕</button>
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:14 }}>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Data</div>
+            <div style={{ fontSize:11, fontWeight:700, color:'#6a86ad', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Data</div>
             <input type="date" value={date} onChange={e => setDate(e.target.value)} style={inputStyle} />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Hora</div>
+            <div style={{ fontSize:11, fontWeight:700, color:'#6a86ad', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:6 }}>Hora</div>
             <input type="time" value={time} onChange={e => setTime(e.target.value)} style={inputStyle} />
           </div>
         </div>
 
         <div style={{ marginBottom:14 }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'#505878', textTransform:'uppercase', letterSpacing:'.07em' }}>Mensagem</div>
+            <div style={{ fontSize:11, fontWeight:700, color:'#6a86ad', textTransform:'uppercase', letterSpacing:'.07em' }}>Mensagem</div>
             <button onClick={suggest} disabled={suggesting} style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', color:'#fff', borderRadius:8, padding:'5px 13px', cursor:suggesting?'wait':'pointer', fontSize:12, fontWeight:700, opacity:suggesting?0.7:1 }}>
               {suggesting ? '✨ Gerando...' : '✨ Sugerir com IA'}
             </button>
@@ -1146,7 +1174,7 @@ function FollowUpModal({ contact, onClose }) {
         </div>
 
         <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
-          <button onClick={onClose} style={{ background:'transparent', border:'1px solid #232840', color:'#8b95b0', borderRadius:10, padding:'9px 18px', cursor:'pointer', fontSize:13, fontWeight:600 }}>Cancelar</button>
+          <button onClick={onClose} style={{ background:'transparent', border:'1px solid #1c3f70', color:'#a8bcdb', borderRadius:10, padding:'9px 18px', cursor:'pointer', fontSize:13, fontWeight:600 }}>Cancelar</button>
           <button onClick={save} disabled={loading} style={{ background:'linear-gradient(135deg,#6366f1,#8b5cf6)', border:'none', color:'#fff', borderRadius:10, padding:'9px 22px', cursor:loading?'wait':'pointer', fontSize:13, fontWeight:700, boxShadow:'0 4px 15px #6366f145', opacity:loading?0.7:1 }}>
             {loading ? 'Agendando...' : '📅 Agendar'}
           </button>
@@ -1211,7 +1239,7 @@ function Contacts() {
 
   const filtered = contacts.filter(c=>{
     const matchSearch = c.name?.toLowerCase().includes(search.toLowerCase())||c.phone?.includes(search)||c.company?.toLowerCase().includes(search.toLowerCase());
-    const matchStage = stageFilter==='all' || c.pipeline_stage===stageFilter;
+    const matchStage = stageFilter==='all' || c.pipeline_stage===('stage_'+stageFilter);
     return matchSearch && matchStage;
   });
 
@@ -1365,7 +1393,7 @@ function Conversations({ initialContact }) {
   const [winW, setWinW] = useState(window.innerWidth);
   const [contactDrawerId, setContactDrawerId] = useState(null);
   const [editContact, setEditContact] = useState(null);
-  const [editForm, setEditForm] = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',notes:''});
+  const [editForm, setEditForm] = useState({name:'',phone:'',email:'',company:'',pipeline_value:'',pipeline_stage:'',notes:''});
   const [editTags, setEditTags] = useState([]);
   const [editTagInput, setEditTagInput] = useState('');
   const isMobile = winW < 600;
@@ -1520,8 +1548,8 @@ function Conversations({ initialContact }) {
 
       {/* Lista */}
       {showList && (
-        <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0d1117',minHeight:0,overflow:'hidden'}}>
-          <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#131720',flexShrink:0}}>
+        <div style={{borderRight:`1px solid ${C.border}`,display:'flex',flexDirection:'column',background:'#0a1c38',minHeight:0,overflow:'hidden'}}>
+          <div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'#10294d',flexShrink:0}}>
             <h3 style={{fontSize:15,fontWeight:700,color:C.text}}>Conversas</h3>
             <button onClick={loadConvs} style={{background:'none',border:'none',color:'#00a884',cursor:'pointer',fontSize:18,padding:4}} title="Atualizar">↻</button>
           </div>
@@ -1703,7 +1731,7 @@ function Conversations({ initialContact }) {
       <ContactDrawer
         contactId={contactDrawerId}
         onClose={()=>setContactDrawerId(null)}
-        onEdit={(c)=>{ setEditContact(c); setEditForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',notes:c.notes||''}); setEditTags(parseTags(c.tags)); setEditTagInput(''); }}
+        onEdit={(c)=>{ setEditContact(c); setEditForm({name:c.name,phone:c.phone,email:c.email||'',company:c.company||'',pipeline_value:c.pipeline_value||'',pipeline_stage:c.pipeline_stage||'stage_lead',notes:c.notes||''}); setEditTags(parseTags(c.tags)); setEditTagInput(''); }}
         onDelete={()=>setContactDrawerId(null)}
         onRefreshList={()=>{}}
         onOpenConversation={(c)=>{ setContactDrawerId(null); window.dispatchEvent(new CustomEvent('switchTab',{detail:{tab:'conversations',activeConv:c}})); }}
@@ -1712,15 +1740,22 @@ function Conversations({ initialContact }) {
     {editContact && (
       <Modal open={!!editContact} onClose={()=>setEditContact(null)} title="Editar Contato" maxWidth={620}>
         <div style={{display:'flex',flexDirection:'column',gap:16}}>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
             <FocusInput label="Nome" value={editForm.name} onChange={e=>setEditForm({...editForm,name:e.target.value})} required autoFocus />
             <FocusInput label="Telefone" value={editForm.phone} onChange={e=>setEditForm({...editForm,phone:e.target.value})} required />
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
             <FocusInput label="E-mail" type="email" value={editForm.email} onChange={e=>setEditForm({...editForm,email:e.target.value})} />
             <FocusInput label="Empresa" value={editForm.company} onChange={e=>setEditForm({...editForm,company:e.target.value})} />
           </div>
           <FocusInput label="Valor no Pipeline (R$)" value={editForm.pipeline_value} onChange={e=>setEditForm({...editForm,pipeline_value:e.target.value})} />
+          <div>
+            <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>Etapa no Pipeline</label>
+            <select value={editForm.pipeline_stage||'stage_lead'} onChange={e=>setEditForm({...editForm,pipeline_stage:e.target.value})}
+              style={{width:'100%',background:C.bg,border:`1px solid ${C.border}`,borderRadius:8,padding:'9px 12px',color:C.text,fontSize:13,outline:'none',fontFamily:'inherit'}}>
+              {Object.entries(STAGE_LABELS).map(([id,label])=><option key={id} value={id}>{label}</option>)}
+            </select>
+          </div>
           <div>
             <label style={{display:'block',color:C.muted,fontSize:11,fontWeight:700,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.08em'}}>Tags</label>
             <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:8}}>
@@ -1735,7 +1770,7 @@ function Conversations({ initialContact }) {
           <FocusInput label="Notas" value={editForm.notes} onChange={e=>setEditForm({...editForm,notes:e.target.value})} textarea rows={3} />
           <div style={{display:'flex',gap:12,justifyContent:'flex-end',borderTop:`1px solid ${C.border}`,paddingTop:20,marginTop:4}}>
             <Btn variant="outline" onClick={()=>setEditContact(null)}>Cancelar</Btn>
-            <Btn onClick={async()=>{ try{ await contactsApi.update(editContact.id,{...editForm,tags:editTags,pipeline_value:Number(editForm.pipeline_value)||0}); toast.success('Contato atualizado!'); setEditContact(null); setContactDrawerId(editContact.id); }catch(e){ toast.error('Erro ao salvar'); }}}>💾 Salvar Alterações</Btn>
+            <Btn onClick={async()=>{ try{ await contactsApi.update(editContact.id,{...editForm,tags:editTags,pipeline_stage:editForm.pipeline_stage,pipeline_value:Number(editForm.pipeline_value)||0}); toast.success('Contato atualizado!'); setEditContact(null); setContactDrawerId(editContact.id); }catch(e){ toast.error('Erro ao salvar'); }}}>💾 Salvar Alterações</Btn>
           </div>
         </div>
       </Modal>
@@ -1882,6 +1917,7 @@ function Pipeline() {
       {selectedContact && (
         <ContactDrawer
           contactId={selectedContact}
+          stages={stages}
           onClose={() => setSelectedContact(null)}
           onEdit={() => { setSelectedContact(null); loadStages(activeFunnel); }}
           onDelete={() => { setSelectedContact(null); loadStages(activeFunnel); }}
@@ -4083,7 +4119,7 @@ export default function App() {
     <>
       <div style={{padding: '22px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent: 'center'}}>
         <div onClick={()=>!isMobile&&setSidebarCollapsed(v=>!v)} style={{display:'flex',alignItems:'center',justifyContent:'center',cursor:isMobile?'default':'pointer',filter:'drop-shadow(0 0 16px rgba(249,115,22,0.5)) drop-shadow(0 0 32px rgba(249,115,22,0.25))'}} title={isMobile?'':compact?'Expandir menu':'Recolher menu'}>
-          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#07101e',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1a3050`,overflow:'hidden'}}>
+          <div style={{width:44,height:44,borderRadius:14,flexShrink:0,background:'#0a1c38',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px #00000080`,border:`1.5px solid #1c3f70`,overflow:'hidden'}}>
             <svg width="22" height="44" viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* ── Cubo flutuando (dot do i) ── */}
               <polygon points="24,2 38,9 24,16 10,9"   fill="#F0A020"/>

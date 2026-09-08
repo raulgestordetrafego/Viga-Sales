@@ -7,30 +7,37 @@ const router = express.Router();
 // GET /contacts - listar todos
 router.get('/', async (req, res) => {
   try {
-    const { search, stage, tag, limit = 100, offset = 0 } = req.query;
+    const { search, stage, tag, status, limit = 100, offset = 0 } = req.query;
 
-    let sql = 'SELECT * FROM contacts WHERE 1=1';
+    const wheres = [];
     const params = [];
 
+    // Por padrão esconde "pessoais" (status='pessoal'); passar ?status=pessoal lista só eles
+    if (status) {
+      wheres.push('status = ?');
+      params.push(status);
+    } else {
+      wheres.push("(status IS NULL OR status <> 'pessoal')");
+    }
+
     if (search) {
-      sql += ' AND (name ILIKE ? OR phone ILIKE ? OR email ILIKE ? OR company ILIKE ?)';
+      wheres.push('(name ILIKE ? OR phone ILIKE ? OR email ILIKE ? OR company ILIKE ?)');
       const s = `%${search}%`;
       params.push(s, s, s, s);
     }
     if (stage) {
-      sql += ' AND pipeline_stage = ?';
+      wheres.push('pipeline_stage = ?');
       params.push(stage);
     }
     if (tag) {
-      sql += ' AND tags LIKE ?';
+      wheres.push('tags LIKE ?');
       params.push(`%"${tag}"%`);
     }
 
-    sql += ' ORDER BY updated_at DESC LIMIT ? OFFSET ?';
-    params.push(Number(limit), Number(offset));
+    const whereSql = ' WHERE ' + wheres.join(' AND ');
 
-    const contacts = await query(sql, params);
-    const totalData = await queryOne('SELECT COUNT(*) as count FROM contacts');
+    const contacts = await query('SELECT * FROM contacts' + whereSql + ' ORDER BY updated_at DESC LIMIT ? OFFSET ?', [...params, Number(limit), Number(offset)]);
+    const totalData = await queryOne('SELECT COUNT(*) as count FROM contacts' + whereSql, params);
     const total = parseInt(totalData?.count || 0);
 
     res.json({ contacts: contacts.map(parseContact), total });
@@ -122,6 +129,12 @@ router.put('/:id', async (req, res) => {
     ]);
 
     const updated = await queryOne('SELECT * FROM contacts WHERE id = ?', [req.params.id]);
+
+    // Dispara evento CAPI quando o contato avança para Reunião Agendada / Ganho
+    if ((updated.pipeline_stage || '') !== (contact.pipeline_stage || '')) {
+      import('../services/metaCapiService.js').then((m) => m.fireStageEvent(updated, contact.pipeline_stage)).catch(() => {});
+    }
+
     res.json(parseContact(updated));
   } catch (err) {
     console.error('PUT /contacts/:id error:', err);
@@ -133,7 +146,17 @@ router.put('/:id', async (req, res) => {
 router.patch('/:id/stage', async (req, res) => {
   try {
     const { stage } = req.body;
+    const before = await queryOne('SELECT * FROM contacts WHERE id = ?', [req.params.id]).catch(() => null);
     await run(`UPDATE contacts SET pipeline_stage = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [stage, req.params.id]);
+
+    // Dispara evento CAPI no avanço de pipeline (Reunião Agendada → Lead, Ganho → Purchase)
+    if (before && (before.pipeline_stage || '') !== (stage || '')) {
+      const after = await queryOne('SELECT * FROM contacts WHERE id = ?', [req.params.id]).catch(() => null);
+      if (after) {
+        import('../services/metaCapiService.js').then((m) => m.fireStageEvent(after, before.pipeline_stage)).catch(() => {});
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error('PATCH /contacts/:id/stage error:', err);
@@ -141,9 +164,46 @@ router.patch('/:id/stage', async (req, res) => {
   }
 });
 
+// PATCH /contacts/:id/personal — marca contato como pessoal: SDR nunca atende + some da pipeline
+router.patch('/:id/personal', async (req, res) => {
+  try {
+    const contact = await queryOne('SELECT * FROM contacts WHERE id = ?', [req.params.id]);
+    if (!contact) return res.status(404).json({ error: 'Contato não encontrado' });
+
+    const digits = String(contact.phone || '').replace(/\D/g, '');
+    if (digits && digits.length >= 10) {
+      const variants = [digits];
+      // Sem o 9º dígito (BR fixo), pra casar com qualquer formato que o WhatsApp use
+      if (digits.length === 13 && digits.startsWith('55')) {
+        variants.push(digits.slice(0, 4) + digits.slice(5));
+      }
+      for (const v of variants) {
+        await run(
+          `INSERT INTO personal_ignore (phone, name, created_at) VALUES (?, ?, NOW())
+           ON CONFLICT (phone) DO NOTHING`,
+          [v, (contact.name || 'pessoal').slice(0, 200)]
+        );
+      }
+    }
+
+    // Arquiva: sai do kanban (pipeline_stage NULL), mantém histórico/conversas
+    await run(`UPDATE contacts SET status = 'pessoal', pipeline_stage = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [req.params.id]);
+
+    res.json({ success: true, ignored: !!digits });
+  } catch (err) {
+    console.error('PATCH /contacts/:id/personal error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // DELETE /contacts/:id
 router.delete('/:id', async (req, res) => {
   try {
+    // Apaga em cascata: mensagens → conversas → atividades/lembretes → contato
+    await run('DELETE FROM messages WHERE conversation_id IN (SELECT id FROM conversations WHERE contact_id = ?)', [req.params.id]);
+    await run('DELETE FROM conversations WHERE contact_id = ?', [req.params.id]);
+    await run('DELETE FROM activities WHERE contact_id = ?', [req.params.id]).catch(() => {});
+    await run('DELETE FROM reminders WHERE contact_id = ?', [req.params.id]).catch(() => {});
     await run('DELETE FROM contacts WHERE id = ?', [req.params.id]);
     res.json({ success: true });
   } catch (err) {

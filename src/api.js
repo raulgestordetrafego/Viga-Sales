@@ -29,6 +29,7 @@ export const contacts = {
   update:  (id, d)  => api.put(`/contacts/${id}`, d).then(r => r.data),
   delete:  (id)     => api.delete(`/contacts/${id}`).then(r => r.data),
   setStage:(id, s)  => api.patch(`/contacts/${id}/stage`, { stage: s }).then(r => r.data),
+  markPersonal: (id) => api.patch(`/contacts/${id}/personal`).then(r => r.data),
   addActivity:(id, d) => api.post(`/contacts/${id}/activities`, d).then(r => r.data),
   pipelineStats: () => api.get('/contacts/stats/pipeline').then(r => r.data),
 };
