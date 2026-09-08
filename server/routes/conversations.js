@@ -5,7 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
-import * as metaApi from '../services/metaWhatsapp.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,7 +97,7 @@ router.get('/:id/messages', async (req, res) => {
   }
 });
 
-// POST /conversations/:id/messages - enviar mensagem (Meta oficial ou Evolution)
+// POST /conversations/:id/messages - enviar mensagem via Evolution
 router.post('/:id/messages', async (req, res) => {
   try {
     const { content, type = 'text', media_url } = req.body;
@@ -108,83 +107,41 @@ router.post('/:id/messages', async (req, res) => {
     `, [req.params.id]);
     if (!conv) return res.status(404).json({ error: 'Conversa não encontrada' });
 
-    const useMeta = metaApi.isConfigured();
-
     let result;
     let savedMediaUrl = media_url || null;
     let wamid = null;
 
     if (type === 'text') {
-      if (useMeta) {
-        result = await metaApi.sendText(conv.phone, content);
-        wamid = result?.messages?.[0]?.id || null;
-      } else {
-        result = await evolutionApi.sendTextMessage(conv.phone, content);
-        wamid = result?.key?.id || null;
-      }
+      result = await evolutionApi.sendTextMessage(conv.phone, content);
+      wamid = result?.key?.id || null;
     } else if (type === 'image') {
-      if (useMeta) {
-        let imageUrl = media_url;
-        if (req.body.base64) {
-          try { imageUrl = saveBase64File(req.body.base64, type); savedMediaUrl = imageUrl; } catch(_) {}
-        }
-        result = await metaApi.sendImage(conv.phone, imageUrl, content);
-        wamid = result?.messages?.[0]?.id || null;
-      } else {
-        const imgData = req.body.base64 || media_url;
-        result = await evolutionApi.sendImageMessage(conv.phone, imgData, content);
-        wamid = result?.key?.id || null;
-        if (req.body.base64) {
-          try { savedMediaUrl = saveBase64File(req.body.base64, type); } catch(_) {}
-        }
+      const imgData = req.body.base64 || media_url;
+      result = await evolutionApi.sendImageMessage(conv.phone, imgData, content);
+      wamid = result?.key?.id || null;
+      if (req.body.base64) {
+        try { savedMediaUrl = saveBase64File(req.body.base64, type); } catch(_) {}
       }
     } else if (type === 'audio') {
-      if (useMeta) {
-        let audioUrl = media_url;
-        if (req.body.base64) {
-          try {
-            audioUrl = saveBase64File(req.body.base64, type);
-            savedMediaUrl = audioUrl;
-            result = await metaApi.sendAudio(conv.phone, audioUrl);
-            wamid = result?.messages?.[0]?.id || null;
-          } catch(e) {
-            return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
-          }
-        } else {
-          result = await metaApi.sendAudio(conv.phone, audioUrl);
-          wamid = result?.messages?.[0]?.id || null;
-        }
-      } else {
-        if (req.body.base64) {
-          try {
-            const audioUrl = saveBase64File(req.body.base64, type);
-            savedMediaUrl = audioUrl;
-            result = await evolutionApi.sendAudioMessage(conv.phone, audioUrl);
-            wamid = result?.key?.id || null;
-          } catch(e) {
-            return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
-          }
-        } else {
-          result = await evolutionApi.sendAudioMessage(conv.phone, media_url);
+      if (req.body.base64) {
+        try {
+          const audioUrl = saveBase64File(req.body.base64, type);
+          savedMediaUrl = audioUrl;
+          result = await evolutionApi.sendAudioMessage(conv.phone, audioUrl);
           wamid = result?.key?.id || null;
+        } catch(e) {
+          return res.status(400).json({ error: 'Arquivo inválido: ' + e.message });
         }
-      }
-    } else if (type === 'document') {
-      if (useMeta) {
-        let docUrl = media_url;
-        if (req.body.base64) {
-          try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
-        }
-        result = await metaApi.sendImage(conv.phone, docUrl, content);
-        wamid = result?.messages?.[0]?.id || null;
       } else {
-        let docUrl = media_url;
-        if (req.body.base64) {
-          try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
-        }
-        result = await evolutionApi.sendDocumentMessage(conv.phone, docUrl, content);
+        result = await evolutionApi.sendAudioMessage(conv.phone, media_url);
         wamid = result?.key?.id || null;
       }
+    } else if (type === 'document') {
+      let docUrl = media_url;
+      if (req.body.base64) {
+        try { docUrl = saveBase64File(req.body.base64, type); savedMediaUrl = docUrl; } catch(_) {}
+      }
+      result = await evolutionApi.sendDocumentMessage(conv.phone, docUrl, content);
+      wamid = result?.key?.id || null;
     }
 
     // Salvar mensagem no banco
