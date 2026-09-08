@@ -2,10 +2,216 @@ import { v4 as uuidv4 } from 'uuid';
 import { query, queryOne, run } from '../db/database.js';
 import evolutionApi from '../services/evolutionApi.js';
 import axios from 'axios';
+import pg from 'pg';
+const { Pool } = pg;
 
 const EVO_URL = process.env.EVOLUTION_API_URL || 'https://evolution.vigasales.shop';
 const EVO_KEY = process.env.EVOLUTION_API_KEY || '';
 const AGENTS_GROUP = process.env.AGENTS_GROUP_ID || '120363428115495870@g.us';
+
+// ── Agente de atendimento (n8n AGENTE PEDRO) ──────────────────────────────
+// A instância que recebe do cliente e RESPONDE (Evolution)
+const AGENT_INSTANCE = process.env.EVOLUTION_AGENT_INSTANCE || 'Raul Santos';
+// Webhook n8n que processa a conversa
+const AGENT_N8N_URL = process.env.N8N_AGENT_URL || 'https://n8n.vigasales.shop/webhook/agente_pedro';
+// Números autorizados a acionar o agente mesmo sem intenção (apenas via env, sem fallback de teste)
+const AGENT_ALLOW_PHONES = (process.env.EVOLUTION_AGENT_ALLOW || '').split(',').map(p => p.trim().replace(/\D/g, '')).filter(Boolean);
+
+// ── Classificador de intencao de campanha (frase padrão / gatilhos) ─────
+const normTxt = (t) => String(t||"")
+  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+
+const KW_SITE = ["site", "landing", "loja virtual", "loja online", "ecommerce", "e-commerce", "pagina profissional", "pagina de vendas", "wordpress", "desenvolver site", "criar site", "fazer um site", "meu site"];
+const KW_TRAFEGO = ["anunciar", "anuncio", "trafego", "trafico", "impulsionar", "impulsionamento", "instagram", "facebook", "google ads", "marketing digital", "gestao de anuncios", "patrocinado", "campanha de anuncio", "vender mais", "mais clientes", "mais vendas"];
+const KW_AUTOM = ["automatizar", "bot de", "resposta automatica", "whatsapp empresarial", "atendimento automatico"];
+const KW_CRM = ["crm", "organizar cliente", "gerenciar cliente", "gerenciar lead"];
+const KW_SIS = ["sistema personalizado", "plataforma", "aplicativo", "app para", "software"];
+
+function classifyIntent(text) {
+  const t = normTxt(text);
+  if (!t) return { code: "qualifica_padrao", source: "meta", service: null };
+  const has = (arr) => arr.some(k => t.includes(k));
+  const hasSite = has(KW_SITE);
+  const hasTra = has(KW_TRAFEGO);
+  if (hasSite && hasTra) return { code: "ambos", source: "meta_ambos", service: "ambos" };
+  if (hasSite) return { code: "criacao_de_site", source: "meta_site", service: "criacao_de_site" };
+  if (hasTra) return { code: "trafico_pago", source: "meta_trafego", service: "trafico_pago" };
+  if (has(KW_AUTOM)) return { code: "automacao_comercial", source: "meta_outro", service: "automacao_comercial" };
+  if (has(KW_CRM)) return { code: "crm", source: "meta_outro", service: "crm" };
+  if (has(KW_SIS)) return { code: "sistema_personalizado", source: "meta_outro", service: "sistema_personalizado" };
+  return { code: "qualifica_padrao", source: "meta", service: null };
+}
+
+let agentePool = null;
+function getAgentePool() {
+  if (agentePool) return agentePool;
+  const url = process.env.DATABASE_AGENTE_URL || 'postgresql://agente:AgentViga2024!@postgres-agente:5432/agente?sslmode=disable';
+  if (!url) return null;
+  agentePool = new Pool({ connectionString: url, max: 3 });
+  return agentePool;
+}
+
+let leadsPool = null;
+function getLeadsPool() {
+  if (leadsPool) return leadsPool;
+  const url = process.env.DATABASE_LEADS_URL;
+  if (!url) return null;
+  leadsPool = new Pool({ connectionString: url, max: 2 });
+  return leadsPool;
+}
+
+// ── Gatilho positivo: só ativa o agente se há intenção OU o número é lead real nosso ──
+async function isKnownLeadPhone(phone) {
+  try {
+    const d = String(phone || '').replace(/\D/g, '');
+    if (!d || d.length < 11) return false;
+    const tail = d.slice(-8);
+    // 1) Base de prospects do CRM (vigasales DB) — prospecção ativa/áudio/respondeu
+    const p = await queryOne(
+      `SELECT 1 FROM prospects
+       WHERE regexp_replace(phone,'\\D','','g') LIKE '%' || ? || '%'
+       LIMIT 1`, [tail]);
+    if (p) return true;
+    // 2) Tabela leads do agente (conversa já qualificada)
+    const pool = getAgentePool();
+    if (pool) {
+      const l = await pool.query(
+        `SELECT 1 FROM leads
+         WHERE regexp_replace(phone,'[^0-9]','','g') LIKE '%' || $1
+            OR regexp_replace(phone,'[^0-9]','','g') = $2
+         LIMIT 1`, [tail, d]);
+      if (l.rowCount > 0) return true;
+    }
+    // 3) Leads DB (prospects de prospecção ativa com áudio enviado / follow-up)
+    const lpool = getLeadsPool();
+    if (lpool) {
+      const l2 = await lpool.query(
+        `SELECT 1 FROM prospects
+         WHERE regexp_replace(phone,'[^0-9]','','g') LIKE '%' || $1
+            OR regexp_replace(phone,'[^0-9]','','g') = $2
+         LIMIT 1`, [tail, d]);
+      if (l2.rowCount > 0) return true;
+    }
+    return false;
+  } catch (e) {
+    console.error('[Agente] Erro ao checar lead conhecido:', e.message);
+    return false;
+  }
+}
+
+async function tagLeadAgent(phone, name, intent) {
+  try {
+    if (!phone || phone.length < 11) return;
+    const pool = getAgentePool();
+    if (!pool) return;
+    await pool.query(
+      `INSERT INTO leads (phone, name, source, service_interest, created_at, updated_at)
+       VALUES ($1,$2,$3,$4, NOW(), NOW())
+       ON CONFLICT (phone) DO UPDATE SET
+         name = COALESCE(NULLIF(EXCLUDED.name,''), leads.name),
+         source = COALESCE(NULLIF(EXCLUDED.source,''), leads.source),
+         service_interest = COALESCE(NULLIF(EXCLUDED.service_interest,''), leads.service_interest),
+         updated_at = NOW()`,
+      [phone, (name || "Lead").slice(0,120), intent.source, intent.service]
+    );
+  } catch (e) {
+    console.error("[Agente] Erro ao marcar lead:", e.message);
+  }
+}
+
+
+async function isIgnoredPhone(phone) {
+  try {
+    const d = String(phone || '').replace(/\D/g, '');
+    if (!d || d.length < 10) return false;
+    const r = await query('SELECT 1 FROM personal_ignore WHERE phone = ?', [d]);
+    return !!(r && r.length);
+  } catch (e) {
+    return false;
+  }
+}
+
+// Cliente já fechado (pipeline stage_won) nunca é atendido pelo agente SDR
+async function isClientPhone(phone) {
+  try {
+    const d = String(phone || '').replace(/\D/g, '');
+    if (!d || d.length < 10) return false;
+    const tail = d.slice(-8);
+    const r = await queryOne(
+      `SELECT 1 FROM contacts
+       WHERE pipeline_stage = 'stage_won'
+         AND (regexp_replace(phone,'\\D','','g') LIKE '%' || ? || '%'
+              OR regexp_replace(phone,'\\D','','g') = ?)
+       LIMIT 1`, [tail, d]);
+    return !!r;
+  } catch (e) {
+    console.error('[Agente] Erro ao checar cliente:', e.message);
+    return false;
+  }
+}
+
+async function maybeForwardAgentInbound(payload) {
+  try {
+    if (!payload || payload.event !== 'messages.upsert') return;
+    const instance = payload.instance || payload.instanceName || payload.data?.instanceName;
+    if (instance !== AGENT_INSTANCE) return;
+
+    const data = payload.data;
+    const key = data?.key;
+    if (!key || key.fromMe === true) return;
+    const remoteJid = key.remoteJid || '';
+    if (!remoteJid.endsWith('@s.whatsapp.net')) return; // só DM (exclui grupo/broadcast)
+
+    const phone = remoteJid.split('@')[0].replace(/\D/g, '');
+
+    // Recepção ABERTA para qualquer DM (não-boss, não-ignorado, não-grupo) —
+    // a proteção contra pessoais está na tabela personal_ignore
+    // (opcional: restrinja com EVOLUTION_AGENT_ALLOW="num,num")
+
+    const bossPhones = (process.env.BOSS_PHONES || '').split(',').map(p => p.trim().replace(/\D/g, '')).filter(Boolean);
+    if (bossPhones.some(p => phone.endsWith(p.slice(-11)))) return;
+
+    // Números pessoais/ignorados: agente NUNCA responde
+    if (await isIgnoredPhone(phone)) {
+      console.log(`[Agente] Número ignorado (pessoal) ${phone} — sem resposta do agente`);
+      return;
+    }
+
+    // Clientes fechados (stage_won): já têm relacionamento direto com Raul, sem agente SDR
+    if (await isClientPhone(phone)) {
+      console.log(`[Agente] Cliente (stage_won) ${phone} — sem resposta do agente`);
+      return;
+    }
+
+    // ── GATILHO (filtro de intenção): ativa só se há intenção de compra
+    //    OU o número já é um lead/prospect real nosso (prospecção ativa/áudio enviado
+    //    ou conversa já qualificada na tabela leads do agente). Fornecedor/aleatório
+    //    que manda DM sem intenção NÃO ativa o agente.
+    const content = data.message?.conversation || data.message?.extendedTextMessage?.text || '';
+    const intent = classifyIntent(content);
+    const pushName = data.pushName || '';
+
+    const isAllowedTest = AGENT_ALLOW_PHONES.some(p => phone.endsWith(p.slice(-11)));
+    const hasIntent = !!intent.service;
+    const isKnownLead = await isKnownLeadPhone(phone);
+
+    if (!hasIntent && !isKnownLead && !isAllowedTest) {
+      console.log(`[Agente] Sem intenção e não é lead nosso (${phone}) — agente NÃO ativa. Msg: "${content.substring(0, 60)}"`);
+      return;
+    }
+
+    if (hasIntent) {
+      await tagLeadAgent(phone, pushName, intent).catch(() => {});
+      console.log(`[Agente] Intencao ${intent.code} (${intent.source}) p/ ${phone}`);
+    }
+
+    await axios.post(AGENT_N8N_URL, payload, { headers: { 'Content-Type': 'application/json' }, timeout: 10000 });
+    console.log(`[Agente] Inbound ${phone} (${AGENT_INSTANCE}) → agente_mestre`);
+  } catch (e) {
+    console.error('[Agente] Falha ao encaminhar pro n8n:', e.response?.status || e.message);
+  }
+}
 
 async function notifyRaulEvolution(fromPhone, prospect, resposta) {
   const name = prospect.name || 'Lead';
@@ -38,7 +244,10 @@ async function notifyRaulEvolution(fromPhone, prospect, resposta) {
  */
 export async function handleWebhook(payload, io) {
   console.log("Incoming Webhook Event:", payload?.event);
-  
+
+  // Encaminha para o agente n8n (AGENTE PEDRO) mensagens inbound da instância do agente
+  maybeForwardAgentInbound(payload);
+
   // Forward webhook if configured
   if (process.env.FORWARD_WEBHOOK_URL) {
     const forwardUrl = process.env.FORWARD_WEBHOOK_URL;
@@ -80,6 +289,19 @@ async function handleIncomingMessage(msg, io) {
   // Ignorar mensagens de status/stories do WhatsApp
   if (msg.chatId === 'status@broadcast' || msg.phone === 'status') {
     console.log('[Webhook] Ignorando mensagem de status/story do WhatsApp');
+    return;
+  }
+
+  // Ignora mensagens de GRUPOS — não devem virar contato/conversa no inbox
+  if (typeof msg.chatId === 'string' && msg.chatId.endsWith('@g.us')) {
+    console.log('[Webhook] Ignorando mensagem de grupo:', msg.chatId);
+    return;
+  }
+
+  // Números pessoais/ignorados: nem entram no CRM (some da pipeline) nem são respondidos
+  const senderDigits = String(msg.phone || '').replace(/\D/g, '');
+  if (senderDigits && await isIgnoredPhone(senderDigits)) {
+    console.log('[Webhook] Número pessoal/ignorado — não entra no CRM:', senderDigits);
     return;
   }
 
@@ -171,6 +393,26 @@ async function handleIncomingMessage(msg, io) {
         await run("UPDATE contacts SET last_interaction = ?, updated_at = ? WHERE id = ?", [now, now, contact.id]);
       }
     }
+
+    // Marca a OFERTA de interesse (gestão de tráfego / site) quando um inbound
+    // chega com intenção clara — base pro Chief separar o funil por produto
+    try {
+      if (direction === 'inbound' && msg.content) {
+        const intent = classifyIntent(msg.content);
+        const offer = (intent.service === 'trafico_pago' || intent.service === 'ambos')
+          ? 'oferta:gestao_trafego'
+          : intent.service === 'criacao_de_site' ? 'oferta:site'
+          : (intent.service === 'automacao_comercial' || intent.service === 'crm') ? 'oferta:automacao' : null;
+        if (offer) {
+          let existing = [];
+          try { const a = JSON.parse(contact.tags || '[]'); existing = Array.isArray(a) ? a : []; } catch {}
+          if (!existing.includes(offer)) {
+            existing.push(offer);
+            await run('UPDATE contacts SET tags = ?, updated_at = ? WHERE id = ?', [JSON.stringify(existing), now, contact.id]);
+          }
+        }
+      }
+    } catch (e) { console.error('[Webhook] Erro ao marcar oferta:', e.message); }
 
     // 2) Resolver instância pelo nome do payload
     let instanceId = 'instance_default';
@@ -331,4 +573,5 @@ async function handleContactsUpsert(contacts, io) {
   }
 }
 
+export { classifyIntent, normTxt, isIgnoredPhone, isClientPhone, isKnownLeadPhone, maybeForwardAgentInbound };
 export default { handleWebhook };
