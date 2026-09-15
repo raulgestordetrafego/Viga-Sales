@@ -1,0 +1,292 @@
+{
+  "updatedAt": "2026-09-15T20:31:43.000Z",
+  "createdAt": "2026-09-15T16:37:58.486Z",
+  "id": "testefollowup01",
+  "name": "TESTE - Follow-up contextual (Tania)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "144f6e41-3ff7-4b25-8336-a1fab8334fce",
+      "name": "A cada 30 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH lh AS (\n  SELECT MAX(created_at) AS t FROM chat_history_viga WHERE session_id LIKE '556181673657%' AND message->>'type'='human'\n),\nla AS (\n  SELECT MAX(created_at) AS t FROM chat_history_viga WHERE session_id LIKE '556181673657%' AND message->>'type'='ai'\n),\nf AS (\n  SELECT COUNT(*) AS n, MAX(sent_at) AS last_sent FROM test_followups\n   WHERE phone='556181673657' AND sent_at > COALESCE((SELECT t FROM lh), 'epoch'::timestamptz)\n),\nr AS (\n  SELECT GREATEST(COALESCE((SELECT t FROM la),'epoch'::timestamptz), COALESCE((SELECT last_sent FROM f),'epoch'::timestamptz)) AS t\n)\nSELECT l.name,\n  regexp_replace(l.phone,'[^0-9]','','g') AS phone,\n  (SELECT n FROM f) AS stage,\n  ROUND(EXTRACT(EPOCH FROM (NOW() - (SELECT t FROM r)))/60) AS min_silencio,\n  (SELECT string_agg(\n     CASE WHEN message->>'type'='human'\n          THEN 'LEAD: ' || trim(split_part(message->>'content','[MENSAGEM DO LEAD]',2))\n          ELSE 'AGENTE: ' || COALESCE(message->>'content','') END,\n     E'\\n' ORDER BY id)\n   FROM (SELECT id, message FROM chat_history_viga WHERE session_id LIKE '556181673657%' ORDER BY id DESC LIMIT 12) c\n  ) AS conversa\nFROM leads l\nWHERE regexp_replace(l.phone,'[^0-9]','','g') = '556181673657'\n  AND (SELECT t FROM la) > COALESCE((SELECT t FROM lh),'epoch'::timestamptz)\n  AND (SELECT n FROM f) < 3\n  AND EXTRACT(EPOCH FROM (NOW() - (SELECT t FROM r)))/60 >= 1440 * ((SELECT n FROM f) + 1)\n  AND COALESCE(l.opted_out,false) = false\n  AND COALESCE(l.meeting_scheduled,false) = false\n  AND COALESCE(l.lead_stage,'') <> 'reuniao_marcada'\n  AND l.meeting_datetime IS NULL\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "3b7f5318-bca3-4dd0-89fc-1c279cf8ef39",
+      "name": "Busca Candidato",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        220,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "67c3c72d-c475-4872-98b7-25b6f432e029",
+      "name": "Tem candidato?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REDACTED_OPENAI_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"gpt-4o-mini\", temperature: 0.6, messages: [ { role: \"system\", content: \"Voce e o Raul, da Viga Sales. Escreva UMA mensagem curta de follow-up (1-3 linhas, linguagem de WhatsApp) para um lead que PAROU de responder. Use o CONTEXTO da conversa: retome o que ficou pendente (a ultima pergunta sem resposta, a dor ou a objecao do lead) e faca UM convite leve para retomar. PROIBIDO mensagem generica. Nao repita o que ja foi dito. Estagio (de 3): 1 = retomada leve e contextual; 2 = quebrar a objecao com prova/argumento; 3 = ultimo toque, convite direto para a call de diagnostico. Nao invente dados. Portugues do Brasil, tom humano e direto. Responda APENAS com o texto da mensagem.\" }, { role: \"user\", content: \"CONVERSA:\\n\" + ($json.conversa || \"\") + \"\\n\\nEscreva a mensagem de follow-up do ESTAGIO \" + String($json.stage + 1) + \" (nome do lead: \" + ($json.name||\"\") + \").\" } ] }) }}",
+        "options": {}
+      },
+      "id": "f338688f-bce2-4d16-a616-567cb86e899b",
+      "name": "Gera Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        0
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const it=$input.first().json;\nconst txt=it.choices?.[0]?.message?.content || '';\nif(!txt.trim()) return [];\nreturn [{ json: { phone: $('Busca Candidato').first().json.phone, stage: $('Busca Candidato').first().json.stage, message: txt.trim() } }];"
+      },
+      "id": "4b723257-2b89-488c-9751-19548a1b5b8a",
+      "name": "Extrai Mensagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution.vigasales.shop/message/sendText/Raul%20Santos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REDACTED_EVOLUTION_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.phone, text: $json.message }) }}",
+        "options": {}
+      },
+      "id": "08aa9c92-5421-4e1a-a400-d7318c80d3e1",
+      "name": "Envia Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO test_followups (phone, stage, message) VALUES ('{{ $('Extrai Mensagem').first().json.phone }}', {{ $('Extrai Mensagem').first().json.stage }}, '{{ $('Extrai Mensagem').first().json.message.replace(/'/g,\"''\") }}');",
+        "options": {}
+      },
+      "id": "79940a4b-a8dd-4a31-a76b-8785ac2fd490",
+      "name": "Registra Toque",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1320,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Busca Candidato": {
+      "main": [
+        [
+          {
+            "node": "Tem candidato?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem candidato?": {
+      "main": [
+        [
+          {
+            "node": "Gera Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Gera Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Extrai Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrai Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Envia Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Registra Toque",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A cada 30 min": {
+      "main": [
+        [
+          {
+            "node": "Busca Candidato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:A cada 1 min": {
+      "recurrenceRules": []
+    },
+    "node:A cada 30 min": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "c9ffe4a7-9330-4179-ba7c-011a78e34129",
+  "activeVersionId": "c9ffe4a7-9330-4179-ba7c-011a78e34129",
+  "versionCounter": 17,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-09-15T16:37:58.489Z",
+      "createdAt": "2026-09-15T16:37:58.489Z",
+      "role": "workflow:owner",
+      "workflowId": "testefollowup01",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

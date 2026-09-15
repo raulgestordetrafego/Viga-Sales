@@ -1,0 +1,267 @@
+{
+  "updatedAt": "2026-09-15T17:39:35.000Z",
+  "createdAt": "2026-03-25T04:52:04.460Z",
+  "id": "QT5A0ZKMgkYTwiht",
+  "name": "AGENTE - Processa Áudio",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        304
+      ],
+      "id": "7071dbe4-a725-4981-9c6c-639c94aa3654",
+      "name": "Quando chamado por outro fluxo"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {
+          "language": "pt"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1120,
+        304
+      ],
+      "id": "efb362bf-8d1b-4c3c-be47-6c63c2be0eb6",
+      "name": "Analisa audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "jN12Szm4uDGMQTFU",
+          "name": "OpenAI - Viga Sales"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mensagem-field",
+              "name": "mensagem",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "telefone-field",
+              "name": "telefone",
+              "value": "={{ $(\"Quando chamado por outro fluxo\").first().json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "nome-field",
+              "name": "nome",
+              "value": "={{ $(\"Quando chamado por outro fluxo\").first().json.nome }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        304
+      ],
+      "id": "54fee299-120c-4417-8cc4-612e1b1088e6",
+      "name": "output audio"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Nuyx82MjL055YVaY",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1680,
+        304
+      ],
+      "id": "1ee113ef-9017-4e9a-8e22-0d05ed415ed2",
+      "name": "Chama AGENTE - IA e Resposta"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.vigasales.shop/chat/getBase64FromMediaMessage/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REDACTED_EVOLUTION_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: { key: { id: $json.keyId } }, convertToMp4: false }) }}",
+        "options": {}
+      },
+      "id": "evo-media-fetch-a68cdf77",
+      "name": "Baixa Mídia Evolution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const it = $input.first().json;\nconst b64 = it.base64 || '';\nif (!b64) throw new Error('base64 vazio');\nconst buf = Buffer.from(b64, 'base64');\nconst mime = it.mimetype || 'application/octet-stream';\nlet ext = 'bin';\nif (mime.includes('ogg') || mime.includes('opus')) ext = 'oga';\nelse if (mime.includes('mp4') || mime.includes('m4a') || mime.includes('aac')) ext = 'mp4';\nelse if (mime.includes('mpeg') || mime.includes('mp3')) ext = 'mp3';\nelse if (mime.includes('png')) ext = 'png';\nelse if (mime.includes('jpeg') || mime.includes('jpg')) ext = 'jpg';\nelse if (mime.includes('webp')) ext = 'webp';\nelse if (mime.includes('pdf')) ext = 'pdf';\nconst bin = await this.helpers.prepareBinaryData(buf, 'media.' + ext, mime);\nreturn { json: it, binary: { data: bin } };\n"
+      },
+      "id": "evo-media-bin-8538ca80",
+      "name": "Prepara Binário Áudio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Quando chamado por outro fluxo": {
+      "main": [
+        [
+          {
+            "node": "Baixa Mídia Evolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixa Mídia Evolution": {
+      "main": [
+        [
+          {
+            "node": "Prepara Binário Áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepara Binário Áudio": {
+      "main": [
+        [
+          {
+            "node": "Analisa audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analisa audio": {
+      "main": [
+        [
+          {
+            "node": "output audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output audio": {
+      "main": [
+        [
+          {
+            "node": "Chama AGENTE - IA e Resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Quando chamado por outro fluxo": [
+      {
+        "json": {
+          "nome": "",
+          "telefone": "556181673657@s.whatsapp.net",
+          "tipo": "audioMessage",
+          "is_prospect": false,
+          "prospect_id": null,
+          "mensagem": "",
+          "mediaUrl": "https://mmg.whatsapp.net/v/t62.7117-24/725605294_3124468291078052_696968818002919248_n.enc?ccb=11-4&oh=01_Q5Aa5gFSXxVnYHSX5tfj9y1302p2_5MLYXC-sakawGHo4GRxWw&oe=6AC2B8E0&_nc_sid=5e03e0&mms3=true"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "1d006c9e-aeb1-432c-a2da-e44e7f9d3512",
+  "activeVersionId": "1d006c9e-aeb1-432c-a2da-e44e7f9d3512",
+  "versionCounter": 191,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-03-25T04:52:04.462Z",
+      "createdAt": "2026-03-25T04:52:04.462Z",
+      "role": "workflow:owner",
+      "workflowId": "QT5A0ZKMgkYTwiht",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

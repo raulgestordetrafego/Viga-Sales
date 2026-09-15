@@ -28,6 +28,23 @@ const KW_AUTOM = ["automatizar", "bot de", "resposta automatica", "whatsapp empr
 const KW_CRM = ["crm", "organizar cliente", "gerenciar cliente", "gerenciar lead"];
 const KW_SIS = ["sistema personalizado", "plataforma", "aplicativo", "app para", "software"];
 
+// ── Opt-out: lead pediu para parar de receber ─────────────────────────────
+// Frases já normalizadas (sem acento, minúsculas) — comparadas com normTxt()
+const OPTOUT_PHRASES = [
+  "nao me chama mais", "nao me chame mais", "nao me manda mais", "nao me mande mais",
+  "para de me mandar", "pare de me mandar", "para de me enviar", "pare de me enviar",
+  "me tira da lista", "me tire da lista", "me remove da lista", "me remova da lista",
+  "sair da lista", "quero sair da lista", "me descadastra", "me descadastre", "descadastrar",
+  "nao quero mais receber", "nao quero receber", "nao quero mais mensagem", "nao quero mensagem",
+  "nao tenho interesse", "nao me interessa", "bloqueia meu numero", "bloqueie meu numero",
+  "nao me perturbe", "nao me contate", "nao entre em contato"
+];
+function isOptOut(text) {
+  const t = normTxt(text);
+  if (!t) return false;
+  return OPTOUT_PHRASES.some(p => t.includes(p));
+}
+
 function classifyIntent(text) {
   const t = normTxt(text);
   if (!t) return { code: "qualifica_padrao", source: "meta", service: null };
@@ -105,15 +122,18 @@ async function tagLeadAgent(phone, name, intent) {
     if (!phone || phone.length < 11) return;
     const pool = getAgentePool();
     if (!pool) return;
+    // NÃO gravar o nome do perfil (pushName) em leads.name — isso fazia o agente
+    // "achar" que já sabia o nome. O nome confirmado é gravado pela tool Salva Lead.
+    // O nome do WhatsApp fica em whatsapp_name (referência).
     await pool.query(
-      `INSERT INTO leads (phone, name, source, service_interest, created_at, updated_at)
+      `INSERT INTO leads (phone, whatsapp_name, source, service_interest, created_at, updated_at)
        VALUES ($1,$2,$3,$4, NOW(), NOW())
        ON CONFLICT (phone) DO UPDATE SET
-         name = COALESCE(NULLIF(EXCLUDED.name,''), leads.name),
+         whatsapp_name = COALESCE(NULLIF(EXCLUDED.whatsapp_name,''), leads.whatsapp_name),
          source = COALESCE(NULLIF(EXCLUDED.source,''), leads.source),
          service_interest = COALESCE(NULLIF(EXCLUDED.service_interest,''), leads.service_interest),
          updated_at = NOW()`,
-      [phone, (name || "Lead").slice(0,120), intent.source, intent.service]
+      [phone, (name || "").slice(0,120), intent.source, intent.service]
     );
   } catch (e) {
     console.error("[Agente] Erro ao marcar lead:", e.message);
@@ -151,6 +171,25 @@ async function isClientPhone(phone) {
   }
 }
 
+// SDR pausado (atendimento manual do gestor) — mantém o lead na pipeline, mas o agente não responde
+async function isSdrPausedPhone(phone) {
+  try {
+    const d = String(phone || '').replace(/\D/g, '');
+    if (!d || d.length < 10) return false;
+    const tail = d.slice(-8);
+    const r = await queryOne(
+      `SELECT 1 FROM contacts
+       WHERE sdr_paused = 1
+         AND (regexp_replace(phone,'\\D','','g') LIKE '%' || ? || '%'
+              OR regexp_replace(phone,'\\D','','g') = ?)
+       LIMIT 1`, [tail, d]);
+    return !!r;
+  } catch (e) {
+    console.error('[Agente] Erro ao checar SDR pausado:', e.message);
+    return false;
+  }
+}
+
 async function maybeForwardAgentInbound(payload) {
   try {
     if (!payload || payload.event !== 'messages.upsert') return;
@@ -181,6 +220,12 @@ async function maybeForwardAgentInbound(payload) {
     // Clientes fechados (stage_won): já têm relacionamento direto com Raul, sem agente SDR
     if (await isClientPhone(phone)) {
       console.log(`[Agente] Cliente (stage_won) ${phone} — sem resposta do agente`);
+      return;
+    }
+
+    // SDR pausado (atendimento manual do gestor): lead segue na pipeline, mas o agente não responde
+    if (await isSdrPausedPhone(phone)) {
+      console.log(`[Agente] SDR pausado (atendimento manual) ${phone} — sem resposta do agente`);
       return;
     }
 
@@ -302,6 +347,27 @@ async function handleIncomingMessage(msg, io) {
   const senderDigits = String(msg.phone || '').replace(/\D/g, '');
   if (senderDigits && await isIgnoredPhone(senderDigits)) {
     console.log('[Webhook] Número pessoal/ignorado — não entra no CRM:', senderDigits);
+    return;
+  }
+
+  // ═══ OPT-OUT ═══ lead pediu para parar de receber mensagens
+  if (!msg.fromMe && msg.content && isOptOut(msg.content)) {
+    const digits = String(msg.phone || '').replace(/\D/g, '');
+    console.log(`[OptOut] ${digits} pediu para parar — bloqueando e respondendo uma vez`);
+    try {
+      await run(`INSERT INTO personal_ignore (phone, name) VALUES (?, 'opt-out') ON CONFLICT (phone) DO NOTHING`, [digits]);
+    } catch (e) { console.error('[OptOut] erro personal_ignore:', e.message); }
+    try {
+      const pool = getAgentePool();
+      if (pool) {
+        await pool.query(
+          `UPDATE leads SET opted_out = true, lead_stage = 'descartado', updated_at = NOW()
+            WHERE regexp_replace(phone,'[^0-9]','','g') LIKE '%' || $1`, [digits.slice(-8)]);
+      }
+    } catch (e) { console.error('[OptOut] erro leads.opted_out:', e.message); }
+    try {
+      await evolutionApi.sendTextMessage(digits, 'Sem problema! Não te chamo mais por aqui. Sucesso! 🌿');
+    } catch (e) { console.error('[OptOut] erro ao responder:', e.message); }
     return;
   }
 
@@ -573,5 +639,5 @@ async function handleContactsUpsert(contacts, io) {
   }
 }
 
-export { classifyIntent, normTxt, isIgnoredPhone, isClientPhone, isKnownLeadPhone, maybeForwardAgentInbound };
+export { classifyIntent, normTxt, isIgnoredPhone, isClientPhone, isSdrPausedPhone, isKnownLeadPhone, maybeForwardAgentInbound };
 export default { handleWebhook };

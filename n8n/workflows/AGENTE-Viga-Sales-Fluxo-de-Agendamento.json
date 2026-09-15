@@ -1,0 +1,502 @@
+{
+  "updatedAt": "2026-09-15T04:35:16.254Z",
+  "createdAt": "2026-03-25T16:19:25.007Z",
+  "id": "k84u1zzphcQJrbmy",
+  "name": "AGENTE Viga Sales - Fluxo de Agendamento.",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            },
+            {
+              "name": "telefone"
+            }
+          ]
+        }
+      },
+      "id": "e1ac3a82-7133-4c0e-b04f-340d4a29c7b3",
+      "name": "Chamado pelo Agente IA",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ \"[DATA DE HOJE]\\n\" + \"Agora (Brasilia): \" + $now.setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') + \"\\n\" + \"ISO hoje: \" + $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd') + \"\\n\\n\" + \"[SOLICITACAO]\\n\" + $json.query }}",
+        "options": {
+          "systemMessage": "Voce e o assistente de agendamento da Viga Sales. Use a DATA DE HOJE informada no input como referencia. NUNCA use anos passados; se vier data no passado, use o ano atual/proxima ocorrencia futura.\n\nFuncoes: CRIAR, BUSCAR, REAGENDAR e CANCELAR reunioes no Google Calendar.\n\nREGRA DE OURO: ANTES de CRIAR, SEMPRE chame 'Buscar Reuniao Salva' primeiro. Se JA existir reuniao para o lead e a solicitacao NAO for explicitamente REAGENDAR ou CANCELAR, NAO crie outro evento — apenas responda informando a reuniao ja existente (data/hora) e que nada foi alterado.\n\nCRIAR (Reuniao de Diagnostico):\n- Titulo: 'Reuniao de Diagnostico - [Nome do lead]'\n- Start e End em ISO 8601 com timezone Brasilia (-03:00). End = Start + 45min.\n- Ative o Google Meet.\n- Apos criar, chame 'Registra Reuniao' passando calendar_event_id (o id retornado por 'Criar evento') e meeting_datetime.\n\nREAGENDAR:\n1. Primeiro chame 'Buscar Reuniao Salva' para obter o calendar_event_id do lead.\n2. Use esse Event_ID em 'Reagendar evento' com o novo Start/End.\n3. Depois chame 'Registra Reuniao' de novo com a nova data e o mesmo event_id.\n\nCANCELAR: chame 'Buscar Reuniao Salva' para o Event_ID, depois 'Apagar evento' e, em seguida, 'Limpa Reuniao' (para zerar a reuniao no banco).\n\nREGRAS ESTRITAS (nao viole):\n- REAGENDAR: use SOMENTE 'Reagendar evento' (passando Event_ID + Start + End novos). NUNCA chame 'Apagar evento' nem 'Criar evento' para reagendar.\n- CANCELAR: use SOMENTE 'Apagar evento'. NUNCA chame 'Criar' nem 'Reagendar'.\n- CRIAR: ANTES chame 'Buscar Reuniao Salva'. Se JA existir reuniao, NAO crie — reagende a existente.\n- Faca UMA acao por solicitacao. Nunca combine apagar+criar.\n\nSempre retorne o link do Meet e a confirmacao ao final.\n\nIMPORTANTE: a solicitacao comeca com 'telefone: XXXX | ...'. Extraia esse telefone e passe SEMPRE como parametro 'phone' ao chamar 'Registra Reuniao', 'Buscar Reuniao Salva'. Ao criar/reagendar, o Google Calendar retorna um 'id' — passe esse id como 'calendar_event_id' em 'Registra Reuniao'."
+        }
+      },
+      "id": "9bf116e4-7256-4436-a34c-74be8d02ad58",
+      "name": "Agente Agendador",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1456,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Agenda Viga Sales"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "=hangoutsMeet"
+            }
+          },
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Descricao', 'Contexto da reuniao e dados do lead', 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Titulo', 'Titulo do evento, ex: Reuniao de Diagnostico - Nome do Lead', 'string') }}"
+        }
+      },
+      "id": "63797327-e3fe-406e-ab0a-32d187ff5260",
+      "name": "Criar evento",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1472,
+        1104
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Agenda Viga Sales"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "id": "195a239b-6444-43d7-9397-03f4ba0135ea",
+      "name": "Buscar eventos",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1616,
+        1104
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Reagenda (altera data/hora) a reuniao existente no Google Calendar. Passe o event_id e os novos start e end em ISO 8601 com -03:00.",
+        "method": "PATCH",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com/events/{event_id}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"start\": {\"dateTime\": \"{start}\", \"timeZone\": \"America/Sao_Paulo\"}, \"end\": {\"dateTime\": \"{end}\", \"timeZone\": \"America/Sao_Paulo\"}}",
+        "placeholderDefinitions": {
+          "values": [
+            {
+              "name": "event_id",
+              "description": "ID do evento no Google Calendar",
+              "type": "string"
+            },
+            {
+              "name": "start",
+              "description": "Nova data/hora de inicio em ISO 8601 com -03:00",
+              "type": "string"
+            },
+            {
+              "name": "end",
+              "description": "Nova data/hora de fim em ISO 8601 com -03:00",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "6291b622-332e-41e1-a51d-d6a602a5b4ff",
+      "name": "Reagendar evento",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        2480,
+        992
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Apaga (cancela) a reuniao no Google Calendar. Passe o event_id obtido em 'Buscar Reuniao Salva'.",
+        "method": "DELETE",
+        "url": "https://www.googleapis.com/calendar/v3/calendars/63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com/events/{event_id}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "placeholderDefinitions": {
+          "values": [
+            {
+              "name": "event_id",
+              "description": "ID do evento no Google Calendar (calendar_event_id)",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "428e7051-05ec-4d9e-b6f9-a3ac0fe8869f",
+      "name": "Apagar evento",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        2320,
+        976
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "out-1",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a3685813-229d-4c94-b360-85bbf10e7ea6",
+      "name": "Retorna confirmação",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Registra a data/hora da reunião no banco de dados. Chame APÓS criar o evento no Google Calendar. Parâmetros: meeting_datetime (ISO 8601, ex: 2026-03-27T14:00:00), calendar_event_id (ID retornado pelo Google Calendar), phone (número do lead).",
+        "operation": "executeQuery",
+        "query": "UPDATE leads SET meeting_datetime = '{{ $fromAI(\"meeting_datetime\",\"data ISO 8601\") }}'::timestamptz, meeting_scheduled = true, meeting_calendar_event_id = '{{ $fromAI(\"calendar_event_id\",\"ID do evento\") }}', lead_stage = 'reuniao_marcada', updated_at = NOW() WHERE split_part(phone,'@',1) = split_part('{{ $fromAI(\"phone\",\"telefone do lead\") }}','@',1)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        2016,
+        1088
+      ],
+      "id": "5ccb074b-4b7c-4b8e-b737-298f37e7cb9f",
+      "name": "Registra Reuniao",
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1328,
+        816
+      ],
+      "id": "c98dc0c3-d9ed-43b1-b774-896031689349",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jN12Szm4uDGMQTFU",
+          "name": "OpenAI - Viga Sales"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Busca a reuniao ja agendada do lead (retorna calendar_event_id e meeting_datetime). Use ANTES de reagendar ou cancelar, para obter o Event_ID.",
+        "operation": "executeQuery",
+        "query": "SELECT meeting_calendar_event_id, meeting_datetime FROM leads WHERE split_part(phone,'@',1) = split_part('{{ $fromAI(\"phone\",\"telefone do lead\") }}','@',1) AND meeting_calendar_event_id IS NOT NULL ORDER BY updated_at DESC LIMIT 1",
+        "options": {}
+      },
+      "id": "busca-reuniao-node",
+      "name": "Buscar Reuniao Salva",
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        1888,
+        1088
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Limpa a reuniao do lead APOS cancelar (zera meeting_datetime, event_id e meeting_scheduled; lead_stage='qualificado'). Chame depois de 'Apagar evento'.",
+        "operation": "executeQuery",
+        "query": "UPDATE leads SET meeting_datetime=NULL, meeting_calendar_event_id=NULL, meeting_scheduled=false, lead_stage='qualificado', updated_at=NOW() WHERE split_part(phone,'@',1) = split_part('{{ $fromAI(\"phone\",\"telefone do lead\") }}','@',1)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        2160,
+        1088
+      ],
+      "id": "limpa-reuniao-tool",
+      "name": "Limpa Reuniao",
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Chamado pelo Agente IA": {
+      "main": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Agendador": {
+      "main": [
+        [
+          {
+            "node": "Retorna confirmação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reagendar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apagar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registra Reuniao": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9bf116e4-7256-4436-a34c-74be8d02ad58": {
+      "main": [
+        [],
+        [
+          {
+            "node": "63797327-e3fe-406e-ab0a-32d187ff5260",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "195a239b-6444-43d7-9397-03f4ba0135ea",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "6291b622-332e-41e1-a51d-d6a602a5b4ff",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "428e7051-05ec-4d9e-b6f9-a3ac0fe8869f",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "5ccb074b-4b7c-4b8e-b737-298f37e7cb9f",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Reuniao Salva": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpa Reuniao": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Agendador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Chamado pelo Agente IA": [
+      {
+        "json": {
+          "query": "telefone: 556181673657 | cancelar a reunião de 2026-09-16T15:00",
+          "telefone": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "9e5faf9e-95e5-4254-826d-8f2e30612a9a",
+  "activeVersionId": "9e5faf9e-95e5-4254-826d-8f2e30612a9a",
+  "versionCounter": 337,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-03-25T16:19:25.009Z",
+      "createdAt": "2026-03-25T16:19:25.009Z",
+      "role": "workflow:owner",
+      "workflowId": "k84u1zzphcQJrbmy",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": "Version 9e5faf9e",
+    "description": ""
+  }
+}

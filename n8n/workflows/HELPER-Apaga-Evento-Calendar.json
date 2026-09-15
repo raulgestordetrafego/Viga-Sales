@@ -1,0 +1,124 @@
+{
+  "updatedAt": "2026-09-15T14:39:38.000Z",
+  "createdAt": "2026-09-15T14:39:35.699Z",
+  "id": "helpercal00001",
+  "name": "HELPER - Apaga Evento Calendar",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "delete-event",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ed8bcd34-6e16-4faa-b047-f952587fe618",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://www.googleapis.com/calendar/v3/calendars/63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com/events/{{ $json.query.event_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "options": {}
+      },
+      "id": "5c45389d-06a6-4784-bdcd-914070ecca04",
+      "name": "Apaga",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, status: $json.statusCode || $json.error?.httpCode || 'done' }) }}",
+        "options": {}
+      },
+      "id": "3f46240a-ad0c-4000-8f1d-cd0611dbd98f",
+      "name": "Responde",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Apaga",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apaga": {
+      "main": [
+        [
+          {
+            "node": "Responde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "bae337e3-9392-40d1-8cf3-de98aa0cd106",
+  "activeVersionId": "bae337e3-9392-40d1-8cf3-de98aa0cd106",
+  "versionCounter": 18,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-09-15T14:39:35.703Z",
+      "createdAt": "2026-09-15T14:39:35.703Z",
+      "role": "workflow:owner",
+      "workflowId": "helpercal00001",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

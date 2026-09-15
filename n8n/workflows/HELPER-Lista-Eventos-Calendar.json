@@ -1,0 +1,148 @@
+{
+  "updatedAt": "2026-09-15T18:31:23.000Z",
+  "createdAt": "2026-09-15T18:31:20.233Z",
+  "id": "helperlistev01",
+  "name": "HELPER - Lista Eventos Calendar",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "list-events",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "94034adb-d8fc-4209-b9d5-7f53b6ab2a56",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.googleapis.com/calendar/v3/calendars/63867e9aaa394235cd62baa389e0df682f44d0a956bdd59e977078db20bf989d@group.calendar.google.com/events?timeMin={{ $json.query.timeMin }}&timeMax={{ $json.query.timeMax }}&singleEvents=true&orderBy=startTime",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "options": {}
+      },
+      "id": "2993e741-e95c-4f71-b89d-75717ed611f9",
+      "name": "Lista",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "eLSSlMJcJYZse13V",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d=$input.first().json;\nconst items=(d.items||[]).map(e=>({id:e.id,summary:e.summary,start:e.start&&(e.start.dateTime||e.start.date),link:e.hangoutLink}));\nreturn [{json:{count:items.length, items}}];"
+      },
+      "id": "43b5fb74-b9d8-4c7f-aa6c-25cf099c2b2b",
+      "name": "Resume",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "c6240dfa-585d-44f8-9435-6eabdb3dc6c4",
+      "name": "Responde",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Lista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lista": {
+      "main": [
+        [
+          {
+            "node": "Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume": {
+      "main": [
+        [
+          {
+            "node": "Responde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "73946645-8d5c-4749-8924-7b9025b0f326",
+  "activeVersionId": "73946645-8d5c-4749-8924-7b9025b0f326",
+  "versionCounter": 6,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-09-15T18:31:20.238Z",
+      "createdAt": "2026-09-15T18:31:20.238Z",
+      "role": "workflow:owner",
+      "workflowId": "helperlistev01",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

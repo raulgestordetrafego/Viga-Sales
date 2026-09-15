@@ -1,0 +1,602 @@
+{
+  "updatedAt": "2026-09-15T20:14:43.000Z",
+  "createdAt": "2026-03-25T04:50:55.953Z",
+  "id": "Nuyx82MjL055YVaY",
+  "name": "AGENTE Viga Sales - IA e Resposta",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        -528
+      ],
+      "id": "70bca39b-b0f5-4e3d-b53f-36fb07126a7e",
+      "name": "Quando chamado por outro fluxo"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ \"[DATA DE HOJE]\\n\" + \"Agora (Brasilia): \" + $now.setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') + \"\\n\" + \"Dia da semana: \" + $now.setZone('America/Sao_Paulo').setLocale('pt-BR').toFormat('cccc') + \"\\n\" + \"ISO hoje: \" + $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd') + \"\\n\" + \"Use SEMPRE esta data como referencia. Converta datas relativas (amanha, segunda, dia 15) para a proxima data futura em ISO 8601 com -03:00. NUNCA use anos passados.\\n\\n\" + \"[CONTEXTO]\\n\" + \"telefone: \" + $('Quando chamado por outro fluxo').first().json.telefone + \"\\n\" + \"is_prospect: \" + String($('Quando chamado por outro fluxo').first().json.is_prospect) + \"\\n\" + \"\\n[LEAD CARD - estado atual do lead. NUNCA pergunte algo que ja esta aqui]\\n\" + JSON.stringify($('Quando chamado por outro fluxo').first().json.lead || {}) + \"\\n\" + \"\\n[FOCO DA CONVERSA - siga esta trilha e NAO misture servicos]\\n\" + (($('Quando chamado por outro fluxo').first().json.lead || {}).trilha || \"indefinida\") + \"\\n\" + \"\\n[PROXIMO PASSO SUGERIDO PELO SISTEMA]\\n\" + ($('Quando chamado por outro fluxo').first().json.proximo_passo || \"\") + \"\\n\" + \"\\n[OBJECAO DETECTADA PELO SISTEMA]\\n\" + ($('Quando chamado por outro fluxo').first().json.objecao_detectada || \"nenhuma\") + \"\\n\" + \"\\n[CONHECIMENTOS DISPONIVEIS - use a tool 'Ler conhecimento' para ler o conteudo de um id quando for pertinente]\\n\" + ($('Quando chamado por outro fluxo').first().json.manifest || \"\") + \"\\n\" + \"\\n[MENSAGEM DO LEAD]\\n\" + $('Quando chamado por outro fluxo').first().json.mensagem }}",
+        "options": {
+          "systemMessage": "Você é o assistente comercial da Viga Sales, atendendo leads via WhatsApp.\nTom: humano, direto, empático, sem enrolação. Mensagens curtas (2-4 linhas), linguagem de WhatsApp. UMA pergunta por mensagem.\nFORMATAÇÃO (WhatsApp): NUNCA use markdown. NUNCA escreva links como [texto](url) — mande SEMPRE a URL pura (ex: https://meet.google.com/abc-defg-hij). Não use **negrito** nem cabeçalhos. Se precisar destacar, use apenas *asteriscos simples* (negrito do WhatsApp). Nada de listas numeradas com markdown.\n\n## QUEM É A VIGA SALES\nVenda pela internet com resultado: (1) TRÁFEGO PAGO e gestão de anúncios (Google, Meta/Instagram); (2) CRIAÇÃO DE SITES e landing pages; (3) AUTOMAÇÃO COMERCIAL, CRM e atendimento por IA no WhatsApp.\n\n## SEU OBJETIVO\nEntender a necessidade, QUALIFICAR e AGENDAR uma REUNIÃO DE DIAGNÓSTICO (call gratuita). NUNCA entregue consultoria/passo a passo de graça no chat.\n\n## CONTEXTO QUE VOCÊ RECEBE (campo 'text')\n- telefone: use SEMPRE como phone nas tools (só números com DDI, ex 5561999999999).\n- is_prospect: true se o lead já recebeu apresentação da prospecção ativa.\n- [LEAD CARD]: estado atual do lead (nome, empresa, ramo, cidade, estágio, reunião, dossiê). É a VERDADE. NUNCA pergunte nada que já esteja aqui.\n- [PROXIMO PASSO]: sugestão determinística do sistema do que fazer agora. SIGA, salvo se o lead mudou de assunto.\n- [CONHECIMENTOS DISPONIVEIS]: catálogo. Use a tool 'Ler conhecimento' para ler o conteúdo de um id quando a dúvida do lead casar com ele.\n- [MENSAGEM DO LEAD]: o que o lead acabou de escrever.\n\n## REGRAS DE OURO\n1. NUNCA pergunte algo que já está no LEAD CARD. MAPA dos campos do LEAD CARD: name=nome; business_type=ramo; city=cidade; company_name=empresa; current_marketing=se já anuncia hoje; has_website=se tem site; has_social_media=redes sociais; main_pain=dor/desafio/dificuldade; monthly_revenue_range=investimento/orçamento mensal; is_decision_maker=quem decide; wants_meeting=quer reunião; meeting_datetime=reunião marcada. Se o campo estiver preenchido, NUNCA pergunte de novo — USE a informação. NUNCA peça a mesma coisa duas vezes na conversa. Se o LEAD CARD está SEM nome mas o lead JÁ informou o nome em qualquer mensagem anterior, NÃO pergunte de novo: grave com 'Salva Lead' e siga o checklist.\n2. Siga o [PROXIMO PASSO] — é ele que define sua próxima pergunta/ação. Não invente outra ordem. Se você JÁ fez a pergunta que o [PROXIMO PASSO] sugere e o lead não respondeu (ou mudou de assunto), NÃO repita a mesma pergunta: reconheça o que ele disse e REFORMULE com outras palavras, ou avance para o próximo item do checklist. É PROIBIDO mandar a mesma pergunta duas vezes seguidas. EXCEÇÃO: se o [PROXIMO PASSO] for 'perguntar o nome' e o lead já tiver informado o nome na conversa, IGNORE esse passo (grave o nome com 'Salva Lead') e siga o restante do checklist.\n3. UMA pergunta por vez. Nunca faça pergunta composta.\n4. Assim que o lead informar um dado novo (nome, empresa, ramo, cidade, dor, investimento, decisão), chame 'Salva Lead' IMEDIATAMENTE, reescrevendo o notes (dossiê) completo e preenchendo os campos.\n5. Se a reunião já estiver marcada no LEAD CARD (meeting_datetime preenchido), NÃO ofereça agendar de novo nem peça data/e-mail. Apenas confirme a reunião existente (data/hora).\n6. Quando o lead informar o nome, o sistema envia um áudio de saudação automaticamente — então NÃO se apresente de novo.\n7. REUNIÃO — NUNCA MIENTA: você só pode dizer que a reunião está marcada/agendada/confirmada se tiver chamado a tool 'Agendar_Reuniao' NESTA resposta e ela tiver retornado SUCESSO (com data/hora e link do Google Meet). Se o lead propôs um horário/data, CHAME 'Agendar_Reuniao' ANTES de confirmar. Se você NÃO chamou a tool, é PROIBIDO dizer que agendou — no máximo diga que vai verificar a disponibilidade. Se a tool falhar ou não retornar link, diga que vai confirmar e NUNCA invente data, horário ou link do Meet.\n8. AGENDAMENTO — SÓ COM DATA E HORA CONFIRMADAS PELO LEAD: nunca chame 'Agendar_Reuniao' se o lead não confirmou a HORA. Se ele só disse o dia (ex.: 'quinta'), PERGUNTE a hora (ou SUGIRA um horário e peça o 'sim'). Só agende depois do lead confirmar explicitamente data + hora. É PROIBIDO inventar horário.\n\n## FLUXO E FOCO (CRITICO)\n- Siga o [FOCO] (trafego_pago | criacao_de_site | ambos | indefinida), que vem do interesse do lead.\n- FOCO=trafego_pago: conduza TODO o fluxo por TRÁFEGO. NÃO ofereça site como produto. Site só entra como DESTINO do anúncio, em UMA frase, e só se o lead não tiver — depois VOLTE para o tráfego.\n- FOCO=criacao_de_site: conduza por SITE. Tráfego só como divulgação futura, em UMA frase, e volte pro site.\n- FOCO=ambos: siga os dois.\n- FOCO=indefinida: descubra e registre em service_interest.\n- NUNCA misture os serviços nem empurre o outro. Cross-sell só se fizer sentido técnico (conhecimento 'cross_sell').\n- Checklist tráfego: já anuncia? dor? tem site (destino)? ramo? cidade? empresa? decide? investimento mensal?\n- Checklist site: objetivo do site? domínio? conteúdo? ramo? cidade? empresa? decide? orçamento?\n- Só avance para o pitch/agendamento quando o checklist estiver completo.\n\n## AGENDAMENTO\n- Peça data/hora; depois o e-mail. Converta para ISO 8601 Brasília (ex: 2026-07-15T14:00:00-03:00).\n- Chame 'Agendar_Reuniao' SOMENTE com nome+telefone+data+e-mail confirmados. Confirme com o link e encerre.\n- Se o lead não quiser agendar agora: salve lead_stage=qualificado e encerre educadamente.\n\n## OBJECAO DETECTADA\nO sistema detecta automaticamente quando o lead levanta uma objecao e marca em [OBJECAO DETECTADA PELO SISTEMA] (ex: objecao_preco, objecao_caro).\nQuando vier preenchida (diferente de 'nenhuma'): leia o conhecimento com esse id com a tool 'Ler conhecimento' ANTES de responder e siga o playbook (VALIDAR / REENQUADRAR / AVANCAR / NAO FAZER). Nunca ignore a objecao.\n\n## CONHECIMENTOS\nQuando o lead perguntar sobre preço, garantia, prazos, como funciona, objeções ou resultados: consulte o manifesto e leia o conhecimento pertinente com a tool 'Ler conhecimento' ANTES de responder. Nunca invente.\n\n## SITUACOES COMUNS (use o conhecimento)\n- Lead pergunta \"o que voces fazem?\" -> resuma em 2-3 linhas (conhecimento 'escopo_servico'/'servicos') e JA puxe a trilha. NUNCA mande textao.\n- Lead diz que NAO ENTENDEU / pede para explicar de novo / \"como funciona?\" -> REEXPLIQUE em 2-3 linhas, bem simples, o que a Viga Sales faz (conhecimento 'servicos'/'escopo_servico'), SEM jargao, e só DEPOIS siga o checklist. NUNCA ignore o pedido de reexplicacao.\n- Lead pergunta como e a reuniao (duracao, online, o que preparar) -> use 'reuniao_como_funciona' e JA ofereca horario.\n- Lead pede material/informacao -> 'intencao_material' (resuma e conduza para a call).\n- Lead pede ligacao -> 'intencao_ligacao' (ofereca a call de diagnostico).\n- Lead quer comecar/fechar agora -> 'intencao_comecar' (va DIRETO ao agendamento).\n- Lead manda link, print ou arquivo -> reconheca brevemente e siga o fluxo.\n- Lead pergunta prazo de resultado -> 'prazos_onboarding' (sem prometer numero).\n- Lead diz que esta comecando / nao tem site -> 'comecando_do_zero'.\n- Lead diz que so quer orcamento -> 'objecao_so_orcamento'.\n- Lead diz que precisa falar com socio -> 'objecao_socio'.\n- Lead diz que nao acredita em anuncio -> 'objecao_nao_acredito'.\n\n## REGRAS GERAIS\n- Nunca repita o que já sabe. Nunca repita o pitch se já apresentou.\n- Se o lead quiser falar com um humano/Raul: diga que o Raul vai dar sequência e chame 'Salva Lead' com lead_stage=qualificado (o gestor assume).\n- Reagendar/cancelar reunião: use 'Agendar_Reuniao' com a ação correspondente. IMPORTANTE: se o lead pedir EXPLICITAMENTE para reagendar ou cancelar, ISSO TEM PRIORIDADE sobre o [PROXIMO PASSO] (\"não reagendar\") — atenda e chame a tool na hora.\n- Assunto fora de vendas/marketing/site: traga ao objetivo.\n- Nunca prometa resultados específicos. Se perguntar se é robô/IA: seja honesto e leve.\n- Idioma do lead. Nunca cite preço/plano seco: qualifique e convide para a call.\n\n## MEMÓRIA (DOSSIE) — CRÍTICO\nO campo notes é sua memória de longo prazo (dossiê). O LEAD CARD já traz o dossiê atual. A cada fato novo, chame 'Salva Lead' reescrevendo o notes INTEIRO = conteúdo anterior + fatos novos (nunca omita o que já havia).\nFormato:\n[EMPRESA] nome, ramo, cidade\n[SITUACAO] marketing atual, já anuncia? tem site? redes?\n[DOR] dor principal + contexto\n[DECISAO] quem decide, investimento previsto, urgência\n[PROPOSTA] serviço oferecido, etapa do funil, próxima ação\n[CONTEXTO] fatos pessoais/relacionamento relevantes\n[LINHA_DO_TEMPO] resumo de cada contato (data + fato)\nHigiene: NUNCA grave senha, cartão, CPF, dados bancários.",
+          "maxIterations": 25
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        544,
+        -528
+      ],
+      "id": "3624f46d-cb76-4227-be06-155536008405",
+      "name": "AGENTE DE I.A.",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recebe o texto de entrada\nlet texto = $('AGENTE DE I.A.').first().json.output || '';\n// Converte '\\n' literal em quebra de linha real (WhatsApp renderiza)\ntexto = texto.replace(/\\\\n/g, '\\n');\n// Divide SOMENTE pela barra invertida DUPLA (separador de mensagens)\nconst itens = texto.split(/\\\\\\\\/);\nreturn itens.map(i => i.trim()).filter(i => i !== '').map(item => ({ item }));"
+      },
+      "id": "474ab384-83c5-4924-98ab-6549115ad09e",
+      "name": "SEPARA MENSAGENS2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        -512
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "853a168e-9291-4c06-a3af-a5711030e6f5",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        -512
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution.vigasales.shop/message/sendText/Raul%20Santos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REDACTED_EVOLUTION_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $(\"Quando chamado por outro fluxo\").first().json.telefone.replace(/@s.whatsapp.net/g, \"\").replace(/\\D/g, \"\"), text: $json.item || $json.output }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2064,
+        -496
+      ],
+      "id": "73b9f900-670f-44ee-a938-69a63b0d8679",
+      "name": "Envia mensagem para o WhatsApp"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "55bbc03d-b34e-45e6-835a-14dac6e6886a",
+      "name": "DELAY 1 SEGUNDO",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2496,
+        -496
+      ],
+      "webhookId": "df571a65-6cdb-4add-9bc2-d65b6f30911d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "em1",
+              "name": "chatInput",
+              "value": "={{ $json.mensagem }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        -528
+      ],
+      "id": "extrai-mensagem-001",
+      "name": "Extrai Mensagem"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Quando chamado por outro fluxo').item.json.telefone || 'desconhecido-' + Date.now() }}",
+        "tableName": "chat_history_viga",
+        "contextWindowLength": 3
+      },
+      "id": "a1b2c3d4-e5f6-7890-abcd-postgres00001",
+      "name": "Postgres Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        -80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Salva/atualiza o lead. notes = MEMORIA ACUMULATIVA do lead (dossie em secoes [EMPRESA][SITUACAO][DOR][DECISAO][PROPOSTA][CONTEXTO][LINHA_DO_TEMPO]). Ao salvar, reescreva o notes inteiro = conteudo anterior + fatos novos, nunca omitindo informacoes antigas.",
+        "operation": "executeQuery",
+        "query": "INSERT INTO leads (phone, name, business_type, company_name, city, service_interest, service_offered, current_marketing, has_website, has_social_media, main_pain, avg_ticket, is_decision_maker, monthly_revenue_range, urgency, qualification_score, wants_meeting, notes, lead_stage, source, updated_at)\nVALUES (regexp_replace('{{ $fromAI(\"phone\",\"telefone do lead apenas numeros com DDI ex 5561999999999\") }}','[^0-9]','','g'), '{{ $fromAI(\"name\",\"nome do lead or empty\",\"string\",\"\") }}', '{{ $fromAI(\"business_type\",\"segmento/ramo or empty\",\"string\",\"\") }}', '{{ $fromAI(\"company_name\",\"nome da empresa or empty\",\"string\",\"\") }}', '{{ $fromAI(\"city\",\"cidade or empty\",\"string\",\"\") }}', '{{ $fromAI(\"service_interest\",\"trafico_pago|criacao_de_site|ambos|outro\",\"string\",\"\") }}', '{{ $fromAI(\"service_offered\",\"servico proposto or empty\",\"string\",\"\") }}', '{{ $fromAI(\"current_marketing\",\"nenhum|google|meta|ambos|outro\",\"string\",\"\") }}', CASE lower(trim('{{ $fromAI(\"has_website\",\"texto: true, false, ou vazio\",\"string\",\"\") }}')) WHEN 'true' THEN true WHEN 'false' THEN false ELSE NULL END, CASE lower(trim('{{ $fromAI(\"has_social_media\",\"texto: true, false, ou vazio\",\"string\",\"\") }}')) WHEN 'true' THEN true WHEN 'false' THEN false ELSE NULL END, '{{ $fromAI(\"main_pain\",\"sem_leads|lead_ruim|sem_metrica|desperdicio|sem_site|sem_followup|outro\",\"string\",\"\") }}', '{{ $fromAI(\"avg_ticket\",\"faturamento mensal or empty\",\"string\",\"\") }}', CASE lower(trim('{{ $fromAI(\"is_decision_maker\",\"texto: true, false, ou vazio\",\"string\",\"\") }}')) WHEN 'true' THEN true WHEN 'false' THEN false ELSE NULL END, '{{ $fromAI(\"monthly_revenue_range\",\"investimento previsto mensal or empty\",\"string\",\"\") }}', NULLIF(regexp_replace('{{ $fromAI(\"urgency\",\"texto: numero de 1 a 5, ou vazio\",\"string\",\"\") }}','[^0-9]','','g'),'')::smallint, NULLIF(regexp_replace('{{ $fromAI(\"qualification_score\",\"texto: numero de 0 a 100, ou vazio\",\"string\",\"\") }}','[^0-9]','','g'),'')::smallint, CASE lower(trim('{{ $fromAI(\"wants_meeting\",\"texto: true ou false\",\"string\",\"\") }}')) WHEN 'true' THEN true ELSE false END, '{{ $fromAI(\"notes\",\"resumo do contexto\",\"string\",\"\") }}', '{{ $fromAI(\"lead_stage\",\"novo|qualificado|reuniao_marcada|proposta|ganho|perdido|descartado\",\"string\",\"\") }}', 'meta', NOW())\nON CONFLICT (phone) DO UPDATE SET\n  name=CASE WHEN EXCLUDED.name!='' THEN EXCLUDED.name ELSE leads.name END,\n  business_type=CASE WHEN EXCLUDED.business_type!='' THEN EXCLUDED.business_type ELSE leads.business_type END,\n  company_name=CASE WHEN EXCLUDED.company_name!='' THEN EXCLUDED.company_name ELSE leads.company_name END,\n  city=CASE WHEN EXCLUDED.city!='' THEN EXCLUDED.city ELSE leads.city END,\n  service_interest=CASE WHEN EXCLUDED.service_interest!='' THEN EXCLUDED.service_interest ELSE leads.service_interest END,\n  service_offered=CASE WHEN EXCLUDED.service_offered!='' THEN EXCLUDED.service_offered ELSE leads.service_offered END,\n  current_marketing=CASE WHEN EXCLUDED.current_marketing!='' THEN EXCLUDED.current_marketing ELSE leads.current_marketing END,\n  has_website=COALESCE(EXCLUDED.has_website, leads.has_website),\n  has_social_media=COALESCE(EXCLUDED.has_social_media, leads.has_social_media),\n  main_pain=CASE WHEN EXCLUDED.main_pain!='' THEN EXCLUDED.main_pain ELSE leads.main_pain END,\n  avg_ticket=CASE WHEN EXCLUDED.avg_ticket!='' THEN EXCLUDED.avg_ticket ELSE leads.avg_ticket END,\n  is_decision_maker=COALESCE(EXCLUDED.is_decision_maker, leads.is_decision_maker),\n  monthly_revenue_range=CASE WHEN EXCLUDED.monthly_revenue_range!='' THEN EXCLUDED.monthly_revenue_range ELSE leads.monthly_revenue_range END,\n  urgency=COALESCE(EXCLUDED.urgency, leads.urgency),\n  qualification_score=COALESCE(EXCLUDED.qualification_score, leads.qualification_score),\n  wants_meeting=EXCLUDED.wants_meeting,\n  notes=CASE WHEN EXCLUDED.notes!='' THEN EXCLUDED.notes ELSE leads.notes END,\n  lead_stage=CASE WHEN EXCLUDED.lead_stage!='' THEN EXCLUDED.lead_stage ELSE leads.lead_stage END,\n  source=CASE WHEN EXCLUDED.source!='' THEN EXCLUDED.source ELSE leads.source END,\n  updated_at=NOW()",
+        "options": {}
+      },
+      "id": "salva-lead-1",
+      "name": "Salva Lead",
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        1184,
+        -96
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Busca dados já salvos de um lead/cliente pelo telefone.\n\nQUANDO USAR — apenas nestas situações:\n1. O lead menciona que já conversou com a Viga Sales antes\n2. O lead menciona um nome ou empresa que você precisa confirmar\n3. Você já coletou o telefone e quer ver se há histórico salvo\n\nNÃO USE esta tool automaticamente no início de toda conversa. Novos contatos ainda não têm dados salvos — buscar retornará vazio e não agrega nenhuma informação útil.\n\nSE USAR: trabalhe silenciosamente. Nunca mencione que buscou, que encontrou ou que não encontrou nada. Simplesmente use (ou ignore) o resultado.",
+        "operation": "executeQuery",
+        "query": "SELECT name, business_type, company_name, city, service_interest, service_offered, current_marketing, has_website, has_social_media, main_pain, avg_ticket, is_decision_maker, monthly_revenue_range, urgency, qualification_score, wants_meeting, lead_stage, notes, source FROM leads WHERE regexp_replace(phone,'[^0-9]','','g') = regexp_replace('{{ $fromAI(\"phone\",\"telefone do lead\") }}','[^0-9]','','g') ORDER BY updated_at DESC LIMIT 1",
+        "options": {}
+      },
+      "id": "busca-lead-1",
+      "name": "Busca dados da base",
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        848,
+        -112
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "id": "typing-indicator-001",
+      "name": "Typing Indicator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "name": "Agendar_Reuniao",
+        "description": "Agenda, reagenda ou cancela a Reuniao de Diagnostico no Google Calendar. Use para AGENDAR quando tiver nome, telefone, data/hora e e-mail confirmados; ou para REAGENDAR/CANCELAR quando o lead pedir explicitamente. SEMPRE comece a solicitacao com 'telefone: <numero do lead com DDI, ex 5561999999999> | ' seguido do que deve ser feito (criar/reagendar/cancelar) com data, horario e e-mail quando houver. Retorna o link do Google Meet e a confirmacao.",
+        "workflowId": {
+          "__rl": true,
+          "value": "k84u1zzphcQJrbmy",
+          "mode": "id"
+        }
+      },
+      "id": "agendar-reuniao-tool",
+      "name": "Agendar_Reuniao",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -320
+      ],
+      "id": "2db17474-8338-4303-b0a8-5e6492ac00aa",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jN12Szm4uDGMQTFU",
+          "name": "OpenAI - Viga Sales"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vigasales.shop/api/agents/strategic-voice",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REDACTED_INTERNAL_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ phone: $('Quando chamado por outro fluxo').first().json.telefone.replace(/@s\\.whatsapp\\.net/g,'').replace(/\\D/g,''), message: $('Quando chamado por outro fluxo').first().json.mensagem }) }}",
+        "options": {}
+      },
+      "id": "1bab9376-a333-46a0-b226-4332af6d7e9f",
+      "name": "Voz Estratégica",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        864,
+        -528
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "audio-check",
+              "leftValue": "={{ $json.greeting }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        -528
+      ],
+      "id": "if-audio-saudacao",
+      "name": "Áudio de saudação?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        -752
+      ],
+      "id": "noop-audio",
+      "name": "Fim - áudio enviado"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Le o conteudo completo de um conhecimento listado em [CONHECIMENTOS DISPONIVEIS]. Use quando a duvida do lead casar com um item do manifesto (ex: precos, objecoes, garantia, como funciona o trafego, prazos). Passe o id exato do item.",
+        "operation": "executeQuery",
+        "query": "SELECT conteudo FROM conhecimentos WHERE id = '{{ $fromAI(\"id\",\"id exato do conhecimento listado no manifesto, ex: precos, objecoes, trafego_como_funciona\") }}' AND ativo = true LIMIT 1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        1008,
+        -96
+      ],
+      "id": "ler-conhecimento-tool",
+      "name": "Ler conhecimento",
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Quando chamado por outro fluxo": {
+      "main": [
+        [
+          {
+            "node": "Extrai Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AGENTE DE I.A.": {
+      "main": [
+        [
+          {
+            "node": "Voz Estratégica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEPARA MENSAGENS2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Typing Indicator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia mensagem para o WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "DELAY 1 SEGUNDO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DELAY 1 SEGUNDO": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrai Mensagem": {
+      "main": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salva Lead": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca dados da base": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Typing Indicator": {
+      "main": [
+        [
+          {
+            "node": "Envia mensagem para o WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar_Reuniao": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voz Estratégica": {
+      "main": [
+        [
+          {
+            "node": "Áudio de saudação?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Áudio de saudação?": {
+      "main": [
+        [
+          {
+            "node": "Fim - áudio enviado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SEPARA MENSAGENS2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler conhecimento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE DE I.A.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Quando chamado por outro fluxo": [
+      {
+        "json": {
+          "mensagem": "Oi, quero saber sobre tráfego pago",
+          "telefone": "556181673657@s.whatsapp.net",
+          "nome": "",
+          "is_prospect": false,
+          "prospect_id": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "0afcf9b4-0ff2-44c4-b08d-82932acad36e",
+  "activeVersionId": "0afcf9b4-0ff2-44c4-b08d-82932acad36e",
+  "versionCounter": 663,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-03-25T04:50:55.955Z",
+      "createdAt": "2026-03-25T04:50:55.955Z",
+      "role": "workflow:owner",
+      "workflowId": "Nuyx82MjL055YVaY",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

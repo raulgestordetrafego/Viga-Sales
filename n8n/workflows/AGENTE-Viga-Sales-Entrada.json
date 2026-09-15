@@ -1,0 +1,1013 @@
+{
+  "updatedAt": "2026-09-15T20:14:12.000Z",
+  "createdAt": "2026-03-24T12:56:58.399Z",
+  "id": "dbuIpcKMBm1fMmtr",
+  "name": "AGENTE Viga Sales- Entrada",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente_mestre",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        304
+      ],
+      "id": "2c171027-dfe2-4632-be32-d7c2aad73919",
+      "name": "Recebe mensagem",
+      "webhookId": "46235848-0b3b-43af-964d-9c5c260216eb"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb5f3999-fed4-44e1-972f-1397a3c6fee6",
+              "name": "nome",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "65cf5864-7b1f-457f-8007-0a2bc0380a3c",
+              "name": "telefone",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "be20cf5a-21c3-47e1-8344-fd78b9d04bff",
+              "name": "tipo",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "cf2af045-3ffa-4d58-8a2d-c5cb8f85f849",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation || $json.body.data.message.extendedTextMessage?.text || $json.body.data.message.imageMessage?.caption || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "instance-field",
+              "name": "instance",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "keyid-field",
+              "name": "keyId",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "media-url-field",
+              "name": "mediaUrl",
+              "value": "={{ $json.body.data.message.audioMessage?.url || $json.body.data.message.imageMessage?.url || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        144
+      ],
+      "id": "08714ca5-f8a7-4d34-9db0-5f2e334771e7",
+      "name": "Coleta"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9187681f-1216-4786-9c22-8861c428b577"
+                  },
+                  {
+                    "id": "ext-text-check",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "or"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f21fa68b-70b2-494a-b914-4b15aa5bae3f",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dd71e80b-1078-46d5-b367-958e5790a113",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "doc-check",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "documentMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1600,
+        224
+      ],
+      "id": "da590ff3-ea18-467b-a2df-669c3f462e80",
+      "name": "Verifica tipo de arquivo"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Teq8V8gbjDA8g6Ln",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        -240
+      ],
+      "id": "d7585e87-c7d1-475b-b470-771ca40461f4",
+      "name": "→ Texto e Cadastro"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "QT5A0ZKMgkYTwiht",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2096,
+        112
+      ],
+      "id": "c76bf3c6-225c-4676-8fc2-ce1431e9eee5",
+      "name": "→ Processa Áudio"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "qWFQcbSd1pHQjUhx",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2096,
+        304
+      ],
+      "id": "eb52f776-69b3-421b-9d4f-c47220d15235",
+      "name": "→ Processa Imagem"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fromme-check",
+              "leftValue": "={{ $json.body.data.key.fromMe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals",
+                "name": "filter.operator.notEquals"
+              }
+            },
+            {
+              "id": "filter-broadcast",
+              "leftValue": "={{ $json.body.data.key.remoteJid }}",
+              "rightValue": "@broadcast",
+              "operator": {
+                "type": "string",
+                "operation": "notContains",
+                "name": "filter.operator.notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-fromme-node",
+      "name": "Ignora mensagens do bot",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const keyId = $input.first().json.body?.data?.key?.id;\nif (!keyId) return $input.all();\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.processedIds) staticData.processedIds = {};\n\n// Limpa entradas com mais de 60 segundos\nconst now = Date.now();\nfor (const id in staticData.processedIds) {\n  if (now - staticData.processedIds[id] > 60000) {\n    delete staticData.processedIds[id];\n  }\n}\n\n// Se já processou, para tudo\nif (staticData.processedIds[keyId]) {\n  return [];\n}\n\n// Marca como processado\nstaticData.processedIds[keyId] = now;\nreturn $input.all();"
+      },
+      "id": "dedup-node-001",
+      "name": "Dedup - Ignora Duplicatas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://vigasales.shop/api/prospects/check-audio",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $json.telefone.replace('@s.whatsapp.net','').replace(/\\D/g,'') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-internal-key",
+              "value": "REDACTED_INTERNAL_TOKEN"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "check-prospect-audio",
+      "name": "Verificar Prospect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        816,
+        304
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mp2",
+              "name": "telefone",
+              "value": "={{ $('Coleta').item.json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "mp3",
+              "name": "tipo",
+              "value": "={{ $('Coleta').item.json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "mp4",
+              "name": "is_prospect",
+              "value": "={{ $('Verificar Prospect').item.json.is_prospect === true }}",
+              "type": "boolean"
+            },
+            {
+              "id": "mp5",
+              "name": "prospect_id",
+              "value": "={{ $('Verificar Prospect').item.json.prospect_id }}",
+              "type": "string"
+            },
+            {
+              "id": "mp6",
+              "name": "mensagem",
+              "value": "={{ $('Coleta').item.json.mensagem }}",
+              "type": "string"
+            },
+            {
+              "id": "media-url-field",
+              "name": "mediaUrl",
+              "value": "={{ $('Coleta').item.json.mediaUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "x-instance-Enriqu",
+              "name": "instance",
+              "value": "={{ $('Coleta').item.json.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "x-keyId-Enriqu",
+              "name": "keyId",
+              "value": "={{ $('Coleta').item.json.keyId }}",
+              "type": "string"
+            },
+            {
+              "id": "mp-nome",
+              "name": "nome",
+              "value": "={{ $('Busca Nome Salvo').item.json.lead_card?.name || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "mp-lead",
+              "name": "lead",
+              "value": "={{ $('Busca Nome Salvo').item.json.lead_card }}",
+              "type": "object"
+            },
+            {
+              "id": "mp-pp",
+              "name": "proximo_passo",
+              "value": "={{ $('Busca Nome Salvo').item.json.proximo_passo || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "mp-man",
+              "name": "manifest",
+              "value": "={{ $('Busca Nome Salvo').item.json.manifest || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "mp-obj",
+              "name": "objecoes",
+              "value": "={{ $('Busca Nome Salvo').item.json.objecoes || [] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "merge-prospect-check",
+      "name": "Enriquecer com Prospect",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OuU4Otdu5hM8dflp",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "pdf-exec-001",
+      "name": "→ Processa PDF",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2048,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH l AS (\n  SELECT name, business_type, company_name, city, service_interest, current_marketing,\n         has_website, has_social_media, main_pain, avg_ticket, monthly_revenue_range,\n         is_decision_maker, urgency, qualification_score, lead_stage, wants_meeting,\n         to_char(meeting_datetime,'YYYY-MM-DD HH24:MI') AS meeting_datetime, notes, CASE WHEN service_interest='trafico_pago' THEN 'trafego_pago' WHEN service_interest='criacao_de_site' THEN 'criacao_de_site' WHEN service_interest='ambos' THEN 'ambos' ELSE 'indefinida' END AS trilha\n  FROM leads\n  WHERE regexp_replace(phone,'[^0-9]','','g') = regexp_replace('{{ $('Coleta').item.json.telefone }}','[^0-9]','','g')\n  ORDER BY updated_at DESC LIMIT 1\n)\nSELECT\n  COALESCE((SELECT row_to_json(l) FROM l), '{}'::json) AS lead_card,\n  (SELECT string_agg(id || ' - ' || titulo || ': ' || COALESCE(resumo,''), chr(10) ORDER BY ordem) FROM conhecimentos WHERE ativo) AS manifest,\n  COALESCE((SELECT CASE\n     WHEN l.name IS NULL OR l.name='' THEN 'perguntar o nome'\n     WHEN l.meeting_datetime IS NOT NULL THEN 'reuniao_ja_marcada - confirme a reuniao existente (data/hora). Nao crie outra; reagende/cancele apenas se o lead pedir'\n     WHEN l.service_interest IS NULL OR l.service_interest='' THEN 'descobrir a trilha (trafego pago ou site)'\n     WHEN l.trilha='criacao_de_site' THEN (CASE\n        WHEN l.has_website IS NULL THEN 'perguntar se ja tem site/dominio (reformular ou criar do zero)'\n        WHEN l.business_type IS NULL OR l.business_type='' THEN 'perguntar o ramo do negocio'\n        WHEN l.city IS NULL OR l.city='' THEN 'perguntar a cidade/regiao'\n        WHEN l.company_name IS NULL OR l.company_name='' THEN 'perguntar o nome da empresa (ou se nao tem)'\n        WHEN l.is_decision_maker IS NULL THEN 'perguntar se decide o investimento'\n        WHEN l.monthly_revenue_range IS NULL OR l.monthly_revenue_range='' THEN 'perguntar o orcamento previsto para o site'\n        WHEN l.wants_meeting IS NOT TRUE THEN 'apresentar o pitch e convidar para a call de diagnostico'\n        ELSE 'agendar a reuniao (pedir data/hora e depois email)' END)\n     ELSE (CASE\n        WHEN l.current_marketing IS NULL OR l.current_marketing='' THEN 'perguntar se ja anuncia hoje'\n        WHEN l.has_website IS NULL THEN 'perguntar se tem site ou pagina'\n        WHEN l.business_type IS NULL OR l.business_type='' THEN 'perguntar o ramo do negocio'\n        WHEN l.city IS NULL OR l.city='' THEN 'perguntar a cidade/regiao'\n        WHEN l.company_name IS NULL OR l.company_name='' THEN 'perguntar o nome da empresa (ou se nao tem)'\n        WHEN l.is_decision_maker IS NULL THEN 'perguntar se decide o investimento'\n        WHEN l.monthly_revenue_range IS NULL OR l.monthly_revenue_range='' THEN 'perguntar o investimento mensal pretendido em anuncios'\n        WHEN l.wants_meeting IS NOT TRUE THEN 'apresentar o pitch e convidar para a call de diagnostico'\n        ELSE 'agendar a reuniao (pedir data/hora e depois email)' END)\n   END FROM l), 'novo_lead - perguntar o nome') AS proximo_passo , (SELECT json_agg(json_build_object('id', id, 'gatilhos', gatilhos) ORDER BY (CASE WHEN categoria IN ('objecao','intencao') THEN 0 ELSE 1 END), ordem) FROM conhecimentos WHERE ativo AND gatilhos IS NOT NULL) AS objecoes",
+        "options": {}
+      },
+      "id": "busca-nome-node",
+      "name": "Busca Nome Salvo",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        968,
+        304
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH v AS (\n  SELECT\n    trim('{{ String($('Coleta').item.json.mensagem || \"\").replace(/'/g,\"''\") }}') AS msg,\n    '{{ String($('Coleta').item.json.telefone || \"\").replace(/[^0-9]/g,\"\") }}' AS phone\n),\nupd AS (\n  UPDATE leads l\n  SET name = initcap(v.msg), updated_at = NOW()\n  FROM v\n  WHERE regexp_replace(l.phone,'[^0-9]','','g') = regexp_replace(v.phone,'[^0-9]','','g')\n    AND (l.name IS NULL OR trim(l.name) = '')\n    AND v.msg ~ '^[[:alpha:]]{2,20}$'\n    AND lower(v.msg) NOT IN ('sim','nao','não','ok','oi','ola','olá','bom','boa','beleza','blz','claro','quero','queria','preciso','tenho','tudo','nada','pode','certo','vamos','acho','talvez','gostaria','obrigado','obrigada','valeu','depois','agora','hoje','amanha','amanhã','ainda','ja','já','entendo','entendi','legal','otimo','ótimo','perfeito','show','top','massa','bacana','tranquilo','espera','aguardo','ate','até','mais','menos','muito','pouco','ajuda','quanto','como','opa','fala','sou','estou','site','anuncio','anúncio','trafego','tráfego','instagram','google','empresa','valor','preco','preço','custa')\n    AND (\n      SELECT h.message->>'content'\n        FROM chat_history_viga h\n       WHERE h.session_id LIKE v.phone || '%'\n         AND h.message->>'type' = 'ai'\n       ORDER BY h.id DESC\n       LIMIT 1\n    ) ILIKE '%nome%'\n  RETURNING l.name\n)\nSELECT (SELECT name FROM upd LIMIT 1) AS nome_capturado;",
+        "options": {}
+      },
+      "id": "1379a0d1-dfe1-41ec-bfc1-664f81c75dd7",
+      "name": "Captura Nome",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        892,
+        448
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REDACTED_OPENAI_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"gpt-4o-mini\", temperature: 0, response_format: { type: \"json_object\" }, messages: [ { role: \"system\", content: \"Voce extrai dados de qualificacao de um lead B2B (agencia de marketing). Voce recebe o HISTORICO recente da conversa. Responda SOMENTE um JSON (sem markdown) com as chaves que der para identificar com seguranca usando o historico + a mensagem; use null nas demais. Chaves: name (apenas o PRIMEIRO NOME do lead, se ele informou/confirmou o nome; senao null), business_type (ramo do negocio), city, company_name, current_marketing (nenhum|google|meta|ambos|outro) = onde o lead PAGA ANUNCIO hoje; ter perfil/rede social NAO e anunciar ('nao anuncio nada, so tenho Instagram' => nenhum; 'faco impulsionamento/anuncio no Instagram' => meta; 'anuncio no Google Ads' => google), has_website (true|false|null), has_social_media (true se o lead TEM perfil/rede social Instagram/Facebook/TikTok, mesmo sem anunciar; false se afirmou nao ter; null se nao disse), main_pain (sem_leads|lead_ruim|sem_metrica|desperdicio|sem_site|sem_followup|outro), monthly_revenue_range, is_decision_maker (true|false|null), service_interest (trafico_pago|criacao_de_site|ambos|outro), wants_meeting (true|false|null), lead_stage (novo|qualificado|reuniao_marcada|proposta|ganho|perdido|descartado). Interprete respostas curtas pelo contexto (ex.: 'ja anuncio sim' apos falar de Instagram => current_marketing=meta). NUNCA invente o que nao foi afirmado.\" }, { role: \"user\", content: \"HISTORICO:\\n\" + ($('Busca Historico').first().json.historico || \"(vazio)\") + \"\\n\\nMENSAGEM ATUAL:\\n\" + ($('Coleta').item.json.mensagem || \"\") } ] }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "8abc3020-d518-46d6-b3e6-e2a80a04ed83",
+      "name": "Extrai Perfil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        470
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const it = $input.first().json;\nlet d = {};\ntry {\n  const c = it.choices?.[0]?.message?.content || '{}';\n  d = JSON.parse(c);\n} catch (e) { d = {}; }\nconst phone = String($('Coleta').item.json.telefone || '').replace(/\\D/g,'');\nconst esc = (v) => (v === null || v === undefined) ? '' : String(v).replace(/'/g, \"''\").trim();\nconst bool = (v) => (v === true || v === 'true') ? 'true' : (v === false || v === 'false') ? 'false' : '';\nreturn [{ json: {\n  phone,\n  name: esc(d.name),\n  business_type: esc(d.business_type), city: esc(d.city), company_name: esc(d.company_name),\n  current_marketing: esc(d.current_marketing), has_website: bool(d.has_website), has_social_media: bool(d.has_social_media),\n  main_pain: esc(d.main_pain), monthly_revenue_range: esc(d.monthly_revenue_range),\n  is_decision_maker: bool(d.is_decision_maker), service_interest: esc(d.service_interest),\n  wants_meeting: bool(d.wants_meeting), lead_stage: esc(d.lead_stage)\n}}];"
+      },
+      "id": "e2a610ee-3af3-433f-b8a5-e3282010d7d9",
+      "name": "Parseia Perfil",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        470
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH upd AS (\n  UPDATE leads SET\n    name = COALESCE(NULLIF('{{ $json.name }}',''), name),\n    business_type = COALESCE(NULLIF('{{ $json.business_type }}',''), business_type),\n    city = COALESCE(NULLIF('{{ $json.city }}',''), city),\n    company_name = COALESCE(NULLIF('{{ $json.company_name }}',''), company_name),\n    current_marketing = COALESCE(NULLIF('{{ $json.current_marketing }}',''), current_marketing),\n    has_website = COALESCE(NULLIF('{{ $json.has_website }}','')::boolean, has_website),\n    has_social_media = COALESCE(NULLIF('{{ $json.has_social_media }}','')::boolean, has_social_media),\n    main_pain = COALESCE(NULLIF('{{ $json.main_pain }}',''), main_pain),\n    monthly_revenue_range = COALESCE(NULLIF('{{ $json.monthly_revenue_range }}',''), monthly_revenue_range),\n    is_decision_maker = COALESCE(NULLIF('{{ $json.is_decision_maker }}','')::boolean, is_decision_maker),\n    service_interest = COALESCE(NULLIF('{{ $json.service_interest }}',''), service_interest),\n    wants_meeting = COALESCE(NULLIF('{{ $json.wants_meeting }}','')::boolean, wants_meeting),\n    lead_stage = COALESCE(NULLIF('{{ $json.lead_stage }}',''), lead_stage),\n    updated_at = NOW()\n  WHERE regexp_replace(phone,'[^0-9]','','g') = '{{ $json.phone }}'\n  RETURNING phone\n)\nSELECT COALESCE((SELECT phone FROM upd LIMIT 1), '{{ $json.phone }}') AS phone;",
+        "options": {}
+      },
+      "id": "a0ca6623-3faa-43ad-9b08-32bf2ef8e610",
+      "name": "Salva Perfil",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1520,
+        470
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT string_agg('LEAD: ' || trim(split_part(message->>'content','[MENSAGEM DO LEAD]',2)), E'\\n' ORDER BY id) AS historico\nFROM (\n  SELECT id, message FROM chat_history_viga\n  WHERE session_id LIKE '%' || '{{ $('Coleta').item.json.telefone.replace(/\\D/g,'') }}' || '%'\n    AND message->>'type' = 'human'\n  ORDER BY id DESC LIMIT 6\n) t;",
+        "options": {}
+      },
+      "id": "9ead61d1-8fa9-4216-afa4-7d3c81be8840",
+      "name": "Busca Historico",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1100,
+        470
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "mMV9BeSAmDK3xqJM",
+          "name": "PostgreSQL Agente"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "2c171027-dfe2-4632-be32-d7c2aad73919": {
+      "main": [
+        [
+          {
+            "node": "filter-fromme-node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter-fromme-node": {
+      "main": [
+        [
+          {
+            "node": "dedup-node-001",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "dedup-node-001": {
+      "main": [
+        [
+          {
+            "node": "08714ca5-f8a7-4d34-9db0-5f2e334771e7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "08714ca5-f8a7-4d34-9db0-5f2e334771e7": {
+      "main": [
+        [
+          {
+            "node": "check-prospect-audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check-prospect-audio": {
+      "main": [
+        [
+          {
+            "node": "merge-prospect-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge-prospect-check": {
+      "main": [
+        [
+          {
+            "node": "a6833e20-630e-432d-a967-d2c4530a275d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "a6833e20-630e-432d-a967-d2c4530a275d": {
+      "main": [
+        [
+          {
+            "node": "da590ff3-ea18-467b-a2df-669c3f462e80",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "da590ff3-ea18-467b-a2df-669c3f462e80": {
+      "main": [
+        [
+          {
+            "node": "d7585e87-c7d1-475b-b470-771ca40461f4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "c76bf3c6-225c-4676-8fc2-ce1431e9eee5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "eb52f776-69b3-421b-9d4f-c47220d15235",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "pdf-exec-001",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recebe mensagem": {
+      "main": [
+        [
+          {
+            "node": "Ignora mensagens do bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coleta": {
+      "main": [
+        [
+          {
+            "node": "Verificar Prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Prospect": {
+      "main": [
+        [
+          {
+            "node": "Captura Nome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enriquecer com Prospect": {
+      "main": [
+        [
+          {
+            "node": "Verifica tipo de arquivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica tipo de arquivo": {
+      "main": [
+        [
+          {
+            "node": "→ Texto e Cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "→ Processa Áudio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "→ Processa Imagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "→ Processa PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ignora mensagens do bot": {
+      "main": [
+        [
+          {
+            "node": "Dedup - Ignora Duplicatas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedup - Ignora Duplicatas": {
+      "main": [
+        [
+          {
+            "node": "Coleta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Nome Salvo": {
+      "main": [
+        [
+          {
+            "node": "Enriquecer com Prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captura Nome": {
+      "main": [
+        [
+          {
+            "node": "Busca Historico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca Historico": {
+      "main": [
+        [
+          {
+            "node": "Extrai Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrai Perfil": {
+      "main": [
+        [
+          {
+            "node": "Parseia Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parseia Perfil": {
+      "main": [
+        [
+          {
+            "node": "Salva Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salva Perfil": {
+      "main": [
+        [
+          {
+            "node": "Busca Nome Salvo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "global": {
+      "processedIds": {
+        "3EB02564CF7DEAD78D7F7D": 1789496981633
+      }
+    }
+  },
+  "meta": null,
+  "pinData": {
+    "Recebe mensagem": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.vigasales.shop",
+            "user-agent": "node",
+            "content-length": "267",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-host": "n8n.vigasales.shop",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "8bc1c67517dd",
+            "x-real-ip": "172.18.0.1"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "body": {
+              "data": {
+                "key": {
+                  "remoteJid": "556181362382@s.whatsapp.net",
+                  "id": "wamid.HBgMNTU2MTgxMzYyMzgyFQIAEhgUM0JCNDM4MTZFMTBCM0VBMkE5QzUA",
+                  "fromMe": false
+                },
+                "pushName": "Raul Santos",
+                "messageType": "conversation",
+                "message": {
+                  "conversation": "ola"
+                }
+              },
+              "instance": "meta_oficial"
+            }
+          },
+          "webhookUrl": "https://n8n.vigasales.shop/webhook/agente_mestre",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "ce4884e1-284e-4cac-8248-8f1d9860c272",
+  "activeVersionId": "ce4884e1-284e-4cac-8248-8f1d9860c272",
+  "versionCounter": 3143,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-03-24T12:56:58.402Z",
+      "createdAt": "2026-03-24T12:56:58.402Z",
+      "role": "workflow:owner",
+      "workflowId": "dbuIpcKMBm1fMmtr",
+      "projectId": "TwudLbbKWYANNjyO",
+      "project": {
+        "updatedAt": "2026-06-02T00:03:01.139Z",
+        "createdAt": "2026-03-08T05:06:11.556Z",
+        "id": "TwudLbbKWYANNjyO",
+        "name": "Raul santos <raulfs.sc@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "12f6c5ae-493a-4ec2-b66b-1cb1e0b9322d"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}
