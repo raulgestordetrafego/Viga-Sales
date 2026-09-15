@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T20:31:43.000Z",
+  "updatedAt": "2026-09-15T20:49:28.000Z",
   "createdAt": "2026-09-15T16:37:58.486Z",
   "id": "testefollowup01",
   "name": "TESTE - Follow-up contextual (Tania)",
@@ -89,10 +89,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer REDACTED_OPENAI_KEY"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -101,7 +97,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ model: \"gpt-4o-mini\", temperature: 0.6, messages: [ { role: \"system\", content: \"Voce e o Raul, da Viga Sales. Escreva UMA mensagem curta de follow-up (1-3 linhas, linguagem de WhatsApp) para um lead que PAROU de responder. Use o CONTEXTO da conversa: retome o que ficou pendente (a ultima pergunta sem resposta, a dor ou a objecao do lead) e faca UM convite leve para retomar. PROIBIDO mensagem generica. Nao repita o que ja foi dito. Estagio (de 3): 1 = retomada leve e contextual; 2 = quebrar a objecao com prova/argumento; 3 = ultimo toque, convite direto para a call de diagnostico. Nao invente dados. Portugues do Brasil, tom humano e direto. Responda APENAS com o texto da mensagem.\" }, { role: \"user\", content: \"CONVERSA:\\n\" + ($json.conversa || \"\") + \"\\n\\nEscreva a mensagem de follow-up do ESTAGIO \" + String($json.stage + 1) + \" (nome do lead: \" + ($json.name||\"\") + \").\" } ] }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth"
       },
       "id": "f338688f-bce2-4d16-a616-567cb86e899b",
       "name": "Gera Follow-up",
@@ -111,7 +109,13 @@
         660,
         0
       ],
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "openaiheader01",
+          "name": "OpenAI - Viga Sales (Header)"
+        }
+      }
     },
     {
       "parameters": {
@@ -261,9 +265,9 @@
   },
   "meta": null,
   "pinData": null,
-  "versionId": "c9ffe4a7-9330-4179-ba7c-011a78e34129",
-  "activeVersionId": "c9ffe4a7-9330-4179-ba7c-011a78e34129",
-  "versionCounter": 17,
+  "versionId": "7381e14f-ee89-4a96-a03e-49edad460881",
+  "activeVersionId": "7381e14f-ee89-4a96-a03e-49edad460881",
+  "versionCounter": 21,
   "triggerCount": 1,
   "tags": [],
   "shared": [
