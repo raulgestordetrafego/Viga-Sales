@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  --font-sans: 'Inter', 'sans-serif';
+}
+
+/* Custom scrollbar for better aesthetics */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+/* Horizontal scrollbar for Kanban/Calendar */
+.kanban-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.kanban-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.kanban-scroll::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+}
+.kanban-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
