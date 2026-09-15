@@ -5,7 +5,7 @@ services:
     environment:
       - POSTGRES_DB=agente
       - POSTGRES_USER=agente
-      - POSTGRES_PASSWORD=AgentViga2024!
+      - POSTGRES_PASSWORD=${POSTGRES_AGENTE_PASSWORD}
     volumes:
       - postgres-agente-data:/var/lib/postgresql/data
       - ./01 - DB/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -19,7 +19,7 @@ services:
     environment:
       - POSTGRES_DB=vigasales
       - POSTGRES_USER=vigasales
-      - POSTGRES_PASSWORD=VigaSales2024!
+      - POSTGRES_PASSWORD=${POSTGRES_CRM_PASSWORD}
     volumes:
       - postgres-crm-data:/var/lib/postgresql/data
       - ./01 - DB/postgres-crm-init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -33,7 +33,7 @@ services:
     environment:
       - POSTGRES_DB=vigasales_leads
       - POSTGRES_USER=vigasales_leads
-      - POSTGRES_PASSWORD=VigaSalesLeads2024!
+      - POSTGRES_PASSWORD=${POSTGRES_LEADS_PASSWORD}
     volumes:
       - postgres-leads-data:/var/lib/postgresql/data
       - ./01 - DB/postgres-leads-init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -50,7 +50,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=n8n_default
 
-      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`) || Host(`equipe.vigasales.shop`) || Host(`blog.vigasales.com.br`) || Host(`proposta124.vigasales.com.br`) || Host(`proposta125.vigasales.com.br`)
+      - traefik.http.routers.vigasales.rule=Host(`vigasales.shop`) || Host(`www.vigasales.shop`) || Host(`equipe.vigasales.shop`) || Host(`blog.vigasales.com.br`) || Host(`proposta124.vigasales.com.br`) || Host(`proposta125.vigasales.com.br`) || Host(`proposta126.vigasales.com.br`) || Host(`sites.vigasales.com.br`)
       - traefik.http.routers.vigasales.tls=true
       - traefik.http.routers.vigasales.entrypoints=web,websecure
       - traefik.http.routers.vigasales.tls.certresolver=mytlschallenge
@@ -68,6 +68,13 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_VOICE_ID=${ELEVENLABS_VOICE_ID}
+      - ELEVENLABS_MODEL_ID=${ELEVENLABS_MODEL_ID:-eleven_flash_v2_5}
+      - ELEVENLABS_ENABLED=${ELEVENLABS_ENABLED:-true}
+      - ELEVENLABS_DAILY_CHAR_LIMIT=${ELEVENLABS_DAILY_CHAR_LIMIT:-0}
+      - ELEVENLABS_MONTHLY_CHAR_LIMIT=${ELEVENLABS_MONTHLY_CHAR_LIMIT:-0}
+      - ELEVENLABS_MAX_CHARS_PER_MESSAGE=${ELEVENLABS_MAX_CHARS_PER_MESSAGE:-600}
       - SENDER_NAME=${SENDER_NAME:-Raul}
       - SENDER_COMPANY=${SENDER_COMPANY:-Viga Sales}
       - VIGA_INTERNAL_TOKEN=${VIGA_INTERNAL_TOKEN}
@@ -98,10 +105,13 @@ services:
       - COST_PER_MSG=${COST_PER_MSG:-0.071}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - TELEGRAM_BOSS_IDS=${TELEGRAM_BOSS_IDS}
-      - DATABASE_URL=postgresql://vigasales:VigaSales2024!@postgres-crm:5432/vigasales?sslmode=disable
+      - DATABASE_URL=postgresql://vigasales:${POSTGRES_CRM_PASSWORD}@postgres-crm:5432/vigasales?sslmode=disable
+      - DATABASE_AGENTE_URL=postgresql://agente:${POSTGRES_AGENTE_PASSWORD}@postgres-agente:5432/agente?sslmode=disable
+      - DATABASE_LEADS_URL=postgresql://vigasales_leads:${POSTGRES_LEADS_PASSWORD}@postgres-leads:5432/vigasales_leads?sslmode=disable
     volumes:
       - ./public/audio:/app/public/audio:ro
       - ./public/templates:/app/public/templates
+      - ./public/vid:/app/public/vid:ro
     networks:
       - default
       - n8n_traefik

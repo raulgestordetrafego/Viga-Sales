@@ -63,7 +63,7 @@ function classifyIntent(text) {
 let agentePool = null;
 function getAgentePool() {
   if (agentePool) return agentePool;
-  const url = process.env.DATABASE_AGENTE_URL || 'postgresql://agente:AgentViga2024!@postgres-agente:5432/agente?sslmode=disable';
+  const url = process.env.DATABASE_AGENTE_URL;
   if (!url) return null;
   agentePool = new Pool({ connectionString: url, max: 3 });
   return agentePool;
