@@ -149,6 +149,7 @@ export interface Client {
   identidadeVisualUrl?: string;
   observacoes?: string;
   metaAdAccountId?: string;
+  googleAdsAccountId?: string;
   metaAccessToken?: string;
   metaFormId?: string;
   usingN8N?: boolean;
@@ -166,6 +167,19 @@ export interface MetaAdAccount {
   currency: string;
   businessName?: string | null;
   timezone?: string | null;
+  linkedClienteId?: string | null;
+  linkedClienteNome?: string | null;
+}
+
+// Conta de anúncio Google descoberta via MCC (Google Ads API)
+export interface GoogleAdAccount {
+  id: string;
+  name: string;
+  currency?: string | null;
+  timezone?: string | null;
+  manager?: boolean;
+  status?: string | null;
+  parentId?: string;
   linkedClienteId?: string | null;
   linkedClienteNome?: string | null;
 }

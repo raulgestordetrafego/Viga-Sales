@@ -103,6 +103,11 @@ export const hubApi = {
     accounts: () => api.get('/hub/meta/accounts').then(r => r.data),
     linkAccount: (accountId, clienteId) => api.post('/hub/meta/accounts/link', { accountId, clienteId }).then(r => r.data),
   },
+  google: {
+    // Descoberta automática via MCC + vínculo por cliente
+    accounts: () => api.get('/hub/google/accounts').then(r => r.data),
+    linkAccount: (accountId, clienteId) => api.post('/hub/google/accounts/link', { accountId, clienteId }).then(r => r.data),
+  },
   desempenho: {
     list: () => api.get('/hub/desempenho').then(r => r.data),
     save: (clienteId, d) => api.put(`/hub/desempenho/${clienteId}`, d).then(r => r.data),

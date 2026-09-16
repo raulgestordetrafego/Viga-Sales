@@ -10,6 +10,11 @@ import {
   isConfigured as isMetaConfigured,
 } from '../services/metaHubService.js';
 import {
+  listAdAccounts as listGoogleAdAccounts,
+  isConfigured as isGoogleConfigured,
+  isLinkedConfigured as isGoogleLinkedConfigured,
+} from '../services/googleAdsService.js';
+import {
   queryBrain,
   getTopicContent,
   getBrainOverview,
@@ -38,7 +43,7 @@ function stripId(payload, idField) {
 }
 
 // Factory CRUD genérico por entidade
-function crudFor({ path, table, idField, clienteRef }) {
+function crudFor({ path, table, idField, clienteRef, preserve = [] }) {
   // Lista (opcionalmente filtrando por cliente)
   router.get(`/${path}`, async (req, res) => {
     try {
@@ -72,6 +77,16 @@ function crudFor({ path, table, idField, clienteRef }) {
   router.put(`/${path}/:id`, async (req, res) => {
     try {
       const data = stripId(req.body || {}, idField);
+      // Preserva campos gerenciados fora deste CRUD (ex.: vínculos de conta de
+      // anúncio) quando o payload do frontend vier sem eles (estado defasado).
+      if (preserve.length) {
+        const existing = await queryOne(`SELECT data FROM ${table} WHERE id = ?`, [req.params.id]);
+        let prev = {};
+        try { prev = JSON.parse(existing?.data || '{}'); } catch {}
+        for (const k of preserve) {
+          if (!(k in data) && prev[k] != null) data[k] = prev[k];
+        }
+      }
       const clienteId = clienteRef ? (req.body?.[clienteRef] || data[clienteRef] || req.body?.cliente_id || null) : null;
       if (clienteRef) {
         await run(`UPDATE ${table} SET data = ?, cliente_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [JSON.stringify(data), clienteId, req.params.id]);
@@ -91,7 +106,7 @@ function crudFor({ path, table, idField, clienteRef }) {
   });
 }
 
-crudFor({ path: 'clientes', table: 'hub_clientes', idField: 'ClienteID' });
+crudFor({ path: 'clientes', table: 'hub_clientes', idField: 'ClienteID', preserve: ['metaAdAccountId', 'googleAdsAccountId'] });
 crudFor({ path: 'leads', table: 'hub_leads', idField: 'LeadID', clienteRef: 'ClienteID' });
 crudFor({ path: 'criativos', table: 'hub_criativos', idField: 'CriativoID', clienteRef: 'ClienteID' });
 crudFor({ path: 'solicitacoes', table: 'hub_solicitacoes', idField: 'RequestID', clienteRef: 'ClienteID' });
@@ -333,64 +348,134 @@ router.get('/meta/live/daily-history', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ── Meta: contas de anúncio (descoberta automática + vínculo por cliente) ─────
-// Lê as contas visíveis para o token do System User e cruza com o
-// `metaAdAccountId` salvo em cada cliente do hub.
-async function mapAdAccountLinks() {
+// ── Contas de anúncio (descoberta automática + vínculo por cliente) ───────────
+// Meta e Google compartilham a mecânica: cada cliente guarda o id da conta no
+// seu JSON (`metaAdAccountId` / `googleAdsAccountId`).
+async function mapAdAccountLinks(field) {
   const rows = await query(`SELECT id, data FROM hub_clientes`);
   const byAccount = new Map();
   for (const r of rows) {
     let d = {};
     try { d = JSON.parse(r.data || '{}'); } catch {}
-    const acc = String(d.metaAdAccountId || '').replace(/[^0-9]/g, '');
+    const acc = String(d[field] || '').replace(/[^0-9]/g, '');
     if (acc) byAccount.set(acc, { clienteId: r.id, clienteNome: d.Nome || null });
   }
   return byAccount;
 }
 
+// Vincula (ou desvincula, com clienteId null) uma conta a um cliente.
+// Uma conta pertence a no máximo um cliente: remove o vínculo anterior.
+async function linkAdAccount(field, accountId, clienteId) {
+  const rows = await query(`SELECT id, data FROM hub_clientes`);
+  for (const r of rows) {
+    let d = {};
+    try { d = JSON.parse(r.data || '{}'); } catch {}
+    if (String(d[field] || '').replace(/[^0-9]/g, '') !== accountId) continue;
+    if (clienteId && r.id === clienteId) continue; // já é o alvo
+    delete d[field];
+    await run(`UPDATE hub_clientes SET data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [JSON.stringify(d), r.id]);
+  }
+  if (clienteId) {
+    const target = rows.find(r => r.id === clienteId);
+    if (!target) return false;
+    let d = {};
+    try { d = JSON.parse(target.data || '{}'); } catch {}
+    d[field] = accountId;
+    await run(`UPDATE hub_clientes SET data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [JSON.stringify(d), clienteId]);
+  }
+  return true;
+}
+
+function withLinks(accounts, links) {
+  return accounts.map(a => ({
+    ...a,
+    linkedClienteId: links.get(a.id)?.clienteId || null,
+    linkedClienteNome: links.get(a.id)?.clienteNome || null,
+  }));
+}
+
+// ── Meta ─────────────────────────────────────────────────────────────────────
 router.get('/meta/accounts', async (req, res) => {
   try {
-    const accounts = await listMetaAdAccounts();
-    const links = await mapAdAccountLinks();
-    res.json({
-      configured: isMetaConfigured(),
-      accounts: accounts.map(a => ({
-        ...a,
-        linkedClienteId: links.get(a.id)?.clienteId || null,
-        linkedClienteNome: links.get(a.id)?.clienteNome || null,
-      })),
-    });
+    const [accounts, links] = [await listMetaAdAccounts(), await mapAdAccountLinks('metaAdAccountId')];
+    res.json({ configured: isMetaConfigured(), accounts: withLinks(accounts, links) });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Vincula (ou desvincula, com clienteId null) uma conta a um cliente.
-// Uma conta pertence a no máximo um cliente: remove o vínculo anterior.
 router.post('/meta/accounts/link', async (req, res) => {
   try {
     const accountId = String(req.body?.accountId || '').replace(/[^0-9]/g, '').trim();
     const clienteId = req.body?.clienteId || null;
     if (!accountId) return res.status(400).json({ error: 'accountId obrigatório' });
+    const ok = await linkAdAccount('metaAdAccountId', accountId, clienteId);
+    if (!ok) return res.status(404).json({ error: 'Cliente não encontrado' });
+    res.json({ ok: true, accountId, clienteId: clienteId || null });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
 
-    const rows = await query(`SELECT id, data FROM hub_clientes`);
-    for (const r of rows) {
+// ── Google Ads ───────────────────────────────────────────────────────────────
+router.get('/google/accounts', async (req, res) => {
+  try {
+    const [accounts, links] = [await listGoogleAdAccounts(), await mapAdAccountLinks('googleAdsAccountId')];
+    res.json({
+      configured: isGoogleConfigured(),
+      linkedConfigured: isGoogleLinkedConfigured(),
+      accounts: withLinks(accounts, links),
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.post('/google/accounts/link', async (req, res) => {
+  try {
+    const accountId = String(req.body?.accountId || '').replace(/[^0-9]/g, '').trim();
+    const clienteId = req.body?.clienteId || null;
+    if (!accountId) return res.status(400).json({ error: 'accountId obrigatório' });
+    const ok = await linkAdAccount('googleAdsAccountId', accountId, clienteId);
+    if (!ok) return res.status(404).json({ error: 'Cliente não encontrado' });
+    res.json({ ok: true, accountId, clienteId: clienteId || null });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── Mapa de contas por cliente (para gerar os blocos do Obsidian) ────────────
+// Fonte da verdade: `hub_clientes` + nomes/status das contas (descoberta, cache 10min).
+let _discoveryCache = { at: 0, meta: [], google: [] };
+async function getDiscovered() {
+  if (Date.now() - _discoveryCache.at < 10 * 60_000 && (_discoveryCache.meta.length || _discoveryCache.google.length)) {
+    return _discoveryCache;
+  }
+  const [meta, google] = await Promise.all([
+    listMetaAdAccounts().catch(() => []),
+    listGoogleAdAccounts().catch(() => []),
+  ]);
+  _discoveryCache = { at: Date.now(), meta, google };
+  return _discoveryCache;
+}
+
+router.get('/accounts-map', async (req, res) => {
+  try {
+    const [{ meta, google }, rows] = await Promise.all([
+      getDiscovered(),
+      query(`SELECT id, data FROM hub_clientes`),
+    ]);
+    const metaById = new Map(meta.map(a => [String(a.id), a]));
+    const googleById = new Map(google.map(a => [String(a.id), a]));
+
+    const clients = rows.map(r => {
       let d = {};
       try { d = JSON.parse(r.data || '{}'); } catch {}
-      if (String(d.metaAdAccountId || '').replace(/[^0-9]/g, '') !== accountId) continue;
-      if (clienteId && r.id === clienteId) continue; // já é o alvo
-      delete d.metaAdAccountId;
-      await run(`UPDATE hub_clientes SET data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [JSON.stringify(d), r.id]);
-    }
+      const m = String(d.metaAdAccountId || '').replace(/[^0-9]/g, '');
+      const g = String(d.googleAdsAccountId || '').replace(/[^0-9]/g, '');
+      return {
+        clienteId: r.id,
+        nome: d.Nome || null,
+        statusCliente: d.StatusCliente || null,
+        nicho: d.Nicho || null,
+        meta: m ? [{ id: m, ...(metaById.get(m) || {}) }] : [],
+        google: g ? [{ id: g, ...(googleById.get(g) || {}) }] : [],
+      };
+    }).sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')));
 
-    if (clienteId) {
-      const target = rows.find(r => r.id === clienteId);
-      if (!target) return res.status(404).json({ error: 'Cliente não encontrado' });
-      let d = {};
-      try { d = JSON.parse(target.data || '{}'); } catch {}
-      d.metaAdAccountId = accountId;
-      await run(`UPDATE hub_clientes SET data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [JSON.stringify(d), clienteId]);
-    }
-
-    res.json({ ok: true, accountId, clienteId: clienteId || null });
+    res.json({ generatedAt: new Date().toISOString(), clients });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

@@ -45,3 +45,5 @@ backup/
 *.MP4
 .local/
 google-ads.yaml
+.google-ads-refresh-token.txt
+_vps_backup/

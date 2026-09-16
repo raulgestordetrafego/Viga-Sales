@@ -373,7 +373,7 @@ const AuthenticatedApp: React.FC = () => {
                 case 'optimizations': return <GlobalOptimizationsPage optimizations={optimizations} clients={clients} onOpenOptimizationModal={(o) => setOptimizationModal({ isOpen: true, optimization: o })} onNewOptimization={(clientId) => setOptimizationModal({ isOpen: true, optimization: { ClienteID: clientId } })} />;
                 case 'monthlyReports': return <MonthlyReportsPage clients={clients} />;
                 case 'metaAccounts': return <MetaAccountsPage clients={clients} navigateTo={navigateTo} onOpenConfigModal={(c) => setMetaConfigModal({ isOpen: true, client: c })} onChanged={loadAll} />;
-                case 'googleAccounts': return <GoogleAccountsPage clients={clients} navigateTo={navigateTo} />;
+                case 'googleAccounts': return <GoogleAccountsPage clients={clients} navigateTo={navigateTo} onChanged={loadAll} />;
                 case 'searchConsole': return <SearchConsolePage navigateTo={navigateTo} />;
                 case 'jarvis': return <JarvisPage />;
                 case 'trafficBrain': return <TrafficBrainPage />;
