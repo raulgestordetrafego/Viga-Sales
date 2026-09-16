@@ -799,8 +799,10 @@ Escreva apenas a mensagem, sem aspas, sem prefixo, sem explicações.`;
     console.log("Starting database initialization...");
     await initDb();
     console.log("Database initialized successfully");
-  } catch (err) {
+  } catch (err: any) {
     console.error("CRITICAL: Database initialization failed:", err.message);
+    console.error("Encerrando o processo para NAO servir dados vazios. Corrija DATABASE_URL/senha do Postgres e reinicie.");
+    process.exit(1);
   }
 
   // ── Landing Lead ─────────────────────────────────────────────────────────

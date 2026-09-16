@@ -13,6 +13,11 @@ const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../../db/crm.sqlite
 
 let dbInstance = null;
 
+// Fallback para SQLite só é permitido se explicitamente autorizado por env.
+// Em produção (Postgres configurado) o padrão é FALHAR, para nunca servir um banco vazio.
+const allowSqliteFallback = () =>
+  process.env.DB_ALLOW_SQLITE_FALLBACK === '1' || process.env.DB_ALLOW_SQLITE_FALLBACK === 'true';
+
 class DatabaseWrapper {
   constructor() {
     this.init();
@@ -29,7 +34,11 @@ class DatabaseWrapper {
         console.log('Using PostgreSQL database');
       } catch (err) {
         console.error('Failed to initialize Postgres Pool:', err.message);
-        this.fallbackToSqlite();
+        if (allowSqliteFallback()) {
+          this.fallbackToSqlite();
+        } else {
+          throw new Error(`Falha ao criar pool Postgres: ${err.message}`);
+        }
       }
     } else {
       this.initSqlite();
@@ -289,7 +298,12 @@ export async function initDb() {
           console.log('PostgreSQL connection successful');
         } catch (err) {
           console.error('PostgreSQL connection failed:', err.message);
-          instance.fallbackToSqlite();
+          if (allowSqliteFallback()) {
+            console.warn('[DB] DB_ALLOW_SQLITE_FALLBACK ativo — caindo para SQLite (NAO usar em producao)');
+            instance.fallbackToSqlite();
+          } else {
+            throw new Error(`PostgreSQL inacessivel: ${err.message}`);
+          }
         }
       } else {
         console.log('Testing SQLite connection...');
@@ -863,19 +877,20 @@ async function initializeSchema() {
     } catch {}
   }
 
-  // Seed master admin
+  // Seed master admin — só cria se NÃO existir nenhum master no banco.
+  // Evita recriar contas apagadas com a senha padrão a cada boot.
   try {
-    const masterEmail = process.env.CRM_MASTER_EMAIL || 'raulgestor@gmail';
-    const masterPass  = process.env.CRM_MASTER_PASSWORD || '12345678';
-    const masterHash  = await hashPwd(masterPass);
-    const existing    = await db.get('SELECT id FROM users WHERE email = ?', [masterEmail]);
-    if (!existing) {
+    const existingMaster = await db.get(`SELECT id FROM users WHERE role = 'master' LIMIT 1`, []);
+    if (!existingMaster) {
+      const masterEmail = process.env.CRM_MASTER_EMAIL || 'raulgestor@gmail';
+      const masterPass  = process.env.CRM_MASTER_PASSWORD || '12345678';
+      const masterHash  = await hashPwd(masterPass);
       const { v4: uuidv4 } = await import('uuid');
       await db.run(
         `INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'master', 'active')`,
         [uuidv4(), 'Raul Santos', masterEmail, masterHash]
       );
-      console.log('[Auth] Master admin criado:', masterEmail);
+      console.log('[Auth] Master admin criado (nenhum master existia):', masterEmail);
     }
   } catch (err) {
     console.error('[Auth] Erro ao criar master admin:', err.message);
