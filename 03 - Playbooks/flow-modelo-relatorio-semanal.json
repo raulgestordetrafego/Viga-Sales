@@ -1,0 +1,541 @@
+{
+  "name": "Relatório Semanal Casa da Fé (Google + Meta + Seguidores + Metas)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "cdf-sch",
+      "name": "Segunda 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cads_customer",
+              "name": "ads_customer",
+              "value": "9307821350",
+              "type": "string"
+            },
+            {
+              "id": "cads_mcc",
+              "name": "ads_mcc",
+              "value": "6602209925",
+              "type": "string"
+            },
+            {
+              "id": "cdev_token",
+              "name": "dev_token",
+              "value": "SEU_GOOGLE_ADS_DEVELOPER_TOKEN",
+              "type": "string"
+            },
+            {
+              "id": "coauth_client_id",
+              "name": "oauth_client_id",
+              "value": "SEU_OAUTH_CLIENT_ID",
+              "type": "string"
+            },
+            {
+              "id": "coauth_client_secret",
+              "name": "oauth_client_secret",
+              "value": "SEU_OAUTH_CLIENT_SECRET",
+              "type": "string"
+            },
+            {
+              "id": "coauth_refresh_token",
+              "name": "oauth_refresh_token",
+              "value": "SEU_GOOGLE_ADS_REFRESH_TOKEN",
+              "type": "string"
+            },
+            {
+              "id": "cads_api_version",
+              "name": "ads_api_version",
+              "value": "v22",
+              "type": "string"
+            },
+            {
+              "id": "cmeta_token",
+              "name": "meta_token",
+              "value": "SEU_META_ADS_ACCESS_TOKEN",
+              "type": "string"
+            },
+            {
+              "id": "cmeta_account",
+              "name": "meta_account",
+              "value": "1104343325169691",
+              "type": "string"
+            },
+            {
+              "id": "cig_id",
+              "name": "ig_id",
+              "value": "17841451728444718",
+              "type": "string"
+            },
+            {
+              "id": "cevolution_url",
+              "name": "evolution_url",
+              "value": "https://evolution.vigasales.shop",
+              "type": "string"
+            },
+            {
+              "id": "cevolution_key",
+              "name": "evolution_key",
+              "value": "SUA_EVOLUTION_API_KEY",
+              "type": "string"
+            },
+            {
+              "id": "cevolution_instance",
+              "name": "evolution_instance",
+              "value": "Raul%20Santos",
+              "type": "string"
+            },
+            {
+              "id": "cwhatsapp_group",
+              "name": "whatsapp_group",
+              "value": "120363427678996821@g.us",
+              "type": "string"
+            },
+            {
+              "id": "cmeta_leads_alvo",
+              "name": "meta_leads_alvo",
+              "value": "260",
+              "type": "string"
+            },
+            {
+              "id": "cmeta_alcance_alvo",
+              "name": "meta_alcance_alvo",
+              "value": "53000",
+              "type": "string"
+            },
+            {
+              "id": "cbase_seg_alvo",
+              "name": "base_seg_alvo",
+              "value": "9000",
+              "type": "string"
+            },
+            {
+              "id": "cdashboard_url",
+              "name": "dashboard_url",
+              "value": "https://acasadafe.vigasales.com.br/",
+              "type": "string"
+            },
+            {
+              "id": "cCapa",
+              "name": "capa_b64",
+              "value": "COLE_AQUI_O_BASE64_DA_CAPA (ver 01 - Brand/relatorio-semanal-capa.jpg; use generate-image/compose_brand_image.py)",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "cdf-cfg",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst cfg = $('Config').first().json;\nconst now = DateTime.now().setZone('America/Sao_Paulo');\nconst today = now.startOf('day');\nconst monday = today.minus({ days: today.weekday - 1 });\nconst weekStart = monday.minus({ weeks: 1 });\nconst weekEnd = monday.minus({ days: 1 });\nconst monthStart = now.startOf('month');\nconst f = d => d.toFormat('yyyy-MM-dd');\nconst ws=f(weekStart), we=f(weekEnd), ms=f(monthStart), me=f(today);\nconst gQ = (a,b) => \"SELECT metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM customer WHERE segments.date BETWEEN '\"+a+\"' AND '\"+b+\"'\";\nconst metaUrl = (a,b) => \"https://graph.facebook.com/v26.0/act_\"+cfg.meta_account+\"/insights?fields=campaign_name,spend,impressions,reach,actions&time_range=\"+encodeURIComponent(JSON.stringify({since:a,until:b}))+\"&level=campaign&limit=500&access_token=\"+cfg.meta_token;\nreturn [{ json: {\n  week_label: weekStart.toFormat('dd/MM')+' a '+weekEnd.toFormat('dd/MM'),\n  month_label: ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][now.month-1]+' '+now.year,\n  google_week_body: JSON.stringify({ query: gQ(ws,we) }),\n  google_month_body: JSON.stringify({ query: gQ(ms,me) }),\n  meta_week_url: metaUrl(ws, we),\n  meta_month_url: metaUrl(ms, me),\n  ig_base_url: \"https://graph.facebook.com/v26.0/\"+cfg.ig_id+\"?fields=followers_count&access_token=\"+cfg.meta_token,\n  ig_insights_url: \"https://graph.facebook.com/v26.0/\"+cfg.ig_id+\"/insights?metric=follower_count&period=day&since=\"+ws+\"&until=\"+weekEnd.plus({days:1}).toFormat('yyyy-MM-dd')+\"&access_token=\"+cfg.meta_token\n}}];\n"
+      },
+      "id": "cdf-prep",
+      "name": "Preparar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://oauth2.googleapis.com/token",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_id",
+              "value": "={{ $('Config').first().json.oauth_client_id }}"
+            },
+            {
+              "name": "client_secret",
+              "value": "={{ $('Config').first().json.oauth_client_secret }}"
+            },
+            {
+              "name": "refresh_token",
+              "value": "={{ $('Config').first().json.oauth_refresh_token }}"
+            },
+            {
+              "name": "grant_type",
+              "value": "refresh_token"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cdf-ref",
+      "name": "Refresh Token Google",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://googleads.googleapis.com/{{ $('Config').first().json.ads_api_version }}/customers/{{ $('Config').first().json.ads_customer }}/googleAds:search",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Refresh Token Google').first().json.access_token }}"
+            },
+            {
+              "name": "developer-token",
+              "value": "={{ $('Config').first().json.dev_token }}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "={{ $('Config').first().json.ads_mcc }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Preparar').first().json.google_week_body }}",
+        "options": {}
+      },
+      "id": "cdf-gw",
+      "name": "Google Ads Semana",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://googleads.googleapis.com/{{ $('Config').first().json.ads_api_version }}/customers/{{ $('Config').first().json.ads_customer }}/googleAds:search",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Refresh Token Google').first().json.access_token }}"
+            },
+            {
+              "name": "developer-token",
+              "value": "={{ $('Config').first().json.dev_token }}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "={{ $('Config').first().json.ads_mcc }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Preparar').first().json.google_month_body }}",
+        "options": {}
+      },
+      "id": "cdf-gm",
+      "name": "Google Ads Mes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Preparar').first().json.meta_week_url }}",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "cdf-mw",
+      "name": "Meta Ads Semana",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Preparar').first().json.meta_month_url }}",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "cdf-mm",
+      "name": "Meta Ads Mes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Preparar').first().json.ig_base_url }}",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "cdf-igb",
+      "name": "IG Seguidores",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1800,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Preparar').first().json.ig_insights_url }}",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "cdf-ign",
+      "name": "IG Novos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst cfg = $('Config').first().json;\nconst prep = $('Preparar').first().json;\nconst USD = \"\\u0024\";\nconst brl = v => 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});\nconst num = v => Number(Math.round(v||0)).toLocaleString('pt-BR');\nconst pctv = v => Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';\nfunction gsum(node){\n  const d = node.first().json; const rs = (d && d.results) ? d.results : [];\n  let imp=0,clk=0,cost=0,conv=0;\n  for(const r of rs){ const m=r.metrics||{}; imp+=Number(m.impressions||0); clk+=Number(m.clicks||0); cost+=Number(m.costMicros||0)/1e6; conv+=Number(m.conversions||0); }\n  return {imp,clk,cost,conv,ctr: imp?clk/imp*100:0, cpa: conv?cost/conv:0, cpc: clk?cost/clk:0};\n}\nfunction msum(node){\n  const d = node.first().json; const rows = (d && d.data) ? d.data : [];\n  let imp=0,reach=0,cost=0,conv=0,wcost=0,traf=0;\n  for(const r of rows){\n    const sp=Number(r.spend||0); imp+=Number(r.impressions||0); reach+=Number(r.reach||0); cost+=sp;\n    const cn=(r.campaign_name||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');\n    if(cn.includes('trafego')) traf+=sp;\n    const isWpp = cn.includes('vendas whatsapp');\n    const acts={}; for(const a of (r.actions||[])) acts[a.action_type]=Number(a.value||0);\n    const c = acts['onsite_conversion.messaging_conversation_started_7d']||0;\n    if(isWpp){ conv+=c; wcost+=sp; }\n  }\n  return {imp,reach,cost,conv,wcost,traf,cpa: conv?wcost/conv:0};\n}\nconst gw=gsum($('Google Ads Semana')), gm=gsum($('Google Ads Mes'));\nconst mw=msum($('Meta Ads Semana')), mm=msum($('Meta Ads Mes'));\nconst igBase = Number(($('IG Seguidores').first().json||{}).followers_count||0);\nconst igd = $('IG Novos').first().json;\nlet novos=0; for(const s of ((igd&&igd.data)||[])) for(const v of (s.values||[])) novos+=Number(v.value||0);\nconst L=[];\nL.push('📊 *Casa da Fé — Acompanhamento Semanal*');\nL.push('🗓 _Semana '+prep.week_label+' · Viga Sales_');\nL.push('');\nL.push('🔎 *Google Ads*');\nL.push('💰 Investido: '+brl(gw.cost)+' | 🎯 Conversões: '+num(gw.conv)+' (CPA '+brl(gw.cpa)+')');\nL.push('🖱️ Cliques: '+num(gw.clk)+' (CTR '+pctv(gw.ctr)+')');\nL.push('');\nL.push('📣 *Meta Ads*');\nL.push('💰 Investido: '+brl(mw.cost)+' | 👁️ Alcance: '+num(mw.reach));\nL.push('📈 Impressões: '+num(mw.imp));\nL.push('💬 Conversas WhatsApp: '+num(mw.conv)+' (CPA '+brl(mw.cpa)+')');\nL.push('');\nL.push('📸 *Instagram*');\nL.push('👥 Seguidores: '+num(igBase)+' ('+(novos>=0?'+':'')+num(novos)+' na semana)');\nconst cpsem=(mw.traf&&novos>0)?mw.traf/novos:null;\nL.push('💵 Custo por novo seguidor: '+(cpsem!=null?brl(cpsem):'—'));\nL.push('🎯 Faltam '+num(Math.max(0, Number(cfg.base_seg_alvo)-igBase))+' para '+num(cfg.base_seg_alvo));\nL.push('');\nconst pl = mm.conv && Number(cfg.meta_leads_alvo) ? (mm.conv/Number(cfg.meta_leads_alvo)*100) : null;\nconst pa = mm.reach && Number(cfg.meta_alcance_alvo) ? (mm.reach/Number(cfg.meta_alcance_alvo)*100) : null;\nL.push('🏆 *Metas de '+prep.month_label+'*');\nL.push('💬 Leads WhatsApp: '+num(mm.conv)+'/'+num(cfg.meta_leads_alvo)+(pl!=null?' ('+pctv(pl)+')':''));\nL.push('📢 Alcance: '+num(mm.reach)+'/'+num(cfg.meta_alcance_alvo)+(pa!=null?' ('+pctv(pa)+')':''));\nL.push('👥 Base de seguidores: '+num(igBase)+'/'+num(cfg.base_seg_alvo));\nL.push('');\nL.push('🔗 Dashboard completo: '+cfg.dashboard_url);\nreturn [{ json: { number: cfg.whatsapp_group, message: L.join('\\n') } }];\n"
+      },
+      "id": "cdf-mont",
+      "name": "Montar Relatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Config').first().json.evolution_url }}/message/sendMedia/{{ $('Config').first().json.evolution_instance }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Config').first().json.evolution_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.number, mediatype: 'image', mimetype: 'image/jpeg', fileName: 'relatorio-semanal.jpg', caption: $json.message, media: $('Config').first().json.capa_b64 }) }}",
+        "options": {}
+      },
+      "id": "cdf-send",
+      "name": "Enviar WhatsApp (grupo Casa da Fé)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Segunda 08:00": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Preparar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar": {
+      "main": [
+        [
+          {
+            "node": "Refresh Token Google",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh Token Google": {
+      "main": [
+        [
+          {
+            "node": "Google Ads Semana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Ads Semana": {
+      "main": [
+        [
+          {
+            "node": "Google Ads Mes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Ads Mes": {
+      "main": [
+        [
+          {
+            "node": "Meta Ads Semana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta Ads Semana": {
+      "main": [
+        [
+          {
+            "node": "Meta Ads Mes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta Ads Mes": {
+      "main": [
+        [
+          {
+            "node": "IG Seguidores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IG Seguidores": {
+      "main": [
+        [
+          {
+            "node": "IG Novos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IG Novos": {
+      "main": [
+        [
+          {
+            "node": "Montar Relatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar Relatorio": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp (grupo Casa da Fé)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "casa-da-fe"
+    },
+    {
+      "name": "relatorio"
+    }
+  ],
+  "id": "cdfSemanal2026",
+  "active": false
+}

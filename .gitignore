@@ -2,9 +2,8 @@
 node_modules/
 
 # Variáveis de ambiente (NUNCA subir para o GitHub)
-.env
-.env.local
-.env.production
+.env*
+!.env.example
 
 # Banco de dados local (apenas o diretório raiz /db, não server/db)
 /db/
@@ -45,5 +44,6 @@ backup/
 *.MP4
 .local/
 google-ads.yaml
+.google-content-refresh-token.txt
 .google-ads-refresh-token.txt
 _vps_backup/
