@@ -5,6 +5,9 @@ node_modules/
 .env*
 !.env.example
 
+# Instruções locais do agente (contêm tokens/segredos — NÃO versionar)
+AGENTS.md
+
 # Banco de dados local (apenas o diretório raiz /db, não server/db)
 /db/
 *.sqlite
